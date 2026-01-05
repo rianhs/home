@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubrik SOCA - PPDH Unhas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --unhas-red: #980101;
+            --bg-light: #f4f4f9;
+            --text-dark: #333;
+            --border-color: #000;
+            --highlight: #fff9c4;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--unhas-red);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 { color: var(--unhas-red); margin: 0; font-size: 22px; text-transform: uppercase; }
+        header h2 { margin: 5px 0; font-size: 18px; font-weight: 600; color: #333; }
+        header h3 { margin: 5px 0; font-size: 15px; font-weight: 400; color: #555; }
+
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .btn-print { 
+            background: var(--unhas-red); 
+            color: white; 
+            padding: 10px 25px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-print:hover { opacity: 0.9; transform: translateY(-1px); }
+
+		.info-section {
+			margin-bottom: 25px;
+			display: grid;
+			grid-template-columns: 1.5fr 1fr; 
+			gap: 30px; 
+		}
+
+		.info-box {
+			display: flex;
+			align-items: center;
+		}
+
+		.info-box label {
+			font-weight: bold;
+			font-size: 14px;
+			margin-right: 10px;
+			white-space: nowrap;
+		}
+
+		.info-box input { 
+			flex-grow: 1;
+			padding: 8px; 
+			border: 1px solid #ccc; 
+			border-radius: 4px; 
+			font-family: inherit;
+		}
+
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            table-layout: fixed;
+        }
+
+        .excel-table th, .excel-table td {
+            border: 1px solid var(--border-color);
+            padding: 0;
+            vertical-align: top;
+            font-size: 12.5px;
+        }
+
+        .table-header {
+            background-color: #d9d9d9;
+            color: #000;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+			font-size: 14px;
+        }
+
+        .table-header th { padding: 12px 5px; }
+
+        .col-num { text-align: center; width: 40px; padding: 10px !important; font-weight: bold;}
+        .col-unsur { width: 140px; font-weight: bold; padding: 10px !important; }
+        .col-skor-input { width: 75px; text-align: center; vertical-align: middle; padding: 10px !important;}
+
+        .skor-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            height: auto;
+			overflow: hidden;
+        }
+
+        .skor-item {
+            padding: 8px 5px;
+            border-right: 1px solid #ddd;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .skor-item:last-child { border-right: none; }
+        .skor-item:hover { background-color: #f0f0f0; }
+        .skor-item.selected { background-color: var(--highlight); }
+
+        .skor-title { 
+            font-weight: bold; 
+            color: var(--unhas-red); 
+            display: block; 
+            margin-bottom: 4px; 
+            border-bottom: 1px solid #eee;
+            font-size: 10px;
+        }
+
+        /* Styling List di dalam kotak */
+        .skor-item ul {
+            margin: 0;
+            padding-left: 17px;
+            list-style-type: disc;
+        }
+
+        .skor-item li {
+            margin-bottom: 2px;
+        }
+
+        .score-display {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .total-row {
+            background-color: #d9d9d9;
+            font-weight: bold;
+        }
+        .total-row td { padding: 6px !important; font-size: 13px; }
+
+        .final-score-box {
+            margin-top: 20px;
+            border: 2px solid var(--unhas-red);
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .signature-area {
+            margin-top: 5px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            text-align: center;
+            font-size: 14px; /* Seragamkan ukuran font */
+			line-height: 1.2;
+        }
+
+        .signature-box p { margin: 5px 0; }
+
+        .signature-box input {
+            padding: 5px;
+            border: none;
+            text-align: center;
+            font-family: inherit;
+            font-size: 14px; /* Seragamkan ukuran font input */
+            outline: none;
+            background: transparent;
+        }
+
+        @media print {
+            body { padding: 0; background: white; }
+            .container { box-shadow: none; max-width: 100%; padding: 0; border: none; }
+            .toolbar { display: none !important; }
+            input::placeholder { color: transparent; }
+            .table-header { -webkit-print-color-adjust: exact; background-color: #d9d9d9 !important; color: #000 !important; }
+            .total-row { -webkit-print-color-adjust: exact; background-color: #d9d9d9 !important; }
+            .skor-item.selected { -webkit-print-color-adjust: exact; background-color: var(--highlight) !important; }
+        }
+		
+		tr {
+			page-break-inside: avoid;
+		}
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Rubrik Penilaian SOCA</h1>
+        <h2>Stase Kesmavet, Epidemiologi, RPH/RPU, dan Kedinasan</h2>
+        <h3>Program Studi Pendidikan Profesi Dokter Hewan • Fakultas Kedokteran • Universitas Hasanuddin</h3>
+    </header>
+
+    <div class="toolbar">
+        <button class="btn-print" onclick="window.print()">🖨️ Simpan sebagai PDF / Cetak</button>
+    </div>
+
+    <div class="info-section">
+        <div class="info-box">
+            <label>Nama Mahasiswa:</label>
+            <input type="text" placeholder="Tulis nama lengkap mahasiswa">
+        </div>
+        <div class="info-box">
+            <label>NIM Mahasiswa:</label>
+            <input type="text" placeholder="Tulis NIM mahasiswa">
+        </div>
+    </div>
+
+    <table class="excel-table">
+        <thead>
+            <tr class="table-header">
+                <th class="col-num">No</th>
+                <th class="col-unsur">Unsur Penilaian</th>
+                <th>Kriteria Skor (1–5)</th>
+                <th class="col-skor-input">Skor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="row-1">
+                <td class="col-num">1 </td>
+                <td class="col-unsur">Identifikasi dan analisis masalah </td>
+                <td>
+                    <div class="skor-grid">
+                        <div class="skor-item" onclick="pilihSkor(1, 1)">
+                            <span class="skor-title">Skor 1</span>
+                            Gagal mengidentifikasi masalah atau memberikan analisis yang tidak relevan. 
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(1, 2)">
+                            <span class="skor-title">Skor 2</span>
+                            <ul>
+                                <li>Tidak menganalisis penyebab masalah (diagnosis) dan faktor risikonya. </li>
+                                <li>Tidak menghubungkan temuan satu dengan temuan lain. </li>
+                            </ul>
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(1, 3)">
+                            <span class="skor-title">Skor 3</span>
+                            <ul>
+                                <li>Analisis penyebab masalah (diagnosis) dan faktor risikonya tidak tepat. </li>
+                                <li>Hubungan temuan satu dengan temuan lain kurang jelas. </li>
+                            </ul>
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(1, 4)">
+                            <span class="skor-title">Skor 4</span>
+                            <ul>
+                                <li>Analisis penyebab masalah (diagnosis) dan faktor risikonya kurang menyeluruh. </li>
+                                <li>Hubungan temuan satu dengan temuan lain jelas, tapi kurang sistematis. </li>
+                            </ul>
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(1, 5)">
+                            <span class="skor-title">Skor 5</span>
+                            <ul>
+                                <li>Analisis penyebab masalah (diagnosis) dan faktor risikonya dalam dan menyeluruh. </li>
+                                <li>Hubungan temuan satu dengan temuan lain jelas dan sistematis. </li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+                <td class="col-skor-input">
+                    <span id="display-skor-1" class="score-display">0</span>
+                    <input type="hidden" id="input-skor-1" value="0">
+                </td>
+            </tr>
+
+            <tr id="row-2">
+                <td class="col-num">2 </td>
+                <td class="col-unsur">Rekomendasi kepada pihak berkepentingan </td>
+                <td>
+                    <div class="skor-grid">
+                        <div class="skor-item" onclick="pilihSkor(2, 1)">
+                            <span class="skor-title">Skor 1</span>
+                            Gagal memberikan rekomendasi yang sesuai dengan masalah atau tidak memberikan rekomendasi sama sekali. 
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(2, 2)">
+                            <span class="skor-title">Skor 2</span>
+                            <ul>
+                                <li>Rekomendasi tidak relevan dengan masalah atau tidak dapat diterapkan. </li>
+                                <li>Tidak membedakan saran untuk unsur masyarakat & pemerintah. </li>
+                            </ul>
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(2, 3)">
+                            <span class="skor-title">Skor 3</span>
+                            <ul>
+                                <li>Rekomendasi tidak tepat dan tidak dapat segera diterapkan. </li>
+                                <li>Saran untuk masyarakat dan pemerintah tidak tepat. </li>
+                            </ul>
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(2, 4)">
+                            <span class="skor-title">Skor 4</span>
+                            <ul>
+                                <li>Rekomendasi tepat, tapi tidak lengkap atau tidak dapat segera diterapkan. </li>
+                                <li>Saran untuk masyarakat dan pemerintah kurang spesifik. </li>
+                            </ul>
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(2, 5)">
+                            <span class="skor-title">Skor 5</span>
+                            <ul>
+                                <li>Rekomendasi tepat, lengkap, dan dapat segera diterapkan. </li>
+                                <li>Saran untuk masyarakat & pemerintah spesifik. </li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+                <td class="col-skor-input">
+                    <span id="display-skor-2" class="score-display">0</span>
+                    <input type="hidden" id="input-skor-2" value="0">
+                </td>
+            </tr>
+
+            <tr id="row-3">
+                <td class="col-num">3 </td>
+                <td class="col-unsur">Cara komunikasi dan presentasi </td>
+                <td>
+                    <div class="skor-grid">
+                        <div class="skor-item" onclick="pilihSkor(3, 1)">
+                            <span class="skor-title">Skor 1</span>Memenuhi 1 unsur:
+                            <ul>
+                                <li>Bersikap sopan. </li>
+                                <li>Bahan presentasi terorganisasi dan mudah dipahami. </li>
+								<li>Presentasi baik dan terstruktur. </li>
+								<li>Pembuatan materi ≤12 menit. </li>
+								<li>Durasi presentasi ≤5 menit. </li>
+                            </ul>							
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(3, 2)">
+                            <span class="skor-title">Skor 2</span>Memenuhi 2 unsur: 
+                            <ul>
+                                <li>Bersikap sopan. </li>
+                                <li>Bahan presentasi terorganisasi dan mudah dipahami. </li>
+								<li>Presentasi baik dan terstruktur. </li>
+								<li>Pembuatan materi ≤12 menit. </li>
+								<li>Durasi presentasi ≤5 menit. </li>
+                            </ul>								
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(3, 3)">
+                            <span class="skor-title">Skor 3</span>Memenuhi 3 unsur:
+                            <ul>
+                                <li>Bersikap sopan. </li>
+                                <li>Bahan presentasi terorganisasi dan mudah dipahami. </li>
+								<li>Presentasi baik dan terstruktur. </li>
+								<li>Pembuatan materi ≤12 menit. </li>
+								<li>Durasi presentasi ≤5 menit. </li>
+                            </ul>							
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(3, 4)">
+                            <span class="skor-title">Skor 4</span>Memenuhi 4 unsur:
+                            <ul>
+                                <li>Bersikap sopan. </li>
+                                <li>Bahan presentasi terorganisasi dan mudah dipahami. </li>
+								<li>Presentasi baik dan terstruktur. </li>
+								<li>Pembuatan materi ≤12 menit. </li>
+								<li>Durasi presentasi ≤5 menit. </li>
+                            </ul>							
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(3, 5)">
+                            <span class="skor-title">Skor 5</span>Memenuhi semua:
+                            <ul>
+                                <li>Bersikap sopan. </li>
+                                <li>Bahan presentasi terorganisasi dan mudah dipahami. </li>
+								<li>Presentasi baik dan terstruktur. </li>
+								<li>Pembuatan materi ≤12 menit. </li>
+								<li>Durasi presentasi ≤5 menit. </li>
+                            </ul>							
+                        </div>
+                    </div>
+                </td>
+                <td class="col-skor-input">
+                    <span id="display-skor-3" class="score-display">0</span>
+                    <input type="hidden" id="input-skor-3" value="0">
+                </td>
+            </tr>
+
+            <tr id="row-4">
+                <td class="col-num">4 </td>
+                <td class="col-unsur">Jawaban terhadap pertanyaan penguji </td>
+                <td>
+                    <div class="skor-grid">
+                        <div class="skor-item" onclick="pilihSkor(4, 1)">
+                            <span class="skor-title">Skor 1</span>
+							<ul>
+                                <li>Gagal menjawab pertanyaan dengan tepat dan relevan. </li>
+                                <li>Pemahaman terhadap masalah dalam skenario tidak ada. </li>
+                            </ul>
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(4, 2)">
+                            <span class="skor-title">Skor 2</span>
+							<ul>
+                                <li>Jawaban kurang relevan, dengan alasan yang tidak logis. </li>
+                                <li>Pemahaman terhadap masalah dalam skenario lemah. </li>
+                            </ul>
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(4, 3)">
+                            <span class="skor-title">Skor 3</span>
+							<ul>
+                                <li>Jawaban kurang tepat atau kurang relevan, dan alasan kurang logis. </li>
+                                <li>Pemahaman terhadap masalah dalam skenario terbatas. </li>
+                            </ul>							
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(4, 4)">
+                            <span class="skor-title">Skor 4</span>
+							<ul>
+                                <li>Jawaban tepat dan relevan, tetapi alasan kurang logis dan kurang dalam. </li>
+                                <li>Pemahaman terhadap masalah dalam skenario sudah baik. </li>
+                            </ul>							
+                        </div>
+                        <div class="skor-item" onclick="pilihSkor(4, 5)">
+                            <span class="skor-title">Skor 5</span>
+							<ul>
+                                <li>Jawaban tepat, relevan, dan disertai alasan logis dan mendalam. </li>
+                                <li>Pemahaman terhadap masalah dalam skenario sudah menyeluruh. </li>
+                            </ul>							
+                        </div>
+                    </div>
+                </td>
+                <td class="col-skor-input">
+                    <span id="display-skor-4" class="score-display">0</span>
+                    <input type="hidden" id="input-skor-4" value="0">
+                </td>
+            </tr>
+
+            <tr class="total-row">
+                <td colspan="3" style="text-align: right; padding-right: 20px;">Total skor </td>
+                <td id="total-skor" style="text-align: center;">0</td>
+            </tr>
+			
+            <tr class="total-row">
+                <td colspan="3" style="text-align: right; padding-right: 20px;">Nilai mahasiswa </td>
+                <td id="nilai-akhir" style="text-align: center;">0</td>
+            </tr>			
+        </tbody>
+    </table>
+
+    <div class="signature-area">
+        <div class="signature-box"></div>
+        <div class="signature-box">
+            <p><input type="text" placeholder="Tulis tempat dan tanggal ujian" style="width: 250px;"></p>
+            <p>Dosen penguji,</p>
+            <br><br><br><br>
+            <p><b><input type="text" placeholder="Tulis nama dosen penguji" style="font-weight: bold; width: 250px;"></b></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function pilihSkor(unsurId, nilai) {
+        document.getElementById('display-skor-' + unsurId).innerText = nilai;
+        document.getElementById('input-skor-' + unsurId).value = nilai;
+        const row = document.getElementById('row-' + unsurId);
+        const items = row.querySelectorAll('.skor-item');
+        items.forEach(item => item.classList.remove('selected'));
+        items[nilai - 1].classList.add('selected');
+        hitungTotal();
+    }
+
+    function hitungTotal() {
+        let total = 0;
+        for (let i = 1; i <= 4; i++) {
+            total += parseInt(document.getElementById('input-skor-' + i).value);
+        }
+        document.getElementById('total-skor').innerText = total;
+        document.getElementById('nilai-akhir').innerText = total * 5;
+    }
+</script>
+
+</body>
+</html>
