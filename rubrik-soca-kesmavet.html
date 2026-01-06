@@ -199,6 +199,21 @@
             background: transparent;
         }
 
+
+        .signature-container {
+            height: 100px; /* Ruang tetap untuk tanda tangan agar tidak menggeser tata letak */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px 0;
+        }
+
+        #dosen-signature {
+            max-height: 90px;
+            max-width: 200px;
+            display: none; /* Sembunyikan jika belum ada dosen yang dipilih */
+        }
+
         @media print {
             body { padding: 0; background: white; }
             .container { box-shadow: none; max-width: 100%; padding: 0; border: none; }
@@ -207,6 +222,13 @@
             .table-header { -webkit-print-color-adjust: exact; background-color: #d9d9d9 !important; color: #000 !important; }
             .total-row { -webkit-print-color-adjust: exact; background-color: #d9d9d9 !important; }
             .skor-item.selected { -webkit-print-color-adjust: exact; background-color: var(--highlight) !important; }
+            #select-dosen {
+            	appearance: none;
+            	-webkit-appearance: none;
+            	-moz-appearance: none;
+            	border: none;
+            	background: transparent;
+            }
         }
 		
 		tr {
@@ -462,15 +484,31 @@
         </tbody>
     </table>
 
-    <div class="signature-area">
-        <div class="signature-box"></div>
-        <div class="signature-box">
-            <p><input type="text" placeholder="Tulis tempat dan tanggal ujian" style="width: 250px;"></p>
-            <p>Dosen penguji,</p>
-            <br><br><br><br>
-            <p><b><input type="text" placeholder="Tulis nama dosen penguji" style="font-weight: bold; width: 250px;"></b></p>
+<div class="signature-area">
+    <div class="signature-box"></div>
+    <div class="signature-box">
+        <p><input type="text" placeholder="Tulis tempat dan tanggal ujian" style="width: 250px;"></p>
+        <p>Dosen penguji,</p>
+        
+        <div class="signature-container">
+            <img id="dosen-signature" src="" alt="Tanda Tangan">
         </div>
+
+        <p>
+            <b>
+                <select id="select-dosen" onchange="updateSignature()" style="font-weight: bold; width: 350px; border: none; text-align-last: center; font-family: inherit; font-size: 14px; cursor: pointer;">
+                    <option value="">-- Pilih Nama Dosen --</option>
+                    <option value="1">drh. Anak Agung P.J. Wahyuda, M.Si.</option>
+                    <option value="2">drh. Zainal Abidin Kholilullah, M.Si.</option>
+                    <option value="3">drh. Baso Yusuf, M.Sc.</option>
+                    <option value="4">drh. Rian Hari Suharto, M.Sc.</option>
+                    <option value="5">drh. Rasdiyanah, M.Si.</option>
+                    <option value="6">drh. Elphan Augusta Kajang, M.Sc.</option>
+                </select>
+            </b>
+        </p>
     </div>
+</div>
 </div>
 
 <script>
@@ -492,6 +530,22 @@
         document.getElementById('total-skor').innerText = total;
         document.getElementById('nilai-akhir').innerText = total * 5;
     }
+
+	function updateSignature() {
+	    const select = document.getElementById('select-dosen');
+	    const img = document.getElementById('dosen-signature');
+	    const selectedValue = select.value;
+
+	    if (selectedValue) {
+	        // Path menuju folder img di repositori GitHub
+	        img.src = 'img/tanda-tangan-' + selectedValue + '.png';
+	        img.style.display = 'block';
+	    } else {
+	        img.src = '';
+	        img.style.display = 'none';
+    }
+}
+
 </script>
 
 </body>
