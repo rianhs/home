@@ -237,6 +237,46 @@
 			text-align: left !important;
 			color: #000;
         }
+		
+		/* Media Query untuk Tablet dan Ponsel */
+		@media screen and (max-width: 768px) {
+			.container {
+				padding: 20px; /* Mengurangi padding agar area isian lebih luas */
+				margin: 10px;
+			}
+
+			.header-table, .excel-table {
+				table-layout: auto; /* Mengizinkan tabel menyesuaikan konten */
+				display: block;
+				overflow-x: auto; /* Menambah scroll horizontal jika tabel terlalu lebar */
+			}
+
+			.signature-area {
+				grid-template-columns: 1fr; /* Tanda tangan menjadi atas-bawah, bukan kiri-kanan */
+				gap: 15px;
+			}
+
+			h3 {
+				font-size: 16px;
+				padding: 8px;
+			}
+
+			.header-logo { width: 20%; }
+			.header-title h1 { font-size: 14px; }
+			.header-meta { display: none; } /* Menyembunyikan metadata pada layar sangat kecil untuk kerapian */
+		}
+
+		/* Penyesuaian khusus untuk ponsel sangat kecil */
+		@media screen and (max-width: 480px) {
+			body {
+				padding: 10px;
+			}
+    
+			.btn-import, .btn-export, .btn-print {
+				width: 100%; /* Tombol memenuhi lebar layar */
+				flex: none !important;
+			}
+		}
     </style>
 </head>
 <body>
