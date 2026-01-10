@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F07. Persetujuan Etik (Ethical Clearance)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+    :root {
+        --unhas-red: #980101; /* Tetap digunakan untuk garis hiasan jika diinginkan */
+        --text-black: #000;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f4f4f9;
+        color: var(--text-black); /* Semua teks hitam */
+        line-height: 1.4;
+        margin: 0;
+        padding: 20px;
+        font-size: 12px; /* Ukuran huruf diperkecil */
+    }
+
+    .certificate-container {
+        max-width: 800px; /* Sedikit diperkecil agar proporsional */
+        margin: 0 auto;
+        background: white;
+        padding: 35px 45px;
+        border: 1px solid #000;
+        position: relative;
+    }
+
+    header {
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid #000; /* Garis hitam pekat */
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .header-logo { height: 60px; width: auto; } 
+    
+    .logo-left { margin-right: 15px; }
+    .logo-right { margin-left: 15px; }
+	
+    .header-text { flex-grow: 1; text-align: center; }
+    .header-text h1 { font-size: 14px; margin: 0; color: #000; text-transform: uppercase; }
+    .header-text p { font-size: 9px; margin: 3px 0 0 0; color: #000; }
+
+    .doc-title { text-align: center; margin-bottom: 20px; }
+    .doc-title h2 { font-size: 16px; text-decoration: underline; margin: 0; color: #000; }
+    .doc-title p { font-size: 11px; font-weight: bold; font-style: italic; margin: 0px 0 0 0; color: #000; }
+    .doc-no { font-size: 11px; margin-top: 5px; text-align: center; }
+
+    .statement { font-size: 11px; margin-bottom: 15px; text-align: center; color: #000; }
+
+    .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        font-size: 12px;
+    }
+
+    .info-table td {
+        border-bottom: 1px solid #eee;
+        padding: 6px 5px;
+        vertical-align: top;
+        color: #000;
+    }
+
+    .label-cell { width: 220px; font-weight: bold; }
+    .bilingual-label { display: block; font-size: 9px; font-style: italic; font-weight: normal; }
+
+    .approval-box {
+        border: 2px solid #000; /* Kotak menjadi hitam */
+        padding: 10px;
+        text-align: center;
+        margin: 20px 0;
+    }
+    .approval-box p { margin: 0; font-weight: bold; font-size: 14px; color: #000; }
+
+    .signature-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+    }
+
+    .sig-box { width: 45%; font-size: 11px; }
+    .sig-label { font-weight: bold; margin-bottom: 5px; border-bottom: 1px solid #000; display: block; padding-bottom: 2px; }
+    .sig-space { height: 70px; position: relative; }
+    .sig-img { height: 70px; position: absolute; left: 30px; top: 0; }
+    .sig-name { font-weight: bold; margin: 5px 0 0 0; font-size: 12px; text-decoration: none; }
+
+    .obligations { font-size: 10px; margin-top: 20px; border-top: 1px solid #000; padding-top: 10px; }
+
+    input, textarea, select {
+        border: none;
+        width: 100%;
+        font-family: inherit;
+        font-size: 12px;
+        background: transparent;
+        padding: 0;
+        color: #000;
+    }
+    textarea { resize: none; overflow: hidden; line-height: 1.4; }
+
+    .obligations h4 {
+		margin-top: 0;
+		margin-bottom: 2px; /* Memberikan jarak sangat kecil agar tidak terlalu menempel */
+		font-size: 11px;
+	}
+
+	.obligations ol {
+		margin-top: 0; /* Menghilangkan margin atas agar rapat dengan judul di atasnya */
+		padding-left: 15px;
+	}
+
+	.obligations li {
+		margin-bottom: 4px; /* Memberikan sedikit ruang antar poin agar tetap terbaca */
+	}
+	
+	@media print {
+        body { background: white; padding: 0; }
+        .certificate-container { border: 1px solid #000; padding: 30px; }
+        .btn-print { display: none; }
+        input, select, textarea { border: none; appearance: none; -webkit-appearance: none; }
+    }
+	</style>
+</head>
+<body>
+
+<div class="certificate-container">
+    <header>
+		<img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo-Resmi-Unhas-1.png" alt="Logo Unhas" class="header-logo logo-left">
+    
+		<div class="header-text">
+			<h1 style="font-size: 14px; margin: 0; line-height: 1.2;">
+				KOMISI ETIK HEWAN DAN PENELITIAN<br>
+				RUMAH SAKIT HEWAN UNIVERSITAS HASANUDDIN
+			</h1>
+			<p style="font-size: 10px; font-style: italic; margin: 5px 0 0 0; line-height: 1.2;">
+				(Animal and Research Ethics Committee of the Hasanuddin University Veterinary Hospital)
+			</p>
+			<p style="font-size: 9px; margin-top: 5px; font-style: normal;">
+				Jl. Al-Markaz Al-Islami Blok IX, Kompleks Unhas Sunu, Makassar | email: kehp.rshunhas@gmail.com
+			</p>
+		</div>
+
+		<img src="img/rshuh.png" alt="Logo RSH" class="header-logo logo-right">
+	</header>
+
+    <div class="doc-title">
+        <h2>PERSETUJUAN ETIK</h2>
+        <p>ETHICAL CLEARANCE</p>
+        <div class="doc-no">
+            No: 
+            <input type="text" placeholder="00001" style="width: 45px; border-bottom: 1px solid #eee; text-align: center;">
+            <span>/UN4.1.30.1.1.4/DI.05.01/2026</span>
+        </div>
+    </div>
+
+    <div class="statement">
+		Dengan ini menyatakan bahwa protokol yang tercantum di bawah ini telah disetujui secara etik.<br>
+		<span style="font-style: italic; font-size: 10px; display: block; margin-top: 2px;">
+			(This is to certify that the protocol described below has been ethically approved.)
+		</span>
+	</div>
+
+    <table class="info-table">
+        <tr>
+            <td class="label-cell">No. Registrasi/Protokol<br><span class="bilingual-label">Registration/Protocol No.</span></td>
+            <td><input type="text" placeholder="Masukkan nomor protokol"></td>
+        </tr>
+        <tr>
+            <td class="label-cell">Penanggung Jawab Kegiatan<br><span class="bilingual-label">Responsible Person</span></td>
+            <td><input type="text" placeholder="Masukkan nama lengkap penanggung jawab"></td>
+        </tr>
+        <tr>
+            <td class="label-cell">Sponsor<br><span class="bilingual-label">Sponsor</span></td>
+            <td><input type="text" placeholder="Masukkan nama institusi atau penyandang dana"></td>
+        </tr>
+        <tr>
+            <td class="label-cell">Jenis Kegiatan<br><span class="bilingual-label">Type of Activity</span></td>
+            <td>
+                <select id="jenis_kegiatan">
+                    <option value="">-- Pilih Jenis Kegiatan --</option>
+                    <option value="Pendidikan/Pelatihan">Pendidikan/Pelatihan (Education/Training)</option>
+					<option value="Penelitian/Pengujian">Penelitian/Pengujian (Research/Testing)</option>
+                                        <option value="Produksi Bahan Biologis">Produksi Bahan Biologis (Production of Biological Materials)</option>
+                    <option value="Penangkaran/Pengembangbiakan">Penangkaran/Pengembangbiakan (Captivity/Breeding)</option>
+                    <option value="Lainnya">Lainnya (Others)</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+			<td class="label-cell">Judul Kegiatan<br><span class="bilingual-label">Title of Activity</span></td>
+			<td>
+				<textarea oninput="autoExpand(this)" rows="1" placeholder="Tuliskan judul lengkap..."></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class="label-cell">Tempat Kegiatan<br><span class="bilingual-label">Location of Activity</span></td>
+			<td>
+				<textarea oninput="autoExpand(this)" rows="1" placeholder="Tuliskan lokasi pelaksanaan..."></textarea>
+			</td>
+		</tr>
+				<td class="label-cell">Tanggal Terbit<br><span class="bilingual-label">Date of Issue</span></td>
+				<td><input type="text" placeholder="Tgl-Bln-Thn"></td>
+		</tr>
+		<tr>
+			<td class="label-cell">Masa Berlaku<br><span class="bilingual-label">Valid Until</span></td>
+			<td><input type="text" placeholder="Tgl-Bln-Thn"></td>
+		</tr>
+    </table>
+
+    <div class="approval-box">
+		<p>DINYATAKAN LAYAK ETIK</p>
+		<p style="font-size: 12px; font-style: italic; font-weight: bold;">(ETHICALLY APPROVED)</p>
+	</div>
+
+    <div class="signature-section">
+		<div class="sig-box">
+			<span class="sig-label">Sekretaris <span style="font-style: italic; font-weight: bold;">(Secretary)</span></span>
+			<div class="sig-space"></div>
+			<input type="text" class="sig-name" placeholder="[Ketik Nama Sekretaris & Gelar]" style="border-bottom: 1px solid #ccc; width: 100%;">
+		</div>
+
+		<div class="sig-box">
+			<span class="sig-label">Ketua <span style="font-style: italic; font-weight: bold;">(Chairperson)</span></span>
+			<div class="sig-space"></div>
+			<input type="text" class="sig-name" placeholder="[Ketik Nama Ketua & Gelar]" style="border-bottom: 1px solid #ccc; width: 100%;">
+		</div>
+	</div>
+
+    <div class="obligations">
+        <h4 style="font-size: 11px; margin-bottom: 2px;">
+			Kewajiban Penanggung Jawab Kegiatan 
+			<span style="font-style: italic; font-weight: bold;">(Responsibilities of the Person in Charge):</span>
+		</h4>
+        <ol>
+            <li>Wajib melaporkan setiap penyimpangan atau perubahan dari protokol yang telah disetujui.<br>
+			<span style="font-style: italic;">(Must report any deviations or changes from the approved protocol.)</span></li>
+            <li>Mematuhi semua etika, peraturan, dan standar yang berlaku, termasuk pada aspek kesejahteraan hewan.<br>
+			<span style="font-style: italic;">(Comply with all applicable ethics, regulations, and standards, including animal welfare aspects.)</span></li>
+        </ol>
+    </div>
+</div>
+
+<button class="btn-print" onclick="window.print()">🖨️ Simpan sebagai PDF / Cetak</button>
+
+<script>
+    function autoExpand(field) {
+        field.style.height = 'inherit';
+        field.style.height = field.scrollHeight + 'px';
+    }
+    // Inisialisasi awal untuk semua textarea
+    document.querySelectorAll('textarea').forEach(el => autoExpand(el));
+</script>
+
+</body>
+</html>
