@@ -165,6 +165,18 @@
             margin: 40px auto 0;
             font-size: 16px;
         }
+		
+		.instruction-box ol {
+			margin-bottom: 0;
+		}
+
+		.instruction-box li {
+			margin-bottom: 8px; 
+		}
+
+		.instruction-box li:last-child {
+			margin-bottom: 0;
+		}
 
         @media print {
             body { padding: 0; background: white; }
@@ -472,9 +484,11 @@
 		
 		<div class="instruction-box" style="margin-top: 30px; border-left: 5px solid #2d8a39; background: #f0f9f1;">
             <strong>Langkah selanjutnya:</strong><br>
-            1. Pastikan seluruh isian sudah benar.<br>
-            2. Jika sudah final, klik tombol <b>"Simpan sebagai PDF/cetak"</b>. Pada jendela cetak yang muncul, pastikan pilih "Save as PDF".<br>
-            3. Kirimkan file PDF tersebut ke sekretariat KEHP RSH Unhas.
+			<ol style="margin-top: 10px; padding-left: 20px;">
+				<li>Pastikan seluruh isian sudah benar.</li>
+				<li>Jika sudah final, klik tombol <b>"Simpan sebagai PDF/cetak"</b>. Pada jendela cetak yang muncul, pastikan pilih "Save as PDF".</li>
+				<li>Kirimkan file PDF tersebut ke sekretariat KEHP RSH Unhas di alamat surel <b>kehp.rshunhas@gmail.com</b></li>
+			</ol>
         </div>
 		
         <button type="button" class="btn-print" onclick="window.print()">🖨️ Simpan sebagai PDF/cetak</button>
