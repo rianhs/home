@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F08. Pemberitahuan Hasil Penilaian Etik</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --unhas-red: #980101;
+            --bg-light: #f4f4f9;
+            --text-dark: #333;
+            --border-color: #000;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            table-layout: fixed;
+            color: #000;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+            padding: 10px;
+            vertical-align: middle;
+        }
+
+        .header-logo { width: 12%; text-align: center; }
+        .header-title { width: 55%; text-align: center; }
+        .header-title h1 { font-size: 15px; margin: 0; text-transform: uppercase; color: #000; }
+        .header-title p { font-size: 9px; margin: 5px 0 0 0; line-height: 1.2; }
+        .header-meta { width: 17%; font-size: 10px; text-align: left; }
+        .header-meta table { width: 100%; border: none; }
+        .header-meta td {
+            border: none;
+            padding: 1px 0;
+            text-align: left !important;
+            color: #000;
+        }
+
+        .section-divider {
+            border-top: 2px dashed #ccc;
+            margin: 50px 0;
+            position: relative;
+        }
+
+        .section-divider span {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 0 15px;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .instruction-box {
+            background: #fff8f8;
+            border-left: 5px solid var(--unhas-red);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .email-subject {
+            background-color: #f2f2f2;
+            padding: 15px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .email-body {
+            font-size: 15px;
+            text-align: justify;
+            border: 1px solid #eee;
+            padding: 25px;
+            background-color: #fff;
+        }
+
+        .attachment-tag {
+            background-color: #f9f9f9;
+            border: 1px dashed #999;
+            padding: 10px;
+            margin: 15px 0;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        @media print {
+            .instruction-box, .section-divider { display: none !important; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <table class="header-table">
+            <tr>
+                <td class="header-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo-Resmi-Unhas-1.png" alt="Logo Unhas" style="width: 75px;">
+                </td>
+                <td class="header-title">
+                    <h1>KOMISI ETIK HEWAN DAN PENELITIAN<br>RUMAH SAKIT HEWAN UNIVERSITAS HASANUDDIN</h1>
+                    <p>Jl. Al-Markaz Al-Islami Blok IX, Kompleks Unhas Sunu, Kel. Kalukuang, Kec. Tallo, Kota Makassar</p>
+                    <div style="margin-top: 10px; font-weight: bold; border-top: 1px solid #000; padding-top: 5px;">
+                        TEMPLAT SURAT PEMBERITAHUAN HASIL PENILAIAN ETIK
+                    </div>
+                </td>
+                <td class="header-meta">
+                    <table>
+                        <tr>
+                            <td>No.</td>
+                            <td>: KEHP-RSH-F08</td>
+                        </tr>
+                        <tr>
+                            <td>Versi</td>
+                            <td>: 1.0</td>
+                        </tr>
+                        <tr>
+                            <td>Tgl. Rev</td>
+                            <td>: 10-01-2026</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </header>
+
+    <div class="instruction-box">
+        <strong>Templat 8a:</strong> Gunakan ini jika hasil penilaian kolektif adalah <strong>Layak etik dengan persyaratan perbaikan (Expedited Review)</strong>.
+    </div>
+	
+	<div class="email-subject">
+        Subjek: <strong>Pemberitahuan Hasil Penilaian Etik dan Permohonan Perbaikan – [No. Registrasi]</strong>
+    </div>
+
+    <div class="email-body">
+        <p>Yth. Bapak/Ibu/Saudara [Nama Pemohon],</p>
+
+        <p>Terima kasih telah mengajukan permohonan persetujuan etik melalui KEHP RSH Unhas.</p>
+
+        <p>Kami informasikan bahwa tim peninjau telah selesai melakukan penilaian kolektif terhadap usulan kegiatan Anda. Berdasarkan hasil tinjauan tersebut, protokol Anda dinyatakan <strong>layak etik dengan persyaratan perbaikan (expedited review)</strong>.</p>
+
+        <p>Bersama surel ini, kami melampirkan dokumen <strong>Formulir KEHP-RSH-F06</strong> yang memuat rincian saran dan poin perbaikan yang perlu dilakukan. Mohon agar Anda segera merevisi berkas <strong>Formulir KEHP-RSH-F02</strong> yang dapat diakses di tautan ini: https://rianhs.github.io/home/kehp-rsh-f02.html</p>
+
+        <p>Berkas revisi dapat dikirimkan kembali sebagai balasan atas surel ini. Kami akan memverifikasi perbaikan tersebut sebelum menerbitkan persetujuan etik.</p>
+
+        <p>Terima kasih atas kerja sama Anda.</p>
+		
+		<div style="height: 20px;"></div>
+		<p>Salam hangat,<br>Admin KEHP RSH Unhas</p>
+    </div>
+
+    <div class="section-divider">
+        <span>Templat Selanjutnya</span>
+    </div>
+
+    <div class="instruction-box">
+        <strong>Templat 8b:</strong> Gunakan ini jika hasil penilaian kolektif adalah <strong>Perlu diskusi menyeluruh (Full Board Review)</strong>.
+    </div>
+	
+	<div class="email-subject">
+        Subjek: <strong>Pemberitahuan Peninjauan Lanjutan (Full Board Review) – [No. Registrasi]</strong>
+    </div>
+
+    <div class="email-body">
+        <p>Yth. Bapak/Ibu/Saudara [Nama Pemohon],</p>
+
+        <p>Kami informasikan bahwa berdasarkan penilaian awal para peninjau, usulan kegiatan Anda memerlukan pembahasan yang lebih mendalam dalam rapat pleno Komisi Etik (<strong>full board review</strong>).</p>
+
+        <p>Langkah ini diperlukan untuk mendiskusikan beberapa aspek protokol yang memerlukan masukan kolektif dari seluruh anggota komisi. Rincian pertimbangan awal tim peninjau dapat Anda lihat pada dokumen <strong>Formulir KEHP-RSH-F06</strong> yang kami lampirkan.</p>
+
+        <p>Sekretariat kami akan segera menghubungi Anda kembali untuk memberikan informasi mengenai jadwal diskusi atau jika terdapat dokumen tambahan yang perlu disiapkan. Mohon diperhatikan bahwa proses ini mungkin memerlukan waktu peninjauan yang lebih lama.</p>
+
+        <p>Terima kasih atas perhatian dan kesabaran Anda.</p>
+		
+		<div style="height: 20px;"></div>
+		<p>Salam hangat,<br>Admin KEHP RSH Unhas</p>
+    </div>
+
+    <div class="section-divider">
+        <span>Templat Selanjutnya</span>
+    </div>
+
+    <div class="instruction-box">
+        <strong>Templat 8c:</strong> Gunakan ini jika hasil penilaian kolektif adalah <strong>Tidak layak etik</strong>.
+    </div>
+	
+	<div class="email-subject">
+        Subjek: <strong>Keputusan Hasil Penilaian Etik – [No. Registrasi]</strong>
+    </div>
+
+    <div class="email-body">
+        <p>Yth. Bapak/Ibu/Saudara [Nama Pemohon],</p>
+
+        <p>Kami menyampaikan informasi mengenai hasil penilaian kolektif atas permohonan persetujuan etik yang Anda ajukan.</p>
+
+        <p>Setelah meninjau usulan kegiatan tersebut secara saksama, tim peninjau memutuskan bahwa protokol tersebut saat ini dinyatakan <strong>tidak layak etik</strong>. Keputusan ini didasarkan pada beberapa pertimbangan prinsipil yang dicantumkan dalam dokumen <strong>Formulir KEHP-RSH-F06</strong> yang terlampir pada surel ini.</p>
+
+        <p>Kami menyadari bahwa hasil ini mungkin tidak sesuai dengan harapan Anda. Jika Anda berencana mengajukan kembali permohonan baru di masa mendatang, kami menyarankan agar Anda melakukan tinjauan mendalam terhadap poin-poin keberatan yang telah disampaikan oleh tim peninjau.</p>
+
+        <p>Terima kasih atas pengertian Anda.</p>
+		
+		<div style="height: 20px;"></div>
+		<p>Salam hangat,<br>Admin KEHP RSH Unhas</p>
+    </div>
+
+    <div style="height: 50px;"></div>
+</div>
+
+</body>
+</html>
