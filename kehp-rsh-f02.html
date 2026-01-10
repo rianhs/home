@@ -365,7 +365,7 @@
                 </tr>
                 <tr>
                     <td class="col-sublabel">a. Nama lengkap</td>
-                    <td class="col-input"><input type="text" id="nama_lengkap" placeholder="Tulis nama lengkap pemohon"></td>
+                    <td class="col-input"><input type="text" id="nama_lengkap" placeholder="Tuliskan nama lengkap pemohon"></td>
                 </tr>
                 <tr>
                     <td class="col-sublabel">b. Jabatan</td>
@@ -380,24 +380,9 @@
                     <td class="col-input"><input type="email" id="email" placeholder="Contoh: nama@unhas.ac.id"></td>
                 </tr>
 
-                <tr>
-                    <td rowspan="3" class="col-num">2.</td>
-                    <td colspan="2" class="bg-white-header">Institusi penyelenggara</td>
-                </tr>
-                <tr>
-                    <td class="col-sublabel">a. Nama institusi</td>
-                    <td class="col-input"><input type="text" id="nama_institusi" placeholder="Contoh: Prodi Kedokteran Hewan, Fakultas Kedokteran Unhas"></td>
-                </tr>
-                <tr>
-                    <td class="col-sublabel">b. Alamat</td>
-                    <td class="col-input">
-                        <textarea id="alamat_institusi" placeholder="Tulis alamat lengkap instansi penyelenggara"></textarea>
-                        <div id="mirror_alamat_institusi" class="print-mirror"></div>
-                    </td>
-                </tr>
 
                 <tr>
-                    <td rowspan="12" class="col-num">3.</td>
+                    <td rowspan="11" class="col-num">2.</td>
                     <td colspan="2" class="bg-white-header">Rincian kegiatan</td>
                 </tr>
                 <tr>
@@ -406,7 +391,11 @@
                         <select id="jenis_kegiatan">
                             <option value="">-- Pilih --</option>
                             <option value="Pendidikan">Pendidikan</option>
-                            <option value="Penelitian">Penelitian</option>
+							<option value="Penlatihan">Pelatihan/lokakarya</option>
+							<option value="Penelitian-dosen">Penelitian dosen/peneliti profesional</option>
+                            <option value="Penelitian-s1">Penelitian mahasiswa S1/profesi</option>
+							<option value="Penelitian-s2">Penelitian mahasiswa S2</option>
+							<option value="Penelitian-s3">Penelitian mahasiswa S3</option>
                         </select>
                     </td>
                 </tr>
@@ -417,18 +406,62 @@
                         <div id="mirror_judul_kegiatan" class="print-mirror"></div>
                     </td>
                 </tr>
-                <tr>
-                    <td class="col-sublabel">c. Apakah kegiatan ini akan melibatkan atau menggunakan hewan hidup?</td>
+				<tr>
+                    <td class="col-sublabel">c. Nama institusi penyelenggara</td>
+                    <td class="col-input"><input type="text" id="nama_institusi" placeholder="Contoh: Prodi Kedokteran Hewan, Fakultas Kedokteran Unhas"></td>
+                </tr>
+				<tr>
+                    <td class="col-sublabel">d. Alamat institusi penyelenggara</td>
                     <td class="col-input">
-                        <select id="melibatkan_hewan">
+                        <textarea id="alamat_institusi" placeholder="Tuliskan alamat lengkap institusi penyelenggara"></textarea>
+                        <div id="mirror_alamat_institusi" class="print-mirror"></div>
+                    </td>
+                </tr>
+				<tr>
+                    <td class="col-sublabel">e. Apakah kegiatan ini merupakan perwujudan dari kerja sama atau kemitraan antarinstitusi?</td>
+                    <td class="col-input">
+                        <select id="kemitraan">
                             <option value="">-- Pilih --</option>
-                            <option value="Ya">Ya (lanjutkan ke huruf d)</option>
-                            <option value="Tidak">Tidak (lanjutkan ke huruf e)</option>
+                            <option value="Tidak">Tidak (lanjutkan ke huruf f)</option>
+                            <option value="Ya - Nasional">Ya - kemitraan tingkat nasional</option>
+                            <option value="Ya - Internasional">Ya - kemitraan tingkat internasional</option>
+                            <option value="Ya - Personel Asing">Ya - melibatkan personel asing</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <td class="col-sublabel">d. Jenis kegiatan yang melibatkan hewan</td>
+                    <td class="col-sublabel indent-text">Jika ya, uraikan jenis kemitraan:</td>
+                    <td class="col-input"><input type="text" id="uraian_kemitraan" placeholder="Tuliskan nama mitra dan bentuk kerja sama"></td>
+                </tr>
+				<tr>
+                    <td class="col-sublabel">f. Tempat pelaksanaan</td>
+                    <td class="col-input"><input type="text" id="tempat_kegiatan" placeholder="Tuliskan semua lokasi pelaksanaan kegiatan"></td>
+                </tr>
+                <tr>
+                    <td class="col-sublabel">g. Durasi/rentang waktu pelaksanaan</td>
+                    <td class="col-input"><input type="text" id="durasi_kegiatan" placeholder="Contoh: Enam bulan (Januari s.d. Juni 2026)"></td>
+                </tr>
+                <tr>
+                <tr>
+                    <td class="col-sublabel">h. Sumber dan jumlah dana</td>
+                    <td class="col-input"><input type="text" id="sumber_dana" placeholder="Contoh: Hibah LPPM Unhas, Rp10.000.000"></td>
+                </tr>
+				<tr>
+                    <td rowspan="3" class="col-num">3.</td>
+                    <td colspan="2" class="bg-white-header">Keterlibatan hewan hidup</td>
+                </tr>
+				<tr>
+                    <td class="col-sublabel">a. Apakah kegiatan ini akan melibatkan atau menggunakan hewan hidup?</td>
+                    <td class="col-input">
+                        <select id="melibatkan_hewan">
+                            <option value="">-- Pilih --</option>
+                            <option value="Ya">Ya (lanjutkan ke huruf b)</option>
+                            <option value="Tidak">Tidak (lanjutkan ke no. 4)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-sublabel">b. Jenis kegiatan yang melibatkan hewan</td>
                     <td class="col-input">
                         <select id="jenis_hewan_hidup">
                             <option value="">-- Pilih --</option>
@@ -438,48 +471,6 @@
                             <option value="Lainnya">Lainnya</option>
                         </select>
                     </td>
-                </tr>
-                <tr>
-                    <td class="col-sublabel">e. Apakah kegiatan ini merupakan perwujudan dari kerja sama atau kemitraan antarinstitusi?</td>
-                    <td class="col-input">
-                        <select id="kemitraan">
-                            <option value="">-- Pilih --</option>
-                            <option value="Tidak">Tidak (lanjutkan ke huruf g)</option>
-                            <option value="Ya - Nasional">Ya - kemitraan tingkat nasional</option>
-                            <option value="Ya - Internasional">Ya - kemitraan tingkat internasional</option>
-                            <option value="Ya - Personel Asing">Ya - melibatkan personel asing</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="col-sublabel indent-text">Jika ya, uraikan jenis kemitraan:</td>
-                    <td class="col-input"><input type="text" id="uraian_kemitraan" placeholder="Tulis nama mitra dan bentuk kerja sama"></td>
-                </tr>
-                <tr>
-                    <td class="col-sublabel">f. Apakah kegiatan kemitraan ini akan dilakukan di beberapa lokasi (multisenter)?</td>
-                    <td class="col-input">
-                        <select id="multisenter">
-                            <option value="">-- Pilih --</option>
-                            <option value="Tidak">Tidak</option>
-                            <option value="Ya">Ya</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="col-sublabel indent-text">Jika ya, uraikan lokasi tiap senter:</td>
-                    <td class="col-input"><input type="text" id="lokasi_senter" placeholder="Tuliskan semua lokasi pelaksanaan kegiatan"></td>
-                </tr>
-                <tr>
-                    <td class="col-sublabel">g. Tempat pelaksanaan</td>
-                    <td class="col-input"><input type="text" id="tempat_kegiatan" placeholder="Contoh: Laboratorium Terpadu PSKH FK Unhas"></td>
-                </tr>
-                <tr>
-                    <td class="col-sublabel">h. Durasi/rentang waktu pelaksanaan</td>
-                    <td class="col-input"><input type="text" id="durasi_kegiatan" placeholder="Contoh: Enam bulan (Januari s.d. Juni 2026)"></td>
-                </tr>
-                <tr>
-                    <td class="col-sublabel">i. Sumber dan jumlah dana</td>
-                    <td class="col-input"><input type="text" id="sumber_dana" placeholder="Contoh: Hibah LPPM Unhas, Rp10.000.000"></td>
                 </tr>
                 <tr>
                     <td class="col-num">4.</td>
@@ -527,9 +518,9 @@
 
                 <tr>
                     <td class="col-num">3.</td>
-                    <td class="bg-white-header">Luaran</td>
+                    <td class="bg-white-header">Manfaat dan luaran</td>
                     <td class="col-input">
-                        <textarea id="luaran_kegiatan" placeholder="Uraikan luaran, produk akhir, dan/atau manfaat dari kegiatan ini"></textarea>
+                        <textarea id="luaran_kegiatan" placeholder="Uraikan manfaat, luaran, dan/atau produk akhir dari kegiatan ini"></textarea>
                         <div id="mirror_luaran_kegiatan" class="print-mirror"></div>
                     </td>
                 </tr>
@@ -555,7 +546,10 @@
             <tbody>
                 <tr>
                     <td rowspan="6" class="col-num">1.</td>
-                    <td colspan="2" class="bg-white-header">Pemimpin atau penanggung jawab kegiatan atau peneliti utama</td>
+                    <td colspan="2" class="bg-white-header">
+                        Pemimpin atau penanggung jawab kegiatan
+						<br><span style="font-size: 12px; font-weight: normal; font-style: italic;">Tuliskan nama pemimpin atau penanggung jawab kegiatan, misalnya peneliti utama (principal investigator) atau dosen pembimbing.</span>
+						</td>
                 </tr>
                 <tr>
                     <td class="col-sublabel">a. Nama lengkap</td>
