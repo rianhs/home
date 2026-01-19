@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F10. Surat Pengantar Persetujuan Etik</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --unhas-red: #980101;
+            --text-black: #000;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f9;
+            color: var(--text-black);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .letter-container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px 70px;
+            border: 1px solid #ccc;
+            min-height: 1000px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header-logo { height: 90px; width: auto; }
+        .header-text { flex-grow: 1; text-align: center; }
+        .header-text h1 { font-size: 16px; margin: 0; text-transform: uppercase; }
+        .header-text p { font-size: 10px; margin: 5px 0 0 0; }
+
+        .letter-meta {
+            margin-bottom: 30px;
+        }
+
+        .letter-meta table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .letter-meta td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+
+        .meta-label { width: 100px; }
+        .meta-separator { width: 20px; }
+
+        .recipient-area {
+            margin-bottom: 30px;
+        }
+
+        .content-area {
+            text-align: justify;
+            margin-bottom: 40px;
+        }
+
+        .content-area p {
+            margin-bottom: 15px;
+        }
+
+        .signature-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 50px;
+        }
+
+        .signature-box {
+            width: 300px;
+            text-align: left;
+        }
+
+        .sig-space { height: 80px; }
+
+        .btn-print {
+            background: var(--unhas-red);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: block;
+            margin: 20px auto;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .letter-container { border: none; padding: 0; }
+            .btn-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="letter-container">
+    <header>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo-Resmi-Unhas-1.png" alt="Logo Unhas" class="header-logo">
+        <div class="header-text">
+            <h1>KOMISI ETIK HEWAN DAN PENELITIAN<br>RUMAH SAKIT HEWAN UNIVERSITAS HASANUDDIN</h1>
+            <p>Jl. Al-Markaz Al-Islami Blok IX, Kompleks Unhas Sunu, Kel. Kalukuang, Kec. Tallo, Kota Makassar</p>
+            <p style="font-style: italic;">Email: kehp.rshunhas@gmail.com</p>
+        </div>
+    </header>
+
+    <div class="letter-meta">
+        <table>
+            <tr>
+                <td class="meta-label">Nomor</td>
+                <td class="meta-separator">:</td>
+                <td>................................................</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Lampiran</td>
+                <td class="meta-separator">:</td>
+                <td>1 (satu) Berkas</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Hal</td>
+                <td class="meta-separator">:</td>
+                <td><strong>Penyampaian Persetujuan Etik</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="recipient-area">
+        Makassar, ................................................<br><br>
+        Yth. <strong>[Nama Pemohon]</strong><br>
+        di Tempat
+    </div>
+
+    <div class="content-area">
+        <p>Dengan hormat,</p>
+
+        <p>Sehubungan dengan permohonan persetujuan etik yang Bapak/Ibu/Saudara ajukan kepada Komisi Etik Hewan dan Penelitian (KEHP) Rumah Sakit Hewan Universitas Hasanuddin, kami informasikan bahwa rangkaian proses penilaian terhadap protokol tersebut telah selesai dilakukan.</p>
+
+        <p>Berdasarkan hasil tinjauan tim peninjau, usulan kegiatan yang berjudul <strong>"[Judul kegiatan]"</strong> dinyatakan telah memenuhi standar etik yang berlaku. Oleh karena itu, bersama surat ini kami lampirkan dokumen <strong>Persetujuan Etik (Ethical Clearance)</strong> sebagai bukti legalitas pelaksanaan kegiatan dimaksud. Kami berharap kegiatan tersebut berjalan lancar dengan tetap menjunjung tinggi nilai-nilai etika dan integritas ilmiah dalam setiap tahap pelaksanaannya. </p>
+
+        <p>Demikian surat pengantar ini kami sampaikan. Atas perhatian dan kerja sama yang baik, kami ucapkan terima kasih.</p>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-box">
+            <p>Direktur Rumah Sakit Hewan<br>Universitas Hasanuddin,</p>
+            <div class="sig-space"></div>
+            <p><strong>................................................</strong><br>
+            NIP. ................................................</p>
+        </div>
+    </div>
+</div>
+
+<button class="btn-print" onclick="window.print()">🖨️ Simpan sebagai PDF / Cetak</button>
+
+</body>
+</html>
