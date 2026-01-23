@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modul Kuliah Modern</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: '#4f46e5', // Indigo
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Tipografi Khusus untuk Readability */
+    .prose-content {
+      max-width: 70ch;
+      margin: 0 auto;
+      line-height: 1.75;
+      font-size: 1.1rem;
+    }
+
+    /* Kustomisasi Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    .light ::webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    .dark ::webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+    /* Highlight Daftar Isi */
+	.toc-active {
+      color: #4f46e5 !important;
+      font-weight: 600;
+      border-left: 2px solid #4f46e5; 
+      background-color: rgba(79, 70, 229, 0.1);
+      border-radius: 0px !important; 
+    }
+	
+	header, aside {
+      transition: background-color 0.3s ease;
+    }
+	
+	.chart-wrapper {
+      position: relative;
+      margin: 2rem auto;
+      width: 100%;
+      max-width: 600px; /* Ukuran maksimal grafik */
+    }
+
+    /* Transisi Sidebar */
+    #sidebar { 
+      transition: transform 0.3s ease, width 0.3s ease, opacity 0.3s ease, margin 0.3s ease; 
+    }
+	
+	/* Mengunci layout utama agar tidak bocor */
+    main {
+      min-width: 0; 
+    }
+	
+	:root {
+      --base-font-size: 1.1rem; /* Ukuran default */
+    }
+
+    .prose-content {
+      /* Ubah baris font-size yang lama dengan variabel ini */
+      font-size: var(--base-font-size); 
+      max-width: 70ch;
+      margin: 0 auto;
+      line-height: 1.75;
+      transition: font-size 0.2s ease; /* Transisi halus saat berubah */
+    }
+    
+    /* Tabel Responsive */
+	.table-container {
+      display: block;
+      width: 100%;
+      max-width: 100%; /* Kunci utama agar tidak melebihi lebar layar */
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .dark .table-container { 
+      border-color: rgba(255,255,255,0.05); /* Border sangat tipis untuk mode gelap */
+      background-color: rgba(255,255,255,0.02); /* Sedikit bayangan gelap agar ada dimensi */
+    }
+	
+	/* Kontainer untuk tabel agar posisi hint bisa diatur */
+    .table-wrapper {
+      position: relative;
+      margin-bottom: 2rem;
+	  margin-top: 0rem;
+    }
+
+    /* Gaya untuk teks petunjuk geser */
+    .scroll-hint {
+      display: none; /* Sembunyikan di PC */
+      font-size: 0.75rem;
+      color: #64748b; /* Warna abu-abu slate-500 */
+      background-color: rgba(100, 116, 139, 0.08); /* Latar belakang abu-abu sangat tipis */
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      margin-bottom: 0.5rem;
+      width: max-content;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Munculkan hint hanya pada layar ponsel */
+    @media (max-width: 768px) {
+      .scroll-hint {
+        display: inline-flex;
+      }
+    }
+	
+	/* Memberikan ruang agar judul tidak tertutup header saat di-scroll */
+	section, h2, h3, h4 {
+	scroll-margin-top: 5rem; /* Ini setara dengan scroll-mt-24 di Tailwind */
+	}
+	
+	article p {
+      margin-bottom: 1rem; /* Setara mb-4 */
+    }
+	
+	article h2, article h3, article h4 {
+	color: #0f172a;
+	}
+	
+	/* Menentukan gaya otomatis untuk konten di dalam <article> */
+    article h2 {
+      font-size: 1.5rem; /* text-2xl */
+      font-weight: 700;   /* font-bold */
+      margin-top: 2.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    article h3 {
+      font-size: 1.25rem; /* text-xl */
+      font-weight: 600;   /* font-semibold */
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    article h4 {
+      font-size: 1.25rem; /* text-xl */
+      font-weight: 600;    /* font-semibold */
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Penyesuaian warna untuk Mode Gelap */
+    .dark article h2, 
+    .dark article h3, 
+    .dark article h4 {
+      color: #ffffff;
+    }
+	
+	/* Ukuran tombol pada komponen kuis */
+    [data-quiz] button {
+      padding: 0.5rem 1rem !important; /* Setara px-4 py-2 */
+      font-size: 0.875rem !important;   /* Setara text-sm */
+      border-radius: 0.5rem !important; /* rounded-lg, lebih lurus */
+    }
+
+    /* Penyesuaian khusus untuk teks umpan balik (feedback) kuis */
+    [data-feedback] {
+      font-size: 0.875rem; /* text-sm */
+      margin-top: 1rem;
+    }
+	
+	/* Gaya untuk Gambar dan Figcaption */
+    figure {
+      margin: 2.5rem 0;
+	  display: flex;
+	  flex-direction: column;
+      align-items: center;
+    }
+
+    figure img {
+      border-radius: 0.25rem;
+      border: 1px solid rgba(0,0,0,0.08);
+      max-width: 100%;
+      height: auto;
+	  display: block;
+    }
+
+    .dark figure img {
+      border-color: rgba(255,255,255,0.05);
+    }
+
+    figcaption {
+      font-size: 0.875rem;
+      color: #64748b; /* Slate-500 */
+      margin-top: 0.5rem;
+	  margin-bottom: 1rem;
+    }
+	
+	.callout {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1.25rem;
+      background-color: rgba(79, 70, 229, 0.06); /* Indigo sangat tipis */
+      border-radius: 0.75rem;
+      margin: 2rem 0;
+      border: 1px solid rgba(79, 70, 229, 0.1); /* Border tipis di semua sisi agar simetris */
+    }
+
+    .callout i {
+      flex-shrink: 0;
+      color: #4f46e5; /* Warna ikon Indigo */
+      margin-top: 0.15rem;
+    }
+
+    .callout p {
+      margin-bottom: 0 !important;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .dark .callout {
+      background-color: rgba(79, 70, 229, 0.1);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+	
+	/* Wadah untuk meratakan tombol ke kanan */
+    .btn-container {
+      display: flex;
+      justify-content: flex-end;
+      margin: 1rem 0 2rem 0;
+    }
+
+    /* Gaya dasar tombol aksi (seragam dengan tombol kuis) */
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 0.5rem;
+      background-color: #4f46e5; /* Indigo */
+      color: white !important;
+      text-decoration: none !important; /* Menghapus garis bawah tautan */
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background-color: #4338ca; /* Indigo-700 */
+      transform: translateY(-1px); /* Efek sedikit terangkat */
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    }
+
+    /* Penyesuaian warna untuk mode gelap agar tetap konsisten */
+    .dark .btn-action:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+	
+	/* Definisi Font Serif yang nyaman di mata */
+    .font-serif-mode {
+      font-family: 'Lora', ui-serif, Georgia, serif;
+    }
+
+    /* Penyesuaian khusus ukuran teks agar tetap proporsional */
+    .font-serif-mode .prose-content {
+      font-size: 1.1rem;
+      line-height: 1.75;
+    }
+
+    /* Penyesuaian ukuran teks daftar isi saat mode serif */
+    .font-serif-mode #tocList {
+      font-size: 0.9rem;
+    }
+
+    /* Transisi font agar tidak mengagetkan saat berubah */
+    .prose-content {
+      transition: font-family 0.2s ease, font-size 0.2s ease;
+    }
+	
+	/* Mengecilkan seluruh teks di dalam kartu kuis */
+    [data-quiz] {
+      font-size: 1rem; /* Lebih kecil dari 1,1rem badan modul */
+    }
+
+    /* Menyesuaikan ukuran judul pertanyaan di dalam kuis agar tidak terlalu besar */
+    [data-quiz] h4 {
+      font-size: 1.15rem !important; 
+      margin-top: 0 !important; /* Menghilangkan margin atas otomatis article h4 */
+    }
+
+  </style>
+</head>
+
+<body class="bg-[#f2f2f2] dark:bg-[#0a0a0a] text-slate-800 dark:text-slate-200 antialiased transition-colors duration-300">
+
+	<header class="sticky top-0 z-40 w-full bg-[#f2f2f2]/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+		<div class="max-w-[1400px] mx-auto px-4 h-16 flex items-center justify-between">
+			<div class="flex items-center gap-4">
+				<button id="toggleSidebar" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition" title="Toggle Sidebar">
+					<i data-lucide="menu" class="w-5 h-5"></i>
+				</button>
+				<span class="font-bold tracking-tight text-lg hidden md:block">Judul Modul</span>
+			</div>
+      
+			<div class="flex items-center gap-1 md:gap-2">
+				<div class="flex items-center border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden mr-1">
+					<button id="decreaseFont" class="px-2 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs font-bold" title="Kecilkan Huruf">A-</button>
+					<div class="w-[1px] h-4 bg-slate-200 dark:bg-slate-800"></div>
+					<button id="increaseFont" class="px-2 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs font-bold" title="Besarkan Huruf">A+</button>
+				</div>
+					<button id="fontToggle" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition" title="Ganti Jenis Huruf">
+						<i data-lucide="type" class="w-5 h-5"></i>
+					</button>
+					<button id="themeToggle" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
+						<i data-lucide="sun" id="sunIcon" class="w-5 h-5 hidden dark:block"></i>
+						<i data-lucide="moon" id="moonIcon" class="w-5 h-5 block dark:hidden"></i>
+					</button>
+			</div>
+		</div>
+	</header>
+
+	<div class="max-w-[1400px] mx-auto flex">
+    
+	<aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-[#f2f2f2] dark:bg-[#0a0a0a] border-r border-slate-200 dark:border-slate-800 pt-20 overflow-y-auto transform -translate-x-full lg:translate-x-0 lg:sticky lg:top-0 lg:h-[calc(100vh-64px)] lg:pt-8">
+		<nav class="px-4 pb-10">
+			<h2 class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3 px-3">Daftar Isi</h2>
+				<div id="tocList" class="space-y-1 text-sm text-slate-600 dark:text-slate-400"></div>
+		</nav>
+    </aside>
+
+	<main class="flex-1 px-4 py-8 md:py-12 lg:px-12">
+		<article class="prose-content">
+        
+		<header class="mb-12">
+			<h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">
+				Judul modul
+			</h1>
+		</header>
+
+		<section id="subjudul-pertama" class="mb-16">
+			<h2>1. Subjudul pertama</h2>
+			
+			<p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent gravida sagittis elit sit amet ultrices. In luctus, lorem nec feugiat consequat, lacus nibh aliquam eros, sed feugiat metus nunc vel ex. Praesent mauris lacus, dignissim interdum fringilla a, aliquet vel metus. Integer tellus ligula, elementum sed luctus in, lacinia eu erat. Aenean ornare pretium velit ut faucibus. Morbi auctor, quam vitae posuere bibendum, orci turpis hendrerit lorem, vitae vehicula tellus lacus sed diam. Proin nec sapien sed arcu porta eleifend ut sit amet risus. Donec eget orci faucibus, gravida mauris eget, lacinia nibh.
+			</p>
+			<p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent gravida sagittis elit sit amet ultrices. In luctus, lorem nec feugiat consequat, lacus nibh aliquam eros, sed feugiat metus nunc vel ex. Praesent mauris lacus, dignissim interdum fringilla a, aliquet vel metus. Integer tellus ligula, elementum sed luctus in, lacinia eu erat. Aenean ornare pretium velit ut faucibus. Morbi auctor, quam vitae posuere bibendum, orci turpis hendrerit lorem, vitae vehicula tellus lacus sed diam. Proin nec sapien sed arcu porta eleifend ut sit amet risus. Donec eget orci faucibus, gravida mauris eget, lacinia nibh.
+			</p>
+		  
+			<div class="chart-wrapper">
+				<canvas class="js-chart" 
+					data-type="bar" 
+					data-label="Jumlah Kasus"
+					data-labels='["2020", "2021", "2022", "2023"]' 
+					data-values='[12, 19, 13, 15]'>
+				</canvas>
+				<p class="text-xs text-center text-slate-500 mt-2">Diagram 1. Tren kasus tahunan.</p>
+			</div>
+
+			<div class="chart-wrapper">
+				<canvas class="js-chart" 
+					data-type="line" 
+					data-label="Proyeksi"
+					data-labels='["Jan", "Feb", "Mar", "Apr"]' 
+					data-values='[5, 10, 8, 15]'>
+				</canvas>
+				<p class="text-xs text-center text-slate-500 mt-2">Diagram 2. Estimasi pertumbuhan bulanan.</p>
+			</div>
+
+				<h3>1.1. Anak subjudul</h3>
+				
+				<p>
+				Nulla ex nunc, eleifend at erat et, consequat elementum justo. Sed et lectus quis ex tincidunt eleifend. Nullam consequat, ipsum in efficitur varius, risus dolor laoreet nisl, eleifend faucibus sem magna a lectus. Donec scelerisque ipsum nisi, quis lacinia augue viverra ac. Sed ante justo, congue vitae elementum quis, porttitor nec mi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent interdum magna sit amet magna cursus, vitae faucibus tellus dignissim.
+				</p>
+				
+				<ul class="list-disc ml-6 space-y-2 mb-6">
+					<li>Suspendisse nec sapien non ligula molestie luctus.</li>
+					<li>Praesent dignissim ante maximus, pulvinar tortor sed, venenatis nibh. Praesent dignissim ante maximus, pulvinar tortor sed, venenatis nibh. Praesent dignissim ante maximus, pulvinar tortor sed, venenatis nibh. Praesent dignissim ante maximus, pulvinar tortor sed, venenatis nibh.</li>
+					<li>Donec eu mi nec quam euismod consequat.</li>
+				</ul>
+		  
+					<h4>1.1.1. Cucu subjudul</h4>
+					<p>
+					Nulla ex nunc, eleifend at erat et, consequat elementum justo. Sed et lectus quis ex tincidunt eleifend. Nullam consequat, ipsum in efficitur varius, risus dolor laoreet nisl, eleifend faucibus sem magna a lectus. Donec scelerisque ipsum nisi, quis lacinia augue viverra ac. Sed ante justo, congue vitae elementum quis, porttitor nec mi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent interdum magna sit amet magna cursus, vitae faucibus tellus dignissim.
+					</p>
+					
+					<p>
+					$$n = \frac{Z^2 \times p \times (1-p)}{d^2}$$
+					</p>
+		  
+				<h3>1.2. Anak subjudul</h3>
+				
+				<p>
+				Nulla ex nunc, eleifend at erat et, consequat elementum justo. Sed et lectus quis ex tincidunt eleifend. Nullam consequat, ipsum in efficitur varius, risus dolor laoreet nisl, eleifend faucibus sem magna a lectus. Donec scelerisque ipsum nisi, quis lacinia augue viverra ac. Sed ante justo, congue vitae elementum quis, porttitor nec mi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent interdum magna sit amet magna cursus, vitae faucibus tellus dignissim.
+				</p>
+				
+				<ol class="list-decimal ml-6 space-y-2 mb-6">
+					<li>Suspendisse nec sapien non ligula molestie luctus. Suspendisse nec sapien non ligula molestie luctus. Suspendisse nec sapien non ligula molestie luctus. Suspendisse nec sapien non ligula molestie luctus.</li>
+					<li>Praesent dignissim ante maximus, pulvinar tortor sed, venenatis nibh.</li>
+					<li>Donec eu mi nec quam euismod consequat.</li>
+				</ol>
+		  
+				<div class="btn-container">
+					<a href="halaman-simulasi.html" target="_blank" rel="noopener noreferrer" class="btn-action shadow-md shadow-brand/20">
+						<span>Lakukan Simulasi</span>
+						<i data-lucide="chevron-right" class="w-4 h-4"></i>
+					</a>
+				</div>
+		  
+		</section>
+
+		<section id="subjudul-kedua" class="mb-16">
+			<h2>2. Subjudul kedua</h2>
+			
+			<p>
+            Pellentesque auctor metus at gravida vehicula. Phasellus dapibus justo eget turpis scelerisque, ac tincidunt neque fringilla.
+			</p>
+
+			<p class="text-sm text-slate-500 text-center">Tabel 1.Mauris fringilla congue erat vel egestas. Curabitur at nunc non velit pulvinar viverra.</p>
+			<div class="table-wrapper">
+			<div class="table-container">
+				<table class="w-full min-w-[800px] text-left text-sm">
+					<thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+						<tr>
+							<th class="py-4 px-6 font-semibold text-slate-900 dark:text-white">Header-1</th>
+							<th class="py-4 px-6 font-semibold text-slate-900 dark:text-white">Header-2</th>
+							<th class="py-4 px-6 font-semibold text-slate-900 dark:text-white">Header-3</th>
+							<th class="py-4 px-6 font-semibold text-slate-900 dark:text-white">Header-4</th>
+						</tr>
+					</thead>
+					<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+						<tr>
+							<td class="py-4 px-6 font-medium">Morbi mattis</td>
+							<td class="py-4 px-6">Sapien at pellentesque sagittis. Sapien at pellentesque sagittis.</td>
+							<td class="py-4 px-6">Sed a augue. Sed a augue.</td>
+							<td class="py-4 px-6">Aliquet ipsum. Aliquet ipsum.</td>
+						</tr>
+						<tr>
+							<td class="py-4 px-6 font-medium">Nulla venenatis</td>
+							<td class="py-4 px-6">Luctus quis sit amet ex. Luctus quis sit amet ex.</td>
+							<td class="py-4 px-6">Mauris sed velit ullamcorper. Mauris sed velit ullamcorper.</td>
+							<td class="py-4 px-6">Rhoncus lorem nec. Rhoncus lorem nec.</td>
+						</tr>
+						<tr>
+							<td class="py-4 px-6 font-medium">Maecenas sed diam</td>
+							<td class="py-4 px-6">Aenean aliquam. Aenean aliquam.</td>
+							<td class="py-4 px-6">Augue eget elit volutpat egestas. Augue eget elit volutpat egestas.</td>
+							<td class="py-4 px-6">Aenean sit amet tortor quis quam. Aenean sit amet tortor quis quam.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="scroll-hint">
+				<i data-lucide="move-horizontal" class="w-3 h-3"></i>
+				<span>Geser tabel untuk melihat selengkapnya</span>
+			</div>
+			</div>
+		</section>
+
+		<section id="subjudul-ketiga" class="mb-16">
+			<h2>3. Subjudul ketiga</h2>
+			
+			<p>
+			Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Pellentesque auctor metus at gravida vehicula. Phasellus dapibus justo eget turpis scelerisque, ac tincidunt neque fringilla.
+			</p>
+			
+			<figure>
+				<img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1000" style="width: 400px;" alt="Deskripsi gambar untuk aksesibilitas">
+				<figcaption>Gambar 1. Deskripsi atau sumber gambar yang mendukung materi di atas.</figcaption>
+			</figure>
+          
+			<p>
+			Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Pellentesque auctor metus at gravida vehicula. Phasellus dapibus justo eget turpis scelerisque, ac tincidunt neque fringilla.
+			</p>
+		  
+			<div class="p-6 md:p-8 rounded-2xl bg-[#f2f2f2] dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/5 shadow-sm" data-quiz>
+				<h4 class="text-lg font-semibold mb-2">Pertanyaan 1</h4>
+				<p class="text-slate-600 dark:text-slate-400">
+				Suspendisse in nunc sit amet ante porttitor tristique. Nam porta felis vel lacinia maximus.?
+				</p>
+			<div class="space-y-3">
+				<label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer">
+					<input type="radio" name="q1" value="a" class="mt-1.5 accent-brand">
+					<span>Nullam ut turpis vel velit varius posuere eu a arcu.</span>
+				</label>
+				<label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer">
+					<input type="radio" name="q1" value="b" data-correct class="mt-1.5 accent-brand">
+					<span>Proin eu diam vel magna elementum consequat posuere ac mauris.</span>
+				</label>
+				<label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer">
+					<input type="radio" name="q1" value="c" class="mt-1.5 accent-brand">
+					<span>In tempus tellus vel ante consectetur, et efficitur turpis auctor. In tempus tellus vel ante consectetur, et efficitur turpis auctor.</span>
+				</label>
+			</div>
+			<div class="mt-8 flex items-center gap-4">
+				<button data-check class="bg-brand hover:bg-indigo-700 text-white transition font-medium">
+					Periksa Jawaban
+				</button>
+				<button data-reset class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm font-medium">
+					Reset
+				</button>
+            </div>			
+            <div data-feedback class="mt-4 font-medium hidden"></div>
+			</div>
+		  
+			<div class="callout">
+				<i data-lucide="info" class="w-5 h-5"></i>
+				<p>
+				Donec scelerisque ipsum nisi, quis lacinia augue viverra ac. Sed ante justo, congue vitae elementum quis, porttitor nec mi. 
+				</p>
+			</div>
+			
+		</section>
+
+        <footer class="mt-10 pt-4 border-t border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+          <div class="flex justify-between items-center mb-4">
+            <a href="#" class="flex items-center gap-2 hover:text-brand transition-colors group">
+              <i data-lucide="chevron-left" class="w-4 h-4 transition-transform group-hover:-translate-x-1"></i>
+              <span>Modul Sebelumnya</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-2 hover:text-brand transition-colors group">
+              <span>Modul Berikutnya</span>
+              <i data-lucide="chevron-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+            </a>
+          </div>
+
+          <div class="text-center pt-4 border-t border-slate-100 dark:border-slate-900/50">
+            <p>Situs web ini dibuat dengan ♡ oleh RianHS.</p>
+          </div>
+        </footer>
+      </article>
+    </main>
+  </div>
+  
+  <!--
+  <button id="backToTop" class="fixed bottom-6 right-6 p-2 bg-brand text-white rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-indigo-700 hover:-translate-y-1 z-50 focus:outline-none" title="Kembali ke Atas">
+  <i data-lucide="chevron-up" class="w-5 h-5"></i>
+	</button> -->
+
+  <script>
+    // 1. Inisialisasi State (Selalu Reset ke Default: Dark, Sans, 1.1rem)
+    const html = document.documentElement;
+    const body = document.body;
+
+    /// Paksa Dark Mode setiap refresh
+    html.classList.add('dark');
+    localStorage.theme = 'dark';
+
+    // Paksa Sans-serif setiap refresh
+    body.classList.remove('font-serif-mode');
+    localStorage.fontMode = 'sans';
+
+    // Paksa Font Size 1.1rem setiap refresh
+    let currentFontSize = 1.1;
+    const updateFontSize = (size) => {
+      html.style.setProperty('--base-font-size', `${size}rem`);
+      localStorage.setItem('fontSize', size);
+    };
+    updateFontSize(currentFontSize);
+
+    // 2. Fungsi Pembantu & Observer
+    const slugify = (text) => text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+    lucide.createIcons();
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const id = entry.target.getAttribute('id');
+        const tocLink = document.querySelector(`#tocList a[data-target="${id}"]`);
+        if (entry.isIntersecting) {
+          document.querySelectorAll('#tocList a').forEach(el => el.classList.remove('toc-active'));
+          tocLink?.classList.add('toc-active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -80% 0px' });
+
+    // 3. Pembuatan TOC Otomatis & Event Listeners
+    const sections = document.querySelectorAll('article section');
+    const tocList = document.getElementById('tocList');
+
+    sections.forEach(section => {
+      const h2 = section.querySelector('h2');
+      const subHeadings = Array.from(section.querySelectorAll('h3, h4'))
+                               .filter(el => !el.closest('[data-quiz]'));
+      if (h2) {
+        if (!section.id) section.id = slugify(h2.textContent);
+        observer.observe(section);
+
+        const link = document.createElement('a');
+        link.href = `#${section.id}`;
+        link.textContent = h2.textContent;
+        link.className = 'block px-4 py-2 hover:text-brand transition-all duration-200 truncate';
+        link.setAttribute('data-target', section.id);
+        tocList.appendChild(link);
+
+        subHeadings.forEach(sub => {
+          sub.id = slugify(sub.textContent);
+          observer.observe(sub);
+          const isH4 = sub.tagName === 'H4';
+          const subLink = document.createElement('a');
+          subLink.href = `#${sub.id}`;
+          subLink.textContent = sub.textContent;
+          subLink.className = `block ${isH4 ? 'px-12 py-1 text-[0.7rem]' : 'px-8 py-1.5 text-xs'} text-slate-500 hover:text-brand transition-all truncate`;
+          subLink.setAttribute('data-target', sub.id);
+          tocList.appendChild(subLink);
+        });
+      }
+    });
+
+    // 4. Toggle Handlers
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      html.classList.toggle('dark');
+      localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+    });
+
+    document.getElementById('fontToggle').addEventListener('click', () => {
+      body.classList.toggle('font-serif-mode');
+      localStorage.fontMode = body.classList.contains('font-serif-mode') ? 'serif' : 'sans';
+    });
+
+    document.getElementById('increaseFont').addEventListener('click', () => {
+      if (currentFontSize < 1.4) { currentFontSize += 0.05; updateFontSize(currentFontSize); }
+    });
+
+    document.getElementById('decreaseFont').addEventListener('click', () => {
+      if (currentFontSize > 0.9) { currentFontSize -= 0.05; updateFontSize(currentFontSize); }
+    });
+
+    // Sidebar Toggle Logic (Mendukung Ponsel & PC Focus Mode)
+    const sidebar = document.getElementById('sidebar');
+    const toggleSidebar = document.getElementById('toggleSidebar');
+    
+    toggleSidebar.addEventListener('click', () => {
+      if (window.innerWidth >= 1024) {
+        // Logika untuk Tampilan PC (Desktop)
+        if (sidebar.style.display === 'none') {
+          sidebar.style.display = 'block';
+          // Beri sedikit jeda agar transisi muncul setelah display berubah
+          setTimeout(() => {
+            sidebar.classList.remove('lg:opacity-0', 'lg:-ml-72');
+          }, 10);
+        } else {
+          sidebar.classList.add('lg:opacity-0', 'lg:-ml-72');
+          // Sembunyikan sepenuhnya setelah transisi selesai (300ms)
+          setTimeout(() => {
+            sidebar.style.display = 'none';
+          }, 300);
+        }
+      } else {
+        // Logika untuk Tampilan Ponsel (Mobile) - Tetap seperti semula
+        sidebar.classList.toggle('-translate-x-full');
+      }
+    });
+
+    // 5. Quiz Logic
+    document.querySelectorAll('[data-quiz]').forEach(quiz => {
+      const checkBtn = quiz.querySelector('[data-check]');
+      const resetBtn = quiz.querySelector('[data-reset]');
+      const feedback = quiz.querySelector('[data-feedback]');
+
+      checkBtn.addEventListener('click', () => {
+        const selected = quiz.querySelector('input[type="radio"]:checked');
+        if (!selected) return alert('Pilih salah satu jawaban!');
+        feedback.classList.remove('hidden', 'text-emerald-500', 'text-rose-500');
+        if (selected.hasAttribute('data-correct')) {
+          feedback.textContent = '✓ Jawaban Anda benar!';
+          feedback.classList.add('text-emerald-500');
+        } else {
+          feedback.textContent = '✗ Belum tepat.';
+          feedback.classList.add('text-rose-500');
+        }
+      });
+
+      resetBtn.addEventListener('click', () => {
+        quiz.querySelectorAll('input').forEach(i => i.checked = false);
+        feedback.classList.add('hidden');
+      });
+    });
+	
+	// Inisialisasi Otomatis Semua Grafik
+    document.querySelectorAll('.js-chart').forEach(canvas => {
+      const type = canvas.dataset.type;
+      const label = canvas.dataset.label;
+      const labels = JSON.parse(canvas.dataset.labels);
+      const values = JSON.parse(canvas.dataset.values);
+
+      new Chart(canvas, {
+        type: type,
+        data: {
+          labels: labels,
+          datasets: [{
+            label: label,
+            data: values,
+            backgroundColor: '#4f46e5',
+            borderColor: '#4f46e5',
+            borderWidth: type === 'line' ? 2 : 0,
+            borderRadius: 6,
+            tension: 0.3 // Membuat garis sedikit melengkung (untuk tipe line)
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: html.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'
+              }
+            },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    });
+	
+	// Back to Top Logic
+    const backToTopBtn = document.getElementById('backToTop');
+
+    // Tambahkan pengecekan ini
+    if (backToTopBtn) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          backToTopBtn.classList.remove('opacity-0', 'invisible');
+          backToTopBtn.classList.add('opacity-100', 'visible');
+        } else {
+          backToTopBtn.classList.add('opacity-0', 'invisible');
+          backToTopBtn.classList.remove('opacity-100', 'visible');
+        }
+      });
+
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+	
+  </script>
+</body>
+</html>
