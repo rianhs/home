@@ -571,6 +571,7 @@
     updateFontSize(currentFontSize);
 
     // 2. Fungsi Pembantu & Observer
+    const slugify = (text) => text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
     lucide.createIcons();
 
     const observer = new IntersectionObserver(entries => {
