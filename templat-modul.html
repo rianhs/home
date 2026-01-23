@@ -278,12 +278,6 @@
       font-family: 'Lora', ui-serif, Georgia, serif;
     }
 
-    /* Penyesuaian khusus ukuran teks agar tetap proporsional */
-    .font-serif-mode .prose-content {
-      font-size: 1.1rem;
-      line-height: 1.75;
-    }
-
     /* Penyesuaian ukuran teks daftar isi saat mode serif */
     .font-serif-mode #tocList {
       font-size: 0.9rem;
@@ -296,7 +290,7 @@
 	
 	/* Mengecilkan seluruh teks di dalam kartu kuis */
     [data-quiz] {
-      font-size: 1rem; /* Lebih kecil dari 1,1rem badan modul */
+      font-size: calc(var(--base-font-size) - 0.1rem);
     }
 
     /* Menyesuaikan ukuran judul pertanyaan di dalam kuis agar tidak terlalu besar */
@@ -577,7 +571,6 @@
     updateFontSize(currentFontSize);
 
     // 2. Fungsi Pembantu & Observer
-    const slugify = (text) => text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
     lucide.createIcons();
 
     const observer = new IntersectionObserver(entries => {
