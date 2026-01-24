@@ -337,6 +337,26 @@
     article ol.compact li + li {
       margin-top: 0;
     }
+	
+	/* Mengatur tingkatan kedua pada Ordered List (1 -> a) */
+    article ol ol {
+      list-style-type: lower-alpha; /* Huruf kecil: a, b, c */
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Mengatur tingkatan kedua pada Unordered List (* -> ○) */
+    article ul ul {
+      list-style-type: circle; /* Lingkaran kosong */
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Memastikan indentasi tambahan untuk sub-poin */
+    article li > ul, 
+    article li > ol {
+      margin-left: 1.5rem;
+    }
 
   </style>
 </head>
