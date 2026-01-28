@@ -420,7 +420,10 @@
                 </tr>
 				<tr>
                     <td class="col-sublabel">c. Nama institusi penyelenggara</td>
-                    <td class="col-input"><input type="text" id="nama_institusi" placeholder="Contoh: Prodi Kedokteran Hewan, Fakultas Kedokteran Unhas"></td>
+                    <td class="col-input">
+						<textarea id="nama_institusi" placeholder="Contoh: Prodi Kedokteran Hewan, Fakultas Kedokteran Unhas"></textarea>
+						<div id="mirror_nama_institusi" class="print-mirror"></div>
+					</td>	
                 </tr>
 				<tr>
                     <td class="col-sublabel">d. Alamat institusi penyelenggara</td>
@@ -446,9 +449,12 @@
                     <td class="col-input"><input type="text" id="uraian_kemitraan" placeholder="Tuliskan nama mitra dan bentuk kerja sama"></td>
                 </tr>
 				<tr>
-                    <td class="col-sublabel">f. Tempat pelaksanaan</td>
-                    <td class="col-input"><input type="text" id="tempat_kegiatan" placeholder="Tuliskan semua lokasi pelaksanaan kegiatan"></td>
-                </tr>
+					<td class="col-sublabel">f. Tempat pelaksanaan</td>
+    				<td class="col-input">
+    				    <textarea id="tempat_kegiatan" placeholder="Tuliskan semua lokasi pelaksanaan kegiatan"></textarea>
+    				    <div id="mirror_tempat_kegiatan" class="print-mirror"></div>
+    				</td>
+				</tr>
                 <tr>
                     <td class="col-sublabel">g. Durasi/rentang waktu pelaksanaan</td>
                     <td class="col-input"><input type="text" id="durasi_kegiatan" placeholder="Contoh: Enam bulan (Januari s.d. Juni 2026)"></td>
@@ -912,7 +918,10 @@
                 </tr>
                 <tr>
                     <td class="col-sublabel">b. Spesies hewan</td>
-                    <td class="col-input"><input type="text" id="e3b_spesies" placeholder="Tuliskan spesies hewan yang dilibatkan"></td>
+                    <td class="col-input">
+						<textarea id="e3b_spesies" placeholder="Tuliskan spesies hewan yang dilibatkan"></textarea>
+						<div id="mirror_e3b_spesies" class="print-mirror"></div>
+					</td>
                 </tr>
                 <tr>
                     <td class="col-sublabel">c. Subspesies, <i>breed</i>, atau <i>strain</i> hewan (jika relevan)</td>
