@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Keterangan Hasil Telaah Etik</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --unhas-red: #980101;
+            --text-black: #000;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f9;
+            color: var(--text-black);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .letter-container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px 70px;
+            border: 1px solid #ccc;
+            min-height: 1000px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header-logo { height: 90px; width: auto; }
+        .header-text { flex-grow: 1; text-align: center; }
+        .header-text h1 { font-size: 16px; margin: 0; text-transform: uppercase; }
+        .header-text p { font-size: 10px; margin: 5px 0 0 0; }
+
+        .letter-meta table,
+        .proposal-identity table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .letter-meta td,
+        .proposal-identity td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+
+        .meta-label { width: 180px; white-space: nowrap; }
+        .meta-separator { width: 20px; }
+
+        .recipient-area { margin: 30px 0; }
+
+        .content-area {
+            text-align: justify;
+            margin-bottom: 30px;
+        }
+
+        .content-area p {
+            margin-bottom: 15px;
+        }
+
+        .proposal-identity {
+            margin: 20px 0 25px 0;
+        }
+
+        .signature-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 40px;
+        }
+
+        .signature-box {
+            width: 320px;
+            text-align: left;
+        }
+
+        .sig-space { height: 90px; }
+
+        .btn-print {
+            background: var(--unhas-red);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: block;
+            margin: 20px auto;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .letter-container { border: none; padding: 0; }
+            .btn-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="letter-container">
+    <header>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo-Resmi-Unhas-1.png" alt="Logo Unhas" class="header-logo">
+        <div class="header-text">
+            <h1>KOMISI ETIK HEWAN DAN PENELITIAN<br>RUMAH SAKIT HEWAN UNIVERSITAS HASANUDDIN</h1>
+            <p>Jl. Al-Markaz Al-Islami Blok IX, Kompleks Unhas Sunu, Kel. Kalukuang, Kec. Tallo, Kota Makassar</p>
+            <p style="font-style: italic;">Email: kehp.rshunhas@gmail.com</p>
+        </div>
+    </header>
+
+    <div class="letter-meta">
+        <table>
+            <tr>
+                <td class="meta-label">Nomor</td>
+                <td class="meta-separator">:</td>
+                <td>$NOMOR</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Lampiran</td>
+                <td class="meta-separator">:</td>
+                <td>–</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Hal</td>
+                <td class="meta-separator">:</td>
+                <td>Surat Keterangan Hasil Telaah Etik</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="recipient-area">
+        Yth. <strong>[Nama Pemohon]</strong><br>
+        di Tempat
+    </div>
+
+    <div class="content-area">
+        <p>Dengan hormat,</p>
+
+        <p>Sehubungan dengan pengajuan proposal penelitian yang Saudara ajukan kepada Komisi Etik Hewan dan Penelitian (KEHP) Rumah Sakit Hewan Universitas Hasanuddin, bersama ini kami menyampaikan bahwa proposal tersebut telah melalui proses telaah administratif dan penilaian awal oleh Komisi.</p>
+
+        <p>Adapun identitas proposal adalah sebagai berikut:</p>
+
+        <div class="proposal-identity">
+            <table>
+                <tr>
+                    <td class="meta-label">Nomor Registrasi</td>
+                    <td class="meta-separator">:</td>
+                    <td>[Nomor Registrasi]</td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Nama Penanggung Jawab</td>
+                    <td class="meta-separator">:</td>
+                    <td>[Nama Penanggung Jawab]</td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Judul Penelitian</td>
+                    <td class="meta-separator">:</td>
+                    <td>[Judul Penelitian]</td>
+                </tr>
+            </table>
+        </div>
+
+        <p>Berdasarkan hasil telaah yang dilakukan, kami menilai bahwa penelitian yang diajukan tidak termasuk kategori penelitian yang memerlukan Persetujuan Etik (Ethical Clearance), dengan pertimbangan bahwa penelitian tersebut tidak melibatkan hewan hidup, tidak melibatkan data sensitif yang dapat mengidentifikasi individu, tidak melakukan intervensi terhadap prosedur klinis, dan hanya menggunakan bahan yang diperoleh dari proses rutin tanpa perlakuan tambahan untuk kepentingan penelitian.</p>
+
+        <p>Dengan demikian, penelitian dimaksud dinyatakan tidak memerlukan penerbitan Persetujuan Etik (Ethical Clearance).</p>
+
+        <p>Penanggung jawab penelitian tetap berkewajiban melaksanakan kegiatan sesuai dengan proposal yang telah diajukan dan mematuhi seluruh peraturan, standar keselamatan kerja, serta ketentuan kelembagaan yang berlaku. Apabila di kemudian hari terdapat perubahan desain atau metode yang mengubah kategori risiko atau ruang lingkup penelitian, maka proposal wajib diajukan kembali kepada Komisi Etik untuk dilakukan penelaahan ulang.</p>
+
+        <p>Demikian surat keterangan ini dibuat untuk digunakan sebagaimana mestinya.</p>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-box">
+            <p>Makassar, [Tanggal]</p>
+            <p><strong>Ketua Komisi Etik Hewan dan Penelitian</strong><br>
+            Rumah Sakit Hewan Universitas Hasanuddin</p>
+            <div class="sig-space"></div>
+            <p><strong>[Nama Ketua & Gelar]</strong><br>
+            NIP. [NIP Ketua]</p>
+        </div>
+    </div>
+</div>
+
+<button class="btn-print" onclick="window.print()">🖨️ Simpan sebagai PDF / Cetak</button>
+
+</body>
+</html>
