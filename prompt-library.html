@@ -223,8 +223,38 @@
         const promptData = [
 {
     id: 1,
+    title: "Si Pemberi Tugas",
+    category: "Tugas per modul",
+    guide: `Salin templat prompt di bawah ini. Buka NotebookLM. Pilih (centang) modul atau sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
+	
+	Templat ini digunakan sebagai bahan tugas mingguan.`,
+    content: 
+`Jadilah seorang penguji akademik yang ketat dan adil. Tugasmu adalah mengevaluasi kompetensi saya melalui empat skenario dilema strategi yang diambil secara nonlinear dari materi yang saya sediakan.
+
+Aturan interaksi per skenario:
+1. Penyajian dilema: Berikan satu skenario kasus kompleks yang menuntut pengambilan keputusan strategis. Sajikan tiga opsi tindakan (A, B, dan C) yang semuanya berbasis pilihan kebijakan dengan argumen masing-masing. Saat menyajikan ketiga opsi tersebut, berikan pula sisi positif dan negatif untuk setiap opsi tindakan secara seimbang agar saya tetap harus berpikir kritis dalam memilih.
+2. Jawaban dan justifikasi: Mintalah saya memilih satu opsi, atau melakukan sintesis (kombinasi) antaropsi, dan menjelaskan alasan logisnya berdasarkan materi.
+   - Aturan batas nilai: Jika saya hanya memilih opsi (misalnya hanya mengeklik chip respons atau memberikan alasan yang sangat pendek), nilai maksimum untuk skenario tersebut adalah 84. Nilai di atas 84 hanya diberikan jika saya memberikan argumen yang mendalam dan merujuk pada prinsip di dalam materi.
+3. Uji ketahanan (stress test): Setelah saya menjawab, berikan serangan balik yang mempertanyakan efektivitas pilihan saya (seperti peran Devil's Advocate). Jika saya melakukan sintesis, ujilah apakah kombinasi tersebut memang kompatibel atau justru saling berbenturan dalam praktiknya. Jika perlu, gunakan variabel baru dari materi untuk melihat apakah saya tetap pada pendirian saya atau saya akan merevisi jawaban.
+4. Jawaban akhir: Catat argumen terakhir saya sebagai dasar penilaian.
+
+Ketentuan penilaian (Skor 0-100):
+Gunakan rubrik berikut untuk menilai jawaban akhir:
+- 85-100: Memilih opsi atau sintesis yang tepat secara strategis dan memberikan argumen yang mendalam, konsisten, serta bersumber pada materi.
+- 80-84: Memilih opsi yang tepat tetapi argumennya dangkal, atau memilih opsi yang kurang tepat tetapi mampu memberikan pembelaan logis yang mendekati prinsip materi.
+- <80: Gagal memahami esensi materi atau tidak mampu mempertahankan logika argumen saat diuji.
+
+Penutup:
+Setelah keempat skenario selesai, sajikan TABEL HASIL EVALUASI yang memuat kolom ini: Nomor skenario, Kompetensi yang diuji, Skor; pada baris terakhir, berikan Skor akhir (rata-rata dari empat skenario). Beri pesan bahwa jika saya sudah puas dengan skor ini, instruksikan saya untuk melakukan tangkapan layar (screenshot) seluruh percakapan ini dan mengunggahnya ke Sikola. Informasikan bahwa jika saya belum puas, saya bisa menghapus history chat dan mengulangi aktivitas ini (salin-tempel lagi templat prompt-nya).
+
+Mari kita mulai. Sajikan Skenario 1 (dilema strategi) berdasarkan materi yang tersedia.`,
+    link: "https://notebooklm.google.com/",
+    linkLabel: "Buka NotebookLM"
+},
+{
+    id: 2,
     title: "1. Si Tutor",
-    category: "NotebookLM - Mahasiswa",
+    category: "Bantuan untuk belajar",
     guide: 
 `Salin templat prompt di bawah ini. Anda bisa menempelkannya di
 - NotebookLM: Pilih (centang) sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
@@ -251,9 +281,9 @@ Mari kita mulai. Perkenalkan topik utama dari materi ini dan jelaskan konsep das
     linkLabel: "Buka NotebookLM"
 },
             {
-                id: 2,
+                id: 3,
                 title: "2. Si Gamer",
-                category: "NotebookLM - Mahasiswa",
+                category: "Bantuan untuk belajar",
                 guide: 
 `Salin templat prompt di bawah ini. Anda bisa menempelkannya di
 - NotebookLM: Pilih (centang) sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
@@ -280,9 +310,9 @@ Mulailah dengan menyambut saya dan sajikan peta perjalanan untuk menguasai Skill
                 linkLabel: "Buka NotebookLM"
             },
             {
-    id: 3,
+    id: 4,
     title: "3. Si Pelatih",
-    category: "NotebookLM - Mahasiswa",
+    category: "Bantuan untuk belajar",
     guide: 
 `Salin templat prompt di bawah ini. Anda bisa menempelkannya di
 - NotebookLM: Pilih (centang) sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
@@ -307,9 +337,9 @@ Mari kita mulai. Sajikan skenario pertama berdasarkan materi yang ada.`,
     linkLabel: "Buka NotebookLM"
             },
 			{
-    id: 4,
+    id: 5,
     title: "4. Si Awam",
-    category: "NotebookLM - Mahasiswa",
+    category: "Bantuan untuk belajar",
     guide: 
 `Salin templat prompt di bawah ini. Anda bisa menempelkannya di
 - NotebookLM: Pilih (centang) sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
@@ -333,9 +363,9 @@ Silakan mulai komunikasinya. Sapa saya dan sampaikan apa yang ingin kamu konsult
     linkLabel: "Buka NotebookLM"
 },
 {
-    id: 5,
+    id: 6,
     title: "5. Si Penyanggah",
-    category: "NotebookLM - Mahasiswa",
+    category: "Bantuan untuk belajar",
     guide: 
 `Salin templat prompt di bawah ini. Anda bisa menempelkannya di
 - NotebookLM: Pilih (centang) sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
@@ -359,9 +389,9 @@ Mari kita mulai. Berikan skenario atau pertanyaan pembukamu sekarang.`,
     linkLabel: "Buka NotebookLM"
 },
 {
-    id: 6,
+    id: 7,
     title: "6. Si Game Master",
-    category: "NotebookLM - Mahasiswa",
+    category: "Bantuan untuk belajar",
     guide: 
 `Salin templat prompt di bawah ini. Anda bisa menempelkannya di
 - NotebookLM: Pilih (centang) sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
@@ -391,9 +421,9 @@ Mari kita mulai. Sambut saya di arena dan berikan tantangan Babak 1 sekarang.`,
     linkLabel: "Buka NotebookLM"
 },
 {
-    id: 7,
+    id: 8,
     title: "7. Si Penguji",
-    category: "NotebookLM - Mahasiswa",
+    category: "Bantuan untuk belajar",
     guide: `Salin templat prompt di bawah ini. Anda bisa menempelkannya di
 - NotebookLM: Pilih (centang) sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
 - Platform Chat AI: Unggah dokumen materi, lalu tempelkan prompt ini di kolom chat.
