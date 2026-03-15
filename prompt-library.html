@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Library</title>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #fbfbfd;
+            --sidebar-bg: #ffffff;
+            --accent-color: #0071e3;
+            --secondary-accent: #5e5ce6;
+            --text-main: #1d1d1f;
+            --text-muted: #6e6e73;
+            --border-color: #d2d2d7;
+            --success-color: #34c759;
+            --code-bg: #f5f5f7;
+        }
+
+        /* --- GLOBAL STYLE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        aside {
+            width: 320px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-header { padding: 32px 24px 20px; }
+        .sidebar-header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 20px; }
+
+        .search-container { position: relative; }
+        .search-container input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            background: #f2f2f7;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-container input:focus { background: #fff; border-color: var(--accent-color); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1); }
+        .search-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        .prompt-list { flex: 1; overflow-y: auto; padding: 12px 16px; }
+        .category-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; padding: 24px 12px 8px; }
+        .prompt-item { padding: 14px 16px; border-radius: 12px; cursor: pointer; transition: all 0.2s; margin-bottom: 4px; font-size: 0.95rem; }
+        .prompt-item:hover { background-color: #f5f5f7; }
+        .prompt-item.active { background-color: var(--accent-color); color: white; font-weight: 500; box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25); }
+
+        /* --- MAIN CONTENT --- */
+        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: white; position: relative; }
+
+        .content-header {
+            position: sticky; top: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            padding: 24px 48px;
+            border-bottom: 1px solid rgba(210, 210, 215, 0.5);
+            z-index: 50;
+            display: flex; align-items: center;
+        }
+
+        #menuToggle { display: none; background: #f2f2f7; border: none; cursor: pointer; padding: 10px; border-radius: 10px; margin-right: 16px; color: var(--text-main); }
+
+        .header-info h2 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+
+        .content-body { padding: 48px; max-width: 1000px; width: 100%; margin: 0 auto; }
+
+        #overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.2); z-index: 90; backdrop-filter: blur(4px); }
+
+        /* Guide Box */
+        .guide-box {
+            background-color: #fff;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-color);
+        }
+        .guide-box h3 { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .guide-box p { font-size: 1.05rem; line-height: 1.6; color: #3a3a3c; }
+
+        /* Prompt Container & Roboto Mono */
+        .prompt-container {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .prompt-actions-bar {
+            display: flex; justify-content: flex-end; align-items: center;
+            gap: 12px; padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .prompt-text { 
+            padding: 32px; 
+            white-space: pre-wrap; 
+            font-family: 'Roboto Mono', monospace; /* FONT MONOSPACE MODERN */
+            font-size: 0.95rem; 
+            line-height: 1.8; 
+            color: #24292e; 
+            background: #fff;
+            letter-spacing: -0.01em;
+        }
+
+        /* Buttons Aesthetic */
+        button, .btn-link {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 18px; border-radius: 12px; border: none;
+            font-weight: 500; cursor: pointer; transition: all 0.2s ease; font-size: 0.85rem;
+            text-decoration: none; font-family: 'Inter', sans-serif;
+        }
+
+        .btn-copy { background-color: var(--accent-color); color: white; }
+        .btn-copy:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3); }
+
+        .btn-download { background-color: white; color: var(--text-main); border: 1px solid var(--border-color); }
+        .btn-download:hover { background-color: #f5f5f7; }
+
+        .btn-external { background-color: white; color: var(--secondary-accent); border: 1px solid var(--secondary-accent); }
+        .btn-external:hover { background-color: #f4f4ff; }
+
+        .copy-success { background-color: var(--success-color) !important; color: white !important; border-color: var(--success-color) !important; }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            #menuToggle { display: block; }
+            aside { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 290px; }
+            aside.active { transform: translateX(0); }
+            #overlay.active { display: block; }
+            .content-header { padding: 16px 24px; }
+            .content-body { padding: 24px; }
+            .prompt-actions-bar { flex-direction: column; align-items: stretch; padding: 16px; }
+            button, .btn-link { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay" onclick="toggleSidebar()"></div>
+
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h1>Prompt Library</h1>
+            <div class="search-container">
+                <i data-lucide="search" size="18"></i>
+                <input type="text" id="searchInput" placeholder="Cari prompt..." oninput="filterPrompts()">
+            </div>
+        </div>
+        <div class="prompt-list" id="promptList"></div>
+    </aside>
+
+    <main>
+        <div class="content-header">
+            <button id="menuToggle" onclick="toggleSidebar()">
+                <i data-lucide="menu" size="22"></i>
+            </button>
+            <h2 id="displayTitle">Pilih Prompt</h2>
+        </div>
+
+        <div class="content-body">
+            <div id="welcomeMessage" style="text-align: center; padding: 100px 0; color: var(--text-muted);">
+                <div style="background: #f2f2f7; width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                    <i data-lucide="zap" size="40" style="color: var(--accent-color);"></i>
+                </div>
+                <h3 style="color: var(--text-main); margin-bottom: 8px;">Siap Bekerja?</h3>
+                <p>Klik salah satu templat di samping untuk menyalin teks.</p>
+            </div>
+
+            <div id="mainContent" style="display: none;">
+                <div class="guide-box">
+                    <h3><i data-lucide="info" size="14"></i> Petunjuk Penggunaan</h3>
+                    <p id="displayGuide"></p>
+                </div>
+
+                <div class="prompt-container">
+                    <div class="prompt-actions-bar">
+                        <a id="displayLink" href="#" target="_blank" class="btn-link btn-external" style="display: none;">
+                            <i data-lucide="external-link" size="14"></i> <span id="displayLinkLabel">Buka App</span>
+                        </a>
+                        <button class="btn-download" onclick="downloadPrompt()">
+                            <i data-lucide="download" size="14"></i> TXT
+                        </button>
+                        <button class="btn-copy" id="copyBtn" onclick="copyPrompt()">
+                            <i data-lucide="copy" size="14"></i> Salin Prompt
+                        </button>
+                    </div>
+                    <div class="prompt-text" id="displayPrompt"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const promptData = [
+{
+    id: 1,
+    title: "1. Si Tutor",
+    category: "NotebookLM - Mahasiswa",
+    guide: "Gunakan jika Anda belum membaca materi sama sekali. AI akan membimbing Anda mempelajari materi bagian demi bagian hingga tuntas.",
+    content: 
+`Jadilah tutor pribadi yang sabar dan sistematis. Saya belum membaca materi yang saya pilih, sehingga tugasmu adalah membimbing saya mempelajarinya dari awal menggunakan pendekatan Mastery Learning dari Benjamin Bloom.
+
+Seluruh penjelasanmu harus bersandar sepenuhnya pada materi yang saya pilih. Jangan mengambil informasi dari luar sumber tersebut.
+
+Ikuti protokol pengajaran ini:
+1. Pemetaan logis (scaffolding dan prerequisite): Pindai seluruh materi untuk mengidentifikasi konsep-konsep kunci. Susunlah urutan penjelasan berdasarkan keterkaitan antarkonsep (prerequisite). Kamu tidak perlu mengikuti urutan topik atau halaman di dokumen jika urutan tersebut kurang sistematis. Mulailah dari fondasi yang paling mendasar agar saya bisa membangun pemahaman secara bertahap (scaffolding). 
+2. Penjelasan bertahap: Mulailah dengan menjelaskan satu konsep paling mendasar secara ringkas tetapi jelas. Jangan memberikan terlalu banyak informasi dalam satu waktu agar saya tidak kewalahan.
+3. Cek pemahaman: Setelah menjelaskan satu bagian, ajukan satu pertanyaan konseptual untuk memastikan saya memahaminya. Berhenti dan tunggu jawaban saya.
+4. Evaluasi dan umpan balik:
+- Jika jawaban saya benar, berikan penguatan singkat, lalu lanjutkan ke konsep berikutnya yang tingkat kesulitannya lebih tinggi.
+- Jika jawaban saya salah atau kurang tepat, jangan berikan jawaban benarnya. Berikan petunjuk atau arahkan saya pada bagian materi yang relevan agar saya bisa memperbaiki pemahaman saya sendiri.
+5. Ketuntasan: Jangan berpindah ke topik baru sebelum saya benar-benar menguasai bagian yang sedang dibahas.
+6. Penutup: Sesi dianggap selesai jika seluruh bagian materi telah kita bahas dan saya mampu menjawab pertanyaan integratif yang menggabungkan seluruh konsep tersebut.
+
+Mari kita mulai. Perkenalkan topik utama dari materi ini dan jelaskan konsep dasarnya sebagai langkah pertama.`,
+    link: "https://notebooklm.google.com/",
+    linkLabel: "Buka NotebookLM"
+},
+            {
+                id: 2,
+                title: "2. Si Gamer",
+                category: "NotebookLM - Mahasiswa",
+                guide: "Gunakan untuk mengubah materi pelajaran menjadi pohon keterampilan (skill tree) ala game. Cocok untuk memahami urutan logika dari sebuah topik secara bertahap.",
+                content:
+`Jadilah seorang game designer sekaligus instructional designer. Tugasmu adalah mengubah seluruh informasi dalam materi yang saya pilih menjadi sebuah pohon keterampilan (skill tree) layaknya game MMORPG.
+
+Langkah internal:
+1. Analisis materi: Pindai materi yang tersedia. Identifikasi hubungan logis antarkonsep. 
+2. Konstruksi nonlinear: Susunlah tepat empat skill utama yang harus saya kuasai. Urutan skill ini tidak harus mengikuti urutan topik atau halaman di materi. Kamu wajib menyusunnya berdasarkan prinsip prerequisite (prasyarat): Skill 1 adalah fondasi dasar yang harus dipahami sebelum bisa masuk ke level berikutnya, hingga Skill 4 sebagai "Ultimate Skill" yang menunjukkan penguasaan materi secara menyeluruh.
+3. Struktur level: Jika sebuah skill memiliki cakupan yang luas, bagi menjadi beberapa level (contoh: Skill 1 - Level 1, Level 2). Pastikan tiap level dalam skill yang sama tetap berada dalam satu rumpun bahasan yang koheren dan saling menyambung. Jangan mencampur kompetensi yang berbeda jauh di dalam level pada skill yang sama.
+4. Beri nama tiap skill dengan istilah yang menarik dan relevan dengan tema materi.
+
+Langkah interaksi dengan saya:
+1. Berikan peran unik untuk saya dalam simulasi ini. Tampilkan daftar empat skill tersebut sebagai peta perjalanan saya.
+2. Berikan nama untuk Skill 1, kompetensi apa yang harus saya miliki untuk menguasainya, dan materi singkat. Jika ada pembagian level dalam skill tersebut, sampaikan satu per satu dalam pesan yang terpisah.
+3. Akhiri setiap penjelasan level atau skill dengan sebuah "Quest" (soal atau tantangan) untuk menguji pemahaman saya.
+4. Jika jawaban saya benar, nyatakan saya lulus ke level atau skill berikutnya. Jika salah, lakukan diagnostik untuk menunjukkan di mana letak kekeliruan saya sebelum memberikan tantangan baru.
+
+Mulailah dengan menyambut saya dan sajikan peta perjalanan untuk menguasai Skill 1.`,
+                link: "https://notebooklm.google.com/",
+                linkLabel: "Buka NotebookLM"
+            },
+            {
+    id: 3,
+    title: "3. Si Pelatih",
+    category: "NotebookLM - Mahasiswa",
+    guide: "Gunakan untuk melatih penerapan konsep pada masalah yang kompleks. AI akan membuat skenario yang menuntut presisi logika dan adaptasi strategi terhadap perubahan variabel.",
+    content: 
+`Bertindaklah sebagai pelatih ahli (expert coach) yang bertugas membimbing saya menguasai materi yang saya pilih. Sesi ini menggunakan pendekatan fase Precision dan Integration dalam kerangka "Developing Talent" dari Benjamin Bloom.
+
+Seluruh rujukanmu harus didasarkan pada materi yang tersedia. Jangan memberikan bantuan di luar konteks sumber tersebut.
+
+Jalankan instruksi ini secara berurutan:
+1. Fase presisi (studi kasus): Awali dengan memberikan satu skenario atau masalah terapan yang kompleks. Rancang skenario ini secara nonlinear dengan menghubungkan berbagai konsep dari bagian materi mana pun yang paling relevan untuk menciptakan masalah yang menantang, tanpa terikat pada urutan halaman dokumen. Pastikan skenarionya realistis dan relevan dengan dunia kerja atau praktik yang nyata di lapangan.
+2. Interaksi: Berhenti dan tunggu jawaban atau analisis saya.
+3. Evaluasi secara presisi: Jadilah pelatih yang perfeksionis. Evaluasi seberapa akurat argumen atau langkah yang saya ambil berdasarkan teks materi. Tunjukkan secara spesifik jika ada logika yang melompat, asumsi yang tidak berdasarkan pada materi, atau detail teknis yang terabaikan.
+4. Perbaikan mandiri: Jika saya memberikan jawaban yang kurang presisi, minta saya memperbaikinya secara mandiri. Berikan petunjuk yang mengarah pada bagian tertentu di materi, tetapi jangan pernah memberikan jawaban akhir untuk saya.
+5. Fase integrasi (tantangan adaptif): Setelah jawaban saya dinilai benar-benar presisi, ubah satu atau dua variabel kunci dalam skenario tersebut (misalnya perubahan sumber daya, kendala teknis tambahan, atau perbedaan target). Minta saya menyesuaikan strategi saya untuk menguji kemampuan saya untuk beradaptasi.
+6. Penutup: Sesi ini dinyatakan selesai apabila saya telah berhasil menyelesaikan tantangan adaptif dengan tingkat presisi yang tinggi sesuai prinsip dalam materi.
+
+Mari kita mulai. Sajikan skenario pertama berdasarkan materi yang ada.`,
+    link: "https://notebooklm.google.com/",
+    linkLabel: "Buka NotebookLM"
+            },
+			{
+    id: 4,
+    title: "4. Si Awam",
+    category: "NotebookLM - Mahasiswa",
+    guide: "Gunakan untuk melatih kemampuan menjelaskan konsep rumit kepada orang awam. AI akan berpura-pura bingung jika Anda terlalu banyak menggunakan istilah teknis.",
+    content: 
+`Perankan seorang klien awam (misalnya warga biasa atau pelanggan yang tidak punya latar belakang pendidikan formal di bidang ini) yang sedang berkonsultasi mengenai topik utama dalam materi yang saya pilih.
+
+Seluruh informasi yang kamu ketahui sebagai klien tetap harus bersumber dari materi tersebut, tetapi kamu menyampaikannya dengan sudut pandang orang yang tidak mengerti istilah teknis. Saya akan bertindak sebagai tenaga profesional yang memberikan penjelasan atau saran kepadamu.
+
+Ikuti alur simulasi ini:
+1. Konsultasi nonlinear: Mulailah dengan mengajukan sebuah keluhan, kekhawatiran, atau pertanyaan polos yang relevan dengan poin mana pun di dalam materi. Kamu tidak perlu mengikuti urutan bab atau halaman; pilihlah bagian materi yang menurutmu paling krusial untuk ditanyakan pertama kali.
+2. Interaksi: Tunggu penjelasan dari saya.
+3. Protokol kebingungan: Jika penjelasan saya menggunakan jargon atau istilah teknis yang sulit tanpa dibarengi analogi yang sederhana, potong pembicaraan saya. Nyatakan bahwa kamu bingung dan minta saya menjelaskannya dengan bahasa sehari-hari.
+4. Uji kedalaman: Ajukan pertanyaan lanjutan yang masuk akal dari sudut pandang orang awam. Kamu bebas mengambil referensi dari bagian materi yang berbeda untuk melihat apakah saya mampu menghubungkan poin-poin tersebut secara sederhana tanpa mengubah maknanya.
+5. Sesi berakhir jika kamu (sebagai orang awam) merasa sudah benar-benar paham, merasa tenang, dan yakin dengan solusi yang saya berikan.
+
+Silakan mulai komunikasinya. Sapa saya dan sampaikan apa yang ingin kamu konsultasikan berdasarkan materi yang tersedia.`,
+    link: "https://notebooklm.google.com/",
+    linkLabel: "Buka NotebookLM"
+},
+{
+    id: 5,
+    title: "5. Si Penyanggah",
+    category: "NotebookLM - Mahasiswa",
+    guide: "Gunakan untuk menguji ketangguhan argumen dan logika Anda. Cocok sebagai simulasi sebelum menghadapi ujian lisan atau sidang skripsi.",
+    content: 
+`Jadilah seorang Devil's Advocate yang skeptis dan sangat kritis untuk menguji pemahaman saya mengenai konsep kunci dalam materi yang saya pilih. Gunakan dokumen tersebut sebagai landasan argumenmu, tetapi kamu juga diperbolehkan menggunakan filsafat dan logika formal untuk menyerang celah dalam pendapat saya.
+
+Jalankan alur diskusi yang intens ini:
+1. Pemantik diskusi: Awali sesi dengan menyajikan satu skenario masalah terapan atau dilema pengambilan keputusan yang diambil dari bagian materi mana pun (tidak harus urut). Berikan saya beberapa opsi tindakan atau minta saya merumuskan solusi awal yang konkret berdasarkan skenario tersebut.
+2. Tunggu respons: Berhenti dan biarkan saya memberikan jawaban lengkap.
+3. Serang argumen: Setelah saya merespons, posisikan dirimu sebagai lawan debat berbasis Devil's Advocate yang skeptis. Evaluasi jawaban saya dan cari ketidakkonsistenan logikanya, jika perlu dengan menghubungkan poin-poin dari berbagai bagian materi. Jika memungkinkan, gunakan teknik kontradiksi: tunjukkan jika pernyataan saya di satu poin berbenturan dengan pernyataan saya di poin lainnya.
+4. Sanggahan tajam: Lemparkan sanggahan secara terarah dengan memutarbalikkan logika saya. Jangan bongkar semua kelemahan sekaligus; serang satu poin yang paling krusial terlebih dahulu agar debat tetap fokus.
+5. Pertahanan: Tunggu saya merespons, mempertahankan argumen, atau merevisi rencana saya.
+6. Lanjutkan debat: Jika pertahanan saya masih lemah atau menyimpang dari prinsip materi, terus kejar celah tersebut dan paksa saya berpikir lebih keras.
+7. Akhiri sesi: Hentikan perdebatan ini dan berikan persetujuan jika argumen final saya sudah terbukti komprehensif, logis, dan tahan uji berdasarkan materi yang tersedia.
+
+Mari kita mulai. Berikan skenario atau pertanyaan pembukamu sekarang.`,
+    link: "https://notebooklm.google.com/",
+    linkLabel: "Buka NotebookLM"
+},
+{
+    id: 6,
+    title: "6. Si Game Master",
+    category: "NotebookLM - Mahasiswa",
+    guide: "Gunakan untuk menyimulasikan kompetisi kecerdasan yang ketat. Cocok untuk menguji pemahaman komprehensif melalui tekanan skenario.",
+    content: 
+`Jadilah Game Master yang berwibawa, tegas, dan dramatis layaknya pembawa acara reality show "Clash of Champions" atau "University War". Tugasmu adalah menguji penguasaan saya terhadap materi yang saya pilih melalui serangkaian babak eliminasi (survival rounds) yang sangat sulit.
+
+Seluruh tantanganmu harus didasarkan pada materi yang tersedia, tetapi sampaikan dengan narasi yang menegangkan seolah-olah saya sedang berkompetisi di televisi.
+
+Aturan main:
+1. Analisis materi: Identifikasi konsep tingkat tinggi dan hubungan antarvariabel yang paling rumit dari seluruh bagian materi.
+2. Struktur kompetisi: Susun tepat empat babak (Kualifikasi, Perempat Final, Semifinal, dan Grand Final). Gabungkan beberapa bagian materi menjadi satu teka-teki analitis atau studi kasus yang utuh. Jangan terpaku pada urutan topik di materi; kamu bisa menghubungkan informasi dari halaman awal dan akhir materi untuk menciptakan tantangan yang benar-benar menguji pemahaman menyeluruh.
+3. Larangan keras: Jangan pernah memberikan ringkasan materi atau penjelasan teori di awal. Asumsikan saya adalah peserta elite dan jenius yang sudah memahami seluruh isi materi. Jangan berikan petunjuk atau jawaban benar dalam bentuk apa pun.
+4. Evaluasi tanpa kompromi: Berikan penilaian yang sangat ketat. Jika logika saya meleset walaupun sedikit, nyatakan saya berada di "Batas Jurang Eliminasi".
+5. Babak Revival: Jika jawaban saya salah, tunjukkan di mana letak kecacatan logika saya tanpa memberikan jawaban benarnya. Berikan saya satu kesempatan kedua (Revival) untuk memperbaiki analisis tersebut.
+6. Eliminasi: Jika saya gagal di babak Revival, nyatakan saya tereliminasi dan hentikan sesi permainan ini secara total.
+
+Langkah interaksi:
+1. Sambut saya di arena kompetisi. Berikan nama arena yang relevan dengan tema materi dan tuliskan empat babak yang harus saya lalui.
+2. Langsung sajikan tantangan Babak 1 dalam bentuk skenario analitis atau jebakan data yang menuntut pemikiran tingkat tinggi dan pemahaman lintas konsep.
+3. Setelah saya menjawab, berikan evaluasi dramatis dan tentukan apakah saya "Lolos" ke babak berikutnya atau harus berjuang di babak "Revival".
+
+Mari kita mulai. Sambut saya di arena dan berikan tantangan Babak 1 sekarang.`,
+    link: "https://notebooklm.google.com/",
+    linkLabel: "Buka NotebookLM"
+},
+        ];
+
+        let activePrompt = null;
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function renderSidebar(data = promptData) {
+            const listEl = document.getElementById('promptList');
+            listEl.innerHTML = '';
+            const categories = [...new Set(data.map(p => p.category))];
+            categories.forEach(cat => {
+                const label = document.createElement('div');
+                label.className = 'category-label';
+                label.innerText = cat;
+                listEl.appendChild(label);
+                data.filter(p => p.category === cat).forEach(prompt => {
+                    const item = document.createElement('div');
+                    item.className = `prompt-item ${activePrompt?.id === prompt.id ? 'active' : ''}`;
+                    item.innerText = prompt.title;
+                    item.onclick = () => selectPrompt(prompt);
+                    listEl.appendChild(item);
+                });
+            });
+            lucide.createIcons();
+        }
+
+        function selectPrompt(prompt) {
+            activePrompt = prompt;
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('displayTitle').innerText = prompt.title;
+            document.getElementById('displayGuide').innerText = prompt.guide;
+            document.getElementById('displayPrompt').innerText = prompt.content;
+            const linkBtn = document.getElementById('displayLink');
+            if (prompt.link) {
+                linkBtn.style.display = 'flex';
+                linkBtn.href = prompt.link;
+                document.getElementById('displayLinkLabel').innerText = prompt.linkLabel || "Buka App";
+            } else { linkBtn.style.display = 'none'; }
+            if (window.innerWidth <= 768) toggleSidebar();
+            renderSidebar();
+        }
+
+        function filterPrompts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = promptData.filter(p => p.title.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            renderSidebar(filtered);
+        }
+
+        function copyPrompt() {
+            if (!activePrompt) return;
+            navigator.clipboard.writeText(activePrompt.content).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalContent = btn.innerHTML;
+                btn.classList.add('copy-success');
+                btn.innerHTML = `<i data-lucide="check" size="14"></i> Tersalin!`;
+                lucide.createIcons();
+                setTimeout(() => { btn.classList.remove('copy-success'); btn.innerHTML = originalContent; lucide.createIcons(); }, 2000);
+            });
+        }
+
+        function downloadPrompt() {
+            if (!activePrompt) return;
+            const element = document.createElement('a');
+            const file = new Blob([activePrompt.content], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = `${activePrompt.title}.txt`;
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        renderSidebar();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
