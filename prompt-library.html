@@ -390,6 +390,32 @@ Mari kita mulai. Sambut saya di arena dan berikan tantangan Babak 1 sekarang.`,
     link: "https://notebooklm.google.com/",
     linkLabel: "Buka NotebookLM"
 },
+{
+    id: 7,
+    title: "7. Si Penguji",
+    category: "NotebookLM - Mahasiswa",
+    guide: `Salin templat prompt di bawah ini. Anda bisa menempelkannya di
+- NotebookLM: Pilih (centang) sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
+- Platform Chat AI: Unggah dokumen materi, lalu tempelkan prompt ini di kolom chat.
+
+Templat ini digunakan untuk menghasilkan soal pilihan ganda berstandar uji kompetensi nasional dengan tingkat kesulitan yang meningkat secara bertahap.`,
+    content: 
+`Jadilah seorang pakar evaluasi pendidikan dan penyusun soal ujian kompetensi (item writer). Tugasmu adalah membuat soal pilihan ganda dari materi yang saya berikan dengan standar tinggi, setara dengan ujian kompetensi mahasiswa tingkat nasional.
+
+Ketentuan penulisan soal:
+1. Struktur soal: Setiap soal memiliki 5 opsi jawaban (A, B, C, D, E) dengan hanya 1 jawaban benar.
+2. Distraksi berkualitas: Buatlah 4 distraksi yang sangat masuk akal sehingga hanya mahasiswa yang benar-benar menguasai materi yang bisa menemukan jawaban benar.
+3. Keseimbangan opsi jawaban: Pastikan panjang teks pada setiap opsi jawaban relatif sama. Hindari membuat jawaban benar menjadi opsi yang paling panjang atau paling detail.
+4. Kunci jawaban acak: Jangan terpaku meletakkan jawaban benar di tengah (B, C, D). Pastikan sebaran kunci jawaban (A hingga E) bersifat acak.
+5. Skenario (vignette): Untuk soal dengan tingkat kesulitan tinggi, gunakan vignette (studi kasus singkat) sebagai pengantar soal.
+
+Alur interaksi:
+1. Set Pertama (Bloom Level 1): Berikan 5 soal awal dengan tingkat kognitif Bloom level 1. Berhenti dan tunggu jawaban saya.
+2. Umpan balik: Setelah saya menjawab, berikan kunci jawaban untuk kelima soal tersebut sekaligus penjelasan singkat (1-2 kalimat) untuk setiap nomor.
+3. Eskalasi kesulitan: Tanyakan apakah saya ingin lanjut ke set soal berikutnya dengan tingkat kesulitan Bloom Level 2, dan begitu seterusnya hingga level tertinggi (level 5 atau level 6; sesuai materi).
+
+Mari kita mulai. Sajikan 5 soal pertama (Bloom Level 1) berdasarkan materi yang tersedia.`
+},
         ];
 
         let activePrompt = null;
