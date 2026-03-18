@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eksplorasi Jumlah Sampel v2</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        /* Gaya Minimalis & Estetik */
+        :root {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --accent-blue: #0071e3;
+            --accent-green: #34c759;
+            --border-color: #d2d2d7;
+            --shadow: 0 8px 24px rgba(0,0,0,0.06); /* Shadow lebih lembut */
+        }
+
+        body {
+            /* Menerapkan Font Inter */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased; /* Font rendering lebih halus */
+        }
+
+        .container {
+            max-width: 1000px; /* Diperlebar untuk layout kiri-kanan */
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        /* Segmented Control (Tab) */
+        .tabs {
+            display: flex;
+            background-color: #e3e3e8;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tabs input[type="radio"] {
+            display: none;
+        }
+
+        .tabs label {
+            flex: 1;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
+
+        .tabs input[type="radio"]:checked + label {
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: var(--accent-blue);
+        }
+
+        /* Panel Utama (Flex Container) */
+        .panel {
+            display: none; /* Disembunyikan secara default */
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .panel.active {
+            display: flex; /* Aktifkan flex untuk layout kiri-kanan */
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bagian Kiri: Input */
+        .input-side {
+            flex: 1; /* Ambil 50% lebar */
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Bagian Kanan: Hasil */
+        .result-side {
+            flex: 1; /* Ambil 50% lebar */
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: sticky; /* Tetap terlihat saat scroll */
+            top: 20px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        
+        /* Highlight hasil saat input berubah */
+        .result-side.highlight {
+            border-color: var(--accent-blue);
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* Formulir */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="number"],
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif; /* Pastikan input pakai Inter */
+            background-color: #fbfbfd;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input[type="number"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* Toggle Switch iOS */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f2;
+            margin-top: 25px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #e3e3e8;
+            transition: .3s;
+            border-radius: 28px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Container Populasi Finit */
+        .finite-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+            opacity: 0;
+            background-color: #f5f5f7;
+            border-radius: 12px;
+            padding: 0 15px;
+        }
+
+        .finite-container.show {
+            max-height: 100px;
+            margin-top: 15px;
+            padding: 15px;
+            opacity: 1;
+        }
+
+        /* Styling Hasil */
+        .result-number {
+            font-size: 64px;
+            font-weight: 800;
+            color: var(--accent-blue);
+            line-height: 1;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+        }
+
+        .result-label {
+            font-size: 16px;
+            color: var(--text-main);
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .formula-card {
+            background-color: #f5f5f7;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .formula-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .math-display {
+            font-size: 16px;
+            overflow-x: auto;
+            color: #3a3a3c;
+        }
+
+        /* Responsif Mobile (Stack Vertikal) */
+        @media (max-width: 768px) {
+            .panel.active {
+                flex-direction: column;
+            }
+            .result-side {
+                position: static;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            h1 { font-size: 24px; }
+            .result-number { font-size: 48px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Kalkulator Jumlah Sampel</h1>
+    <p class="subtitle">Alat bantu untuk menentukan jumlah sampel pada penelitian observasional pada satu titik waktu tertentu</p>
+
+    <div class="tabs">
+        <input type="radio" id="tab-qual" name="data-type" value="qual" checked onchange="switchTab()">
+        <label for="tab-qual">Data Kualitatif</label>
+        
+        <input type="radio" id="tab-quant" name="data-type" value="quant" onchange="switchTab()">
+        <label for="tab-quant">Data Kuantitatif</label>
+    </div>
+
+    <div id="panel-qual" class="panel active">
+        <div class="input-side">
+            <div class="section-title">Parameter Input</div>
+            <div class="form-group">
+                <label for="z-qual">Tingkat kepercayaan (nilai Z)</label>
+                <select id="z-qual" oninput="calculateQual()">
+                    <option value="1.65">90% (Z = 1.65)</option>
+                    <option value="1.96" selected>95% (Z = 1.96)</option>
+                    <option value="2.58">99% (Z = 2.58)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="p-qual">Perkiraan proporsi (p) pada populasi</label>
+                <input type="number" id="p-qual" step="0.01" min="0" max="1" value="0.5" oninput="calculateQual()">
+                <div class="help-text">Gunakan desimal 0&ndash;1 (contoh: 0.9 untuk 90%)</div>
+            </div>
+            <div class="form-group">
+                <label for="d-qual">Batas kesalahan (d) yang ditoleransi</label>
+                <input type="number" id="d-qual" step="0.01" min="0.001" max="1" value="0.05" oninput="calculateQual()">
+                <div class="help-text">Gunakan nilai absolut (contoh: 0.03 untuk &plusmn;3%)</div>
+            </div>
+
+            <div class="toggle-row">
+                <label for="toggle-qual" style="font-size: 14px; font-weight: 600;">Apakah total populasi diketahui (finit)?</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-qual" onchange="toggleFiniteQual()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div id="finite-container-qual" class="finite-container">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="N-qual">Total populasi (N)</label>
+                    <input type="number" id="N-qual" min="1" value="1000" oninput="calculateQual()">
+                </div>
+            </div>
+        </div>
+        
+        <div id="result-side-qual" class="result-side">
+            <div class="section-title">Estimasi Hasil</div>
+            <div id="result-text-qual" class="result-number">385</div>
+            <div class="result-label">Minimum unit sampel yang dibutuhkan (n)</div>
+            
+            <div class="formula-card">
+                <span class="formula-title">Rumus:</span>
+                <div id="math-display-qual" class="math-display">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="panel-quant" class="panel">
+        <div class="input-side">
+            <div class="section-title">Parameter Input</div>
+            <div class="form-group">
+                <label for="z-quant">Tingkat kepercayaan (nilai Z)</label>
+                <select id="z-quant" oninput="calculateQuant()">
+                    <option value="1.65">90% (Z = 1.65)</option>
+                    <option value="1.96" selected>95% (Z = 1.96)</option>
+                    <option value="2.58">99% (Z = 2.58)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="s-quant">Perkiraan deviasi standar (&sigma;) pada populasi</label>
+                <input type="number" id="s-quant" step="0.1" min="0" value="20000" oninput="calculateQuant()">
+                <div class="help-text">Gunakan nilai absolut (dengan satuan tertentu)</div>
+            </div>
+            <div class="form-group">
+                <label for="d-quant">Batas kesalahan (d) yang ditoleransi</label>
+                <input type="number" id="d-quant" step="0.1" min="0.1" value="2500" oninput="calculateQuant()">
+                <div class="help-text">Gunakan nilai absolut (dengan satuan yang sama dengan &sigma;)</div>
+            </div>
+
+            <div class="toggle-row">
+                <label for="toggle-quant" style="font-size: 14px; font-weight: 600;">Apakah total populasi diketahui (finit)?</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-quant" onchange="toggleFiniteQuant()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div id="finite-container-quant" class="finite-container">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="N-quant">Total populasi (N)</label>
+                    <input type="number" id="N-quant" min="1" value="1000" oninput="calculateQuant()">
+                </div>
+            </div>
+        </div>
+
+        <div id="result-side-quant" class="result-side">
+            <div class="section-title">Estimasi Hasil</div>
+            <div id="result-text-quant" class="result-number">246</div>
+            <div class="result-label">Minimum unit sampel yang dibutuhkan (n)</div>
+            
+            <div class="formula-card">
+                <span class="formula-title">Rumus:</span>
+                <div id="math-display-quant" class="math-display">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Inisialisasi MathJax & Perhitungan awal
+    document.addEventListener("DOMContentLoaded", function() {
+        calculateQual(); 
+        calculateQuant(); // Hitung keduanya agar siap saat tab dipindah
+    });
+
+    // Navigasi Tab
+    function switchTab() {
+        const type = document.querySelector('input[name="data-type"]:checked').value;
+        const panelQual = document.getElementById('panel-qual');
+        const panelQuant = document.getElementById('panel-quant');
+
+        if (type === 'qual') {
+            panelQual.classList.add('active');
+            panelQuant.classList.remove('active');
+        } else {
+            panelQuant.classList.add('active');
+            panelQual.classList.remove('active');
+        }
+    }
+
+    // Toggle Finit Kualitatif
+    function toggleFiniteQual() {
+        const isFinite = document.getElementById('toggle-qual').checked;
+        const container = document.getElementById('finite-container-qual');
+        if (isFinite) { container.classList.add('show'); } 
+        else { container.classList.remove('show'); }
+        calculateQual();
+    }
+
+    // Toggle Finit Kuantitatif
+    function toggleFiniteQuant() {
+        const isFinite = document.getElementById('toggle-quant').checked;
+        const container = document.getElementById('finite-container-quant');
+        if (isFinite) { container.classList.add('show'); } 
+        else { container.classList.remove('show'); }
+        calculateQuant();
+    }
+
+    // Hitung Kualitatif
+    function calculateQual() {
+        const z = parseFloat(document.getElementById('z-qual').value);
+        const p = parseFloat(document.getElementById('p-qual').value);
+        const d = parseFloat(document.getElementById('d-qual').value);
+        const isFinite = document.getElementById('toggle-qual').checked;
+        const N = parseFloat(document.getElementById('N-qual').value);
+
+        let n = 0;
+        let latex = "";
+
+        if (!isNaN(z) && !isNaN(p) && !isNaN(d) && d > 0 && p > 0 && p < 1) {
+            const z2 = Math.pow(z, 2);
+            const d2 = Math.pow(d, 2);
+            const pq = p * (1 - p);
+
+            if (isFinite && !isNaN(N) && N > 0) {
+                n = (N * z2 * pq) / ((N * d2) + (z2 * pq));
+                latex = `$$ n = \\frac{N \\cdot Z^2 \\cdot p(1-p)}{N \\cdot d^2 + Z^2 \\cdot p(1-p)} $$`;
+            } else {
+                n = (z2 * pq) / d2;
+                latex = `$$ n = \\frac{Z^2 \\cdot p(1-p)}{d^2} $$`;
+            }
+            updateUI('qual', Math.ceil(n), latex);
+        } else {
+            updateUI('qual', "⚠️", "Input tidak valid (pastikan $0 < p < 1$ dan $d > 0$)");
+        }
+    }
+
+    // Hitung Kuantitatif
+    function calculateQuant() {
+        const z = parseFloat(document.getElementById('z-quant').value);
+        const s = parseFloat(document.getElementById('s-quant').value);
+        const d = parseFloat(document.getElementById('d-quant').value);
+        const isFinite = document.getElementById('toggle-quant').checked;
+        const N = parseFloat(document.getElementById('N-quant').value);
+
+        let n = 0;
+        let latex = "";
+
+        if (!isNaN(z) && !isNaN(s) && !isNaN(d) && d > 0 && s > 0) {
+            const z2 = Math.pow(z, 2);
+            const s2 = Math.pow(s, 2);
+            const d2 = Math.pow(d, 2);
+
+            if (isFinite && !isNaN(N) && N > 0) {
+                n = (N * z2 * s2) / ((N * d2) + (z2 * s2));
+                // Menggunakan sigma seperti di PDF
+                latex = `$$ n = \\frac{N \\cdot Z^2 \\cdot \\sigma^2}{N \\cdot d^2 + Z^2 \\cdot \\sigma^2} $$`;
+            } else {
+                n = (z2 * s2) / d2;
+                latex = `$$ n = \\frac{Z^2 \\cdot \\sigma^2}{d^2} $$`;
+            }
+            updateUI('quant', Math.ceil(n), latex);
+        } else {
+            updateUI('quant', "⚠️", "Input tidak valid (pastikan $\\sigma > 0$ dan $d > 0$)");
+        }
+    }
+
+    // Update Tampilan & Efek Visual
+    function updateUI(type, result, formulaLatex) {
+        const resultTextElem = document.getElementById('result-text-' + type);
+        const mathDisplayElem = document.getElementById('math-display-' + type);
+        const resultSideElem = document.getElementById('result-side-' + type);
+
+        // Update Angka
+        resultTextElem.innerText = result;
+        
+        // Update Rumus MathJax
+        mathDisplayElem.innerHTML = formulaLatex;
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            MathJax.typesetPromise([mathDisplayElem]);
+        }
+
+        // Efek visual highlight pada border kanan
+        resultSideElem.classList.add('highlight');
+        setTimeout(() => {
+            resultSideElem.classList.remove('highlight');
+        }, 300);
+    }
+</script>
+
+</body>
+</html>
