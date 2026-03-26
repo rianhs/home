@@ -1,471 +1,486 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="dark scroll-smooth scroll-pt-24">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rian H.S. - Academic Profile</title>
-    <!-- Tailwind CSS -->
+    <title>Rian Hari Suharto - Academic Profile</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Google Fonts -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
+                    colors: {
+                        slate: {
+                            950: '#0f172a',
+                        },
+                        // Adjusted to Teal to match the new Hero Section gradient perfectly
+                        accent: {
+                            400: '#2dd4bf', // teal-400
+                            500: '#14b8a6', // teal-500
+                            600: '#0d9488', // teal-600
+                        }
+                    },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        serif: ['Merriweather', 'serif'],
                     },
-                    colors: {
-                        academic: {
-                            50: '#f4f6f8',
-                            100: '#e4e7eb',
-                            200: '#cbd2d9',
-                            300: '#9aa5b1',
-                            400: '#7b8794',
-                            500: '#616e7c',
-                            600: '#52606d',
-                            700: '#3e4c59',
-                            800: '#323f4b',
-                            900: '#1f2933',
-                            accent: '#2c5282',
-                        }
-                    }
-                }
-            }
+                },
+            },
         }
     </script>
+
     <style>
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd2d9; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9aa5b1; }
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Blob Animations from AI-B */
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+        .animate-blob { animation: blob 8s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
         
-        .fade-in-up {
-            animation: fadeInUp 0.8s ease-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
         }
 
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(20, 184, 166, 0.3); /* Teal-500 with opacity */
+            box-shadow: 0 10px 30px -10px rgba(20, 184, 166, 0.15);
         }
 
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
     </style>
 </head>
-<body class="bg-academic-50 text-academic-800 font-sans antialiased selection:bg-academic-accent selection:text-white">
+<body class="min-h-screen relative bg-slate-950 text-slate-100 font-sans antialiased selection:bg-accent-500/30">
 
-    <!-- Navigation -->
-    <nav class="fixed w-full bg-white/90 backdrop-blur-md border-b border-academic-100 z-50 transition-all duration-300" id="navbar">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Brand -->
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="#" class="font-serif font-bold text-xl text-academic-900 tracking-tight">Rian H.S.</a>
-                </div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-8">
-                    <a href="#about" class="text-sm font-medium text-academic-600 hover:text-academic-accent transition-colors">About</a>
-                    <a href="#publications" class="text-sm font-medium text-academic-600 hover:text-academic-accent transition-colors">Publications</a>
-                    <a href="#cv" class="text-sm font-medium text-academic-600 hover:text-academic-accent transition-colors">CV</a>
-                    <a href="#teaching" class="text-sm font-medium text-academic-600 hover:text-academic-accent transition-colors">Teaching</a>
-                    <a href="#contact" class="text-sm font-medium text-academic-600 hover:text-academic-accent transition-colors">Contact</a>
-                </div>
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-10 left-10 w-72 h-72 md:w-96 md:h-96 bg-teal-600 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob"></div>
+        <div class="absolute top-20 right-10 w-72 h-72 md:w-96 md:h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-10 left-1/3 w-72 h-72 md:w-96 md:h-96 bg-violet-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+    </div>
 
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-academic-600 hover:text-academic-900 focus:outline-none">
-                        <i class="ph ph-list text-2xl"></i>
-                    </button>
+    <nav class="sticky top-0 z-50 glass-panel border-b border-slate-800/50 bg-[#0f172a]/80">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-accent-500/10 border border-accent-500/20 flex items-center justify-center text-accent-500 font-bold text-sm">
+                    RHS
                 </div>
+                <h1 class="font-bold text-sm tracking-wide text-slate-200">Rian Hari Suharto</h1>
             </div>
-        </div>
-
-        <!-- Mobile Menu Panel -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-academic-100">
-            <div class="px-4 pt-2 pb-4 space-y-1">
-                <a href="#about" class="block px-3 py-2 text-base font-medium text-academic-700 hover:bg-academic-50 hover:text-academic-accent rounded-md">About</a>
-                <a href="#publications" class="block px-3 py-2 text-base font-medium text-academic-700 hover:bg-academic-50 hover:text-academic-accent rounded-md">Publications</a>
-                <a href="#cv" class="block px-3 py-2 text-base font-medium text-academic-700 hover:bg-academic-50 hover:text-academic-accent rounded-md">CV</a>
-                <a href="#teaching" class="block px-3 py-2 text-base font-medium text-academic-700 hover:bg-academic-50 hover:text-academic-accent rounded-md">Teaching</a>
-                <a href="#contact" class="block px-3 py-2 text-base font-medium text-academic-700 hover:bg-academic-50 hover:text-academic-accent rounded-md">Contact</a>
+            <div class="flex items-center gap-4">
+                <a href="#courses" class="text-sm font-medium text-slate-400 hover:text-accent-400 transition-colors hidden sm:block">Courses</a>
+                <a href="#ai-tools" class="text-sm font-medium text-slate-400 hover:text-accent-400 transition-colors hidden sm:block">AI Tools</a>
+                <a href="#research" class="text-sm font-medium text-slate-400 hover:text-accent-400 transition-colors hidden sm:block">Research</a>
+                <a href="cv.html" class="px-4 py-2 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg text-xs font-semibold hover:bg-slate-700 hover:border-accent-500/50 hover:text-white transition-all flex items-center gap-1.5">
+                    <i data-lucide="file-text" class="w-3.5 h-3.5"></i> View CV
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header id="about" class="pt-32 pb-20 lg:pt-48 lg:pb-32 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div class="lg:flex lg:items-center lg:gap-16">
-            <div class="lg:w-2/3 fade-in-up">
-                <!-- Role Title -->
-                <p class="text-academic-accent font-medium tracking-wide uppercase text-sm mb-4">Assistant Professor</p>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24 pb-24">
+
+        <section id="hero" class="pt-6">
+            <div class="flex flex-col sm:flex-row sm:items-start gap-6 md:gap-8">
                 
-                <!-- Main Headline -->
-                <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-academic-900 leading-normal mb-6">
-                    Exploring the intersection of <span class="text-academic-accent italic">Veterinary Epidemiology</span>, <span class="text-academic-accent italic">Veterinary Education</span>, and <span class="text-academic-accent italic">One Welfare</span>.
-                </h1>
-                
-                <!-- Bio Text -->
-                <p class="text-lg text-academic-600 mb-8 max-w-2xl leading-relaxed">
-                    Lecturer in Veterinary Medicine Study Program, Faculty of Medicine, Hasanuddin University. Former bureaucrat and quarantine medical veterinarian. Interested in integrating artificial intelligence to veterinary education and solving epidemiological challenges.
-                </p>
-                
-                <!-- Button -->
-                <div class="flex flex-wrap gap-4">
-                    <a href="mailto:rianhs@unhas.ac.id" class="px-6 py-3 bg-academic-900 text-white font-medium rounded-lg hover:bg-academic-800 transition-colors shadow-sm flex items-center gap-2">
-                        <i class="ph ph-envelope-simple"></i> Contact Me
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Photo/Avatar -->
-            <div class="lg:w-1/3 mt-12 lg:mt-0 fade-in-up delay-200">
-                <div class="relative">
-                    <div class="absolute -inset-4 bg-academic-100 rounded-full blur-2xl opacity-50"></div>
-                    <div class="relative aspect-square rounded-2xl overflow-hidden bg-academic-200 shadow-xl border border-white/50">
-                        <div class="w-full h-full bg-gradient-to-br from-academic-300 to-academic-500 flex items-center justify-center text-white">
-                             <span class="font-serif text-6xl opacity-50">RH</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Selected Publications Section -->
-    <section id="publications" class="py-20 bg-white border-y border-academic-100">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
-                <div>
-                    <h2 class="font-serif text-3xl font-bold text-academic-900 mb-4">Selected Publications</h2>
-                    <div class="h-1 w-20 bg-academic-accent rounded"></div>
-                </div>
-                <a href="https://scholar.google.com/citations?user=SXG-IGMAAAAJ&hl=id" class="hidden md:inline-flex items-center text-academic-accent font-medium hover:text-academic-800 transition-colors mt-4 md:mt-0">
-                    View Google Scholar <i class="ph ph-arrow-right ml-2"></i>
-                </a>
-            </div>
-
-            <div class="space-y-6">
-                <!-- Publication 1 -->
-                <article class="group relative bg-academic-50 p-6 rounded-xl border border-academic-200 hover:border-academic-300 transition-all hover:shadow-sm">
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="flex-shrink-0 sm:w-24 text-academic-400 font-mono text-sm pt-1">2025</div>
-                        <div>
-                            <h3 class="font-serif text-lg font-bold text-academic-900 group-hover:text-academic-accent transition-colors">
-                                <a href="#" class="focus:outline-none">
-                                    <span class="absolute inset-0" aria-hidden="true"></span>
-                                    Veterinary Education and Sustainable Development Goals: A Perspective from Professional Students in Indonesia
-                                </a>
-                            </h3>
-                            <p class="text-academic-600 mt-1">
-                                <span class="font-medium text-academic-900">R.H. Suharto</span>, B. Yusuf, and A.A.P.J. Wahyuda
-                            </p>
-                            <p class="text-academic-500 text-sm italic mt-1">Open Veterinary Journal, 15 (10): 4997–5008.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Publication 2 -->
-                <article class="group relative bg-academic-50 p-6 rounded-xl border border-academic-200 hover:border-academic-300 transition-all hover:shadow-sm">
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="flex-shrink-0 sm:w-24 text-academic-400 font-mono text-sm pt-1">2025</div>
-                        <div>
-                            <h3 class="font-serif text-lg font-bold text-academic-900 group-hover:text-academic-accent transition-colors">
-                                <a href="#" class="focus:outline-none">
-                                    <span class="absolute inset-0" aria-hidden="true"></span>
-                                    Exploration of Tuberculosis Transmission between Humans and Cows through Milk Testing in South Sulawesi, Indonesia
-                                </a>
-                            </h3>
-                            <p class="text-academic-600 mt-1">
-                                A.A.P.J. Wahyuda, <span class="font-medium text-academic-900">R.H. Suharto</span>, M. Muflih, Rasdiyanah, and M. Danawir
-                            </p>
-                            <p class="text-academic-500 text-sm italic mt-1">International Journal of Veterinary Science, 14(6), 1190–1195.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Publication 3 -->
-                <article class="group relative bg-academic-50 p-6 rounded-xl border border-academic-200 hover:border-academic-300 transition-all hover:shadow-sm">
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="flex-shrink-0 sm:w-24 text-academic-400 font-mono text-sm pt-1">2025</div>
-                        <div>
-                            <h3 class="font-serif text-lg font-bold text-academic-900 group-hover:text-academic-accent transition-colors">
-                                <a href="#" class="focus:outline-none">
-                                    <span class="absolute inset-0" aria-hidden="true"></span>
-                                    Prevalence and Risk Factors of Repeat Breeding in Dairy Cows in Cendana District, Enrekang Regency, South Sulawesi, Indonesia
-                                </a>
-                            </h3>
-                            <p class="text-academic-600 mt-1">
-                                K.N. Pongkapadang, Amrin, <span class="font-medium text-academic-900">R.H. Suharto</span>, M. Yusuf, E.V.G. Komba, J.K.N. Layos, F.Y. Purba, and S. Yusuf
-                            </p>
-                            <p class="text-academic-500 text-sm italic mt-1">Open Veterinary Journal, 15 (9): 4548–4557.</p>
-                        </div>
-                    </div>
-                </article>				
-            </div>
-        </div>
-    </section>
-    
-    <!-- Experience & Education (CV) Section -->
-    <section id="cv" class="py-20 bg-academic-50 border-t border-academic-200">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-2 gap-12 lg:gap-20">
-                
-                <!-- Education -->
-                <div>
-                    <h3 class="font-serif text-2xl font-bold text-academic-900 mb-6 flex items-center gap-2">
-                        <i class="ph ph-graduation-cap text-academic-400"></i> Education
-                    </h3>
-                    <div class="space-y-8 pl-4 border-l-2 border-academic-200">
-                        <div class="relative pl-6">
-                            <div class="absolute -left-[21px] top-1.5 w-4 h-4 rounded-full bg-white border-4 border-academic-300"></div>
-                            <h4 class="font-bold text-academic-900">Master of Science</h4>
-                            <div class="text-academic-600 text-sm mb-1">Gadjah Mada University, 2016</div>
-                            <p class="text-academic-500 text-sm italic">Thesis: "Kinetics of Toxoplasma gondii infection in Rats"</p>
-                        </div>
-                        <div class="relative pl-6">
-                            <div class="absolute -left-[21px] top-1.5 w-4 h-4 rounded-full bg-white border-4 border-academic-300"></div>
-                            <h4 class="font-bold text-academic-900">Doctor of Veterinary Medicine</h4>
-                            <div class="text-academic-600 text-sm mb-1">Gadjah Mada University, 2012</div>
-                            <p class="text-academic-500 text-sm italic">Thesis: "Antibiotic Susceptibility of Staphylococcus aureus Isolated from Goat Milk in Sleman, Yogyakarta"</p>
-                        </div>
-                    </div>
+                <div class="w-40 h-40 md:w-52 md:h-52 rounded-2xl overflow-hidden shrink-0 border-2 border-accent-500/30 shadow-[0_0_32px_rgba(20,184,166,0.15)]">
+                    <img src="foto-profil.jpg" alt="Rian Hari Suharto" class="w-full h-full object-cover block">
                 </div>
 
-                <!-- Appointments -->
-                <div>
-                    <h3 class="font-serif text-2xl font-bold text-academic-900 mb-6 flex items-center gap-2">
-                        <i class="ph ph-buildings text-academic-400"></i> Appointments
-                    </h3>
-                    <div class="space-y-8 pl-4 border-l-2 border-academic-200">
-                        <div class="relative pl-6">
-                            <div class="absolute -left-[21px] top-1.5 w-4 h-4 rounded-full bg-academic-accent border-4 border-academic-100"></div>
-                            <h4 class="font-bold text-academic-900">Assistant Professor</h4>
-                            <div class="text-academic-600 text-sm mb-1">Hasanuddin University, 2023–Present</div>
-                        </div>
-                        <div class="relative pl-6">
-                            <div class="absolute -left-[21px] top-1.5 w-4 h-4 rounded-full bg-white border-4 border-academic-300"></div>
-                            <h4 class="font-bold text-academic-900">Head of Operational Service</h4>
-                            <div class="text-academic-600 text-sm mb-1">Parepare Agricultural Quarantine Office, 2020–2023</div>
-                        </div>
-                        <div class="relative pl-6">
-                            <div class="absolute -left-[21px] top-1.5 w-4 h-4 rounded-full bg-white border-4 border-academic-300"></div>
-                            <h4 class="font-bold text-academic-900">Quarantine Medical Veterinarian</h4>
-                            <div class="text-academic-600 text-sm mb-1">Makassar Agricultural Quarantine Office, 2019–2020</div>
-							<div class="text-academic-600 text-sm mb-1">Kendari Agricultural Quarantine Office, 2014–2019</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            
-            <div class="mt-12 text-center">
-                <a href="#" class="inline-flex items-center px-6 py-3 border border-academic-300 shadow-sm text-base font-medium rounded-md text-academic-700 bg-white hover:bg-academic-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-academic-500">
-                    <i class="ph ph-download-simple mr-2"></i> Download Full CV
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- NEW: Teaching Section -->
-    <section id="teaching" class="py-20 bg-white border-y border-academic-100">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="mb-12">
-                <h2 class="font-serif text-3xl font-bold text-academic-900 mb-4">Teaching</h2>
-                <div class="h-1 w-20 bg-academic-accent rounded"></div>
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Course 1 -->
-                <div class="bg-white p-6 rounded-lg border border-academic-100 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="text-lg font-bold text-academic-900">Veterinary Epidemiology and Economics</h4>
-                            <p class="text-academic-600 text-sm mt-1">Coordinator of Team Teaching</p>
-                        </div>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Undergraduate</span>
-                    </div>
-                    <p class="text-academic-500 text-sm mt-4">
-                        An introductory course covering disease patterns in animal populations and outbreak investigation techniques.
+                <div class="flex-1">
+                    <p class="text-accent-400 text-sm font-mono tracking-widest mb-3 uppercase">DVM., M.Sc.</p>
+                    <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-5 text-transparent bg-clip-text bg-gradient-to-r from-accent-400 via-cyan-300 to-blue-400 leading-none">
+                        Rian Hari Suharto
+                    </h1>
+                    <p class="text-slate-400 text-base leading-relaxed max-w-lg mb-8">
+                        Lecturer at <strong class="text-slate-200 font-semibold">Hasanuddin University</strong>, Makassar, Indonesia. Former quarantine medical veterinarian. Exploring the intersection of Veterinary Education, Veterinary Epidemiology, and One Welfare.
                     </p>
-                </div>
-
-                <!-- Course 2 -->
-                <div class="bg-white p-6 rounded-lg border border-academic-100 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="text-lg font-bold text-academic-900">Quarantine Internship</h4>
-                            <p class="text-academic-600 text-sm mt-1">Coordinator of Team Teaching</p>
-                        </div>
-                         <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-medium">Graduate</span>
+                    
+                    <div class="flex flex-wrap items-center gap-3">
+                        <a href="mailto:rianhs.89@gmail.com" class="p-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-400 hover:bg-accent-500/10 hover:border-accent-500/30 hover:text-accent-400 transition-all" title="Personal Email"><i data-lucide="mail" class="w-5 h-5"></i></a>
+                        <a href="mailto:rianhs@unhas.ac.id" class="p-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-400 hover:bg-accent-500/10 hover:border-accent-500/30 hover:text-accent-400 transition-all" title="Academic Email"><i data-lucide="mail" class="w-5 h-5"></i></a>
+                        <a href="https://instagram.com/rianhs_" target="_blank" class="p-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-400 hover:bg-accent-500/10 hover:border-accent-500/30 hover:text-accent-400 transition-all" title="Instagram"><i data-lucide="camera" class="w-5 h-5"></i></a>
+						<a href="https://www.youtube.com/@RianHS" target="_blank" class="p-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-400 hover:bg-accent-500/10 hover:border-accent-500/30 hover:text-accent-400 transition-all" title="YouTube"><i data-lucide="play-circle" class="w-5 h-5"></i></a>
                     </div>
-                    <p class="text-academic-500 text-sm mt-4">
-                        Internship in Animal, Fish, and Quarantine Offices across Indonesia.
-                    </p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- NEW: Achievements Section -->
-    <section id="achievements" class="py-20 bg-academic-50">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-12">
-                <h2 class="font-serif text-3xl font-bold text-academic-900 mb-4">Achievements</h2>
-                <div class="h-1 w-20 bg-academic-accent rounded"></div>
+        <section id="courses">
+            <div class="mb-8 border-l-4 border-accent-500 pl-4">
+                <h2 class="text-2xl font-bold text-white">Courses</h2>
+                <p class="text-slate-400 text-sm mt-1">Undergraduate (S1) and Professional (PPDH) Phase of Veterinary Education in Hasanuddin University.</p>
             </div>
-            
-            <div class="grid md:grid-cols-3 gap-6">
-                
-                <!-- Achievement 1 -->
-                <div class="bg-white p-6 rounded-xl border border-academic-200 hover:border-academic-300 shadow-sm hover:shadow-md transition-all group">
-                    <!-- Icon Square -->
-                    <div class="w-12 h-12 bg-academic-50 rounded-lg flex items-center justify-center text-academic-accent mb-4 group-hover:bg-academic-accent group-hover:text-white transition-colors">
-                        <i class="ph ph-medal text-2xl"></i>
-                    </div>
-                    <!-- Text -->
-                    <h3 class="font-bold text-academic-900 leading-snug">Gold Medal for Presentation</h3>
-                    <p class="text-sm text-academic-600 mt-2 leading-relaxed">
-                        PKM-RSH Scheme at the 38th National Student Scientific Week (PIMNAS).
-                    </p>
-                </div>
 
-                <!-- Achievement 2 -->
-                <div class="bg-white p-6 rounded-xl border border-academic-200 hover:border-academic-300 shadow-sm hover:shadow-md transition-all group">
-                    <!-- Icon Square -->
-                    <div class="w-12 h-12 bg-academic-50 rounded-lg flex items-center justify-center text-academic-accent mb-4 group-hover:bg-academic-accent group-hover:text-white transition-colors">
-                        <i class="ph ph-microphone-stage text-2xl"></i>
-                    </div>
-                    <!-- Text -->
-                    <h3 class="font-bold text-academic-900 leading-snug">Plenary Speaker</h3>
-                    <p class="text-sm text-academic-600 mt-2 leading-relaxed">
-                        International Seminar on Biodiversity, Central Mindanao University, Philippines.
-                    </p>
-                </div>
-
-                <!-- Achievement 3 -->
-                <div class="bg-white p-6 rounded-xl border border-academic-200 hover:border-academic-300 shadow-sm hover:shadow-md transition-all group">
-                    <!-- Icon Square -->
-                    <div class="w-12 h-12 bg-academic-50 rounded-lg flex items-center justify-center text-academic-accent mb-4 group-hover:bg-academic-accent group-hover:text-white transition-colors">
-                        <i class="ph ph-presentation-chart text-2xl"></i>
-                    </div>
-                    <!-- Text -->
-                    <h3 class="font-bold text-academic-900 leading-snug">Best Oral Presentation</h3>
-                    <p class="text-sm text-academic-600 mt-2 leading-relaxed">
-                        AJIVE 2025 at Universitas Brawijaya.
-                    </p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer (Updated to 3 Columns) -->
-    <footer id="contact" class="bg-academic-900 text-white py-16">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-3 gap-12">
-                <!-- Column 1: Contact Info -->
-                <div class="col-span-1">
-                    <h3 class="font-serif text-xl font-bold mb-6 text-academic-100">Contact</h3>
-                    <address class="not-italic space-y-4 text-academic-300">
-                        <div class="flex items-start gap-3">
-                            <i class="ph ph-map-pin text-xl mt-1 text-academic-400"></i>
-                            <div>
-                                <p class="text-white font-medium">Faculty of Medicine</p>
-                                <p>Hasanuddin University</p>
-                                <p>Makassar, South Sulawesi</p>
-                                <p>Indonesia</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-panel rounded-2xl p-6 opacity-60 flex flex-col justify-between border border-slate-800">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-slate-800 rounded-lg text-slate-500">
+                                <i data-lucide="calculator" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="bg-slate-800 text-slate-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">Undergraduate Program</span>
+                                <span class="text-xs text-slate-500 font-medium">3rd Semester</span>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <i class="ph ph-envelope text-xl text-academic-400"></i>
-                            <a href="mailto:rianhs@unhas.ac.id" class="hover:text-white transition-colors">rianhs@unhas.ac.id</a>
-                        </div>
-                    </address>
+                        <h3 class="text-lg font-bold mb-2 text-slate-300">Biostatistics</h3>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 pt-4 border-t border-slate-800">Coming Soon</div>
                 </div>
 
-                <!-- Column 2: Quick Links -->
-                <div class="col-span-1">
-                    <h3 class="font-serif text-xl font-bold mb-6 text-academic-100">Quick Links</h3>
-                    <ul class="space-y-3 text-academic-300">
-                        <li><a href="#about" class="hover:text-white transition-colors">Home</a></li>
-                        <li><a href="#publications" class="hover:text-white transition-colors">Publications</a></li>
-                        <li><a href="#teaching" class="hover:text-white transition-colors">Teaching Resources</a></li>
-                        <li><a href="https://unhas.ac.id" target="_blank" class="hover:text-white transition-colors">Hasanuddin University</a></li>
-                    </ul>
+                <div class="glass-panel rounded-2xl p-6 opacity-60 flex flex-col justify-between border border-slate-800">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-slate-800 rounded-lg text-slate-500">
+                                <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="bg-slate-800 text-slate-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">Undergraduate Program</span>
+                                <span class="text-xs text-slate-500 font-medium">3rd Semester</span>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-slate-300">Veterinary Public Health & Animal Welfare</h3>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 pt-4 border-t border-slate-800">Coming Soon</div>
+                </div>
+				
+                <div class="glass-panel rounded-2xl p-6 opacity-60 flex flex-col justify-between border border-slate-800">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-slate-800 rounded-lg text-slate-500">
+                                <i data-lucide="flask-conical" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="bg-slate-800 text-slate-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">Undergraduate Program</span>
+                                <span class="text-xs text-slate-500 font-medium">4th Semester</span>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-slate-300">Scientific Methodology</h3>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 pt-4 border-t border-slate-800">Coming Soon</div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 opacity-60 flex flex-col justify-between border border-slate-800">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-slate-800 rounded-lg text-slate-500">
+                                <i data-lucide="beef" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="bg-slate-800 text-slate-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">Undergraduate Program</span>
+                                <span class="text-xs text-slate-500 font-medium">5th Semester</span>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-slate-300">Food Hygiene of Animal Origin</h3>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 pt-4 border-t border-slate-800">Coming Soon</div>
+                </div>
+
+                <a href="https://rianhs.github.io/epidemiologi-veteriner/" target="_blank" class="glass-card rounded-2xl p-6 group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-accent-500/20 rounded-lg text-accent-400 group-hover:bg-accent-500 group-hover:text-white transition-colors">
+                            <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                        </div>
+                        <div class="flex flex-col items-end gap-1">
+                            <span class="bg-accent-500/20 text-accent-300 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">Undergraduate Program</span>
+                            <span class="text-xs text-slate-500 font-medium">6th Semester</span>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-slate-100 group-hover:text-accent-400 transition-colors">Veterinary Epidemiology and Economics</h3>
+                    <div class="flex items-center text-sm text-accent-400 font-bold mt-6 pt-4 border-t border-accent-500/30">
+                        Open Portal <i data-lucide="arrow-right" class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <div class="glass-panel rounded-2xl p-6 opacity-60 flex flex-col justify-between border border-slate-800">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-slate-800 rounded-lg text-slate-500">
+                                <i data-lucide="scale" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="bg-slate-800 text-slate-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">Undergraduate Program</span>
+                                <span class="text-xs text-slate-500 font-medium">6th Semester</span>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-slate-300">Veterinary Regulation and Ethics</h3>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 pt-4 border-t border-slate-800">Coming Soon</div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 opacity-60 flex flex-col justify-between border border-slate-800">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-slate-800 rounded-lg text-slate-500">
+                                <i data-lucide="building-2" class="w-6 h-6"></i>
+                            </div>
+                            <span class="bg-[#5a4d72]/30 text-[#8b7db3] text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide border border-[#5a4d72]/50">Professional Program</span>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-slate-300">Vet Public Health, Epidemiology, and Official Services</h3>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 pt-4 border-t border-slate-800">Coming Soon</div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 opacity-60 flex flex-col justify-between border border-slate-800">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-slate-800 rounded-lg text-slate-500">
+                                <i data-lucide="plane-takeoff" class="w-6 h-6"></i>
+                            </div>
+                            <span class="bg-[#5a4d72]/30 text-[#8b7db3] text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide border border-[#5a4d72]/50">Professional Program</span>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-slate-300">Quarantine Field Practice</h3>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 pt-4 border-t border-slate-800">Coming Soon</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai-tools">
+            <div class="mb-8 border-l-4 border-accent-500 pl-4">
+                <h2 class="text-2xl font-bold text-white">AI Tools & Prompts</h2>
+                <p class="text-slate-400 text-sm mt-1">A collection of custom AI tools and prompt templates built across multiple platforms — shared openly for students and colleagues.</p>
+            </div>
+
+			<div class="mb-6 border-l-4 border-teal-500 pl-4">
+				<h3 class="text-base font-bold text-white">Prompt Templates</h3>
+				<p class="text-slate-500 text-xs mt-0.5">Can be used on all generative AI chat applications.</p>
+			</div>
+      
+			<div class="glass-card glass-card-teal rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row gap-6 items-start md:items-center border-teal-500/10 bg-teal-900/5 mb-12">
+				<div class="flex-grow space-y-4">
+					<div class="flex items-center gap-3 mb-2">
+						<div class="p-2.5 bg-teal-500/15 rounded-lg text-teal-400 w-fit">
+							<i data-lucide="library" class="w-5 h-5"></i>
+						</div>
+						<h4 class="text-lg font-bold text-slate-100">Prompt Library</h4>
+					</div>
+					<p class="text-slate-400 text-sm leading-relaxed max-w-2xl">
+						A collection of structured prompt frameworks to guide self-directed learning and simulated task completion. This collection includes:
+					</p>
+					<ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+						<li class="flex items-start gap-2 text-sm text-slate-300">
+							<i data-lucide="check-circle-2" class="w-4 h-4 text-teal-500 mt-0.5 shrink-0"></i>
+							<span>Guided mastery learning (Bloom's approach)</span>
+						</li>
+						<li class="flex items-start gap-2 text-sm text-slate-300">
+							<i data-lucide="check-circle-2" class="w-4 h-4 text-teal-500 mt-0.5 shrink-0"></i>
+							<span>Skill tree-based learning (MMORPG style)</span>
+						</li>
+						<li class="flex items-start gap-2 text-sm text-slate-300">
+							<i data-lucide="check-circle-2" class="w-4 h-4 text-teal-500 mt-0.5 shrink-0"></i>
+							<span>Strategic dilemma scenarios</span>
+						</li>
+					</ul>
+				</div>
+				<div class="shrink-0 w-full md:w-auto mt-4 md:mt-0">
+					<a href="prompts.html" class="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-900 text-sm font-bold transition-all shadow-lg shadow-teal-500/20">
+						Open Library <i data-lucide="arrow-right" class="w-4 h-4"></i>
+					</a>
+				</div>
+			</div>
+
+			<div class="mb-6 border-l-4 border-teal-500 pl-4">
+				<h3 class="text-base font-bold text-white">Custom AI Assistants</h3>
+				<p class="text-slate-500 text-xs mt-0.5">Google Gemini Gems & OpenAI Custom GPTs</p>
+			</div>
+      
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+				<div class="glass-card glass-card-teal rounded-2xl p-5 flex flex-col border-teal-500/10 bg-teal-900/5">
+				<div class="p-2.5 bg-teal-500/15 rounded-lg text-teal-400 w-fit mb-4">
+					<i data-lucide="lightbulb" class="w-5 h-5"></i>
+				</div>
+				<h4 class="text-sm font-bold text-slate-100 mb-2">Concept Explainer</h4>
+				<p class="text-slate-400 text-xs leading-relaxed flex-grow">Explains any concepts using plain language and analogies.</p>
+				<div class="flex items-center gap-4 mt-4 pt-3 border-t border-teal-500/20">
+					<a href="#" class="flex items-center gap-1.5 text-xs text-teal-400 font-semibold hover:text-teal-300 transition-colors">
+					<i data-lucide="sparkles" class="w-3.5 h-3.5"></i>Gemini Gem
+					</a>
+					<span class="w-1 h-1 rounded-full bg-slate-600"></span>
+					<a href="#" class="flex items-center gap-1.5 text-xs text-teal-400 font-semibold hover:text-teal-300 transition-colors">
+					<i data-lucide="cpu" class="w-3.5 h-3.5"></i>CustomGPT
+					</a>
+				</div>
+				</div>
+
+
+			</div>
+		</section>
+
+        <section id="research" class="grid lg:grid-cols-2 gap-12">
+            
+            <div>
+                <div class="mb-8 border-l-4 border-accent-500 pl-4">
+                    <h2 class="text-2xl font-bold text-white">Research & Publications</h2>
                 </div>
                 
-                <!-- Column 3: Connect -->
-                <div class="col-span-1">
-                     <h3 class="font-serif text-xl font-bold mb-6 text-academic-100">Connect</h3>
-                     <p class="text-academic-300 text-sm mb-4">
-                         Follow my research updates and academic activities on social platforms.
-                     </p>
-                     <div class="flex gap-4">
-                         <a href="#" class="w-10 h-10 rounded-full bg-academic-800 flex items-center justify-center text-academic-200 hover:bg-academic-700 hover:text-white transition-all">
-                             <i class="ph ph-twitter-logo text-xl"></i>
-                         </a>
-                         <a href="#" class="w-10 h-10 rounded-full bg-academic-800 flex items-center justify-center text-academic-200 hover:bg-academic-700 hover:text-white transition-all">
-                             <i class="ph ph-linkedin-logo text-xl"></i>
-                         </a>
-                         <a href="https://github.com/rianhs" class="w-10 h-10 rounded-full bg-academic-800 flex items-center justify-center text-academic-200 hover:bg-academic-700 hover:text-white transition-all">
-                             <i class="ph ph-github-logo text-xl"></i>
-                         </a>
-                     </div>
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Interests</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-slate-800 border border-slate-700 rounded-md text-xs text-slate-300">Veterinary Epidemiology</span>
+                            <span class="px-3 py-1 bg-slate-800 border border-slate-700 rounded-md text-xs text-slate-300">One Welfare</span>
+                            <span class="px-3 py-1 bg-slate-800 border border-slate-700 rounded-md text-xs text-slate-300">One Health</span>
+                            <span class="px-3 py-1 bg-slate-800 border border-slate-700 rounded-md text-xs text-slate-300">Animal Welfare</span>
+                            <span class="px-3 py-1 bg-slate-800 border border-slate-700 rounded-md text-xs text-slate-300">AI in Vet Education</span>
+                            <span class="px-3 py-1 bg-slate-800 border border-slate-700 rounded-md text-xs text-slate-300">Vet Public Health</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-800 pt-6">
+                        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Selected Publications</h4>
+                        <div class="space-y-4">
+                            <a href="https://doi.org/10.1186/s12917-025-05274-x" target="_blank" class="block p-4 rounded-xl border border-transparent hover:bg-slate-800 hover:border-slate-700 transition-all group">
+                                <h5 class="font-medium text-slate-200 group-hover:text-accent-400 transition-colors mb-1 leading-snug">Development and Validation of A Custom Matrix-Assisted Laser Desorption/Ionization Time-of-Flight Mass Spectrometry (MALDI-TOF MS) Peptide Database for the Rapid and Accurate Identification of Aeromonas spp. isolated from diseased fish</h5>
+                                <p class="text-xs text-slate-500">2026 · <span class="italic">BMC Veterinary Research</span> · M.F. Mursalim, H.M. Raharjo, H. Budiyansah, P. Chokmangmeepisarn, M. Mabrok, J. Yindee, P. Piamsomboon, M. Hatta, R.H. Suharto, and C. Rodkhum.</p>
+                            </a>
+                            <a href="https://doi.org/10.5455/OVJ.2025.v15.i10.18" target="_blank" class="block p-4 rounded-xl border border-transparent hover:bg-slate-800 hover:border-slate-700 transition-all group">
+                                <h5 class="font-medium text-slate-200 group-hover:text-accent-400 transition-colors mb-1 leading-snug">Veterinary Education and Sustainable Development Goals: A Perspective from Professional Students in Indonesia</h5>
+                                <p class="text-xs text-slate-500">2025 · <span class="italic">Open Veterinary Journal</span> · R.H. Suharto, B. Yusuf, and A.A.P.J. Wahyuda</p>
+                            </a>
+                            <a href="https://doi.org/10.47278/journal.ijvs/2025.070" target="_blank" class="block p-4 rounded-xl border border-transparent hover:bg-slate-800 hover:border-slate-700 transition-all group">
+                                <h5 class="font-medium text-slate-200 group-hover:text-accent-400 transition-colors mb-1 leading-snug">Exploration of Tuberculosis Transmission between Humans and Cows through Milk Testing in South Sulawesi, Indonesia</h5>
+                                <p class="text-xs text-slate-500">2025 · <span class="italic">International Journal of Veterinary Science</span> ·  A.A.P.J. Wahyuda, R.H. Suharto, M. Muflih, Rasdiyanah, and M. Danawir</p>
+                            </a>
+                        </div>
+                    </div>
+					
+					<div class="mt-6 pt-6 border-t border-slate-800">
+						<h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Full Publications</h4>
+						<div class="flex flex-wrap gap-2">
+						<a href="https://scholar.google.com/citations?user=SXG-IGMAAAAJ" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 text-xs font-medium hover:bg-teal-500/10 hover:border-teal-500/30 hover:text-teal-300 transition-all">
+							<i data-lucide="book-open" class="w-3.5 h-3.5"></i> Google Scholar
+						</a>
+						<a href="https://www.scopus.com/authid/detail.uri?authorId=60001699800" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 text-xs font-medium hover:bg-teal-500/10 hover:border-teal-500/30 hover:text-teal-300 transition-all">
+							<i data-lucide="microscope" class="w-3.5 h-3.5"></i> Scopus
+						</a>
+						<a href="https://sinta.kemdiktisaintek.go.id/authors/profile/6857037" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 text-xs font-medium hover:bg-teal-500/10 hover:border-teal-500/30 hover:text-teal-300 transition-all">
+							<i data-lucide="activity" class="w-3.5 h-3.5"></i> SINTA
+						</a>
+						<a href="https://orcid.org/0009-0006-0753-535X" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 text-xs font-medium hover:bg-teal-500/10 hover:border-teal-500/30 hover:text-teal-300 transition-all">
+							<i data-lucide="fingerprint" class="w-3.5 h-3.5"></i> ORCID
+						</a>
+						<a href="https://www.researchgate.net/profile/Rian-Suharto-2" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 text-xs font-medium hover:bg-teal-500/10 hover:border-teal-500/30 hover:text-teal-300 transition-all">
+							<i data-lucide="network" class="w-3.5 h-3.5"></i> ResearchGate
+						</a>
+						</div>
+					</div>
+          </div>
+					
+					
+					
                 </div>
             </div>
 
-            <div class="border-t border-academic-800 mt-16 pt-8 text-center text-academic-500 text-sm">
-                <p>&copy; 2025 Rian H.S. Powered by GitHub Pages.</p>
+            <div id="cv">
+                <div class="mb-8 border-l-4 border-accent-500 pl-4">
+                    <h2 class="text-2xl font-bold text-white">Curriculum Vitae</h2>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-8">
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i data-lucide="graduation-cap" class="w-4 h-4"></i> Education
+                        </h4>
+                        <div class="space-y-4 border-l-2 border-slate-800 ml-2 pl-4">
+                            <div class="relative">
+                                <div class="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-accent-500"></div>
+                                <div class="text-xs text-slate-500 font-mono mb-1">2016</div>
+                                <h5 class="font-medium text-slate-200 text-sm">M.Sc. in Veterinary Science</h5>
+                                <p class="text-xs text-slate-400">Universitas Gadjah Mada</p>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-slate-600"></div>
+                                <div class="text-xs text-slate-500 font-mono mb-1">2012</div>
+                                <h5 class="font-medium text-slate-200 text-sm">drh. (Doctor of Veterinary Medicine)</h5>
+                                <p class="text-xs text-slate-400">Universitas Gadjah Mada</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i data-lucide="briefcase" class="w-4 h-4"></i> Experience
+                        </h4>
+                        <div class="space-y-4 border-l-2 border-slate-800 ml-2 pl-4">
+                            <div class="relative">
+                                <div class="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-accent-500"></div>
+                                <div class="text-xs text-slate-500 font-mono mb-1">2023–now</div>
+                                <h5 class="font-medium text-slate-200 text-sm">Lecturer</h5>
+                                <p class="text-xs text-slate-400">Hasanuddin University</p>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-slate-600"></div>
+                                <div class="text-xs text-slate-500 font-mono mb-1">2014–2023</div>
+                                <h5 class="font-medium text-slate-200 text-sm">Quarantine Veterinary Medical Officer</h5>
+                                <p class="text-xs text-slate-400">Agricultural Quarantine Agency, Ministry of Agriculture</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i data-lucide="network" class="w-4 h-4"></i> Roles at Unhas
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-500 mt-0.5 shrink-0"></i> Lecturer — Veterinary Medicine, PPDH, and Paramedik Veteriner</li>
+                            <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-500 mt-0.5 shrink-0"></i> Head of Animal Ethics and Research, Unhas Vet Hospital</li>
+                            <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-500 mt-0.5 shrink-0"></i> Web & Social Media Manager</li>
+                            <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-500 mt-0.5 shrink-0"></i> Program Coordinator, OHCC Unhas</li>
+                            <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-500 mt-0.5 shrink-0"></i> Halal Auditor, LPPM Unhas</li>
+                            <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-500 mt-0.5 shrink-0"></i> Faculty Advisor, Karsa Student Activity Unit</li>
+                        </ul>
+                    </div>
+
+                    <div class="pt-2">
+                        <a href="cv.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-accent-500/50 text-slate-200 rounded-lg text-sm font-semibold transition-all w-full justify-center group">
+                            <i data-lucide="file-text" class="w-4 h-4 text-accent-500"></i> Read Full CV <i data-lucide="arrow-right" class="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800/50 bg-[#0f172a]">
+		<div class="max-w-7xl mx-auto px-6 py-8 text-center text-slate-500 text-sm">
+            <p>&copy; 2026 Rian Hari Suharto &nbsp;·&nbsp; Makassar, Indonesia</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script>
-        // Mobile Menu Toggle
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
-
-        // Sticky Navbar Effect
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 10) {
-                navbar.classList.add('shadow-md');
-                navbar.classList.replace('bg-white/90', 'bg-white/95');
-            } else {
-                navbar.classList.remove('shadow-md');
-                navbar.classList.replace('bg-white/95', 'bg-white/90');
-            }
-        });
-
-        // Smooth Scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                menu.classList.add('hidden'); 
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                const targetElement = document.querySelector(targetId);
-                if(targetElement){
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
+        lucide.createIcons();
     </script>
 </body>
 </html>
