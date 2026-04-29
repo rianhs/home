@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPH — First-Principles Thinking</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0f0f0e;
+  --surface: #171716;
+  --surface2: #1e1e1c;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8e4dc;
+  --muted: #7a7670;
+  --muted2: #9e9890;
+  --accent: #c8a96e;
+  --accent2: #e8c98a;
+  --red: #c4614a;
+  --green: #5a9e78;
+  --blue: #5a82b4;
+  --tag-bg: rgba(200,169,110,0.1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(15,15,14,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-brand {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.nav-links {
+  display: flex;
+  gap: 0.2rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-links a:hover {
+  color: var(--text);
+  background: var(--surface2);
+}
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6rem 2rem 4rem;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
+}
+.hero h1 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 2rem;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+.hero-desc {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.6;
+  font-weight: 400;
+}
+.hero-meta {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.hero-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.hero-meta-item .label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero-meta-item .value {
+  font-size: 0.88rem;
+  color: var(--muted2);
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hero-scroll::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--muted), transparent);
+}
+
+/* ── SECTIONS ── */
+.section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+  border-top: 1px solid var(--border);
+}
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 3.5rem;
+}
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  padding-top: 0.5rem;
+  flex-shrink: 0;
+  min-width: 2.5rem;
+}
+.section h2 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.section h2 em { font-style: normal; color: var(--accent); }
+
+/* ── DEFINITION BLOCK ── */
+.def-block {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+.def-block .def-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+}
+.def-block .def-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: var(--text);
+  font-weight: 400;
+}
+
+/* ── CRITERIA GRID ── */
+.criteria-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+@media (max-width: 640px) { .criteria-grid { grid-template-columns: 1fr; } }
+
+.criteria-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+}
+.criteria-card:hover { border-color: var(--border2); }
+.criteria-card .c-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+.criteria-card.aman .c-icon { background: rgba(196,97,74,0.15); color: var(--red); }
+.criteria-card.kualitas .c-icon { background: rgba(200,169,110,0.15); color: var(--accent); }
+.criteria-card.diterima .c-icon { background: rgba(90,130,180,0.15); color: var(--blue); }
+.criteria-card h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+.criteria-card p {
+  font-size: 0.83rem;
+  color: var(--muted2);
+  line-height: 1.6;
+}
+
+/* ── FACTS GRID ── */
+.facts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+@media (max-width: 540px) { .facts-grid { grid-template-columns: 1fr; } }
+
+.fact-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.fact-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  flex-shrink: 0;
+  padding-top: 0.15rem;
+}
+.fact-text {
+  font-size: 0.88rem;
+  color: var(--muted2);
+  line-height: 1.6;
+}
+.fact-text strong { color: var(--text); font-weight: 500; }
+
+/* ── STAGE TABS ── */
+.stage-nav {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+.stage-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.stage-btn.active, .stage-btn:hover {
+  background: var(--surface2);
+  border-color: var(--border2);
+  color: var(--text);
+}
+.stage-btn.active { border-color: var(--accent); color: var(--accent); }
+
+/* ── SUBSTAGE CARD ── */
+.substage {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1.2rem;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.substage:hover { border-color: var(--border2); }
+.substage-header {
+  padding: 1.4rem 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+.substage-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.substage-code {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+.substage-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.substage-badges {
+  display: flex;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+.badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.badge.aman { background: rgba(196,97,74,0.15); color: var(--red); }
+.badge.kualitas { background: rgba(200,169,110,0.15); color: var(--accent); }
+.badge.diterima { background: rgba(90,130,180,0.15); color: var(--blue); }
+
+.substage-chevron {
+  color: var(--muted);
+  font-size: 0.7rem;
+  transition: transform 0.25s;
+  flex-shrink: 0;
+}
+.substage.open .substage-chevron { transform: rotate(180deg); }
+
+.substage-body {
+  display: none;
+  padding: 0 1.8rem 1.8rem;
+  border-top: 1px solid var(--border);
+}
+.substage.open .substage-body { display: block; }
+
+/* ── SUBSTAGE CONTENT ── */
+.comp-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 1.4rem 0 0.6rem;
+}
+.comp-text {
+  font-size: 0.88rem;
+  color: var(--muted2);
+  line-height: 1.7;
+}
+.comp-text strong { color: var(--text); font-weight: 500; }
+
+/* GAP TABLE */
+.gap-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.6rem 0;
+  font-size: 0.83rem;
+}
+.gap-table thead tr {
+  border-bottom: 1px solid var(--border2);
+}
+.gap-table th {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.5rem 0.8rem;
+  text-align: left;
+  font-weight: 400;
+}
+.gap-table th:first-child { color: var(--red); }
+.gap-table th:last-child { color: var(--green); }
+.gap-table td {
+  padding: 0.6rem 0.8rem;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.55;
+  color: var(--muted2);
+}
+.gap-table td:first-child { color: rgba(196,97,74,0.8); }
+.gap-table td:last-child { color: rgba(90,158,120,0.9); }
+.gap-table tr:last-child td { border-bottom: none; }
+
+/* RESOURCES */
+.resources-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin: 0.6rem 0;
+}
+@media (max-width: 480px) { .resources-grid { grid-template-columns: 1fr; } }
+.resource-item {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+}
+.resource-item .r-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.resource-item .r-text {
+  font-size: 0.82rem;
+  color: var(--muted2);
+  line-height: 1.55;
+}
+
+/* PARAMETER */
+.param-list {
+  list-style: none;
+  margin: 0.6rem 0;
+}
+.param-list li {
+  font-size: 0.83rem;
+  color: var(--muted2);
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  line-height: 1.5;
+}
+.param-list li::before {
+  content: '✓';
+  color: var(--green);
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  margin-top: 0.1rem;
+}
+.param-list li:last-child { border-bottom: none; }
+
+/* ── MAPPING TABLE ── */
+.mapping-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin: 1.5rem 0;
+}
+.mapping-table thead tr {
+  border-bottom: 1px solid var(--border2);
+}
+.mapping-table th {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.7rem 1rem;
+  text-align: left;
+  color: var(--muted);
+  font-weight: 400;
+}
+.mapping-table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  color: var(--muted2);
+}
+.mapping-table tr:last-child td { border-bottom: none; }
+.mapping-table tr:hover td { background: var(--surface2); }
+.mapping-table td:first-child {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.mapping-table td:nth-child(2) { color: var(--text); font-size: 0.88rem; }
+.dot { font-size: 1rem; }
+.dot.yes-aman { color: var(--red); }
+.dot.yes-kualitas { color: var(--accent); }
+.dot.yes-diterima { color: var(--blue); }
+.dot.no { color: var(--border2); }
+
+/* ── INSIGHT BOX ── */
+.insight {
+  background: var(--surface2);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 1.2rem 1.5rem;
+  margin: 2rem 0;
+}
+.insight p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 0.4rem;
+  font-weight: 400;
+}
+.insight .insight-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-style: normal;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 3rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+footer .f-left {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  line-height: 1.8;
+}
+footer .f-right {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ── STAGE PANELS ── */
+.stage-panel { display: none; }
+.stage-panel.active { display: block; }
+
+/* ── PRINT / PROJECTOR ── */
+@media print {
+  nav, .hero-scroll { display: none; }
+  .substage-body { display: block !important; }
+  body { background: white; color: black; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand">RPH · First-Principles</span>
+  <ul class="nav-links">
+    <li><a href="#fondasi">Fondasi</a></li>
+    <li><a href="#tujuan">Tujuan</a></li>
+    <li><a href="#tahapan">Tahapan</a></li>
+    <li><a href="#peta">Peta Kriteria</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Rumah Potong Hewan</h1>
+  <p class="hero-desc">Program Studi Paramedik Veteriner, Fakultas Vokasi, Universitas Hasanuddin</p>
+</section>
+
+<!-- FONDASI -->
+<section class="section" id="fondasi">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Definisi <em>Dasar</em></h2>
+  </div>
+
+  <div class="def-block">
+    <div class="def-label">Rumah Potong Hewan</div>
+    <div class="def-text">Unit yang mengubah hewan hidup menjadi karkas.</div>
+  </div>
+
+  <div class="def-block">
+    <div class="def-label">Karkas</div>
+    <div class="def-text">Bagian tubuh hewan yang telah disembelih dan dikuliti, yang mencakup daging dan tulang, serta tidak mencakup kepala, kaki, dan jeroan.</div>
+  </div>
+</section>
+
+<!-- TUJUAN -->
+<section class="section" id="tujuan">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>Tujuan dan <em>Kriteria</em></h2>
+  </div>
+
+  <p style="color:var(--muted2); margin-bottom:2rem; max-width:560px;">RPH bertujuan menghasilkan karkas yang memenuhi tiga kriteria esensial berikut.</p>
+
+  <div class="criteria-grid">
+    <div class="criteria-card aman">
+      <div class="c-icon">⬡</div>
+      <h3>Aman</h3>
+      <p>Tidak mengandung bahaya biologis, kimiawi, maupun fisik yang membahayakan konsumen.</p>
+    </div>
+    <div class="criteria-card kualitas">
+      <div class="c-icon">◈</div>
+      <h3>Berkualitas</h3>
+      <p>Memiliki sifat fisikokimia yang unggul — pH, warna, tekstur, komposisi, dan daya simpan.</p>
+    </div>
+    <div class="criteria-card diterima">
+      <div class="c-icon">○</div>
+      <h3>Diterima Konsumen</h3>
+      <p>Memenuhi standar yang disepakati secara sosial, budaya, dan regulasi — termasuk halal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TAHAPAN -->
+<section class="section" id="tahapan">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Tahapan dan <em>Aktivitas Kunci</em></h2>
+  </div>
+
+  <p style="color:var(--muted2); margin-bottom:2rem; max-width:600px;">Tiga tahap dibagi berdasarkan <em>tujuan aktivitasnya</em>, bukan sekadar urutan kronologis. Klik setiap sub-tahapan untuk melihat detail.</p>
+
+  <div class="stage-nav">
+    <button class="stage-btn active" onclick="showStage('pra')">Pra-penyembelihan</button>
+    <button class="stage-btn" onclick="showStage('sembelih')">Penyembelihan</button>
+    <button class="stage-btn" onclick="showStage('pasca')">Pasca-penyembelihan</button>
+  </div>
+
+  <!-- PRA -->
+  <div class="stage-panel active" id="panel-pra">
+    <p style="color:var(--muted); font-size:0.83rem; margin-bottom:1.5rem; font-family:'DM Mono',monospace; letter-spacing:0.05em;">Tujuan tahap: memastikan hewan layak masuk proses</p>
+
+    <!-- 1.1 -->
+    <div class="substage" onclick="toggleSubstage(this)">
+      <div class="substage-header">
+        <div class="substage-header-left">
+          <span class="substage-code">1.1</span>
+          <span class="substage-title">Penerimaan</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="substage-badges">
+            <span class="badge aman">Aman</span>
+            <span class="badge diterima">Diterima</span>
+          </div>
+          <span class="substage-chevron">▾</span>
+        </div>
+      </div>
+      <div class="substage-body">
+        <div class="comp-label">Tujuan</div>
+        <p class="comp-text">Memastikan hewan yang masuk RPH berasal dari sumber yang sah dan dalam kondisi yang memenuhi syarat dasar untuk diproses.</p>
+
+        <div class="comp-label">Gap — Kondisi yang Tidak Diinginkan → Diinginkan</div>
+        <table class="gap-table">
+          <thead><tr><th>Tidak diinginkan</th><th>Diinginkan</th></tr></thead>
+          <tbody>
+            <tr><td>Hewan masuk tanpa dokumen asal-usul</td><td>Setiap hewan disertai dokumen resmi yang valid</td></tr>
+            <tr><td>Hewan sakit parah atau sekarat diterima masuk</td><td>Hewan dengan kondisi kritis ditolak atau dipisahkan sejak kedatangan</td></tr>
+            <tr><td>Hewan mengalami cedera transportasi tanpa dokumentasi</td><td>Kondisi hewan saat tiba terdokumentasi dan cedera teridentifikasi</td></tr>
+          </tbody>
+        </table>
+
+        <div class="comp-label">Aktivitas Kunci</div>
+        <p class="comp-text">Verifikasi dokumen, pemeriksaan visual awal, penimbangan, penandaan, dan penempatan di kandang penerimaan.</p>
+
+        <div class="comp-label">Sumber Daya</div>
+        <div class="resources-grid">
+          <div class="resource-item">
+            <div class="r-label">Sarana / Prasarana</div>
+            <div class="r-text">Kandang penerimaan, timbangan, fasilitas penampungan sementara, sistem pencatatan</div>
+          </div>
+          <div class="resource-item">
+            <div class="r-label">Kompetensi</div>
+            <div class="r-text">Petugas yang mampu seleksi visual awal dan verifikasi dokumen</div>
+          </div>
+        </div>
+
+        <div class="comp-label">Parameter Keberhasilan</div>
+        <ul class="param-list">
+          <li>Semua hewan yang masuk terdokumentasi</li>
+          <li>Hewan bermasalah teridentifikasi dan terpisahkan sebelum masuk alur utama</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 1.2 -->
+    <div class="substage" onclick="toggleSubstage(this)">
+      <div class="substage-header">
+        <div class="substage-header-left">
+          <span class="substage-code">1.2</span>
+          <span class="substage-title">Pengistirahatan dan Pemuasaan</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="substage-badges">
+            <span class="badge aman">Aman</span>
+            <span class="badge kualitas">Berkualitas</span>
+          </div>
+          <span class="substage-chevron">▾</span>
+        </div>
+      </div>
+      <div class="substage-body">
+        <div class="comp-label">Tujuan</div>
+        <p class="comp-text">Memulihkan kondisi fisiologis hewan pasca transportasi untuk melindungi kualitas daging, dan mengosongkan saluran cerna untuk mengurangi risiko kontaminasi saat eviserasi.</p>
+
+        <div class="comp-label">Gap</div>
+        <table class="gap-table">
+          <thead><tr><th>Tidak diinginkan</th><th>Diinginkan</th></tr></thead>
+          <tbody>
+            <tr><td>Hewan langsung dipotong setelah transportasi</td><td>Hewan dipotong setelah periode istirahat yang cukup</td></tr>
+            <tr><td>Saluran cerna penuh saat eviserasi</td><td>Saluran cerna cukup kosong sehingga risiko kontaminasi minimal</td></tr>
+            <tr><td>Hewan mengalami stres berkepanjangan di kandang</td><td>Hewan berada dalam kondisi tenang sebelum masuk lini</td></tr>
+          </tbody>
+        </table>
+
+        <div class="comp-label">Aktivitas Kunci</div>
+        <p class="comp-text">Penempatan di kandang istirahat, pemberian air minum, pemuasaan pakan, monitoring kondisi hewan.</p>
+
+        <div class="comp-label">Sumber Daya</div>
+        <div class="resources-grid">
+          <div class="resource-item">
+            <div class="r-label">Sarana / Prasarana</div>
+            <div class="r-text">Kandang istirahat dengan ruang gerak, ventilasi, dan air memadai. Durasi 12–24 jam untuk ruminansia besar</div>
+          </div>
+          <div class="resource-item">
+            <div class="r-label">Kompetensi</div>
+            <div class="r-text">Petugas yang memahami kebutuhan fisiologis dasar hewan dan tanda-tanda stres</div>
+          </div>
+        </div>
+
+        <div class="comp-label">Parameter Keberhasilan</div>
+        <ul class="param-list">
+          <li>Hewan terlihat tenang, tidak menunjukkan tanda stres akut</li>
+          <li>Durasi istirahat terpenuhi sesuai spesies</li>
+          <li>Hewan tidak diberi pakan dalam periode yang ditentukan sebelum penyembelihan</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 1.3 -->
+    <div class="substage" onclick="toggleSubstage(this)">
+      <div class="substage-header">
+        <div class="substage-header-left">
+          <span class="substage-code">1.3</span>
+          <span class="substage-title">Pemeriksaan Ante Mortem</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="substage-badges">
+            <span class="badge aman">Aman</span>
+            <span class="badge diterima">Diterima</span>
+          </div>
+          <span class="substage-chevron">▾</span>
+        </div>
+      </div>
+      <div class="substage-body">
+        <div class="comp-label">Tujuan</div>
+        <p class="comp-text">Memastikan hanya hewan yang layak — dari sisi kesehatan dan keamanan pangan — yang masuk ke lini penyembelihan.</p>
+
+        <div class="comp-label">Gap</div>
+        <table class="gap-table">
+          <thead><tr><th>Tidak diinginkan</th><th>Diinginkan</th></tr></thead>
+          <tbody>
+            <tr><td>Hewan terinfeksi penyakit zoonosis dinyatakan layak potong</td><td>Hewan terinfeksi ditolak atau ditangguhkan pemotongannya</td></tr>
+            <tr><td>Hewan dengan residu obat masuk lini sebelum masa withdrawal selesai</td><td>Hewan dengan riwayat pengobatan ditahan hingga masa withdrawal selesai</td></tr>
+            <tr><td>Tidak ada dokumentasi hasil pemeriksaan</td><td>Setiap keputusan ante mortem tercatat dan dapat ditelusuri</td></tr>
+          </tbody>
+        </table>
+
+        <div class="comp-label">Aktivitas Kunci</div>
+        <p class="comp-text">Observasi hewan di kandang dan saat bergerak, pemeriksaan klinis individual jika diperlukan, keputusan: <strong>layak / ditangguhkan / ditolak</strong>, dokumentasi temuan.</p>
+
+        <div class="comp-label">Sumber Daya</div>
+        <div class="resources-grid">
+          <div class="resource-item">
+            <div class="r-label">Sarana / Prasarana</div>
+            <div class="r-text">Area pemeriksaan dengan pencahayaan memadai, formulir pencatatan, fasilitas isolasi</div>
+          </div>
+          <div class="resource-item">
+            <div class="r-label">Kompetensi</div>
+            <div class="r-text">Dokter hewan atau paramedik veteriner terlatih yang memahami tanda klinis penyakit dan dasar pengambilan keputusan ante mortem</div>
+          </div>
+        </div>
+
+        <div class="comp-label">Parameter Keberhasilan</div>
+        <ul class="param-list">
+          <li>Semua hewan yang masuk lini diperiksa dan terdokumentasi</li>
+          <li>Hewan bermasalah terpisahkan dengan keputusan yang tercatat</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEMBELIH -->
+  <div class="stage-panel" id="panel-sembelih">
+    <p style="color:var(--muted); font-size:0.83rem; margin-bottom:1.5rem; font-family:'DM Mono',monospace; letter-spacing:0.05em;">Tujuan tahap: mengeksekusi transisi dengan cara yang benar</p>
+
+    <!-- 2.1 -->
+    <div class="substage" onclick="toggleSubstage(this)">
+      <div class="substage-header">
+        <div class="substage-header-left">
+          <span class="substage-code">2.1</span>
+          <span class="substage-title">Penanganan Menuju Tempat Penyembelihan</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="substage-badges">
+            <span class="badge kualitas">Berkualitas</span>
+          </div>
+          <span class="substage-chevron">▾</span>
+        </div>
+      </div>
+      <div class="substage-body">
+        <div class="comp-label">Tujuan</div>
+        <p class="comp-text">Memindahkan hewan dari kandang ke tempat penyembelihan dengan cara yang meminimalkan stres, sehingga kondisi fisiologis hewan terjaga hingga momen penyembelihan.</p>
+
+        <div class="comp-label">Gap</div>
+        <table class="gap-table">
+          <thead><tr><th>Tidak diinginkan</th><th>Diinginkan</th></tr></thead>
+          <tbody>
+            <tr><td>Hewan dipaksa bergerak dengan kekerasan fisik</td><td>Hewan bergerak mengikuti alur secara alami dengan stres minimal</td></tr>
+            <tr><td>Hewan menyaksikan proses penyembelihan hewan lain</td><td>Hewan tidak terekspos stimulus yang memicu respons stres akut</td></tr>
+            <tr><td>Cedera terjadi selama penggiring</td><td>Hewan tiba di tempat penyembelihan tanpa cedera baru</td></tr>
+          </tbody>
+        </table>
+
+        <div class="comp-label">Aktivitas Kunci</div>
+        <p class="comp-text">Penggiring melalui jalur yang dirancang sesuai prinsip <em>low-stress handling</em>, penggunaan alat penggiring yang tepat, pengaturan antrian satu per satu.</p>
+
+        <div class="comp-label">Sumber Daya</div>
+        <div class="resources-grid">
+          <div class="resource-item">
+            <div class="r-label">Sarana / Prasarana</div>
+            <div class="r-text">Koridor tanpa sudut tajam, pencahayaan merata, lantai tidak licin, restraining box</div>
+          </div>
+          <div class="resource-item">
+            <div class="r-label">Kompetensi</div>
+            <div class="r-text">Petugas yang memahami prinsip animal handling dan perilaku hewan</div>
+          </div>
+        </div>
+
+        <div class="comp-label">Parameter Keberhasilan</div>
+        <ul class="param-list">
+          <li>Tidak ada cedera baru pada hewan</li>
+          <li>Hewan tidak menunjukkan tanda panik atau agitasi berlebihan selama penggiring</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2.2 -->
+    <div class="substage" onclick="toggleSubstage(this)">
+      <div class="substage-header">
+        <div class="substage-header-left">
+          <span class="substage-code">2.2</span>
+          <span class="substage-title">Pemingsanan</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="substage-badges">
+            <span class="badge kualitas">Berkualitas</span>
+            <span class="badge diterima">Diterima</span>
+          </div>
+          <span class="substage-chevron">▾</span>
+        </div>
+      </div>
+      <div class="substage-body">
+        <div class="comp-label">Tujuan</div>
+        <p class="comp-text">Membuat hewan tidak sadar sebelum disembelih untuk meminimalkan penderitaan dan memudahkan proses — tanpa mengorbankan kesempurnaan pengeluaran darah.</p>
+
+        <div class="comp-label">Gap</div>
+        <table class="gap-table">
+          <thead><tr><th>Tidak diinginkan</th><th>Diinginkan</th></tr></thead>
+          <tbody>
+            <tr><td>Hewan masih sadar saat penyembelihan dimulai</td><td>Hewan berada dalam kondisi tidak sadar sebelum penyembelihan</td></tr>
+            <tr><td>Pemingsanan menyebabkan kematian sebelum disembelih</td><td>Hewan pingsan namun jantung masih berdetak untuk memaksimalkan bleeding</td></tr>
+            <tr><td>Metode dan dosis pemingsanan tidak konsisten</td><td>Pemingsanan dilakukan dengan metode dan parameter yang terstandar</td></tr>
+          </tbody>
+        </table>
+
+        <div class="comp-label">Aktivitas Kunci</div>
+        <p class="comp-text">Pemingsanan menggunakan metode yang sesuai — <em>captive bolt</em>, <em>electrical stunning</em>, atau CO₂ — dengan parameter terstandar per spesies. Untuk penyembelihan halal tanpa stunning, sub-tahapan ini dimodifikasi atau ditiadakan sesuai regulasi.</p>
+
+        <div class="comp-label">Sumber Daya</div>
+        <div class="resources-grid">
+          <div class="resource-item">
+            <div class="r-label">Sarana / Prasarana</div>
+            <div class="r-text">Peralatan stunning yang terkalibrasi dan terawat, restraining box yang memadai</div>
+          </div>
+          <div class="resource-item">
+            <div class="r-label">Kompetensi</div>
+            <div class="r-text">Operator terlatih dan tersertifikasi dalam penggunaan alat stunning</div>
+          </div>
+        </div>
+
+        <div class="comp-label">Parameter Keberhasilan</div>
+        <ul class="param-list">
+          <li>Hewan kehilangan kesadaran segera setelah stunning</li>
+          <li>Tidak ada tanda kesadaran kembali sebelum penyembelihan</li>
+          <li>Jantung masih berfungsi pasca stunning</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2.3 -->
+    <div class="substage" onclick="toggleSubstage(this)">
+      <div class="substage-header">
+        <div class="substage-header-left">
+          <span class="substage-code">2.3</span>
+          <span class="substage-title">Penyembelihan dan Pengeluaran Darah</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="substage-badges">
+            <span class="badge aman">Aman</span>
+            <span class="badge kualitas">Berkualitas</span>
+            <span class="badge diterima">Diterima</span>
+          </div>
+          <span class="substage-chevron">▾</span>
+        </div>
+      </div>
+      <div class="substage-body">
+        <div class="comp-label">Tujuan</div>
+        <p class="comp-text">Mengeksekusi kematian hewan dengan cara yang memastikan pengeluaran darah semaksimal mungkin — karena darah yang tertinggal adalah media pertumbuhan mikroba dan menurunkan kualitas daging.</p>
+
+        <div class="comp-label">Gap</div>
+        <table class="gap-table">
+          <thead><tr><th>Tidak diinginkan</th><th>Diinginkan</th></tr></thead>
+          <tbody>
+            <tr><td>Penyembelihan tidak memotong pembuluh darah utama secara sempurna</td><td>Vena jugularis dan arteri karotis terpotong bersih dalam satu gerakan</td></tr>
+            <tr><td>Pengeluaran darah tidak tuntas</td><td>Darah keluar maksimal dalam waktu yang cukup</td></tr>
+            <tr><td>Darah mengkontaminasi area proses selanjutnya</td><td>Darah tertampung dan dialirkan ke sistem pembuangan yang terpisah</td></tr>
+          </tbody>
+        </table>
+
+        <div class="comp-label">Aktivitas Kunci</div>
+        <p class="comp-text">Penyembelihan dengan pisau tajam memotong trachea, esofagus, dan pembuluh darah utama; posisi hewan tergantung untuk memaksimalkan gravitasi; waktu bleeding yang cukup sebelum lini bergerak ke tahap berikutnya.</p>
+
+        <div class="comp-label">Sumber Daya</div>
+        <div class="resources-grid">
+          <div class="resource-item">
+            <div class="r-label">Sarana / Prasarana</div>
+            <div class="r-text">Pisau tajam dan bersih, rel gantung atau fasilitas bleeding memadai, saluran pembuangan darah</div>
+          </div>
+          <div class="resource-item">
+            <div class="r-label">Kompetensi</div>
+            <div class="r-text">Juru sembelih yang memahami anatomi leher dan teknik penyembelihan yang benar</div>
+          </div>
+        </div>
+
+        <div class="comp-label">Parameter Keberhasilan</div>
+        <ul class="param-list">
+          <li>Pemotongan pembuluh darah terkonfirmasi</li>
+          <li>Durasi bleeding terpenuhi</li>
+          <li>Volume darah proporsional dengan bobot hewan</li>
+          <li>Tidak ada kontaminasi darah ke area lini berikutnya</li>
+        </ul>
+
+        <div class="insight" style="margin-top:1.5rem;">
+          <p>Sub-tahapan ini adalah satu-satunya yang menyentuh ketiga kriteria sekaligus — yang secara logis menegaskan posisinya sebagai momen paling kritis dalam seluruh proses.</p>
+          <span class="insight-note">— dari peta kriteria</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASCA -->
+  <div class="stage-panel" id="panel-pasca">
+    <p style="color:var(--muted); font-size:0.83rem; margin-bottom:1.5rem; font-family:'DM Mono',monospace; letter-spacing:0.05em;">Tujuan tahap: memastikan karkas aman dan berkualitas keluar dari proses</p>
+
+    <!-- 3.1 -->
+    <div class="substage" onclick="toggleSubstage(this)">
+      <div class="substage-header">
+        <div class="substage-header-left">
+          <span class="substage-code">3.1</span>
+          <span class="substage-title">Pengulitan dan Eviserasi</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="substage-badges">
+            <span class="badge aman">Aman</span>
+            <span class="badge kualitas">Berkualitas</span>
+          </div>
+          <span class="substage-chevron">▾</span>
+        </div>
+      </div>
+      <div class="substage-body">
+        <div class="comp-label">Tujuan</div>
+        <p class="comp-text">Memisahkan kulit dan isi rongga tubuh dari karkas dengan cara yang menjaga integritas daging — karena pada tahap inilah risiko kontaminasi paling tinggi secara mekanis.</p>
+
+        <div class="comp-label">Gap</div>
+        <table class="gap-table">
+          <thead><tr><th>Tidak diinginkan</th><th>Diinginkan</th></tr></thead>
+          <tbody>
+            <tr><td>Isi saluran cerna tumpah dan mengkontaminasi permukaan karkas</td><td>Eviserasi dilakukan tanpa perforasi saluran cerna</td></tr>
+            <tr><td>Kulit menyentuh permukaan daging selama pengulitan</td><td>Kulit dan daging tidak bersentuhan langsung selama proses</td></tr>
+            <tr><td>Organ dan karkas dari hewan berbeda tercampur</td><td>Organ dan karkas dari hewan yang sama tetap terlacak sebagai satu unit</td></tr>
+            <tr><td>Peralatan digunakan bergantian tanpa sanitasi</td><td>Pisau dan peralatan disanitasi antar hewan</td></tr>
+          </tbody>
+        </table>
+
+        <div class="comp-label">Aktivitas Kunci</div>
+        <p class="comp-text">Pengulitan sistematis dari distal ke proksimal, eviserasi dengan insisi terkontrol, pemisahan organ merah dan putih, penandaan organ agar terlacak dengan karkasnya.</p>
+
+        <div class="comp-label">Sumber Daya</div>
+        <div class="resources-grid">
+          <div class="resource-item">
+            <div class="r-label">Sarana / Prasarana</div>
+            <div class="r-text">Pisau eviserasi khusus, meja atau rel eviserasi, fasilitas sanitasi di lini, wadah organ berlabel</div>
+          </div>
+          <div class="resource-item">
+            <div class="r-label">Kompetensi</div>
+            <div class="r-text">Petugas dengan keterampilan anatomi terapan dan teknik insisi yang tepat</div>
+          </div>
+        </div>
+
+        <div class="comp-label">Parameter Keberhasilan</div>
+        <ul class="param-list">
+          <li>Tidak ada perforasi saluran cerna yang terdokumentasi</li>
+          <li>Permukaan karkas bebas dari kontaminasi feses atau isi rumen yang terlihat</li>
+          <li>Setiap set organ terlacak ke karkasnya masing-masing</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3.2 -->
+    <div class="substage" onclick="toggleSubstage(this)">
+      <div class="substage-header">
+        <div class="substage-header-left">
+          <span class="substage-code">3.2</span>
+          <span class="substage-title">Pemeriksaan Post Mortem</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="substage-badges">
+            <span class="badge aman">Aman</span>
+            <span class="badge diterima">Diterima</span>
+          </div>
+          <span class="substage-chevron">▾</span>
+        </div>
+      </div>
+      <div class="substage-body">
+        <div class="comp-label">Tujuan</div>
+        <p class="comp-text">Mendeteksi kelainan pada karkas dan organ yang tidak teridentifikasi saat ante mortem — sebagai gerbang terakhir sebelum karkas dinyatakan layak masuk rantai distribusi pangan.</p>
+
+        <div class="comp-label">Gap</div>
+        <table class="gap-table">
+          <thead><tr><th>Tidak diinginkan</th><th>Diinginkan</th></tr></thead>
+          <tbody>
+            <tr><td>Karkas dengan lesi patologis lolos ke distribusi</td><td>Setiap kelainan terdeteksi dan ditindaklanjuti sesuai protokol</td></tr>
+            <tr><td>Organ diperiksa terpisah tanpa korelasi dengan karkasnya</td><td>Organ dan karkas diperiksa sebagai satu unit yang terintegrasi</td></tr>
+            <tr><td>Temuan tidak terdokumentasi</td><td>Setiap keputusan post mortem tercatat dan dapat ditelusuri</td></tr>
+            <tr><td>Karkas yang ditolak sebagian tidak ditrimming dengan benar</td><td>Bagian yang tidak layak dipisahkan secara tuntas sebelum karkas lolos</td></tr>
+          </tbody>
+        </table>
+
+        <div class="comp-label">Aktivitas Kunci</div>
+        <p class="comp-text">Inspeksi visual dan palpasi karkas, inspeksi dan insisi organ target (limfonodus, hati, paru, jantung, ginjal), keputusan: <strong>passed / conditional passed / condemned</strong>, dokumentasi temuan, trimming atau disposal.</p>
+
+        <div class="comp-label">Sumber Daya</div>
+        <div class="resources-grid">
+          <div class="resource-item">
+            <div class="r-label">Sarana / Prasarana</div>
+            <div class="r-text">Area inspeksi dengan pencahayaan memadai, pisau inspeksi, formulir pencatatan, stempel passed, fasilitas disposal</div>
+          </div>
+          <div class="resource-item">
+            <div class="r-label">Kompetensi</div>
+            <div class="r-text">Dokter hewan atau paramedik veteriner yang memahami patologi makroskopik dan kriteria keputusan post mortem</div>
+          </div>
+        </div>
+
+        <div class="comp-label">Parameter Keberhasilan</div>
+        <ul class="param-list">
+          <li>Semua karkas dan organ terdokumentasi hasil pemeriksaannya</li>
+          <li>Tidak ada karkas yang lolos tanpa keputusan yang tercatat</li>
+          <li>Bagian yang ditolak terdisposal sesuai protokol</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3.3 -->
+    <div class="substage" onclick="toggleSubstage(this)">
+      <div class="substage-header">
+        <div class="substage-header-left">
+          <span class="substage-code">3.3</span>
+          <span class="substage-title">Pendinginan dan Pelayuan</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="substage-badges">
+            <span class="badge aman">Aman</span>
+            <span class="badge kualitas">Berkualitas</span>
+          </div>
+          <span class="substage-chevron">▾</span>
+        </div>
+      </div>
+      <div class="substage-body">
+        <div class="comp-label">Tujuan</div>
+        <p class="comp-text">Menurunkan suhu karkas untuk menghambat pertumbuhan mikroba, sekaligus memberi waktu bagi proses biokimia post mortem yang meningkatkan keempukan dan kualitas daging.</p>
+
+        <div class="comp-label">Gap</div>
+        <table class="gap-table">
+          <thead><tr><th>Tidak diinginkan</th><th>Diinginkan</th></tr></thead>
+          <tbody>
+            <tr><td>Karkas masuk ruang pendingin panas tanpa jarak antar karkas</td><td>Karkas didinginkan dengan sirkulasi udara merata ke seluruh permukaan</td></tr>
+            <tr><td>Suhu inti karkas tidak mencapai target dalam waktu yang ditentukan</td><td>Suhu inti karkas mencapai ≤7°C dalam periode yang dipersyaratkan</td></tr>
+            <tr><td>Karkas dipotong sebelum rigor mortis selesai</td><td>Karkas melewati fase rigor dan resolusinya sebelum diproses lebih lanjut</td></tr>
+            <tr><td>Rantai dingin terputus antara RPH dan distribusi</td><td>Suhu karkas terjaga konsisten dari chilling room hingga ke tangan konsumen</td></tr>
+          </tbody>
+        </table>
+
+        <div class="comp-label">Aktivitas Kunci</div>
+        <p class="comp-text">Penggantungan karkas dengan jarak yang cukup, chilling bertahap, monitoring suhu inti secara berkala, pelayuan sesuai durasi per spesies, pencatatan suhu dan waktu.</p>
+
+        <div class="comp-label">Sumber Daya</div>
+        <div class="resources-grid">
+          <div class="resource-item">
+            <div class="r-label">Sarana / Prasarana</div>
+            <div class="r-text">Chilling room dengan kapasitas dan sistem pendingin memadai, termometer probe, rel gantung, sistem pencatatan suhu</div>
+          </div>
+          <div class="resource-item">
+            <div class="r-label">Kompetensi</div>
+            <div class="r-text">Petugas yang memahami hubungan antara suhu, rigor mortis, dan kualitas daging</div>
+          </div>
+        </div>
+
+        <div class="comp-label">Parameter Keberhasilan</div>
+        <ul class="param-list">
+          <li>Suhu inti karkas mencapai target dalam waktu yang ditentukan</li>
+          <li>Durasi pelayuan terpenuhi per spesies</li>
+          <li>Suhu terdokumentasi secara berkala</li>
+          <li>Tidak ada fluktuasi suhu signifikan selama penyimpanan</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PETA KRITERIA -->
+<section class="section" id="peta">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>Peta <em>Kriteria</em></h2>
+  </div>
+
+  <p style="color:var(--muted2); margin-bottom:2rem; max-width:600px; font-size:0.88rem;">Setiap sub-tahapan dipetakan ke tiga kriteria tujuan RPH. Perhatikan pola distribusinya.</p>
+
+  <table class="mapping-table">
+    <thead>
+      <tr>
+        <th>Kode</th>
+        <th>Sub-tahapan</th>
+        <th style="color:var(--red);">Aman</th>
+        <th style="color:var(--accent);">Berkualitas</th>
+        <th style="color:var(--blue);">Diterima</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1.1</td><td>Penerimaan</td>
+        <td><span class="dot yes-aman">●</span></td>
+        <td><span class="dot no">○</span></td>
+        <td><span class="dot yes-diterima">●</span></td>
+      </tr>
+      <tr>
+        <td>1.2</td><td>Pengistirahatan & pemuasaan</td>
+        <td><span class="dot yes-aman">●</span></td>
+        <td><span class="dot yes-kualitas">●</span></td>
+        <td><span class="dot no">○</span></td>
+      </tr>
+      <tr>
+        <td>1.3</td><td>Pemeriksaan ante mortem</td>
+        <td><span class="dot yes-aman">●</span></td>
+        <td><span class="dot no">○</span></td>
+        <td><span class="dot yes-diterima">●</span></td>
+      </tr>
+      <tr>
+        <td>2.1</td><td>Penanganan menuju penyembelihan</td>
+        <td><span class="dot no">○</span></td>
+        <td><span class="dot yes-kualitas">●</span></td>
+        <td><span class="dot no">○</span></td>
+      </tr>
+      <tr>
+        <td>2.2</td><td>Pemingsanan</td>
+        <td><span class="dot no">○</span></td>
+        <td><span class="dot yes-kualitas">●</span></td>
+        <td><span class="dot yes-diterima">●</span></td>
+      </tr>
+      <tr>
+        <td>2.3</td><td>Penyembelihan & pengeluaran darah</td>
+        <td><span class="dot yes-aman">●</span></td>
+        <td><span class="dot yes-kualitas">●</span></td>
+        <td><span class="dot yes-diterima">●</span></td>
+      </tr>
+      <tr>
+        <td>3.1</td><td>Pengulitan & eviserasi</td>
+        <td><span class="dot yes-aman">●</span></td>
+        <td><span class="dot yes-kualitas">●</span></td>
+        <td><span class="dot no">○</span></td>
+      </tr>
+      <tr>
+        <td>3.2</td><td>Pemeriksaan post mortem</td>
+        <td><span class="dot yes-aman">●</span></td>
+        <td><span class="dot no">○</span></td>
+        <td><span class="dot yes-diterima">●</span></td>
+      </tr>
+      <tr>
+        <td>3.3</td><td>Pendinginan & pelayuan</td>
+        <td><span class="dot yes-aman">●</span></td>
+        <td><span class="dot yes-kualitas">●</span></td>
+        <td><span class="dot no">○</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; margin-top:2rem;">
+    <div class="def-block" style="padding:1.2rem 1.5rem;">
+      <div class="def-label" style="color:var(--red);">Kriteria Aman</div>
+      <p style="font-size:0.83rem; color:var(--muted2); line-height:1.6;">Hadir di 7 dari 9 sub-tahapan — bahaya biologis bisa masuk dari banyak titik sepanjang proses.</p>
+    </div>
+    <div class="def-block" style="padding:1.2rem 1.5rem;">
+      <div class="def-label" style="color:var(--accent);">Kriteria Berkualitas</div>
+      <p style="font-size:0.83rem; color:var(--muted2); line-height:1.6;">Terkonsentrasi di tengah dan akhir — stres fisiologis di awal dan suhu di akhir adalah dua penentu utama kualitas daging.</p>
+    </div>
+    <div class="def-block" style="padding:1.2rem 1.5rem;">
+      <div class="def-label" style="color:var(--blue);">Kriteria Diterima</div>
+      <p style="font-size:0.83rem; color:var(--muted2); line-height:1.6;">Muncul di titik-titik yang melibatkan verifikasi dan dokumentasi — "diterima" pada dasarnya membutuhkan bukti, bukan hanya proses.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-left">
+    Program Studi Kedokteran Hewan<br>
+    Fakultas Kedokteran · Universitas Hasanuddin
+  </div>
+  <div class="f-right">
+    Paramedik Veteriner<br>
+    First-Principles Thinking · RPH
+  </div>
+</footer>
+
+<script>
+function showStage(id) {
+  document.querySelectorAll('.stage-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleSubstage(el) {
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>
