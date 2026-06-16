@@ -22,8 +22,6 @@
             --border-color: #d2d2d7;
             --success-color: #34c759;
             --code-bg: #f5f5f7;
-            --chain-step-bg: #f5f5f7;
-            --chain-step-active: #0071e3;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
@@ -66,7 +64,6 @@
         .search-container input:focus { background: #fff; border-color: var(--accent-color); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1); }
         .search-container .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
 
-        /* Search match highlight */
         mark {
             background: rgba(0, 113, 227, 0.15);
             color: var(--accent-color);
@@ -75,7 +72,6 @@
             font-weight: 600;
         }
 
-        /* --- SEARCH RESULT INDICATOR --- */
         .search-result-info {
             padding: 0 24px 8px;
             font-size: 0.78rem;
@@ -96,25 +92,6 @@
         }
         .prompt-item:hover { background-color: #f5f5f7; }
         .prompt-item.active { background-color: var(--accent-color); color: white; font-weight: 500; box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25); }
-        
-        /* Chain badge in sidebar */
-        .prompt-item .chain-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            background: rgba(94,92,230,0.12);
-            color: var(--secondary-accent);
-            border-radius: 8px;
-            padding: 2px 6px;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-        .prompt-item.active .chain-badge {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
 
         /* --- MAIN CONTENT --- */
         main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: white; position: relative; }
@@ -126,32 +103,51 @@
             padding: 20px 48px;
             border-bottom: 1px solid rgba(210, 210, 215, 0.5);
             z-index: 50;
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; align-items: center; gap: 16px;
         }
 
-        .header-left { display: flex; align-items: center; gap: 0; flex: 1; min-width: 0; }
-        #menuToggle { display: none; background: #f2f2f7; border: none; cursor: pointer; padding: 10px; border-radius: 10px; margin-right: 16px; color: var(--text-main); flex-shrink: 0; }
+        #menuToggle { display: none; background: #f2f2f7; border: none; cursor: pointer; padding: 10px; border-radius: 10px; color: var(--text-main); flex-shrink: 0; box-shadow: none !important; transform: none !important; }
 
-        .header-info { min-width: 0; }
+        .header-info { flex: 1; min-width: 0; }
         .header-info h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* --- LANGUAGE TOGGLE --- */
-        .lang-toggle {
+        .content-body { padding: 40px 48px; max-width: 1000px; width: 100%; margin: 0 auto; }
+
+        #overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.2); z-index: 90; backdrop-filter: blur(4px); }
+
+        /* --- GUIDE BOX --- */
+        .guide-box {
+            background-color: #fff;
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border-color);
+        }
+        .guide-box-header {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .guide-box h3 { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 8px; }
+        .guide-box p { font-size: 1rem; line-height: 1.65; color: #3a3a3c; white-space: pre-line; }
+
+        /* --- LANGUAGE TOGGLE (di dalam guide box) --- */
+        .lang-toggle {
+            display: none; /* ditampilkan via JS bila ada terjemahan */
             align-items: center;
             gap: 0;
             background: #f2f2f7;
             border-radius: 10px;
             padding: 3px;
             flex-shrink: 0;
-            margin-left: 16px;
         }
         .lang-btn {
-            padding: 7px 14px;
+            padding: 6px 13px;
             border-radius: 8px;
             border: none;
             background: transparent;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 600;
             color: var(--text-muted);
             cursor: pointer;
@@ -166,146 +162,6 @@
             box-shadow: 0 1px 4px rgba(0,0,0,0.1) !important;
         }
         .lang-btn:hover:not(.active) { color: var(--text-main); }
-
-        .content-body { padding: 40px 48px; max-width: 1000px; width: 100%; margin: 0 auto; }
-
-        #overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.2); z-index: 90; backdrop-filter: blur(4px); }
-
-        /* --- GUIDE BOX --- */
-        .guide-box {
-            background-color: #fff;
-            padding: 22px;
-            border-radius: 16px;
-            margin-bottom: 28px;
-            border: 1px solid var(--border-color);
-        }
-        .guide-box h3 { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-        .guide-box p { font-size: 1rem; line-height: 1.65; color: #3a3a3c; white-space: pre-line; }
-
-        /* --- CHAIN NAVIGATOR --- */
-        .chain-navigator {
-            margin-bottom: 24px;
-            display: none; /* shown when it's a chain */
-        }
-        .chain-navigator.visible { display: block; }
-
-        .chain-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-        .chain-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .chain-counter {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .chain-steps {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 14px;
-        }
-        .chain-step-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            border: 1.5px solid var(--border-color);
-            background: white;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: none !important;
-            transform: none !important;
-            padding: 0;
-        }
-        .chain-step-btn:hover { border-color: var(--accent-color); color: var(--accent-color); background: #eef4ff; }
-        .chain-step-btn.active {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: white;
-            box-shadow: 0 3px 10px rgba(0,113,227,0.3) !important;
-        }
-        .chain-step-btn.completed {
-            background: #eafaf0;
-            border-color: var(--success-color);
-            color: var(--success-color);
-        }
-
-        .chain-step-label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-main);
-            margin-bottom: 6px;
-        }
-        .chain-step-sublabel {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-        }
-
-        .chain-nav-btns {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .btn-chain-nav {
-            padding: 8px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: white;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: none !important;
-            transform: none !important;
-        }
-        .btn-chain-nav:hover { background: #f5f5f7; }
-        .btn-chain-nav:disabled { opacity: 0.35; cursor: not-allowed; }
-        .btn-chain-nav.btn-next {
-            background: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-        }
-        .btn-chain-nav.btn-next:hover { background: #0062c4; }
-        .btn-chain-copy-all {
-            margin-left: auto;
-            padding: 8px 14px;
-            border-radius: 10px;
-            border: 1px solid var(--secondary-accent);
-            background: white;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--secondary-accent);
-            cursor: pointer;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: none !important;
-            transform: none !important;
-        }
-        .btn-chain-copy-all:hover { background: #f4f4ff; }
 
         /* --- PROMPT CONTAINER --- */
         .prompt-container {
@@ -322,9 +178,9 @@
             background: rgba(255, 255, 255, 0.7);
             border-bottom: 1px solid var(--border-color);
             backdrop-filter: blur(10px);
+            flex-wrap: wrap;
         }
 
-        /* No translation available notice */
         .no-translation-notice {
             display: none;
             align-items: center;
@@ -350,7 +206,6 @@
             letter-spacing: -0.01em;
         }
 
-        /* Search highlight in prompt text */
         .prompt-text mark {
             background: rgba(255, 214, 0, 0.4);
             color: inherit;
@@ -391,7 +246,6 @@
             .content-body { padding: 20px 20px; }
             .prompt-actions-bar { flex-wrap: wrap; gap: 8px; padding: 12px 14px; }
             button, .btn-link { justify-content: center; }
-            .lang-toggle { margin-left: 0; }
         }
     </style>
 </head>
@@ -413,24 +267,18 @@
 
     <main>
         <div class="content-header">
-            <div class="header-left">
-                <button id="menuToggle" onclick="toggleSidebar()" style="display:none;">
-                    <i data-lucide="menu" size="20"></i>
-                </button>
-                <div class="header-info">
-                    <h2 id="displayTitle">Pilih Prompt</h2>
-                </div>
-            </div>
-            <div class="lang-toggle" id="langToggle" style="display:none;">
-                <button class="lang-btn active" id="btnLangID" onclick="switchLang('id')">ID</button>
-                <button class="lang-btn" id="btnLangEN" onclick="switchLang('en')">EN</button>
+            <button id="menuToggle" onclick="toggleSidebar()" style="display:none;">
+                <i data-lucide="menu" size="20"></i>
+            </button>
+            <div class="header-info">
+                <h2 id="displayTitle">Pilih Prompt</h2>
             </div>
         </div>
 
         <div class="content-body">
             <div id="welcomeMessage">
-                <div style="background: #f2f2f7; width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
-                    <i data-lucide="zap" size="40" style="color: var(--accent-color);"></i>
+                <div style="background: #f2f2f7; width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: justify-center; margin: 0 auto 24px;">
+                    <i data-lucide="zap" size="40" style="color: var(--accent-color); margin: auto;"></i>
                 </div>
                 <h3 style="color: var(--text-main); margin-bottom: 8px;">Siap Bekerja?</h3>
                 <p>Klik salah satu templat di samping untuk menyalin teks.</p>
@@ -438,47 +286,25 @@
 
             <div id="mainContent" style="display: none;">
                 <div class="guide-box">
-                    <h3><i data-lucide="info" size="13"></i> Petunjuk Penggunaan</h3>
+                    <div class="guide-box-header">
+                        <h3><i data-lucide="info" size="13"></i> Petunjuk Penggunaan</h3>
+                        <!-- Switch bahasa dipindah ke sini, kontekstual di dekat konten -->
+                        <div class="lang-toggle" id="langToggle">
+                            <button class="lang-btn active" id="btnLangID" onclick="switchLang('id')">ID</button>
+                            <button class="lang-btn" id="btnLangEN" onclick="switchLang('en')">EN</button>
+                        </div>
+                    </div>
                     <p id="displayGuide"></p>
                 </div>
 
-                <!-- Chain Navigator (hanya muncul untuk prompt chain) -->
-                <div class="chain-navigator" id="chainNavigator">
-                    <div class="chain-header">
-                        <div class="chain-title">
-                            <i data-lucide="link" size="13"></i>
-                            Prompt Chain
-                        </div>
-                        <span class="chain-counter" id="chainCounter">Step 1 / 1</span>
-                    </div>
-                    <div class="chain-steps" id="chainSteps"></div>
-                    <div class="chain-step-label" id="chainStepLabel"></div>
-                    <div class="chain-step-sublabel" id="chainStepSublabel"></div>
-                    <div class="chain-nav-btns">
-                        <button class="btn-chain-nav" id="btnChainPrev" onclick="navigateChain(-1)">
-                            <i data-lucide="chevron-left" size="14"></i> Sebelumnya
-                        </button>
-                        <button class="btn-chain-nav btn-next" id="btnChainNext" onclick="navigateChain(1)">
-                            Berikutnya <i data-lucide="chevron-right" size="14"></i>
-                        </button>
-                        <button class="btn-chain-copy-all" onclick="copyAllChain()">
-                            <i data-lucide="copy" size="13"></i> Salin Semua
-                        </button>
-                    </div>
-                </div>
-
                 <div class="prompt-container">
-                    <div class="prompt-actions-bar">
+                    <div class="prompt-actions-bar" id="promptActionsBar">
                         <div class="no-translation-notice" id="noTranslationNotice">
                             <i data-lucide="alert-circle" size="13"></i>
                             Versi EN belum tersedia
                         </div>
-                        <a id="displayLink" href="#" target="_blank" class="btn-link btn-external" style="display: none;">
-                            <i data-lucide="external-link" size="13"></i> <span id="displayLinkLabel">Buka App</span>
-                        </a>
-                        <button class="btn-download" onclick="downloadPrompt()">
-                            <i data-lucide="download" size="13"></i> TXT
-                        </button>
+                        <!-- Tombol-tombol eksternal dan unduhan dirender oleh JS -->
+                        <div id="dynamicButtons" style="display:contents;"></div>
                         <button class="btn-copy" id="copyBtn" onclick="copyPrompt()">
                             <i data-lucide="copy" size="13"></i> Salin Prompt
                         </button>
@@ -491,79 +317,85 @@
 
     <script>
     // =====================================================================
-    // DATA STRUCTURE
+    // PANDUAN MENAMBAH PROMPT BARU
     // =====================================================================
-    // Setiap entri prompt mendukung properti berikut:
     //
-    // id        : number (unik)
-    // title     : string
-    // category  : string
-    // guide     : string | { id: string, en: string }  — petunjuk penggunaan
-    // content   : string | { id: string, en: string }  — isi prompt utama
-    // link      : string (opsional)
-    // linkLabel : string (opsional)
+    // Setiap entri di dalam promptData[] memiliki properti berikut:
     //
-    // PROMPT CHAIN — untuk rangkaian prompt berantai, gunakan struktur ini:
-    // chain: [
-    //   { label: "Step 1 — Nama langkah", sublabel: "Deskripsi singkat",
-    //     content: string | { id: string, en: string } },
-    //   ...
-    // ]
-    // Jika `chain` ada, `content` diabaikan.
+    //   id        : angka unik (integer), misalnya 1, 2, 3, ...
+    //   title     : judul prompt (string)
+    //   category  : nama kategori (string) — prompt dengan kategori sama
+    //               otomatis dikelompokkan di sidebar
+    //
+    //   guide     : petunjuk penggunaan, bisa dua format:
+    //               - string biasa  : "Petunjuk di sini..."
+    //               - bilingual     : { id: "...", en: "..." }
+    //
+    //   content   : isi prompt, bisa dua format:
+    //               - string biasa  : "Isi prompt di sini..."
+    //               - bilingual     : { id: "...", en: "..." }
+    //
+    //   links     : (opsional) array tombol eksternal/aksi.
+    //               Setiap tombol adalah objek dengan properti:
+    //               - type  : "notebooklm" | "download_txt" | "custom" | "gemini_gem"
+    //               - label : teks yang muncul di tombol
+    //               - url   : URL tujuan (tidak diperlukan untuk "download_txt")
+    //
+    //               Tipe yang tersedia:
+    //               ┌──────────────────┬──────────────────────────────────────┐
+    //               │ "notebooklm"     │ Tombol biru-ungu → buka NotebookLM  │
+    //               │ "gemini_gem"     │ Tombol biru-ungu → buka Gemini Gem  │
+    //               │ "custom"         │ Tombol biru-ungu → URL bebas        │
+    //               │ "download_txt"   │ Tombol putih → unduh prompt .txt    │
+    //               └──────────────────┴──────────────────────────────────────┘
+    //
+    //               Contoh links dengan banyak tombol:
+    //               links: [
+    //                   { type: "notebooklm", label: "Buka NotebookLM",
+    //                     url: "https://notebooklm.google.com/" },
+    //                   { type: "custom", label: "Buka CustomGPT",
+    //                     url: "https://chatgpt.com/g/..." },
+    //                   { type: "gemini_gem", label: "Buka Gemini Gem",
+    //                     url: "https://gemini.google.com/gems/..." },
+    //                   { type: "download_txt", label: "Unduh TXT" }
+    //               ]
+    //
+    //               Untuk menonaktifkan semua tombol, hapus properti links
+    //               atau isi dengan array kosong: links: []
+    //
+    // CONTOH ENTRI PROMPT:
+    //
+    //     {
+    //         id: 99,
+    //         title: "Nama Prompt Saya",
+    //         category: "Nama Kategori",
+    //         guide: {
+    //             id: `Petunjuk dalam bahasa Indonesia.`,
+    //             en: `Instructions in English.`
+    //         },
+    //         content: {
+    //             id: `Isi prompt dalam bahasa Indonesia.`,
+    //             en: `Prompt content in English.`
+    //         },
+    //         links: [
+    //             { type: "notebooklm", label: "Buka NotebookLM",
+    //               url: "https://notebooklm.google.com/" },
+    //             { type: "download_txt", label: "Unduh TXT" }
+    //         ]
+    //     },
+    //
     // =====================================================================
 
+
+    // =====================================================================
+    // DATA PROMPT — edit bagian ini untuk menambah/mengubah prompt
+    // =====================================================================
     const promptData = [
-        {
-            id: 1,
-            title: "Si Pemberi Tugas",
-            category: "Tugas per modul",
-            guide: {
-                id: `Salin templat prompt di bawah ini. Buka NotebookLM. Pilih (centang) modul atau sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
+	
 
-Templat ini digunakan sebagai bahan tugas per Sub-CPMK.`,
-                en: `Copy the prompt template below. Open NotebookLM. Select (check) the relevant module or source, then paste this prompt into the chat field.
-
-This template is used as assignment material per Sub-CPMK.`
-            },
-            content: {
-                id: `Jadilah seorang penguji akademik yang ketat dan adil. Tugasmu adalah mengevaluasi kompetensi saya melalui empat skenario dilema strategi yang diambil secara nonlinear (tidak harus urut sesuai kemunculan topik) dari materi yang saya sediakan.
-
-Aturan interaksi per skenario:
-1. Penyajian dilema: Berikan satu skenario kasus kompleks yang menuntut pengambilan keputusan strategis (catatan: buat skenario baru; jangan gunakan skenario yang ada pada materi). Sajikan tiga opsi tindakan (A, B, dan C) yang semuanya berbasis pilihan kebijakan dengan argumen masing-masing. Saat menyajikan ketiga opsi tersebut, berikan pula sisi positif dan negatif untuk setiap opsi tindakan secara seimbang agar saya tetap harus berpikir kritis dalam memilih.
-2. Jawaban dan justifikasi: Mintalah saya memilih satu opsi, atau melakukan kombinasi dari beberapa opsi, dan menjelaskan alasan logisnya berdasarkan materi.
-   - Aturan batas nilai: Jika saya hanya memilih opsi (misalnya hanya mengeklik chip respons atau memberikan alasan yang sangat pendek), nilai maksimum untuk skenario tersebut adalah 84. Nilai di atas 84 hanya diberikan jika saya memberikan argumen yang mendalam dan merujuk pada prinsip di dalam materi.
-3. Uji ketahanan (stress test): Setelah saya menjawab, berikan serangan balik yang mempertanyakan efektivitas pilihan saya (seperti peran Devil's Advocate).
-4. Jawaban akhir: Beri tahukan saya bahwa jawaban yang saya berikan setelah kamu memberi uji ketahanan merupakan "Jawaban Akhir" yang akan dikunci untuk kamu nilai.
-
-Ketentuan penilaian (Skor 0-100):
-- 85-100: Memilih opsi atau sintesis yang tepat secara strategis dan memberikan argumen yang mendalam, konsisten, serta bersumber pada materi.
-- 80-84: Memilih opsi yang tepat tetapi argumennya dangkal, atau memilih opsi yang kurang tepat tetapi mampu memberikan pembelaan logis yang mendekati prinsip materi.
-- <80: Gagal memahami esensi materi atau tidak mampu mempertahankan logika argumen saat diuji.
-
-Penutup: Setelah keempat skenario selesai, sajikan TABEL HASIL EVALUASI. Informasikan bahwa jika sudah puas dengan skor ini, lakukan screenshot dan unggah ke Sikola.
-
-Mari kita mulai. Sajikan Skenario 1 (dilema strategi) berdasarkan materi yang tersedia.`,
-                en: `Act as a strict and fair academic examiner. Your task is to evaluate my competency through four strategic dilemma scenarios drawn nonlinearly from the material I provide.
-
-Interaction rules per scenario:
-1. Dilemma presentation: Give one complex case scenario requiring strategic decision-making (create a new scenario; do not use scenarios from the material). Present three action options (A, B, and C), all policy-based with their respective arguments. For each option, present both pros and cons so I still need to think critically.
-2. Answer and justification: Ask me to choose one option or a combination, and explain my reasoning based on the material.
-   - Score cap rule: If I only select an option without elaboration, the maximum score is 84. Scores above 84 require deep arguments that reference material principles.
-3. Stress test: After I respond, provide pushback questioning the effectiveness of my choice (like a Devil's Advocate role).
-4. Final answer: Inform me that my answer after the stress test is the "Final Answer" that will be locked for scoring.
-
-Scoring criteria (0-100):
-- 85-100: Strategically correct option/synthesis with deep, consistent, material-based arguments.
-- 80-84: Correct option but shallow arguments, or incorrect option but logical defense close to material principles.
-- <80: Fails to grasp the material's essence or cannot sustain logical argument under scrutiny.
-
-Closing: After all four scenarios, present an EVALUATION RESULT TABLE. Instruct me to screenshot and upload to the LMS if satisfied.
-
-Let's begin. Present Scenario 1 (strategic dilemma) based on the available material.`
-            },
-            link: "https://notebooklm.google.com/",
-            linkLabel: "Buka NotebookLM"
-        },
+        // -----------------------------------------------------------------
+        // KATEGORI: Bantuan untuk belajar aktif
+        // -----------------------------------------------------------------
         {
             id: 2,
             title: "1. Si Tutor",
@@ -604,9 +436,10 @@ Tutoring principles:
 
 Let's begin. Introduce the main topic of this material and explain the basic concepts as the first step.`
             },
-            link: "https://notebooklm.google.com/",
-            linkLabel: "Buka NotebookLM"
+            links: [
+            ]
         },
+
         {
             id: 3,
             title: "2. Si Gamer",
@@ -655,9 +488,10 @@ Interaction steps:
 
 Begin by welcoming me and presenting the journey map to master Skill 1.`
             },
-            link: "https://notebooklm.google.com/",
-            linkLabel: "Buka NotebookLM"
+            links: [
+            ]
         },
+
         {
             id: 4,
             title: "3. Si Pelatih",
@@ -698,9 +532,10 @@ Execute these instructions sequentially:
 
 Let's begin. Present the first scenario based on available material.`
             },
-            link: "https://notebooklm.google.com/",
-            linkLabel: "Buka NotebookLM"
+            links: [
+            ]
         },
+
         {
             id: 5,
             title: "4. Si Awam",
@@ -741,9 +576,10 @@ Follow this simulation flow:
 
 Please begin. Greet me and tell me what you'd like to consult about.`
             },
-            link: "https://notebooklm.google.com/",
-            linkLabel: "Buka NotebookLM"
+            links: [
+            ]
         },
+
         {
             id: 6,
             title: "5. Si Penyanggah",
@@ -786,9 +622,10 @@ Run this intense discussion flow:
 
 Let's begin. Give me your opening scenario or question now.`
             },
-            link: "https://notebooklm.google.com/",
-            linkLabel: "Buka NotebookLM"
+            links: [
+            ]
         },
+
         {
             id: 7,
             title: "6. Si Game Master",
@@ -839,9 +676,10 @@ Interaction steps:
 
 Let's begin. Welcome me to the arena and give me Round 1's challenge now.`
             },
-            link: "https://notebooklm.google.com/",
-            linkLabel: "Buka NotebookLM"
+            links: [
+            ]
         },
+
         {
             id: 8,
             title: "7. Si Pembuat Soal",
@@ -890,10 +728,71 @@ Interaction flow:
 
 Let's begin. Present the first 5 questions (Bloom Level 1).`
             },
-            link: "https://notebooklm.google.com/",
-            linkLabel: "Buka NotebookLM"
+            links: [
+            ]
         },
-		{
+
+
+        // -----------------------------------------------------------------
+        // KATEGORI: Tugas per modul
+        // -----------------------------------------------------------------
+        {
+            id: 1,
+            title: "Si Pemberi Tugas",
+            category: "Tugas per modul",
+            guide: {
+                id: `Salin templat prompt di bawah ini. Buka NotebookLM. Pilih (centang) modul atau sumber yang sesuai, lalu tempelkan prompt ini di kolom chat.
+
+Templat ini digunakan sebagai bahan tugas per Sub-CPMK.`,
+                en: `Copy the prompt template below. Open NotebookLM. Select (check) the relevant module or source, then paste this prompt into the chat field.
+
+This template is used as assignment material per Sub-CPMK.`
+            },
+            content: {
+                id: `Jadilah seorang penguji akademik yang ketat dan adil. Tugasmu adalah mengevaluasi kompetensi saya melalui empat skenario dilema strategi yang diambil secara nonlinear (tidak harus urut sesuai kemunculan topik) dari materi yang saya sediakan.
+
+Aturan interaksi per skenario:
+1. Penyajian dilema: Berikan satu skenario kasus kompleks yang menuntut pengambilan keputusan strategis (catatan: buat skenario baru; jangan gunakan skenario yang ada pada materi). Sajikan tiga opsi tindakan (A, B, dan C) yang semuanya berbasis pilihan kebijakan dengan argumen masing-masing. Saat menyajikan ketiga opsi tersebut, berikan pula sisi positif dan negatif untuk setiap opsi tindakan secara seimbang agar saya tetap harus berpikir kritis dalam memilih.
+2. Jawaban dan justifikasi: Mintalah saya memilih satu opsi, atau melakukan kombinasi dari beberapa opsi, dan menjelaskan alasan logisnya berdasarkan materi.
+   - Aturan batas nilai: Jika saya hanya memilih opsi (misalnya hanya mengeklik chip respons atau memberikan alasan yang sangat pendek), nilai maksimum untuk skenario tersebut adalah 84. Nilai di atas 84 hanya diberikan jika saya memberikan argumen yang mendalam dan merujuk pada prinsip di dalam materi.
+3. Uji ketahanan (stress test): Setelah saya menjawab, berikan serangan balik yang mempertanyakan efektivitas pilihan saya (seperti peran Devil's Advocate).
+4. Jawaban akhir: Beri tahukan saya bahwa jawaban yang saya berikan setelah kamu memberi uji ketahanan merupakan "Jawaban Akhir" yang akan dikunci untuk kamu nilai.
+
+Ketentuan penilaian (Skor 0-100):
+- 85-100: Memilih opsi atau sintesis yang tepat secara strategis dan memberikan argumen yang mendalam, konsisten, serta bersumber pada materi.
+- 80-84: Memilih opsi yang tepat tetapi argumennya dangkal, atau memilih opsi yang kurang tepat tetapi mampu memberikan pembelaan logis yang mendekati prinsip materi.
+- <80: Gagal memahami esensi materi atau tidak mampu mempertahankan logika argumen saat diuji.
+
+Penutup: Setelah keempat skenario selesai, sajikan TABEL HASIL EVALUASI. Informasikan bahwa jika sudah puas dengan skor ini, lakukan screenshot dan unggah ke Sikola.
+
+Mari kita mulai. Sajikan Skenario 1 (dilema strategi) berdasarkan materi yang tersedia.`,
+                en: `Act as a strict and fair academic examiner. Your task is to evaluate my competency through four strategic dilemma scenarios drawn nonlinearly from the material I provide.
+
+Interaction rules per scenario:
+1. Dilemma presentation: Give one complex case scenario requiring strategic decision-making (create a new scenario; do not use scenarios from the material). Present three action options (A, B, and C), all policy-based with their respective arguments. For each option, present both pros and cons so I still need to think critically.
+2. Answer and justification: Ask me to choose one option or a combination, and explain my reasoning based on the material.
+   - Score cap rule: If I only select an option without elaboration, the maximum score is 84. Scores above 84 require deep arguments that reference material principles.
+3. Stress test: After I respond, provide pushback questioning the effectiveness of my choice (like a Devil's Advocate role).
+4. Final answer: Inform me that my answer after the stress test is the "Final Answer" that will be locked for scoring.
+
+Scoring criteria (0-100):
+- 85-100: Strategically correct option/synthesis with deep, consistent, material-based arguments.
+- 80-84: Correct option but shallow arguments, or incorrect option but logical defense close to material principles.
+- <80: Fails to grasp the material's essence or cannot sustain logical argument under scrutiny.
+
+Closing: After all four scenarios, present an EVALUATION RESULT TABLE. Instruct me to screenshot and upload to the LMS if satisfied.
+
+Let's begin. Present Scenario 1 (strategic dilemma) based on the available material.`
+            },
+            links: [
+            ]
+        },
+
+
+        // -----------------------------------------------------------------
+        // KATEGORI: Others
+        // -----------------------------------------------------------------
+        {
             id: 9,
             title: "Knowledge architect",
             category: "Others",
@@ -941,68 +840,41 @@ Visual concept map: A text-based concept map using box-drawing symbols (│, ├
 
 Let's get started. Analyze the available sources and create a knowledge architecture now.`
             },
-            link: "https://notebooklm.google.com/",
-            linkLabel: "Buka NotebookLM"
+            links: [
+            ]
         },
-		
-        // ===================================================================
-        // CONTOH PROMPT CHAIN — hapus atau ganti dengan data Anda sendiri
-        // ===================================================================
+
         {
             id: 12,
             title: "Concept deconstructor",
             category: "Others",
             guide: {
-                id: `Ini adalah rangkaian prompt berantai untuk mendekonstruksi suatu konsep menggunakan first-principles thinking. Jalankan setiap prompt secara berurutan di sesi AI yang sama, atau salin satu per satu sesuai kebutuhan.`,
-                en: `This is a chained prompt sequence for deconstructing a concept using first-principles thinking. Run each step sequentially in the same AI session, or copy one at a time as needed.`
+                id: `Gunakan prompt ini untuk mendekonstruksi suatu konsep menggunakan first-principles thinking. Bisa digunakan di platform AI mana pun — cukup salin dan tempelkan.`,
+                en: `Use this prompt to deconstruct a concept using first-principles thinking. Works on any AI platform — just copy and paste.`
             },
-            chain: [
-                {
-                    label: "Step 1 — Stripping assumptions",
-                    sublabel: "Debunk common assumptions, uncover the remaining truths",
-                    content: {
-                        id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Tombol penggantian bahasa ada di kanan atas.`,
-                        en: `Break [topic] down using first principles thinking. Start by identifying every assumption people commonly make about this topic. Then strip each assumption away and ask: what is fundamentally, provably true here? Rebuild the concept from only what remains. Show me what changes when you remove inherited thinking.`
-                    }
-                },
-                {
-                    label: "Step 2 — Auditing the field",
-                    sublabel: "Classification of assumptions: proven, weak, or just belief",
-                    content: {
-                        id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Tombol penggantian bahasa ada di kanan atas.`,
-                        en: `What are the core assumptions this field makes that beginners, and even some professionals, just accept? For each one, classify it as: (a) empirically proven, (b) widely accepted but weakly supported, (c) unproven belief. Briefly justify each classification, and contrast these with the fundamental truths we established.`
-                    }
-                },
-                {
-                    label: "Step 3 — Systems mapping",
-                    sublabel: "Map components, feedback loops, and leverage points",
-                    content: {
-                        id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Tombol penggantian bahasa ada di kanan atas.`,
-                        en: `Apply systems thinking to this model using high-level pattern recognition. Identify the key components, their relationships, feedback loops, and potential bottlenecks. Pinpoint the 'leverage points' where a small change could trigger a massive impact. Highlight recurring patterns that appear across different contexts.`
-                    }
-                },
-                {
-                    label: "Step 4 — Zero-to-one rebuild",
-                    sublabel: "Rebuild solutions from scratch without conventional wisdom",
-                    content: {
-                        id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Tombol penggantian bahasa ada di kanan atas.`,
-                        en: `If you were starting from zero—no existing industry, no conventional wisdom, no inherited approach—and you only had the fundamental truths we’ve established, how would you build the solution from scratch? Be explicit about what would look fundamentally different from how it’s done today.`
-                    }
-                },
-                {
-                    label: "Step 5 — Hard decisions",
-                    sublabel: "Identifying the most difficult tradeoffs for beginners and experts",
-                    content: {
-                        id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Tombol penggantian bahasa ada di kanan atas.`,
-                        en: `Finally, based on this entire analysis, what are the most difficult decisions in this domain? Separate answers for beginners and experts. For each, explain what makes the decision difficult, what trade-offs are involved, and how those trade-offs are typically misjudged.`
-                    }
-                },				
-                {
-                    label: "Step 6a — Lecture design",
-                    sublabel: "Design a ready-to-serve one-hour lecture for students",
-                    content: {
-                        id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Tombol penggantian bahasa ada di kanan atas.`,
-                        en: `Using the full conversation history as context, design a one-hour lecture on the discussed topic for university-level students. The lecture must be built strictly from first-principles public speaking: treat it as amplified conversation whose only purpose is maximum signal-to-noise fidelity in idea transfer.
+            content: {
+                id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Klik tombol EN di atas untuk melihat versi Inggrisnya.`,
+                en: `Break [topic] down using first principles thinking. Start by identifying every assumption people commonly make about this topic. Then strip each assumption away and ask: what is fundamentally, provably true here? Rebuild the concept from only what remains. Show me what changes when you remove inherited thinking.
+				
+---
+
+What are the core assumptions this field makes that beginners, and even some professionals, just accept? For each one, classify it as: (a) empirically proven, (b) widely accepted but weakly supported, (c) unproven belief. Briefly justify each classification, and contrast these with the fundamental truths we established.
+
+---
+
+Apply systems thinking to this topic using high-level pattern recognition. Identify the key components, their relationships, feedback loops, and potential bottlenecks. Pinpoint the 'leverage points' where a small change could trigger a massive impact. Highlight recurring patterns that appear across different contexts.
+
+---
+
+If you were starting from zero—no existing industry, no conventional wisdom, no inherited approach—and you only had the fundamental truths we’ve established, how would you build the solution from scratch? Be explicit about what would look fundamentally different from how it’s done today.
+
+---
+
+Based on this entire analysis, what are the most difficult decisions in this domain? Separate answers for beginners and experts. For each, explain what makes the decision difficult, what trade-offs are involved, and how those trade-offs are typically misjudged.
+
+---
+
+Using the full conversation history as context, design a one-hour lecture on the discussed topic for university-level students. The lecture must be built strictly from first-principles public speaking: treat it as amplified conversation whose only purpose is maximum signal-to-noise fidelity in idea transfer.
 
 Step 1 – Atomic Core
 Distill the entire topic into one single, clear, indivisible core takeaway (a concrete sentence that can be spoken in under 15 seconds and contains the essential meaning students must retain). This must be the minimum idea that delivers the intended state change. All content must directly support this.
@@ -1031,31 +903,15 @@ Conclude by:
 — Summarizing the supporting ideas as a compressed sequence.
 — Reinforcing why the content matters for the audience.
 
-Output the lecture as a delivery-ready script optimized for real-time speaking, not as an essay.`
-                    }
-                },
-                {
-                    label: "Step 6b — Business architecture",
-                    sublabel: "Translate solutions into business plans",
-                    content: {
-                        id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Tombol penggantian bahasa ada di kanan atas.`,
-                        en: `Translate this zero-to-one solution into a business architecture inspired by the Elon Musk approach. Outline a 'Master Plan' that begins with a high-performance entry point and scales toward mass-market dominance. Focus on vertical integration, radical cost reduction through engineering breakthroughs, and a mission-driven roadmap where each success funds the next phase. Define the 'moat' and how you will achieve a 10x improvement over any existing alternative.`
-                    }
-                },
-                {
-                    label: "Step 7b — Macro & second-order effects",
-                    sublabel: "Impact analysis to adjacent systems",
-                    content: {
-                        id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Tombol penggantian bahasa ada di kanan atas.`,
-                        en: `Zoom out to the macro environment. Analyze how this new solution interfaces with adjacent systems—such as economic structures, human behavior, incentives, or other related fields? Identify second-order effects, unintended consequences, and points of friction or alignment between systems.`
-                    }
-                },
-                {
-                    label: "Step 8b — Solo execution strategy",
-                    sublabel: "Implementation strategy from scratch: one person, AI as machine",
-                    content: {
-                        id: `Prompt ini hanya tersedia dalam versi bahasa Inggris. Tombol penggantian bahasa ada di kanan atas.`,
-                        en: `Assume you are starting from zero: one person, a computer, internet access, and AI tools—no existing institution, funding, or formal authority. Design a constraint-driven execution strategy to begin implementing this solution from that starting point. 
+---
+
+Translate this zero-to-one solution into a business architecture inspired by the Elon Musk approach. Outline a 'Master Plan' that begins with a high-performance entry point and scales toward mass-market dominance. Focus on vertical integration, radical cost reduction through engineering breakthroughs, and a mission-driven roadmap where each success funds the next phase. Define the 'moat' and how you will achieve a 10x improvement over any existing alternative.
+
+---
+
+Zoom out to the macro environment. Analyze how this new solution interfaces with adjacent systems—such as economic structures, human behavior, incentives, or other related fields? Identify second-order effects, unintended consequences, and points of friction or alignment between systems.
+
+Assume you are starting from zero: one person, a computer, internet access, and AI tools—no existing institution, funding, or formal authority. Design a constraint-driven execution strategy to begin implementing this solution from that starting point. 
 1. Identify the single most viable entry wedge that can be executed solo and creates immediate, tangible value. Explain why this is the correct starting point given real constraints (especially lack of data).
 2. Define the first concrete actions (week 1–4). Be specific about what is built, tested, or deployed—not general steps.
 3. Show how AI is used as the primary engine at each step:
@@ -1068,26 +924,28 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
 7. Define clear validation signals: what must happen in the first 30–90 days to prove this is working.
 8. Highlight the most likely failure modes for a solo builder, and how to mitigate them early.
 `
-                    }
-                }				
-            ],
-            link: null,
-            linkLabel: null
+            },
+            links: [
+            ]
         }
-    ];
+
+        // -----------------------------------------------------------------
+        // TAMBAHKAN PROMPT BARU DI BAWAH SINI — salin blok contoh di atas
+        // -----------------------------------------------------------------
+
+    ]; // ← tutup array promptData — jangan hapus baris ini
+
 
     // =====================================================================
     // STATE
     // =====================================================================
     let activePrompt = null;
     let activeLang = 'id';
-    let activeChainStep = 0;
     let currentSearchQuery = '';
 
     // =====================================================================
     // HELPERS
     // =====================================================================
-
     function getContent(contentObj) {
         if (!contentObj) return '';
         if (typeof contentObj === 'string') return contentObj;
@@ -1099,23 +957,8 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
         return !!(contentObj['en']);
     }
 
-    function isChain(prompt) {
-        return Array.isArray(prompt.chain) && prompt.chain.length > 0;
-    }
-
-    function getCurrentChainContent() {
-        if (!activePrompt || !isChain(activePrompt)) return '';
-        return getContent(activePrompt.chain[activeChainStep].content);
-    }
-
-    function getCurrentContent() {
-        if (!activePrompt) return '';
-        if (isChain(activePrompt)) return getCurrentChainContent();
-        return getContent(activePrompt.content);
-    }
-
     function escapeHtml(str) {
-        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     function highlightText(text, query) {
@@ -1126,9 +969,48 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
     }
 
     // =====================================================================
+    // RENDER TOMBOL EKSTERNAL/AKSI
+    // =====================================================================
+    // Ikon per tipe tombol
+    const LINK_ICONS = {
+        notebooklm:   'book-open',
+        gemini_gem:   'sparkles',
+        custom:       'external-link',
+        download_txt: 'download'
+    };
+
+    function renderDynamicButtons(prompt) {
+        const container = document.getElementById('dynamicButtons');
+        container.innerHTML = '';
+
+        if (!prompt.links || prompt.links.length === 0) return;
+
+        prompt.links.forEach(linkDef => {
+            if (linkDef.type === 'download_txt') {
+                const btn = document.createElement('button');
+                btn.className = 'btn-download';
+                btn.innerHTML = `<i data-lucide="${LINK_ICONS.download_txt}" size="13"></i> ${escapeHtml(linkDef.label || 'Unduh TXT')}`;
+                btn.onclick = () => downloadPrompt();
+                container.appendChild(btn);
+            } else {
+                const a = document.createElement('a');
+                a.className = 'btn-link btn-external';
+                a.href = linkDef.url || '#';
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                const icon = LINK_ICONS[linkDef.type] || 'external-link';
+                a.innerHTML = `<i data-lucide="${icon}" size="13"></i> ${escapeHtml(linkDef.label || 'Buka')}`;
+                container.appendChild(a);
+            }
+        });
+
+        lucide.createIcons();
+    }
+
+    // =====================================================================
     // SIDEBAR RENDER
     // =====================================================================
-    function renderSidebar(data = null) {
+    function renderSidebar() {
         const query = currentSearchQuery;
         let filtered = promptData;
 
@@ -1136,32 +1018,18 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
             filtered = filtered.filter(p => {
                 const titleMatch = p.title.toLowerCase().includes(query);
                 const catMatch = p.category.toLowerCase().includes(query);
-                
-                // Full-text search in content
-                let contentMatch = false;
-                if (isChain(p)) {
-                    contentMatch = p.chain.some(step => {
-                        const c = step.content;
-                        if (typeof c === 'string') return c.toLowerCase().includes(query);
-                        return (c.id||'').toLowerCase().includes(query) || (c.en||'').toLowerCase().includes(query);
-                    });
-                } else {
-                    const c = p.content;
-                    if (typeof c === 'string') contentMatch = c.toLowerCase().includes(query);
-                    else contentMatch = (c&&c.id||'').toLowerCase().includes(query) || (c&&c.en||'').toLowerCase().includes(query);
-                }
-
-                // Guide search
+                const c = p.content;
+                const contentMatch = typeof c === 'string'
+                    ? c.toLowerCase().includes(query)
+                    : ((c && c.id || '').toLowerCase().includes(query) || (c && c.en || '').toLowerCase().includes(query));
                 const g = p.guide;
                 const guideMatch = typeof g === 'string'
                     ? g.toLowerCase().includes(query)
-                    : ((g&&g.id||'').toLowerCase().includes(query) || (g&&g.en||'').toLowerCase().includes(query));
-
+                    : ((g && g.id || '').toLowerCase().includes(query) || (g && g.en || '').toLowerCase().includes(query));
                 return titleMatch || catMatch || contentMatch || guideMatch;
             });
         }
 
-        // Update result info
         const infoEl = document.getElementById('searchResultInfo');
         if (query) {
             infoEl.className = 'search-result-info visible';
@@ -1189,30 +1057,12 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
             filtered.filter(p => p.category === cat).forEach(prompt => {
                 const item = document.createElement('div');
                 item.className = `prompt-item${activePrompt?.id === prompt.id ? ' active' : ''}`;
-
-                const titleSpan = document.createElement('div');
-                titleSpan.style.display = 'flex';
-                titleSpan.style.alignItems = 'center';
-                titleSpan.style.flexWrap = 'wrap';
-                titleSpan.style.gap = '4px';
-
-                const titleText = document.createElement('span');
-                titleText.innerHTML = query ? highlightText(prompt.title, query) : escapeHtml(prompt.title);
-                titleSpan.appendChild(titleText);
-
-                if (isChain(prompt)) {
-                    const badge = document.createElement('span');
-                    badge.className = 'chain-badge';
-                    badge.innerHTML = `<i data-lucide="link" size="10"></i> ${prompt.chain.length} steps`;
-                    titleSpan.appendChild(badge);
-                }
-
-                item.appendChild(titleSpan);
-
+                item.innerHTML = query ? highlightText(prompt.title, query) : escapeHtml(prompt.title);
                 item.onclick = () => selectPrompt(prompt);
                 listEl.appendChild(item);
             });
         });
+
         lucide.createIcons();
     }
 
@@ -1221,125 +1071,42 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
     // =====================================================================
     function selectPrompt(prompt) {
         activePrompt = prompt;
-        activeChainStep = 0;
 
         document.getElementById('welcomeMessage').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
         document.getElementById('displayTitle').innerText = prompt.title;
 
-        // Language toggle — show only if any content has EN
         updateLangToggle();
-
-        // Guide
         document.getElementById('displayGuide').innerText = getContent(prompt.guide);
-
-        // Chain or single
-        if (isChain(prompt)) {
-            document.getElementById('chainNavigator').classList.add('visible');
-            renderChainSteps();
-        } else {
-            document.getElementById('chainNavigator').classList.remove('visible');
-        }
-
-        // External link
-        const linkBtn = document.getElementById('displayLink');
-        if (prompt.link) {
-            linkBtn.style.display = 'flex';
-            linkBtn.href = prompt.link;
-            document.getElementById('displayLinkLabel').innerText = prompt.linkLabel || "Buka App";
-        } else {
-            linkBtn.style.display = 'none';
-        }
-
+        renderDynamicButtons(prompt);
         renderPromptContent();
 
         if (window.innerWidth <= 768) toggleSidebar();
         renderSidebar();
     }
 
+    // =====================================================================
+    // LANGUAGE TOGGLE
+    // =====================================================================
     function updateLangToggle() {
         const toggleEl = document.getElementById('langToggle');
         if (!activePrompt) { toggleEl.style.display = 'none'; return; }
 
-        // Check if prompt has any EN content
-        let hasEN = false;
-        if (isChain(activePrompt)) {
-            hasEN = activePrompt.chain.some(s => hasTranslation(s.content));
-        } else {
-            hasEN = hasTranslation(activePrompt.content);
-        }
-        // Also check guide
-        if (!hasEN) hasEN = hasTranslation(activePrompt.guide);
-
+        const hasEN = hasTranslation(activePrompt.content) || hasTranslation(activePrompt.guide);
         toggleEl.style.display = hasEN ? 'flex' : 'none';
 
         document.getElementById('btnLangID').classList.toggle('active', activeLang === 'id');
         document.getElementById('btnLangEN').classList.toggle('active', activeLang === 'en');
     }
 
-    // =====================================================================
-    // CHAIN
-    // =====================================================================
-    function renderChainSteps() {
-        if (!activePrompt || !isChain(activePrompt)) return;
-        const chain = activePrompt.chain;
-        const stepsEl = document.getElementById('chainSteps');
-        stepsEl.innerHTML = '';
-
-        chain.forEach((step, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'chain-step-btn' + (i === activeChainStep ? ' active' : '') + (i < activeChainStep ? ' completed' : '');
-            btn.textContent = i + 1;
-            btn.title = step.label;
-            btn.onclick = () => goToChainStep(i);
-            stepsEl.appendChild(btn);
-        });
-
-        document.getElementById('chainCounter').textContent = `Step ${activeChainStep + 1} / ${chain.length}`;
-        document.getElementById('chainStepLabel').textContent = chain[activeChainStep].label;
-        document.getElementById('chainStepSublabel').textContent = chain[activeChainStep].sublabel || '';
-
-        document.getElementById('btnChainPrev').disabled = activeChainStep === 0;
-        document.getElementById('btnChainNext').disabled = activeChainStep === chain.length - 1;
-
-        lucide.createIcons();
-    }
-
-    function goToChainStep(index) {
-        activeChainStep = index;
-        renderChainSteps();
-        renderPromptContent();
-    }
-
-    function navigateChain(dir) {
-        if (!activePrompt || !isChain(activePrompt)) return;
-        const newStep = activeChainStep + dir;
-        if (newStep < 0 || newStep >= activePrompt.chain.length) return;
-        goToChainStep(newStep);
-    }
-
-    function copyAllChain() {
-        if (!activePrompt || !isChain(activePrompt)) return;
-        const allText = activePrompt.chain.map((step, i) =>
-            `=== ${step.label} ===\n\n${getContent(step.content)}`
-        ).join('\n\n' + '─'.repeat(60) + '\n\n');
-
-        navigator.clipboard.writeText(allText).then(() => {
-            const btn = document.querySelector('.btn-chain-copy-all');
-            const orig = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="check" size="13"></i> Tersalin!`;
-            btn.style.background = '#eafaf0';
-            btn.style.color = 'var(--success-color)';
-            btn.style.borderColor = 'var(--success-color)';
-            lucide.createIcons();
-            setTimeout(() => {
-                btn.innerHTML = orig;
-                btn.style.background = '';
-                btn.style.color = '';
-                btn.style.borderColor = '';
-                lucide.createIcons();
-            }, 2000);
-        });
+    function switchLang(lang) {
+        activeLang = lang;
+        document.getElementById('btnLangID').classList.toggle('active', lang === 'id');
+        document.getElementById('btnLangEN').classList.toggle('active', lang === 'en');
+        if (activePrompt) {
+            document.getElementById('displayGuide').innerText = getContent(activePrompt.guide);
+            renderPromptContent();
+        }
     }
 
     // =====================================================================
@@ -1348,26 +1115,18 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
     function renderPromptContent() {
         if (!activePrompt) return;
 
-        const contentText = getCurrentContent();
+        const contentText = getContent(activePrompt.content);
         const promptEl = document.getElementById('displayPrompt');
 
-        // Apply search highlight if there's a query
         if (currentSearchQuery) {
             promptEl.innerHTML = highlightText(contentText, currentSearchQuery);
         } else {
             promptEl.textContent = contentText;
         }
 
-        // No translation notice
         const noTransEl = document.getElementById('noTranslationNotice');
         if (activeLang === 'en') {
-            let hasEN = false;
-            if (isChain(activePrompt)) {
-                hasEN = hasTranslation(activePrompt.chain[activeChainStep].content);
-            } else {
-                hasEN = hasTranslation(activePrompt.content);
-            }
-            noTransEl.classList.toggle('visible', !hasEN);
+            noTransEl.classList.toggle('visible', !hasTranslation(activePrompt.content));
         } else {
             noTransEl.classList.remove('visible');
         }
@@ -1376,30 +1135,12 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
     }
 
     // =====================================================================
-    // LANGUAGE SWITCH
-    // =====================================================================
-    function switchLang(lang) {
-        activeLang = lang;
-        document.getElementById('btnLangID').classList.toggle('active', lang === 'id');
-        document.getElementById('btnLangEN').classList.toggle('active', lang === 'en');
-
-        if (activePrompt) {
-            document.getElementById('displayGuide').innerText = getContent(activePrompt.guide);
-            renderPromptContent();
-        }
-    }
-
-    // =====================================================================
     // SEARCH
     // =====================================================================
     function filterPrompts() {
         currentSearchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
         renderSidebar();
-
-        // Re-render content with highlights if something is active
-        if (activePrompt) {
-            renderPromptContent();
-        }
+        if (activePrompt) renderPromptContent();
     }
 
     // =====================================================================
@@ -1407,7 +1148,7 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
     // =====================================================================
     function copyPrompt() {
         if (!activePrompt) return;
-        const text = getCurrentContent();
+        const text = getContent(activePrompt.content);
         navigator.clipboard.writeText(text).then(() => {
             const btn = document.getElementById('copyBtn');
             const originalContent = btn.innerHTML;
@@ -1424,18 +1165,10 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
 
     function downloadPrompt() {
         if (!activePrompt) return;
-        let text, filename;
-        if (isChain(activePrompt)) {
-            text = activePrompt.chain.map((step, i) =>
-                `=== ${step.label} ===\n\n${getContent(step.content)}`
-            ).join('\n\n' + '─'.repeat(60) + '\n\n');
-            filename = `${activePrompt.title} — Chain.txt`;
-        } else {
-            text = getCurrentContent();
-            filename = `${activePrompt.title}${activeLang === 'en' ? ' (EN)' : ''}.txt`;
-        }
+        const text = getContent(activePrompt.content);
+        const filename = `${activePrompt.title}${activeLang === 'en' ? ' (EN)' : ''}.txt`;
         const element = document.createElement('a');
-        const file = new Blob([text], {type: 'text/plain'});
+        const file = new Blob([text], { type: 'text/plain' });
         element.href = URL.createObjectURL(file);
         element.download = filename;
         document.body.appendChild(element);
@@ -1444,7 +1177,7 @@ Output the lecture as a delivery-ready script optimized for real-time speaking, 
     }
 
     // =====================================================================
-    // SIDEBAR TOGGLE
+    // SIDEBAR TOGGLE (mobile)
     // =====================================================================
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('active');
