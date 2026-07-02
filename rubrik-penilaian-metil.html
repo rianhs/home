@@ -16,6 +16,11 @@
 
         * { box-sizing: border-box; }
 
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-light);
@@ -388,12 +393,29 @@
 
             .info-section { grid-template-columns: 1fr; gap: 12px; }
 
-            .excel-table { table-layout: auto; }
+            /* Ukuran huruf tabel diseragamkan agar konsisten di semua sel */
+            .excel-table,
+            .excel-table th,
+            .excel-table td,
+            .table-header th,
+            .col-num,
+            .col-unsur,
+            .col-bobot,
+            .col-skor-input,
+            .skor-grid,
+            .skor-item,
+            .skor-item ul,
+            .skor-item li,
+            .skor-title,
+            .score-display,
+            .section-row td,
+            .total-row td {
+                font-size: 12px !important;
+            }
+
             .col-unsur {
                 width: 95px;
-                font-size: 11.5px;
-                word-break: break-word;
-                hyphens: auto;
+                overflow-wrap: break-word;
             }
             .col-bobot { width: 40px; }
             .col-skor-input { width: 58px; }
@@ -404,7 +426,6 @@
                 -webkit-overflow-scrolling: touch;
                 scroll-snap-type: x mandatory;
                 position: relative;
-                font-size: 13px;
             }
 
             .skor-item {
@@ -414,8 +435,6 @@
                 border-right: 1px solid #ddd;
                 border-bottom: none;
             }
-
-            .skor-title { font-size: 11px; }
 
             .skor-scroll-hint {
                 display: block;
