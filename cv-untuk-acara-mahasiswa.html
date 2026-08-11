@@ -33,7 +33,7 @@
             font-family: 'Inter', sans-serif;
             background: var(--light-gray);
             color: var(--black);
-            overflow: hidden;
+            overflow: hidden; /* Mengunci scroll utama di desktop */
         }
 
         button, a {
@@ -62,7 +62,7 @@
             flex-direction: column;
             gap: 32px;
             flex-shrink: 0;
-            overflow-y: auto;
+            overflow-y: auto; /* Scroll khusus sidebar di desktop */
         }
 
         .profile-photo {
@@ -178,7 +178,7 @@
         .content {
             flex: 1;
             padding: 30px 40px 40px;
-            overflow-y: auto;
+            overflow-y: auto; /* Scroll khusus konten di desktop */
         }
 
         .panel {
@@ -215,7 +215,7 @@
             display: grid;
             grid-template-columns: 1fr 1.25fr;
             gap: 20px;
-            align-items: stretch; /* Memaksa tinggi kartu sama */
+            align-items: stretch;
         }
 
         .education-card-main {
@@ -598,10 +598,14 @@
            RESPONSIVE
         ===================================================== */
         @media (max-width: 1100px) {
+            body {
+                overflow: auto; /* Mengembalikan fungsi scroll di perangkat seluler */
+            }
             .dashboard {
                 flex-direction: column;
                 height: auto;
-                overflow: auto;
+                min-height: 100vh;
+                overflow: visible;
             }
             .sidebar {
                 width: 100%;
@@ -612,6 +616,7 @@
                 align-items: center;
                 gap: 24px;
                 padding: 30px 40px;
+                overflow-y: visible;
             }
             .contact {
                 flex-direction: row;
@@ -626,6 +631,10 @@
             }
             .content {
                 overflow-y: visible;
+                padding: 24px 30px 30px;
+            }
+            .navigation {
+                padding: 16px 30px 0;
             }
         }
 
@@ -635,8 +644,10 @@
         }
 
         @media (max-width: 650px) {
-            .sidebar { flex-direction: column; align-items: flex-start; }
+            .sidebar { flex-direction: column; align-items: flex-start; padding: 24px; }
             .contact { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 20px; flex-direction: column; }
+            .content { padding: 20px 24px 24px; }
+            .navigation { padding: 16px 24px 0; }
         }
     </style>
 </head>
