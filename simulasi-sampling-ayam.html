@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Penarikan Sampel &mdash; Ayam Broiler</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --accent-blue: #0071e3;
+            --accent-green: #34c759;
+            --accent-red: #ff3b30;
+            --border-color: #d2d2d7;
+            --shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        p.honesty-note {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 32px;
+            font-style: italic;
+        }
+
+        .input-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            background-color: #fbfbfd;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .error-text {
+            font-size: 13px;
+            color: var(--accent-red);
+            margin-top: 6px;
+            display: none;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #005bb8;
+        }
+
+        .btn-secondary {
+            background-color: #e3e3e8;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #d2d2d7;
+        }
+
+        .btn-copy {
+            background-color: var(--accent-green);
+            color: white;
+            flex: none;
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .btn-copy:hover {
+            background-color: #2ba64d;
+        }
+
+        .btn-copy.copied {
+            background-color: #86868b;
+        }
+
+        #results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .result-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 8px 10px;
+            color: var(--text-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tbody td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f0f0f2;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-scroll {
+            max-height: 320px;
+            overflow-y: auto;
+            border-radius: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 40px 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 500px) {
+            h1 { font-size: 24px; }
+            .button-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Simulasi Penarikan Sampel</h1>
+    <p class="subtitle">Halaman ini digunakan untuk menarik sampel dan mengambil data dari 1000 ekor ayam broiler H-5 sebelum panen.</p>
+    <p class="honesty-note">Catatan: Karena keterbatasan sumber daya peternak, jumlah sampel maksimum yang bisa ditarik adalah 200 ekor. Setelah sistem menampilkan data, Anda bisa menekan tombol "Salin" dan menempelkan datanya di Microsoft Excel atau Google Sheets.</p>
+
+    <div class="input-card">
+        <div class="section-title">Jumlah Sampel</div>
+        <div class="form-group">
+            <label for="n-input">Masukkan jumlah ayam yang akan disampel (n)</label>
+            <input type="number" id="n-input" min="1" max="200" step="1" placeholder="Contoh: 5">
+            <div class="help-text">Nilai n harus antara 1 dan 200 ekor.</div>
+            <div class="error-text" id="error-text">Jumlah sampel tidak valid. Masukkan angka bulat antara 1 dan 200.</div>
+        </div>
+        <div class="button-row">
+            <button class="btn-primary" onclick="drawSample()">Tarik Sampel</button>
+            <button class="btn-secondary" onclick="resetAll()">Reset</button>
+        </div>
+    </div>
+
+    <div id="results-container">
+        <div class="empty-state" id="empty-state">Belum ada sampel yang ditarik. Masukkan jumlah sampel lalu klik "Tarik Sampel".</div>
+    </div>
+</div>
+
+<script>
+    // Data populasi disimpan dalam bentuk terenkode (base64) supaya tidak langsung
+    // terbaca sebagai teks polos oleh mahasiswa yang membuka kode sumber halaman ini.
+    // Ini bukan mekanisme keamanan yang kuat, sekadar penghalang minimal terhadap
+    // rasa penasaran sekilas. Struktur setelah diuraikan: {id: [...], w: [...], s: [...]}
+    // w = berat badan (gram), s = status (0 = Sehat, 1 = Gangguan Pernapasan)
+    const ENCODED_POPULATION = "eyJpZCI6WyJBMDAxIiwiQTAwMiIsIkEwMDMiLCJBMDA0IiwiQTAwNSIsIkEwMDYiLCJBMDA3IiwiQTAwOCIsIkEwMDkiLCJBMDEwIiwiQTAxMSIsIkEwMTIiLCJBMDEzIiwiQTAxNCIsIkEwMTUiLCJBMDE2IiwiQTAxNyIsIkEwMTgiLCJBMDE5IiwiQTAyMCIsIkEwMjEiLCJBMDIyIiwiQTAyMyIsIkEwMjQiLCJBMDI1IiwiQTAyNiIsIkEwMjciLCJBMDI4IiwiQTAyOSIsIkEwMzAiLCJBMDMxIiwiQTAzMiIsIkEwMzMiLCJBMDM0IiwiQTAzNSIsIkEwMzYiLCJBMDM3IiwiQTAzOCIsIkEwMzkiLCJBMDQwIiwiQTA0MSIsIkEwNDIiLCJBMDQzIiwiQTA0NCIsIkEwNDUiLCJBMDQ2IiwiQTA0NyIsIkEwNDgiLCJBMDQ5IiwiQTA1MCIsIkEwNTEiLCJBMDUyIiwiQTA1MyIsIkEwNTQiLCJBMDU1IiwiQTA1NiIsIkEwNTciLCJBMDU4IiwiQTA1OSIsIkEwNjAiLCJBMDYxIiwiQTA2MiIsIkEwNjMiLCJBMDY0IiwiQTA2NSIsIkEwNjYiLCJBMDY3IiwiQTA2OCIsIkEwNjkiLCJBMDcwIiwiQTA3MSIsIkEwNzIiLCJBMDczIiwiQTA3NCIsIkEwNzUiLCJBMDc2IiwiQTA3NyIsIkEwNzgiLCJBMDc5IiwiQTA4MCIsIkEwODEiLCJBMDgyIiwiQTA4MyIsIkEwODQiLCJBMDg1IiwiQTA4NiIsIkEwODciLCJBMDg4IiwiQTA4OSIsIkEwOTAiLCJBMDkxIiwiQTA5MiIsIkEwOTMiLCJBMDk0IiwiQTA5NSIsIkEwOTYiLCJBMDk3IiwiQTA5OCIsIkEwOTkiLCJBMTAwIiwiQTEwMSIsIkExMDIiLCJBMTAzIiwiQTEwNCIsIkExMDUiLCJBMTA2IiwiQTEwNyIsIkExMDgiLCJBMTA5IiwiQTExMCIsIkExMTEiLCJBMTEyIiwiQTExMyIsIkExMTQiLCJBMTE1IiwiQTExNiIsIkExMTciLCJBMTE4IiwiQTExOSIsIkExMjAiLCJBMTIxIiwiQTEyMiIsIkExMjMiLCJBMTI0IiwiQTEyNSIsIkExMjYiLCJBMTI3IiwiQTEyOCIsIkExMjkiLCJBMTMwIiwiQTEzMSIsIkExMzIiLCJBMTMzIiwiQTEzNCIsIkExMzUiLCJBMTM2IiwiQTEzNyIsIkExMzgiLCJBMTM5IiwiQTE0MCIsIkExNDEiLCJBMTQyIiwiQTE0MyIsIkExNDQiLCJBMTQ1IiwiQTE0NiIsIkExNDciLCJBMTQ4IiwiQTE0OSIsIkExNTAiLCJBMTUxIiwiQTE1MiIsIkExNTMiLCJBMTU0IiwiQTE1NSIsIkExNTYiLCJBMTU3IiwiQTE1OCIsIkExNTkiLCJBMTYwIiwiQTE2MSIsIkExNjIiLCJBMTYzIiwiQTE2NCIsIkExNjUiLCJBMTY2IiwiQTE2NyIsIkExNjgiLCJBMTY5IiwiQTE3MCIsIkExNzEiLCJBMTcyIiwiQTE3MyIsIkExNzQiLCJBMTc1IiwiQTE3NiIsIkExNzciLCJBMTc4IiwiQTE3OSIsIkExODAiLCJBMTgxIiwiQTE4MiIsIkExODMiLCJBMTg0IiwiQTE4NSIsIkExODYiLCJBMTg3IiwiQTE4OCIsIkExODkiLCJBMTkwIiwiQTE5MSIsIkExOTIiLCJBMTkzIiwiQTE5NCIsIkExOTUiLCJBMTk2IiwiQTE5NyIsIkExOTgiLCJBMTk5IiwiQTIwMCIsIkEyMDEiLCJBMjAyIiwiQTIwMyIsIkEyMDQiLCJBMjA1IiwiQTIwNiIsIkEyMDciLCJBMjA4IiwiQTIwOSIsIkEyMTAiLCJBMjExIiwiQTIxMiIsIkEyMTMiLCJBMjE0IiwiQTIxNSIsIkEyMTYiLCJBMjE3IiwiQTIxOCIsIkEyMTkiLCJBMjIwIiwiQTIyMSIsIkEyMjIiLCJBMjIzIiwiQTIyNCIsIkEyMjUiLCJBMjI2IiwiQTIyNyIsIkEyMjgiLCJBMjI5IiwiQTIzMCIsIkEyMzEiLCJBMjMyIiwiQTIzMyIsIkEyMzQiLCJBMjM1IiwiQTIzNiIsIkEyMzciLCJBMjM4IiwiQTIzOSIsIkEyNDAiLCJBMjQxIiwiQTI0MiIsIkEyNDMiLCJBMjQ0IiwiQTI0NSIsIkEyNDYiLCJBMjQ3IiwiQTI0OCIsIkEyNDkiLCJBMjUwIiwiQTI1MSIsIkEyNTIiLCJBMjUzIiwiQTI1NCIsIkEyNTUiLCJBMjU2IiwiQTI1NyIsIkEyNTgiLCJBMjU5IiwiQTI2MCIsIkEyNjEiLCJBMjYyIiwiQTI2MyIsIkEyNjQiLCJBMjY1IiwiQTI2NiIsIkEyNjciLCJBMjY4IiwiQTI2OSIsIkEyNzAiLCJBMjcxIiwiQTI3MiIsIkEyNzMiLCJBMjc0IiwiQTI3NSIsIkEyNzYiLCJBMjc3IiwiQTI3OCIsIkEyNzkiLCJBMjgwIiwiQTI4MSIsIkEyODIiLCJBMjgzIiwiQTI4NCIsIkEyODUiLCJBMjg2IiwiQTI4NyIsIkEyODgiLCJBMjg5IiwiQTI5MCIsIkEyOTEiLCJBMjkyIiwiQTI5MyIsIkEyOTQiLCJBMjk1IiwiQTI5NiIsIkEyOTciLCJBMjk4IiwiQTI5OSIsIkEzMDAiLCJBMzAxIiwiQTMwMiIsIkEzMDMiLCJBMzA0IiwiQTMwNSIsIkEzMDYiLCJBMzA3IiwiQTMwOCIsIkEzMDkiLCJBMzEwIiwiQTMxMSIsIkEzMTIiLCJBMzEzIiwiQTMxNCIsIkEzMTUiLCJBMzE2IiwiQTMxNyIsIkEzMTgiLCJBMzE5IiwiQTMyMCIsIkEzMjEiLCJBMzIyIiwiQTMyMyIsIkEzMjQiLCJBMzI1IiwiQTMyNiIsIkEzMjciLCJBMzI4IiwiQTMyOSIsIkEzMzAiLCJBMzMxIiwiQTMzMiIsIkEzMzMiLCJBMzM0IiwiQTMzNSIsIkEzMzYiLCJBMzM3IiwiQTMzOCIsIkEzMzkiLCJBMzQwIiwiQTM0MSIsIkEzNDIiLCJBMzQzIiwiQTM0NCIsIkEzNDUiLCJBMzQ2IiwiQTM0NyIsIkEzNDgiLCJBMzQ5IiwiQTM1MCIsIkEzNTEiLCJBMzUyIiwiQTM1MyIsIkEzNTQiLCJBMzU1IiwiQTM1NiIsIkEzNTciLCJBMzU4IiwiQTM1OSIsIkEzNjAiLCJBMzYxIiwiQTM2MiIsIkEzNjMiLCJBMzY0IiwiQTM2NSIsIkEzNjYiLCJBMzY3IiwiQTM2OCIsIkEzNjkiLCJBMzcwIiwiQTM3MSIsIkEzNzIiLCJBMzczIiwiQTM3NCIsIkEzNzUiLCJBMzc2IiwiQTM3NyIsIkEzNzgiLCJBMzc5IiwiQTM4MCIsIkEzODEiLCJBMzgyIiwiQTM4MyIsIkEzODQiLCJBMzg1IiwiQTM4NiIsIkEzODciLCJBMzg4IiwiQTM4OSIsIkEzOTAiLCJBMzkxIiwiQTM5MiIsIkEzOTMiLCJBMzk0IiwiQTM5NSIsIkEzOTYiLCJBMzk3IiwiQTM5OCIsIkEzOTkiLCJBNDAwIiwiQTQwMSIsIkE0MDIiLCJBNDAzIiwiQTQwNCIsIkE0MDUiLCJBNDA2IiwiQTQwNyIsIkE0MDgiLCJBNDA5IiwiQTQxMCIsIkE0MTEiLCJBNDEyIiwiQTQxMyIsIkE0MTQiLCJBNDE1IiwiQTQxNiIsIkE0MTciLCJBNDE4IiwiQTQxOSIsIkE0MjAiLCJBNDIxIiwiQTQyMiIsIkE0MjMiLCJBNDI0IiwiQTQyNSIsIkE0MjYiLCJBNDI3IiwiQTQyOCIsIkE0MjkiLCJBNDMwIiwiQTQzMSIsIkE0MzIiLCJBNDMzIiwiQTQzNCIsIkE0MzUiLCJBNDM2IiwiQTQzNyIsIkE0MzgiLCJBNDM5IiwiQTQ0MCIsIkE0NDEiLCJBNDQyIiwiQTQ0MyIsIkE0NDQiLCJBNDQ1IiwiQTQ0NiIsIkE0NDciLCJBNDQ4IiwiQTQ0OSIsIkE0NTAiLCJBNDUxIiwiQTQ1MiIsIkE0NTMiLCJBNDU0IiwiQTQ1NSIsIkE0NTYiLCJBNDU3IiwiQTQ1OCIsIkE0NTkiLCJBNDYwIiwiQTQ2MSIsIkE0NjIiLCJBNDYzIiwiQTQ2NCIsIkE0NjUiLCJBNDY2IiwiQTQ2NyIsIkE0NjgiLCJBNDY5IiwiQTQ3MCIsIkE0NzEiLCJBNDcyIiwiQTQ3MyIsIkE0NzQiLCJBNDc1IiwiQTQ3NiIsIkE0NzciLCJBNDc4IiwiQTQ3OSIsIkE0ODAiLCJBNDgxIiwiQTQ4MiIsIkE0ODMiLCJBNDg0IiwiQTQ4NSIsIkE0ODYiLCJBNDg3IiwiQTQ4OCIsIkE0ODkiLCJBNDkwIiwiQTQ5MSIsIkE0OTIiLCJBNDkzIiwiQTQ5NCIsIkE0OTUiLCJBNDk2IiwiQTQ5NyIsIkE0OTgiLCJBNDk5IiwiQTUwMCIsIkE1MDEiLCJBNTAyIiwiQTUwMyIsIkE1MDQiLCJBNTA1IiwiQTUwNiIsIkE1MDciLCJBNTA4IiwiQTUwOSIsIkE1MTAiLCJBNTExIiwiQTUxMiIsIkE1MTMiLCJBNTE0IiwiQTUxNSIsIkE1MTYiLCJBNTE3IiwiQTUxOCIsIkE1MTkiLCJBNTIwIiwiQTUyMSIsIkE1MjIiLCJBNTIzIiwiQTUyNCIsIkE1MjUiLCJBNTI2IiwiQTUyNyIsIkE1MjgiLCJBNTI5IiwiQTUzMCIsIkE1MzEiLCJBNTMyIiwiQTUzMyIsIkE1MzQiLCJBNTM1IiwiQTUzNiIsIkE1MzciLCJBNTM4IiwiQTUzOSIsIkE1NDAiLCJBNTQxIiwiQTU0MiIsIkE1NDMiLCJBNTQ0IiwiQTU0NSIsIkE1NDYiLCJBNTQ3IiwiQTU0OCIsIkE1NDkiLCJBNTUwIiwiQTU1MSIsIkE1NTIiLCJBNTUzIiwiQTU1NCIsIkE1NTUiLCJBNTU2IiwiQTU1NyIsIkE1NTgiLCJBNTU5IiwiQTU2MCIsIkE1NjEiLCJBNTYyIiwiQTU2MyIsIkE1NjQiLCJBNTY1IiwiQTU2NiIsIkE1NjciLCJBNTY4IiwiQTU2OSIsIkE1NzAiLCJBNTcxIiwiQTU3MiIsIkE1NzMiLCJBNTc0IiwiQTU3NSIsIkE1NzYiLCJBNTc3IiwiQTU3OCIsIkE1NzkiLCJBNTgwIiwiQTU4MSIsIkE1ODIiLCJBNTgzIiwiQTU4NCIsIkE1ODUiLCJBNTg2IiwiQTU4NyIsIkE1ODgiLCJBNTg5IiwiQTU5MCIsIkE1OTEiLCJBNTkyIiwiQTU5MyIsIkE1OTQiLCJBNTk1IiwiQTU5NiIsIkE1OTciLCJBNTk4IiwiQTU5OSIsIkE2MDAiLCJBNjAxIiwiQTYwMiIsIkE2MDMiLCJBNjA0IiwiQTYwNSIsIkE2MDYiLCJBNjA3IiwiQTYwOCIsIkE2MDkiLCJBNjEwIiwiQTYxMSIsIkE2MTIiLCJBNjEzIiwiQTYxNCIsIkE2MTUiLCJBNjE2IiwiQTYxNyIsIkE2MTgiLCJBNjE5IiwiQTYyMCIsIkE2MjEiLCJBNjIyIiwiQTYyMyIsIkE2MjQiLCJBNjI1IiwiQTYyNiIsIkE2MjciLCJBNjI4IiwiQTYyOSIsIkE2MzAiLCJBNjMxIiwiQTYzMiIsIkE2MzMiLCJBNjM0IiwiQTYzNSIsIkE2MzYiLCJBNjM3IiwiQTYzOCIsIkE2MzkiLCJBNjQwIiwiQTY0MSIsIkE2NDIiLCJBNjQzIiwiQTY0NCIsIkE2NDUiLCJBNjQ2IiwiQTY0NyIsIkE2NDgiLCJBNjQ5IiwiQTY1MCIsIkE2NTEiLCJBNjUyIiwiQTY1MyIsIkE2NTQiLCJBNjU1IiwiQTY1NiIsIkE2NTciLCJBNjU4IiwiQTY1OSIsIkE2NjAiLCJBNjYxIiwiQTY2MiIsIkE2NjMiLCJBNjY0IiwiQTY2NSIsIkE2NjYiLCJBNjY3IiwiQTY2OCIsIkE2NjkiLCJBNjcwIiwiQTY3MSIsIkE2NzIiLCJBNjczIiwiQTY3NCIsIkE2NzUiLCJBNjc2IiwiQTY3NyIsIkE2NzgiLCJBNjc5IiwiQTY4MCIsIkE2ODEiLCJBNjgyIiwiQTY4MyIsIkE2ODQiLCJBNjg1IiwiQTY4NiIsIkE2ODciLCJBNjg4IiwiQTY4OSIsIkE2OTAiLCJBNjkxIiwiQTY5MiIsIkE2OTMiLCJBNjk0IiwiQTY5NSIsIkE2OTYiLCJBNjk3IiwiQTY5OCIsIkE2OTkiLCJBNzAwIiwiQTcwMSIsIkE3MDIiLCJBNzAzIiwiQTcwNCIsIkE3MDUiLCJBNzA2IiwiQTcwNyIsIkE3MDgiLCJBNzA5IiwiQTcxMCIsIkE3MTEiLCJBNzEyIiwiQTcxMyIsIkE3MTQiLCJBNzE1IiwiQTcxNiIsIkE3MTciLCJBNzE4IiwiQTcxOSIsIkE3MjAiLCJBNzIxIiwiQTcyMiIsIkE3MjMiLCJBNzI0IiwiQTcyNSIsIkE3MjYiLCJBNzI3IiwiQTcyOCIsIkE3MjkiLCJBNzMwIiwiQTczMSIsIkE3MzIiLCJBNzMzIiwiQTczNCIsIkE3MzUiLCJBNzM2IiwiQTczNyIsIkE3MzgiLCJBNzM5IiwiQTc0MCIsIkE3NDEiLCJBNzQyIiwiQTc0MyIsIkE3NDQiLCJBNzQ1IiwiQTc0NiIsIkE3NDciLCJBNzQ4IiwiQTc0OSIsIkE3NTAiLCJBNzUxIiwiQTc1MiIsIkE3NTMiLCJBNzU0IiwiQTc1NSIsIkE3NTYiLCJBNzU3IiwiQTc1OCIsIkE3NTkiLCJBNzYwIiwiQTc2MSIsIkE3NjIiLCJBNzYzIiwiQTc2NCIsIkE3NjUiLCJBNzY2IiwiQTc2NyIsIkE3NjgiLCJBNzY5IiwiQTc3MCIsIkE3NzEiLCJBNzcyIiwiQTc3MyIsIkE3NzQiLCJBNzc1IiwiQTc3NiIsIkE3NzciLCJBNzc4IiwiQTc3OSIsIkE3ODAiLCJBNzgxIiwiQTc4MiIsIkE3ODMiLCJBNzg0IiwiQTc4NSIsIkE3ODYiLCJBNzg3IiwiQTc4OCIsIkE3ODkiLCJBNzkwIiwiQTc5MSIsIkE3OTIiLCJBNzkzIiwiQTc5NCIsIkE3OTUiLCJBNzk2IiwiQTc5NyIsIkE3OTgiLCJBNzk5IiwiQTgwMCIsIkE4MDEiLCJBODAyIiwiQTgwMyIsIkE4MDQiLCJBODA1IiwiQTgwNiIsIkE4MDciLCJBODA4IiwiQTgwOSIsIkE4MTAiLCJBODExIiwiQTgxMiIsIkE4MTMiLCJBODE0IiwiQTgxNSIsIkE4MTYiLCJBODE3IiwiQTgxOCIsIkE4MTkiLCJBODIwIiwiQTgyMSIsIkE4MjIiLCJBODIzIiwiQTgyNCIsIkE4MjUiLCJBODI2IiwiQTgyNyIsIkE4MjgiLCJBODI5IiwiQTgzMCIsIkE4MzEiLCJBODMyIiwiQTgzMyIsIkE4MzQiLCJBODM1IiwiQTgzNiIsIkE4MzciLCJBODM4IiwiQTgzOSIsIkE4NDAiLCJBODQxIiwiQTg0MiIsIkE4NDMiLCJBODQ0IiwiQTg0NSIsIkE4NDYiLCJBODQ3IiwiQTg0OCIsIkE4NDkiLCJBODUwIiwiQTg1MSIsIkE4NTIiLCJBODUzIiwiQTg1NCIsIkE4NTUiLCJBODU2IiwiQTg1NyIsIkE4NTgiLCJBODU5IiwiQTg2MCIsIkE4NjEiLCJBODYyIiwiQTg2MyIsIkE4NjQiLCJBODY1IiwiQTg2NiIsIkE4NjciLCJBODY4IiwiQTg2OSIsIkE4NzAiLCJBODcxIiwiQTg3MiIsIkE4NzMiLCJBODc0IiwiQTg3NSIsIkE4NzYiLCJBODc3IiwiQTg3OCIsIkE4NzkiLCJBODgwIiwiQTg4MSIsIkE4ODIiLCJBODgzIiwiQTg4NCIsIkE4ODUiLCJBODg2IiwiQTg4NyIsIkE4ODgiLCJBODg5IiwiQTg5MCIsIkE4OTEiLCJBODkyIiwiQTg5MyIsIkE4OTQiLCJBODk1IiwiQTg5NiIsIkE4OTciLCJBODk4IiwiQTg5OSIsIkE5MDAiLCJBOTAxIiwiQTkwMiIsIkE5MDMiLCJBOTA0IiwiQTkwNSIsIkE5MDYiLCJBOTA3IiwiQTkwOCIsIkE5MDkiLCJBOTEwIiwiQTkxMSIsIkE5MTIiLCJBOTEzIiwiQTkxNCIsIkE5MTUiLCJBOTE2IiwiQTkxNyIsIkE5MTgiLCJBOTE5IiwiQTkyMCIsIkE5MjEiLCJBOTIyIiwiQTkyMyIsIkE5MjQiLCJBOTI1IiwiQTkyNiIsIkE5MjciLCJBOTI4IiwiQTkyOSIsIkE5MzAiLCJBOTMxIiwiQTkzMiIsIkE5MzMiLCJBOTM0IiwiQTkzNSIsIkE5MzYiLCJBOTM3IiwiQTkzOCIsIkE5MzkiLCJBOTQwIiwiQTk0MSIsIkE5NDIiLCJBOTQzIiwiQTk0NCIsIkE5NDUiLCJBOTQ2IiwiQTk0NyIsIkE5NDgiLCJBOTQ5IiwiQTk1MCIsIkE5NTEiLCJBOTUyIiwiQTk1MyIsIkE5NTQiLCJBOTU1IiwiQTk1NiIsIkE5NTciLCJBOTU4IiwiQTk1OSIsIkE5NjAiLCJBOTYxIiwiQTk2MiIsIkE5NjMiLCJBOTY0IiwiQTk2NSIsIkE5NjYiLCJBOTY3IiwiQTk2OCIsIkE5NjkiLCJBOTcwIiwiQTk3MSIsIkE5NzIiLCJBOTczIiwiQTk3NCIsIkE5NzUiLCJBOTc2IiwiQTk3NyIsIkE5NzgiLCJBOTc5IiwiQTk4MCIsIkE5ODEiLCJBOTgyIiwiQTk4MyIsIkE5ODQiLCJBOTg1IiwiQTk4NiIsIkE5ODciLCJBOTg4IiwiQTk4OSIsIkE5OTAiLCJBOTkxIiwiQTk5MiIsIkE5OTMiLCJBOTk0IiwiQTk5NSIsIkE5OTYiLCJBOTk3IiwiQTk5OCIsIkE5OTkiLCJBMTAwMCJdLCJ3IjpbMTU3NCwxNzMzLDE4NTQsMTU3MiwxNTk4LDE1ODQsMTU1OSwxNjc3LDE1MjMsMTMzMywxNjUxLDE1NzEsMTc3MywxNTk2LDE2MjEsMTc3MywxNTEwLDE1OTQsMTQzNSwxNjM0LDE1NzMsMTM0MiwxNTgzLDE3NjIsMTYyNiwxMzU3LDE2ODQsMTc0NSwxNjQ4LDE0MTAsMTQ5NywxODI2LDE3NjcsMTcyNiwxODMzLDE2NzksMTI3MCwxODAwLDE3MzksMTc1NywxNjg4LDE3NDksMTc1MCwxNDA3LDE3MzQsMTU2MSwxNTcxLDE4NDQsMTYwOSwxNjQxLDE3NjksMTQ4OSwxNzI2LDE0NzQsMTY0OSwxNjUwLDE1OTgsMTUzMSwxNTY5LDE5MzMsMTc3MCwxNzc3LDE2NjYsMTY3MCwxNjcxLDE3NTEsMTUxNSwxNzA0LDE1MjUsMTY4OSwxNjUxLDE1MzksMTU0NywxNjcwLDE0NDgsMTU3MSwxNTIyLDE0OTksMTQzOSwxNTY4LDE2NjgsMTYwMCwxMzUzLDE2MzUsMTc2NiwxOTQxLDE3MDEsMTUyMCwxNzI1LDE0NDIsMTYyOCwxNjUwLDE2MzksMTU5NywxNTcwLDE5MDMsMTgwOSwxNjM3LDEzOTYsMTQxNiwxNTc0LDE4MjcsMTYzNSwxNjY5LDE0OTYsMTY5NywxNDE2LDE2MzYsMTg4MywxNDYyLDE4OTksMTQzNCwxNjk5LDE1MDIsMTg5MiwxNTQ0LDE1MTcsMTUyNywxNjI4LDE2MDksMTYzNSwxNjEyLDE1MzUsMTU3OCwxNzgwLDEyOTUsMTY3NSwxNjQ3LDE2NjMsMTY0NywxMTgyLDE2NjEsMTcwMSwxNTcwLDE3NjUsMTY5MiwxNTcyLDE4ODgsMTY3MiwxNTYwLDE0ODcsMTg0MCwxODMyLDE2MTEsMTYzMSwxNzkzLDE0NTgsMTY2MSwxNzM5LDE1NTQsMTcyMCwxNTk5LDE2NjQsMTY0NywxNDk4LDE1NjgsMTYwOCwxNzE5LDE1ODMsMTg1MywxNjM2LDE2ODcsMTYwMSwxNzU3LDE2OTIsMTUyNywxNTY5LDE1MjIsMTU2MSwxNzYyLDE2MTYsMTIxNCwxNjEwLDE2MjcsMTM4MywxNjc3LDE3NDUsMTY3MywxNTg4LDE1MDUsMTI1OSwxNTU0LDE3MTcsMTUwOSwxOTA4LDE2MDksMTc1NCwxNjUwLDE2ODYsMTY2MiwxNTY3LDE2NjYsMTc1MCwxODMwLDE3NDQsMTcwMCwxNjgxLDE3NTIsMTY4NiwxNzM5LDE4MTQsMTYxMywxNjAyLDEzNzIsMTY3NywxNjU4LDE3NDgsMTU1MSwxNjczLDE0MDMsMTg5MywxNjUxLDE4NTksMTc5MiwxNzQ3LDE3NzYsMTY0MCwxNTkxLDE3OTAsMTc2OCwxNTEwLDE0NTIsMTU5MywxNDc1LDE0NzEsMTU3NywxNTgyLDE3ODEsMTUyOSwxNjg4LDE4MTcsMTU5MCwxNzAzLDE0ODAsMTU5NCwxNzI5LDE2MTIsMTU2MCwxNTgxLDE3ODEsMTYzOSwxMzE4LDE4NDYsMTU0NCwxODcwLDE0OTMsMTcwNywxNzEwLDE0NzIsMTMxNywxNzA1LDE1MTcsMTc0OSwxNTc1LDE4MzIsMTcyMiwxNjI4LDE2MTEsMTc1NiwxNTA5LDE2OTMsMTUwOCwxNTA1LDE0NDMsMTc0OCwxNTQwLDE0ODgsMTgwMSwxNzM1LDE2MjksMTc1NywxNzY4LDE3NjMsMTc4MywxODA2LDE2NzIsMTYxNCwxODc2LDE2NzYsMTY1OCwxMTgxLDE4ODMsMTU3OCwxNTQwLDE0ODUsMTYxMSwxNjY5LDE1NzgsMTU0NywxNjAxLDE1NDUsMTM3NSwxOTA2LDE2MDIsMTYwNCwxNDgyLDE2OTcsMTMyNiwxNjU4LDE4NDEsMTQ0NywxNDkzLDE2ODIsMTYzNywxNzg0LDE0OTgsMTU4OCwxODAwLDE1MzksMTc1NCwxMzYwLDE3NDQsMTY1MSwxNTY5LDE2MzIsMTUwOSwxNTE3LDEyNzEsMTUzMywxNDczLDE0NDIsMTU0NSwxMzAxLDE1NDEsMTY0NCwxNjc4LDE2OTksMTY3OCwxNTY4LDEzNDQsMTg1OSwxODM0LDEyODUsMTc0MiwxNTQ0LDE3NDgsMTQ4NiwxNTAyLDE1NDYsMTU5OSwxNzY5LDE2MTUsMTc5NSwxNTIxLDE2MzgsMTEyMiwxNjE0LDE0MTcsMTc5MSwxNzc0LDE2NzYsMTc2NywxNjE4LDE4OTcsMTc5NywxNjU4LDE3NDMsMTQ2NCwxODM0LDE3OTMsMTQ3OCwxNDU1LDE0MjcsMTQ5MywxNzAxLDE3MTcsMTkyOSwxNTE3LDE1MTksMTYwMSwxNDY4LDE0OTYsMTYwMywxNTU0LDE3MjIsMTcwMywxODQ0LDE4MTgsMTc5NywxNTg4LDE4MDQsMTY2NiwxNzAwLDE3NjcsMTgxNSwxNDA3LDE1ODYsMTcxMywxNTQ1LDE1MzksMTY0OCwxODIyLDE0NTIsMTYzOCwxOTIwLDE2MjEsMTczNywxNzY0LDE1MjEsMTc3NSwxOTI2LDE3MDMsMjAyMCwxNjYxLDE5MDMsMTc3OSwxNzc5LDE2OTYsMTY0OCwxNDAzLDE3MTUsMTYxOCwxNDc3LDE1NzMsMTYyMywxNzk0LDE3OTEsMTYyOSwxNDk5LDE2ODIsMTYyMCwxNTgwLDE5MDAsMTY1OCwxNTg5LDE3MzEsMTY2MywxNjczLDE2NzgsMTU1MCwxODUzLDE2MjMsMTc2MywyMDMyLDE1MzEsMTY4NSwxNjkwLDE3MjIsMTU5MCwxNjM2LDE2NTYsMTcwMCwxNzY4LDE0OTQsMTU2MywxNzMyLDE4NTUsMTgzMSwxNTcwLDE2NjcsMTU3MywxNzIxLDE2MzAsMTcwMiwxNTM2LDE4MjksMTc3NywxNzgzLDE4MDcsMTc5NiwxNzE2LDE4NDAsMTY3MCwxNDY2LDE0NzgsMTcyNiwxNjA2LDE2NzksMTc2NSwxNjMxLDEzNzgsMTUzNSwxNTY3LDE0OTMsMTUzNywxNjc5LDEzNTcsMTU2NCwxODUyLDE2MzIsMTg0NiwxNTUyLDE2MTEsMTcwOSwxNjA2LDE3NTIsMTU4MiwxMzkzLDE4MTcsMTgwMiwxNTA2LDE0NzQsMTQ1NiwxMTMyLDE3ODgsMTczOSwxMjMzLDE1OTgsMTY2MiwxNzU2LDE2MDksMTcxNywxNzYyLDE2MzAsMTQ3MCwxNjQ5LDE3MTMsMTI5NCwxNDA4LDE1OTksMTY2MCwxNzc5LDE2MzEsMTU2MiwxODA1LDE0NzIsMTQ5MSwxNDAyLDE2ODEsMTU4NSwxNDc5LDE1MDIsMTY2MCwxNzUyLDE3NzQsMTczMCwxNjU0LDE0MzQsMTY0OSwxNzI2LDE0NDUsMTU4NCwxODg2LDE0NzcsMTM0MywxNzM3LDE1MDYsMTc3MywxNzIxLDE1NjIsMTM4OCwxNTgxLDE1NjcsMTcyMywxODI4LDE5MTQsMTgyOSwxNDUyLDE1MzAsMTgwMCwxNDY4LDE3MDcsMTQ3NSwxNTc0LDE3MjgsMTc2OSwxNTMxLDE0MTEsMTQzMCwxMzk1LDE3MjEsMjAxNywxNzU5LDE3OTcsMTU4NCwxNjU0LDE2MzksMTQzNSwxNTQwLDEzMTcsMTYyOSwxODQ4LDE2MjUsMTcwMiwxNzI0LDE4MjUsMTgwMCwxNzYwLDE2ODEsMTc2NywxNjI5LDE1NTMsMTY2MSwxNTI2LDE3NTEsMTU2NiwxNTI4LDE1OTQsMTc0MywxNzYzLDE0OTQsMTYyMiwxNzAzLDE1MTksMTg3MiwxNjExLDE0NDEsMTgyOSwxNzE5LDE3ODIsMTc2NCwxNjA2LDE2ODksMTcyMywxNzY4LDE3OTUsMTc2MywxNzcyLDE4NDQsMTQxNCwxNDQxLDE2MjUsMTc5NSwxMzkzLDE2MjAsMTY5MywxNjM4LDE1ODIsMTYxOCwxNDY0LDE4NjYsMTcwMywxNjk4LDE0NDEsMTcwMCwxNTU3LDE4NTYsMTY5MywxNjY4LDE2MDUsMTUxMiwxNzA1LDE0NTUsMTYxNywxNjAyLDE1OTcsMTQ5MSwxNjg2LDE2ODAsMTU2MCwxNTgxLDE2MDksMTU3OSwxNTQ0LDE1ODksMTcwMywxNzY2LDE3MzIsMTY4NiwxNDY1LDE3OTEsMTcxMiwxNjYwLDE2NDIsMTYzOSwxNjYzLDE1MTEsMTU2OCwxNDUxLDE3MjQsMTU1NiwxNzY1LDE1NTAsMTkxOCwxNzk5LDE1MzEsMTg2MywxNjcwLDE1NzgsMTc1NSwxNTU5LDE4NTQsMTgxMCwxNTI5LDE4NjksMTc4OSwxNjY5LDE2NzUsMTYxNSwxNjQ0LDE4NjIsMTcxNywxNjYyLDE4MTEsMTk1OCwxNTU5LDE3MTUsMTY3MiwxNDQ2LDE2MTMsMTUzMiwxMzE5LDE4NTYsMTcyOSwxNjAxLDE2NzMsMTY1MCwxNTYwLDE1NjksMTc5MSwxNjMzLDE3NTQsMTY1MywxNjMyLDE4NzYsMTg4NywxNjcwLDE0MzYsMTYwOCwxNjIxLDE4MTMsMTU1NywxNjI4LDE0NzQsMTYyOSwxNjE5LDE3MzksMTYzMiwxNTc4LDE3MzcsMTUwMCwxNDM5LDE2MjcsMTU0OCwxNDk2LDE1MDQsMjAwMiwxNTgzLDE3NzcsMTU1MiwxODE5LDE0MzYsMTU5NCwxNjY1LDE2MzUsMTY1MywxNTE1LDE2NjQsMTU5NywxNzQwLDE0OTAsMTc2OSwxNDI4LDE1OTQsMTY5OSwxNTExLDE1NjgsMTc1MCwxNjYyLDE2MzQsMTY1NSwxNjc3LDE3MjMsMTcyNSwxNTk1LDE3OTgsMTUyNiwxNDkwLDE1MDEsMTY1MSwxODY0LDE3NjEsMTYyNiwxODcxLDE1NjQsMTYyNywxNjc2LDEzNzgsMTM5NiwxNjg1LDE3ODMsMTU5MiwxODgwLDE1NTMsMTcyNSwxNzEzLDE2NzUsMTcyOSwxNjMxLDE0MDcsMTYxNywxNTcyLDE2OTEsMTY2NCwxOTc4LDE2NTgsMTQwNCwxNjg0LDE0OTYsMTc3NywxNjA1LDE1MDYsMTYzNiwxNTQzLDE1NjYsMTYwNSwxOTMzLDE1OTgsMTM0OSwxNzA0LDE2NzgsMTM1MSwxNjUzLDE0NzYsMTQ0NSwxNzA0LDE1NjcsMTYxNCwxNjI2LDE3NjYsMTM0NSwxMzc5LDE2ODYsMTYyMywxNjc3LDE3MzcsMTYxNCwxMzQ4LDE3MjgsMTc3NSwxODU3LDE3MTksMTY3MiwxNjc5LDE3MzgsMTgyMywxNzM0LDE2OTQsMTU3OSwxNjcxLDE3OTYsMTUyNCwxNjI2LDE2ODIsMTU5MiwxNjU4LDE1MzUsMTU4NSwxNTg4LDE0ODMsMTI4NSwxNjM4LDEzNzcsMTYwNiwxODM4LDE0ODYsMTYyNSwxODQ3LDE4OTYsMTUwNCwxNjE3LDE5MDcsMTUzMCwxNzE1LDE1MTIsMTUwOCwxODAxLDE0NzEsMTc0NCwxNTkzLDE0NTcsMTU2MywxNjczLDE3NTAsMTc4NiwxNjIxLDE5MTMsMTYzOSwxNTA2LDE3MjUsMTY0MiwxMzgwLDE1MDQsMTUwOSwxNTIzLDE2NTIsMTU1MCwxNjk1LDE3NTksMTM3MiwxNjU0LDE5MDksMTQzNSwxNTQ4LDE2NDAsMTg4NCwxODUwLDE2MzEsMTcxNywxNjA0LDE2MDMsMTY3MiwxNDE0LDE4MzcsMTUyMSwxNTYzLDE2MDcsMTczMywxNjU5LDE2NTMsMTYzMywxNTc5LDE1MDUsMTU5MCwxNjEzLDEzNTIsMTU1MywxNjM5LDE3OTEsMTUzNiwxMjcwLDE2NjUsMTY3OCwxNTIwLDE2NTYsMTc4NCwxNzkxLDE2NDgsMTcxMiwxNjM4LDE1ODEsMTQyNiwxNzQ0LDE3NDIsMTY5MSwxOTM5LDE2NTEsMTYwOCwxNzk2LDE4OTYsMTY5MiwxNzU0LDE3NzQsMTY5MSwxNTQ3LDE2NzksMTU4MCwxNjU5LDE1MTUsMTcwMiwxNzA4LDE3MDMsMTUxNSwxNjExLDE2NTEsMTY3MCwxNjU2LDE1NTYsMTUzOCwxOTYxLDE2MTIsMTQ3OCwxNTI3LDE3NDksMTYxNiwxNjMxLDE3NjEsMTcyMCwxNzUxLDE3ODMsMTc1NiwxNTU4LDE3MzAsMTU3MiwxNTc0LDE2NDEsMTQ0NCwxNjY2LDE2NzYsMTI1OSwxNDMyLDE4MzIsMTY1MSwxNTgyLDE1MjgsMTc2MywxNTUxLDE2NDQsMTUxNywxNzQ1LDE4NTYsMTU1NSwxNjYwLDE1MTcsMTYwMywxNzczLDE2MzQsMTIzMCwxODYxLDE3NTAsMTc4NywxNDE1LDE3NDYsMTc5OCwxNjYxLDE3MDgsMTY4MSwxNzcyLDE2MDcsMTY3M10sInMiOlswLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwxLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwxLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwxLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMSwxLDAsMCwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwxLDEsMCwwLDAsMCwxLDAsMCwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwxLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMSwwLDEsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDEsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMSwwLDAsMSwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDEsMCwwLDAsMCwwLDAsMCwwLDAsMCwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwXX0=";
+
+    let population = null;
+    let drawCount = 0;
+
+    function loadPopulation() {
+        const jsonStr = decodeURIComponent(escape(atob(ENCODED_POPULATION)));
+        const data = JSON.parse(jsonStr);
+        const rows = [];
+        for (let i = 0; i < data.id.length; i++) {
+            rows.push({
+                id: data.id[i],
+                weight: data.w[i],
+                status: data.s[i] === 1 ? "Gangguan Pernapasan" : "Sehat"
+            });
+        }
+        return rows;
+    }
+
+    function validateN(n) {
+        if (isNaN(n) || !Number.isInteger(n) || n < 1 || n > 200) {
+            return false;
+        }
+        return true;
+    }
+
+    function drawSample() {
+        const input = document.getElementById('n-input');
+        const errorText = document.getElementById('error-text');
+        const n = parseInt(input.value, 10);
+
+        if (!validateN(n)) {
+            errorText.style.display = 'block';
+            return;
+        }
+        errorText.style.display = 'none';
+
+        if (population === null) {
+            population = loadPopulation();
+        }
+
+        // Simple random sampling tanpa pengembalian dari SELURUH populasi.
+        // Setiap klik "Tarik Sampel" adalah penarikan independen yang baru,
+        // bukan kelanjutan dari sisa populasi penarikan sebelumnya.
+        const indices = Array.from({length: population.length}, (_, i) => i);
+        for (let i = indices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [indices[i], indices[j]] = [indices[j], indices[i]];
+        }
+        const chosenIndices = indices.slice(0, n);
+        const sample = chosenIndices.map(i => population[i]);
+        sample.sort((a, b) => a.id.localeCompare(b.id));
+
+        drawCount++;
+        renderResult(drawCount, n, sample);
+    }
+
+    function renderResult(drawNumber, n, sample) {
+        const emptyState = document.getElementById('empty-state');
+        if (emptyState) emptyState.remove();
+
+        const container = document.getElementById('results-container');
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.id = 'result-card-' + drawNumber;
+
+        let tableRows = '';
+        sample.forEach(row => {
+            tableRows += `<tr><td>${row.id}</td><td>${row.weight}</td><td>${row.status}</td></tr>`;
+        });
+
+        card.innerHTML = `
+            <div class="result-header">
+                <h3>Penarikan ke-${drawNumber} (n = ${n})</h3>
+                <button class="btn-copy" onclick="copyTable(${drawNumber})">Salin</button>
+            </div>
+            <div class="table-scroll">
+                <table id="table-${drawNumber}">
+                    <thead>
+                        <tr><th>ID Ayam</th><th>Berat Badan (gram)</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        container.prepend(card);
+    }
+
+    function copyTable(drawNumber) {
+        const table = document.getElementById('table-' + drawNumber);
+        const rows = table.querySelectorAll('tr');
+        let tsv = '';
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('th, td');
+            const rowText = Array.from(cells).map(cell => cell.innerText).join('\t');
+            tsv += rowText + '\n';
+        });
+
+        navigator.clipboard.writeText(tsv).then(() => {
+            const btn = document.querySelector(`#result-card-${drawNumber} .btn-copy`);
+            const originalText = btn.innerText;
+            btn.innerText = 'Tersalin';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('copied');
+            }, 1200);
+        }).catch(() => {
+            alert('Gagal menyalin. Silakan pilih dan salin tabel secara manual.');
+        });
+    }
+
+    function resetAll() {
+        drawCount = 0;
+        const container = document.getElementById('results-container');
+        container.innerHTML = '<div class="empty-state" id="empty-state">Belum ada sampel yang ditarik. Masukkan jumlah sampel lalu klik "Tarik Sampel".</div>';
+        document.getElementById('n-input').value = '';
+        document.getElementById('error-text').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
