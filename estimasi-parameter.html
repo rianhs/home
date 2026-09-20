@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Estimasi Parameter</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --text-soft: #3a3a3c;
+            --accent-blue: #0071e3;
+            --accent-green: #34c759;
+            --green-dark: #1e9e46;
+            --accent-red: #ff3b30;
+            --accent-orange: #ff9500;
+            --border-color: #d2d2d7;
+            --shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1040px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin: 0 0 8px;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 16px;
+            margin: 0 0 40px;
+        }
+
+        /* Tab utama */
+        .tabs {
+            display: flex;
+            background-color: #e3e3e8;
+            border-radius: 12px;
+            padding: 4px;
+            margin: 0 auto 30px;
+            max-width: 500px;
+        }
+        .tabs input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+        .tabs label {
+            flex: 1;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
+        .tabs input[type="radio"]:checked + label {
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: var(--accent-blue);
+        }
+        .tabs input[type="radio"]:focus-visible + label,
+        .seg input[type="radio"]:focus-visible + label {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 1px;
+        }
+
+        .panel { display: none; }
+        .panel.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .calc-row {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .input-side {
+            flex: 0 0 380px;
+            min-width: 0;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .result-side {
+            flex: 1;
+            min-width: 0;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .section-title.sep { margin-top: 30px; padding-top: 22px; border-top: 1px solid #f0f0f2; }
+
+        /* Formulir */
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            background-color: #fbfbfd;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+        }
+        .form-group input.invalid { border-color: var(--accent-red); }
+        .suffix-wrap { position: relative; }
+        .suffix-wrap input { padding-right: 44px !important; }
+        .suffix-wrap .suffix {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 15px;
+            pointer-events: none;
+        }
+        .help-text { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+        .error-text { font-size: 13px; color: var(--accent-red); margin-top: 6px; display: none; }
+        .error-text.show { display: block; }
+        .live-note { font-size: 13px; color: var(--text-soft); margin-top: 10px; min-height: 0; }
+        .live-note:empty { display: none; }
+
+        /* Kontrol segmen kecil */
+        .seg {
+            display: flex;
+            background-color: #e3e3e8;
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 8px;
+        }
+        .seg input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+        .seg label {
+            flex: 1;
+            text-align: center;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
+        .seg input[type="radio"]:checked + label {
+            background-color: var(--card-bg);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.12);
+            color: var(--accent-blue);
+        }
+
+        /* Kotak informasi */
+        details.info {
+            background: #f5f5f7;
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-top: 14px;
+        }
+        details.info summary {
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+        details.info .info-body {
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: var(--text-soft);
+            margin-top: 10px;
+        }
+        details.info .info-body p { margin: 0 0 10px; }
+        details.info .info-body p:last-child { margin-bottom: 0; }
+
+        .warn {
+            background: #fff6e5;
+            color: #7a4b00;
+            border-radius: 12px;
+            padding: 12px 15px;
+            font-size: 13.5px;
+            line-height: 1.55;
+            margin: 0 0 16px;
+            text-align: left;
+        }
+        .warn[hidden] { display: none; }
+        .warn.small { margin: 12px 0 0; font-size: 13px; }
+
+        /* Toggle switch */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f2;
+            margin-top: 20px;
+        }
+        .toggle-row > label:first-child { font-size: 14px; font-weight: 600; }
+        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; flex: none; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #e3e3e8;
+            transition: .3s;
+            border-radius: 28px;
+        }
+        .slider:before {
+            position: absolute; content: "";
+            height: 24px; width: 24px; left: 2px; bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        input:checked + .slider { background-color: var(--accent-green); }
+        input:checked + .slider:before { transform: translateX(22px); }
+        .toggle-switch input:focus-visible + .slider { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
+
+        .finite-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+            opacity: 0;
+            background-color: #f5f5f7;
+            border-radius: 12px;
+            padding: 0 15px;
+        }
+        .finite-container.show {
+            max-height: 260px;
+            margin-top: 15px;
+            padding: 15px;
+            opacity: 1;
+        }
+
+        /* Hasil */
+        .result-number {
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--green-dark);
+            line-height: 1.15;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+            overflow-wrap: anywhere;
+        }
+        .result-number .unit { font-size: 16px; font-weight: 600; color: var(--text-muted); letter-spacing: 0; margin-left: 4px; }
+        .result-label {
+            font-size: 16px;
+            color: var(--text-main);
+            font-weight: 600;
+            margin-bottom: 22px;
+        }
+        .tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tile { background: #f5f5f7; border-radius: 12px; padding: 10px 12px; text-align: left; min-width: 0; }
+        .tile .k { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .tile .v { font-size: 16px; font-weight: 700; overflow-wrap: anywhere; }
+        .tile.blue .v { color: var(--accent-blue); }
+        .tile.green .v { color: var(--green-dark); }
+
+        .formula-card {
+            background-color: #f5f5f7;
+            border-radius: 12px;
+            padding: 8px 20px 14px;
+            text-align: left;
+            margin-bottom: 16px;
+        }
+        .formula-title { font-size: 13px; font-weight: 700; color: var(--text-muted); display: block; padding: 12px 0 2px; }
+        .step { padding: 11px 0; border-top: 1px solid #e5e5ea; }
+        .step:first-of-type { border-top: none; }
+        .step-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+        .step-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .step-value { font-size: 15px; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
+        .step-formula { font-size: 14px; color: var(--text-soft); margin-top: 2px; overflow-x: auto; overflow-y: hidden; white-space: nowrap; padding-bottom: 2px; }
+        .step-note { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; }
+        .foot-note { font-size: 12.5px; color: var(--text-muted); margin: 10px 0 0; line-height: 1.5; }
+        .rad { white-space: nowrap; }
+        .rad .rc { border-top: 1px solid currentColor; padding: 0 2px; margin-left: 1px; }
+
+        .badge {
+            display: inline-block;
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .badge.ok { background: #e3f6e8; color: #17773a; }
+        .badge.no { background: #ffe9e7; color: #b3261e; }
+        .badge.warn { background: #fff0d6; color: #8a5300; }
+
+        .extra-card { background: #f5f5f7; border-radius: 12px; padding: 14px 20px 16px; text-align: left; margin-bottom: 16px; }
+        .extra-card .formula-title { padding-top: 0; margin-bottom: 8px; }
+
+        table.mini { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+        table.mini th { text-align: left; color: var(--text-muted); font-size: 12px; font-weight: 700; padding: 6px 8px 6px 0; border-bottom: 1px solid var(--border-color); }
+        table.mini td { padding: 7px 8px 7px 0; border-bottom: 1px solid #e9e9ee; }
+        table.mini tr:last-child td { border-bottom: none; }
+        table.mini th.num, table.mini td.num { text-align: right; padding-right: 0; padding-left: 8px; font-variant-numeric: tabular-nums; }
+        table.mini td.num { font-weight: 600; }
+
+        /* Kartu visualisasi */
+        .viz-stack { margin-top: 24px; display: flex; flex-direction: column; gap: 24px; }
+        .viz-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 26px 30px 28px;
+            box-shadow: var(--shadow);
+            min-width: 0;
+        }
+        .viz-title { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; }
+        .viz-desc { font-size: 14px; color: var(--text-muted); margin: 4px 0 16px; }
+        .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--text-soft); margin-bottom: 10px; }
+        .lg { display: inline-flex; align-items: center; gap: 7px; }
+        .lg-sw { display: inline-block; width: 16px; height: 8px; border-radius: 4px; }
+        .chart { width: 100%; overflow-x: auto; overflow-y: hidden; }
+        .chart svg { display: block; max-width: none; }
+        .chart-note { font-size: 13px; color: var(--text-soft); margin: 8px 0 0; }
+        .status-line { margin: 0 0 10px; font-size: 14px; }
+        .empty-state {
+            text-align: center; color: var(--text-muted); font-size: 14px;
+            padding: 34px 12px; background: #fbfbfd; border-radius: 12px;
+        }
+
+        .wi-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 28px; margin-bottom: 14px; }
+        .wi-item label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .wi-row { display: flex; align-items: center; gap: 12px; }
+        .wi-row input[type="range"] { flex: 1; min-width: 0; accent-color: var(--accent-blue); }
+        .wi-row output { min-width: 52px; text-align: right; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
+        .wi-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 18px; }
+        .btn-secondary {
+            padding: 9px 16px;
+            font-size: 13.5px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            background-color: #e3e3e8;
+            color: var(--text-main);
+            transition: all 0.15s ease;
+        }
+        .btn-secondary:hover { background-color: #d2d2d7; }
+        .btn-secondary:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
+        .wi-table { margin-bottom: 20px; }
+        .wi-sub { font-size: 14px; font-weight: 700; margin: 22px 0 6px; }
+
+        .read-card p { font-size: 14.5px; line-height: 1.7; color: var(--text-soft); margin: 0 0 12px; }
+        .read-card p:last-child { margin-bottom: 0; }
+        .read-card strong { color: var(--text-main); }
+        .page-foot { text-align: center; color: var(--text-muted); font-size: 12.5px; margin-top: 28px; }
+
+        @media (max-width: 768px) {
+            body { padding: 24px 14px; }
+            .calc-row { flex-direction: column; }
+            .input-side { flex: none; width: 100%; padding: 22px; }
+            .result-side { position: static; width: 100%; max-height: none; overflow: visible; padding: 22px; }
+            h1 { font-size: 24px; }
+            p.subtitle { margin-bottom: 28px; }
+            .result-number { font-size: 27px; }
+            .viz-card { padding: 20px 18px 22px; }
+            .wi-controls { grid-template-columns: 1fr; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Kalkulator Estimasi Parameter</h1>
+    <p class="subtitle">Alat bantu untuk menghitung estimasi titik dan estimasi selang (selang kepercayaan) dari statistik sampel</p>
+
+    <div class="tabs">
+        <input type="radio" id="tab-quant" name="data-type" value="quant" checked>
+        <label for="tab-quant">Data Kuantitatif</label>
+
+        <input type="radio" id="tab-qual" name="data-type" value="qual">
+        <label for="tab-qual">Data Kualitatif</label>
+    </div>
+
+    <!-- ================= KUANTITATIF ================= -->
+    <div id="panel-quant" class="panel active">
+        <div class="calc-row">
+            <div class="input-side">
+                <div class="section-title">Statistik sampel</div>
+
+                <div class="form-group">
+                    <label for="q-level">Tingkat kepercayaan</label>
+                    <select id="q-level">
+                        <option value="0.9">90%</option>
+                        <option value="0.95" selected>95%</option>
+                        <option value="0.99">99%</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="q-mean">Rata-rata sampel (x&#772;)</label>
+                    <input type="text" id="q-mean" inputmode="decimal" autocomplete="off" value="100">
+                    <div class="help-text">Gunakan koma atau titik sebagai desimal, tanpa pemisah ribuan.</div>
+                    <div class="error-text" id="q-mean-err"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="q-sd" id="q-sd-label">Simpangan baku sampel (s)</label>
+                    <input type="text" id="q-sd" inputmode="decimal" autocomplete="off" value="15">
+                    <div class="help-text" id="q-sd-help">Gunakan satuan yang sama dengan rata-rata.</div>
+                    <div class="error-text" id="q-sd-err"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="q-n">Jumlah sampel (n)</label>
+                    <input type="text" id="q-n" inputmode="numeric" autocomplete="off" value="30">
+                    <div class="error-text" id="q-n-err"></div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="q-unit">Satuan (opsional)</label>
+                    <input type="text" id="q-unit" autocomplete="off" maxlength="20" placeholder="contoh: gram">
+                </div>
+
+                <div class="section-title sep">Metode</div>
+                <div class="seg" role="radiogroup" aria-label="Metode">
+                    <input type="radio" name="q-method" id="q-method-t" value="t" checked>
+                    <label for="q-method-t">t (σ tidak diketahui)</label>
+                    <input type="radio" name="q-method" id="q-method-z" value="z">
+                    <label for="q-method-z">Z (σ diketahui)</label>
+                </div>
+                <div class="help-text">Bawaan halaman ini adalah t. Gunakan Z jika σ populasi diketahui.</div>
+                <div class="live-note" id="q-tz-note"></div>
+                <div class="warn small" id="q-z-warn" hidden></div>
+
+                <details class="info">
+                    <summary>Kapan memakai Z dan kapan memakai t?</summary>
+                    <div class="info-body">
+                        <p><strong>Pertanyaan penentunya: apakah simpangan baku populasi (σ) diketahui?</strong></p>
+                        <p>Pakai <strong>t</strong> jika σ tidak diketahui dan Anda memakai SD dari sampel (s). Ini terjadi hampir selalu pada penelitian nyata.</p>
+                        <p>Pakai <strong>Z</strong> jika σ populasi benar-benar diketahui, misalnya dari pengukuran seluruh populasi. Situasi ini jarang. SD dari penelitian lain atau dari siklus sebelumnya termasuk perkiraan, sehingga tetap gunakan t.</p>
+                        <p>Nilai t lebih besar daripada Z karena s dihitung dari sampel dan ikut mengandung ketidakpastian. Selisihnya besar saat n kecil dan mengecil saat n bertambah. Pada tingkat kepercayaan 95%: n = 5 (df = 4) t = 2,776; n = 10 (df = 9) t = 2,262; n = 34 (df = 33) t = 2,035; n = 100 (df = 99) t = 1,984; Z = 1,960.</p>
+                        <p>Jika ragu, pakai t. Pada n besar hasilnya nyaris sama dengan Z.</p>
+                    </div>
+                </details>
+
+                <div class="toggle-row">
+                    <label for="q-cmp">Bandingkan selang t dan Z</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="q-cmp">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label for="q-fpc">Terapkan koreksi populasi terhingga</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="q-fpc">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="q-fin" class="finite-container">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="q-N">Total populasi (N)</label>
+                        <input type="text" id="q-N" inputmode="numeric" autocomplete="off" value="1000">
+                        <div class="help-text">Umumnya diterapkan jika n lebih dari 5% dari N. SE dikalikan &radic;((N &minus; n) / (N &minus; 1)).</div>
+                        <div class="live-note" id="q-fin-note"></div>
+                        <div class="error-text" id="q-N-err"></div>
+                    </div>
+                </div>
+
+                <div class="section-title sep">Opsional</div>
+                <div class="form-group">
+                    <label for="q-mu">Rata-rata populasi (μ), jika diketahui</label>
+                    <input type="text" id="q-mu" inputmode="decimal" autocomplete="off" placeholder="kosongkan jika tidak diketahui">
+                    <div class="help-text">Jika diisi, grafik menampilkan posisi parameter dan status cakupannya.</div>
+                    <div class="error-text" id="q-mu-err"></div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="q-dec">Jumlah desimal pada hasil</label>
+                    <select id="q-dec">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-side" id="q-result" aria-live="polite">
+                <div class="section-title">Estimasi hasil</div>
+                <div class="result-number" id="q-big">&ndash;</div>
+                <div class="result-label" id="q-big-label">Estimasi selang</div>
+                <div class="tiles" id="q-tiles"></div>
+                <div class="formula-card" id="q-steps"></div>
+                <div id="q-extra"></div>
+            </div>
+        </div>
+        <div class="viz-stack" id="q-viz"></div>
+    </div>
+
+    <!-- ================= KUALITATIF ================= -->
+    <div id="panel-qual" class="panel">
+        <div class="calc-row">
+            <div class="input-side">
+                <div class="section-title">Statistik sampel</div>
+
+                <div class="form-group">
+                    <label for="p-level">Tingkat kepercayaan</label>
+                    <select id="p-level">
+                        <option value="0.9">90%</option>
+                        <option value="0.95" selected>95%</option>
+                        <option value="0.99">99%</option>
+                    </select>
+                    <div class="help-text">Tab ini memakai nilai Z.</div>
+                </div>
+
+                <div class="seg" role="radiogroup" aria-label="Cara memasukkan proporsi">
+                    <input type="radio" name="p-mode" id="p-mode-pct" value="pct" checked>
+                    <label for="p-mode-pct">Persentase</label>
+                    <input type="radio" name="p-mode" id="p-mode-cnt" value="cnt">
+                    <label for="p-mode-cnt">Jumlah kejadian</label>
+                </div>
+
+                <div id="p-box-pct">
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label for="p-pct">Persentase kejadian pada sampel</label>
+                        <div class="suffix-wrap">
+                            <input type="text" id="p-pct" inputmode="decimal" autocomplete="off" value="40">
+                            <span class="suffix">%</span>
+                        </div>
+                        <div class="help-text">Contoh: 8,8 berarti 8,8%. Gunakan desimal selengkap mungkin.</div>
+                        <div class="live-note" id="p-pct-note"></div>
+                        <div class="error-text" id="p-pct-err"></div>
+                    </div>
+                </div>
+
+                <div id="p-box-cnt" hidden>
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label for="p-x">Jumlah kejadian pada sampel (x)</label>
+                        <input type="text" id="p-x" inputmode="numeric" autocomplete="off" value="40">
+                        <div class="live-note" id="p-x-note"></div>
+                        <div class="error-text" id="p-x-err"></div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="p-n">Jumlah sampel (n)</label>
+                    <input type="text" id="p-n" inputmode="numeric" autocomplete="off" value="100">
+                    <div class="error-text" id="p-n-err"></div>
+                </div>
+
+                <div class="section-title sep">Metode</div>
+                <div class="help-text" style="margin-top: 0;">Selang utama memakai rumus standar (Wald). Rumus Wilson dapat ditampilkan sebagai pembanding.</div>
+
+                <details class="info">
+                    <summary>Apa itu selang Wilson?</summary>
+                    <div class="info-body">
+                        <p>Ada dua rumus untuk selang proporsi. Rumus standar (Wald) adalah p&#770; ± Z × SE, dan menjadi hasil utama halaman ini. Rumus ini andal jika sampel cukup besar dan proporsinya tidak terlalu dekat 0% atau 100%, yaitu jika n × p&#770; dan n × (1 &minus; p&#770;) sama-sama ≥ 10.</p>
+                        <p>Rumus Wilson memakai perhitungan yang berbeda dan lebih andal pada sampel kecil atau kejadian langka. Selangnya tidak simetris terhadap p&#770; dan tidak pernah keluar dari 0% sampai 100%. Pada sampel besar, kedua rumus memberi hasil yang hampir sama.</p>
+                        <p>Jika p&#770; = 0% atau 100%, rumus standar menghasilkan selang berlebar nol, sedangkan rumus Wilson tetap memberi rentang.</p>
+                    </div>
+                </details>
+
+                <div class="toggle-row">
+                    <label for="p-wil">Tampilkan pembanding Wilson</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="p-wil" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label for="p-fpc">Terapkan koreksi populasi terhingga</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="p-fpc">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="p-fin" class="finite-container">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="p-N">Total populasi (N)</label>
+                        <input type="text" id="p-N" inputmode="numeric" autocomplete="off" value="1000">
+                        <div class="help-text">Umumnya diterapkan jika n lebih dari 5% dari N. SE dikalikan &radic;((N &minus; n) / (N &minus; 1)). Rumus Wilson ditampilkan tanpa koreksi ini.</div>
+                        <div class="live-note" id="p-fin-note"></div>
+                        <div class="error-text" id="p-N-err"></div>
+                    </div>
+                </div>
+
+                <div class="section-title sep">Opsional</div>
+                <div class="form-group">
+                    <label for="p-pi">Persentase populasi sebenarnya (π), jika diketahui</label>
+                    <div class="suffix-wrap">
+                        <input type="text" id="p-pi" inputmode="decimal" autocomplete="off" placeholder="kosongkan jika tidak diketahui">
+                        <span class="suffix">%</span>
+                    </div>
+                    <div class="help-text">Jika diisi, grafik menampilkan posisi parameter dan status cakupannya.</div>
+                    <div class="error-text" id="p-pi-err"></div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="p-dec">Jumlah desimal pada hasil</label>
+                    <select id="p-dec">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-side" id="p-result" aria-live="polite">
+                <div class="section-title">Estimasi hasil</div>
+                <div class="result-number" id="p-big">&ndash;</div>
+                <div class="result-label" id="p-big-label">Estimasi selang</div>
+                <div class="warn" id="p-warn" hidden></div>
+                <div class="tiles" id="p-tiles"></div>
+                <div class="formula-card" id="p-steps"></div>
+                <div id="p-extra"></div>
+            </div>
+        </div>
+        <div class="viz-stack" id="p-viz"></div>
+    </div>
+
+    <p class="page-foot">Perhitungan dilakukan di peramban Anda. Nilai kritis t dihitung dari distribusi t untuk derajat bebas apa pun.</p>
+</div>
+
+<script>
+/* ===== Matematika: distribusi normal dan t ===== */
+function lgamma(x) {
+  if (x >= 15) {
+    var x2 = x * x;
+    return (x - 0.5) * Math.log(x) - x + 0.9189385332046727 + 1 / (12 * x) - 1 / (360 * x * x2) + 1 / (1260 * x2 * x2 * x);
+  }
+  var c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+  var y = x, tmp = x + 5.5;
+  tmp -= (x + 0.5) * Math.log(tmp);
+  var ser = 1.000000000190015;
+  for (var j = 0; j < 6; j++) { y += 1; ser += c[j] / y; }
+  return -tmp + Math.log(2.5066282746310005 * ser / x);
+}
+
+function erf(x) {
+  var ax = Math.abs(x);
+  if (ax > 6) return x < 0 ? -1 : 1;
+  var term = ax, sum = ax;
+  for (var n = 1; n < 300; n++) {
+    term *= 2 * ax * ax / (2 * n + 1);
+    sum += term;
+    if (term < 1e-17 * sum) break;
+  }
+  var r = 2 / Math.sqrt(Math.PI) * Math.exp(-ax * ax) * sum;
+  return x < 0 ? -r : r;
+}
+
+function normTail(z) { return 0.5 * (1 - erf(z / Math.SQRT2)); }
+
+function betacf(a, b, x) {
+  var MAXIT = 3000, EPS = 3e-16, FPMIN = 1e-300;
+  var qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap;
+  if (Math.abs(d) < FPMIN) d = FPMIN;
+  d = 1 / d;
+  var h = d;
+  for (var m = 1; m <= MAXIT; m++) {
+    var m2 = 2 * m;
+    var aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d; h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d;
+    var del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < EPS) break;
+  }
+  return h;
+}
+
+function betai(a, b, x) {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  var bt = Math.exp(lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+  if (x < (a + 1) / (a + b + 2)) return bt * betacf(a, b, x) / a;
+  return 1 - bt * betacf(b, a, 1 - x) / b;
+}
+
+/* peluang ekor kanan distribusi t, t >= 0 */
+function tTail(t, df) {
+  var x = df / (df + t * t);
+  return 0.5 * betai(df / 2, 0.5, x);
+}
+
+var zCache = {}, tCache = {};
+
+/* nilai kritis Z dua sisi untuk tingkat kepercayaan level (mis. 0.95 -> 1.960) */
+function critZ(level) {
+  if (zCache[level] !== undefined) return zCache[level];
+  var a = (1 - level) / 2, lo = 0, hi = 12;
+  for (var i = 0; i < 100; i++) {
+    var m = (lo + hi) / 2;
+    if (normTail(m) > a) lo = m; else hi = m;
+  }
+  zCache[level] = (lo + hi) / 2;
+  return zCache[level];
+}
+
+/* nilai kritis t dua sisi untuk tingkat kepercayaan level dan derajat bebas df */
+function critT(level, df) {
+  var key = level + '|' + df;
+  if (tCache[key] !== undefined) return tCache[key];
+  var v;
+  if (df >= 5000) {
+    var z = critZ(level), n = df;
+    v = z + (Math.pow(z, 3) + z) / (4 * n)
+      + (5 * Math.pow(z, 5) + 16 * Math.pow(z, 3) + 3 * z) / (96 * n * n)
+      + (3 * Math.pow(z, 7) + 19 * Math.pow(z, 5) + 17 * Math.pow(z, 3) - 15 * z) / (384 * n * n * n);
+  } else {
+    var a = (1 - level) / 2;
+    v = NaN;
+    if (df >= 3) {
+      var zz = critZ(level);
+      var t0 = zz + (Math.pow(zz, 3) + zz) / (4 * df) + (5 * Math.pow(zz, 5) + 16 * Math.pow(zz, 3) + 3 * zz) / (96 * df * df);
+      var lc = lgamma((df + 1) / 2) - lgamma(df / 2) - 0.5 * Math.log(df * Math.PI);
+      for (var k = 0; k < 40; k++) {
+        var pdf = Math.exp(lc - (df + 1) / 2 * Math.log(1 + t0 * t0 / df));
+        var step = (tTail(t0, df) - a) / pdf;
+        var t1 = t0 + step;
+        if (!(t1 > 0)) { t0 = NaN; break; }
+        if (Math.abs(step) < 1e-13 * t1) { t0 = t1; break; }
+        t0 = t1;
+      }
+      if (t0 > 0 && isFinite(t0) && Math.abs(tTail(t0, df) - a) < 1e-12) v = t0;
+    }
+    if (!(v > 0)) {
+      var lo = 0, hi = 5000;
+      for (var i = 0; i < 70; i++) {
+        var m = (lo + hi) / 2;
+        if (tTail(m, df) > a) lo = m; else hi = m;
+      }
+      v = (lo + hi) / 2;
+    }
+  }
+  tCache[key] = v;
+  return v;
+}
+
+/* ===== Utilitas ===== */
+var $ = function (id) { return document.getElementById(id); };
+var FONT = "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+var COL = {
+  blue: '#0071e3', green: '#34c759', greenDark: '#1e9e46', greenSoft: '#bfe8c9',
+  red: '#ff3b30', orange: '#ff9500', orangeDark: '#b86e00', ink: '#1d1d1f',
+  muted: '#86868b', ghost: '#d1d1d6', ghostCap: '#8e8e93', axis: '#c7c7cc', grid: '#eeeef1'
+};
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+var fmtCache = {};
+function fmt(x, d) {
+  if (x === null || x === undefined || typeof x !== 'number' || !isFinite(x)) return '\u2013';
+  if (!fmtCache[d]) fmtCache[d] = new Intl.NumberFormat('id-ID', { minimumFractionDigits: d, maximumFractionDigits: d });
+  var s = fmtCache[d].format(x);
+  if (/^-0(,0+)?$/.test(s)) s = s.slice(1);
+  return s;
+}
+
+function parseNum(str) {
+  if (str === null || str === undefined) return NaN;
+  var s = String(str).trim().replace(/\s/g, '');
+  if (s === '') return NaN;
+  if (s.indexOf(',') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+  if (!/^[-+]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+  return Number(s);
+}
+
+function sq(x) { return '<span class="rad">\u221A<span class="rc">' + x + '</span></span>'; }
+function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+function rr(v) { return Math.round(v * 10) / 10; }
+
+function decsForStep(step) {
+  if (step >= 1) return 0;
+  return Math.min(6, Math.ceil(-Math.log10(step) - 1e-9));
+}
+
+function niceTicks(lo, hi, target) {
+  var span = hi - lo;
+  if (!(span > 0)) return { ticks: [lo], step: 1 };
+  var raw = span / target;
+  var mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  var norm = raw / mag;
+  var step = (norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10) * mag;
+  var start = Math.ceil(lo / step - 1e-9) * step;
+  var ticks = [];
+  for (var v = start; v <= hi + step * 1e-9; v += step) ticks.push(Math.round(v / step) * step);
+  return { ticks: ticks, step: step };
+}
+
+function fitAxis(vals, clampRange) {
+  var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  var span = hi - lo;
+  if (!(span > 0)) span = Math.abs(lo) * 0.1 || 1;
+  var pad = span * 0.1;
+  lo -= pad; hi += pad;
+  if (clampRange) { lo = Math.max(clampRange[0], lo); hi = Math.min(clampRange[1], hi); }
+  return { lo: lo, hi: hi };
+}
+
+function expandAxis(ax, vals, clampRange) {
+  var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  var pad = (ax.hi - ax.lo) * 0.06;
+  if (lo - pad < ax.lo) ax.lo = lo - pad;
+  if (hi + pad > ax.hi) ax.hi = hi + pad;
+  if (clampRange) { ax.lo = Math.max(clampRange[0], ax.lo); ax.hi = Math.min(clampRange[1], ax.hi); }
+}
+
+/* ===== Primitif SVG ===== */
+function chartWidth(el) {
+  var w = el.clientWidth;
+  return Math.max(260, w > 0 ? w : 720);
+}
+function svgOpen(W, H, label) {
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(label) + '">';
+}
+function ln(x1, y1, x2, y2, stroke, w, extra) {
+  return '<line x1="' + rr(x1) + '" y1="' + rr(y1) + '" x2="' + rr(x2) + '" y2="' + rr(y2) + '" stroke="' + stroke + '" stroke-width="' + w + '"' + (extra || '') + '/>';
+}
+function tx(x, y, s, o) {
+  o = o || {};
+  var size = o.size || 12, weight = o.weight || 400, fill = o.fill || COL.ink, anchor = o.anchor || 'middle';
+  var base = ' x="' + rr(x) + '" y="' + rr(y) + '" font-family="' + FONT + '" font-size="' + size + '" font-weight="' + weight + '" text-anchor="' + anchor + '"';
+  var out = '';
+  if (o.halo) out += '<text' + base + ' fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">' + esc(s) + '</text>';
+  return out + '<text' + base + ' fill="' + fill + '">' + esc(s) + '</text>';
+}
+function circ(cx, cy, r, fill, stroke, sw) {
+  return '<circle cx="' + rr(cx) + '" cy="' + rr(cy) + '" r="' + r + '" fill="' + fill + '"' + (stroke ? ' stroke="' + stroke + '" stroke-width="' + sw + '"' : '') + '/>';
+}
+function diamond(cx, cy, r, fill, stroke, sw) {
+  var pts = [[cx, cy - r], [cx + r, cy], [cx, cy + r], [cx - r, cy]].map(function (p) { return rr(p[0]) + ',' + rr(p[1]); }).join(' ');
+  return '<polygon points="' + pts + '" fill="' + fill + '" stroke="' + stroke + '" stroke-width="' + sw + '"/>';
+}
+
+function axisSVG(ax, sx, y, W, ml, mr, tickFmt, unit) {
+  var tk = niceTicks(ax.lo, ax.hi, W < 520 ? 4 : 6);
+  var s = ln(ml, y, W - mr, y, COL.axis, 1);
+  tk.ticks.forEach(function (t) {
+    var x = sx(t);
+    s += ln(x, y, x, y + 5, COL.axis, 1) + tx(x, y + 20, tickFmt(t, tk.step), { size: 11.5, fill: COL.muted });
+  });
+  if (unit) s += tx(W - mr, y + 38, unit, { size: 11.5, fill: COL.muted, anchor: 'end' });
+  return s;
+}
+
+/* ===== Grafik 1: anatomi selang ===== */
+function drawAnatomy(el, c) {
+  var W = chartWidth(el), ml = 30, mr = 30;
+  var ax = c.axis, span = (ax.hi - ax.lo) || 1;
+  var sx = function (v) { return ml + (v - ax.lo) / span * (W - ml - mr); };
+  var p = c.primary, xl = sx(p.lo), xh = sx(p.hi), xe = sx(p.est);
+  var armMin = Math.min(xe - xl, xh - xe);
+  var wide = armMin >= 112;
+  var shift = (armMin < 96 || (xh - xl) < 100) ? 36 : 0;
+  var hasParam = c.param !== null && c.param !== undefined;
+  var top = hasParam ? 28 : 8;
+  var bracketY = top + 42, barY = bracketY + 36, lblY = barY + 40, valY = lblY + 17;
+  var estLblY = lblY + shift, estValY = valY + shift;
+  var widthY = valY + shift + 24, widthTxtY = widthY + 21;
+  var y2 = widthTxtY + 52;
+  var axisY = c.secondary ? y2 + 58 : widthTxtY + 36;
+  var H = axisY + (c.unit ? 46 : 32);
+  var s = svgOpen(W, H, c.aria);
+
+  if (hasParam) {
+    var xp = sx(c.param);
+    s += ln(xp, 24, xp, axisY, COL.red, 1.6, ' stroke-dasharray="5 4"');
+    var pl = c.paramName + ' = ' + c.f(c.param);
+    var pw = pl.length * 7 + 20;
+    s += tx(clamp(xp, pw / 2 + 4, W - pw / 2 - 4), 16, pl, { size: 12, weight: 700, fill: COL.red, halo: true });
+  }
+
+  // lengan batas kesalahan
+  var tiny = (xh - xl) < 60;
+  var arm = function (xa, xb, single) {
+    var g = ln(xa, bracketY, xb, bracketY, COL.greenDark, 1.5)
+      + ln(xa, bracketY - 5, xa, bracketY + 5, COL.greenDark, 1.5)
+      + ln(xb, bracketY - 5, xb, bracketY + 5, COL.greenDark, 1.5);
+    var mid = clamp((xa + xb) / 2, 44, W - 44);
+    if (wide && !single) {
+      g += tx(mid, bracketY - 24, 'batas kesalahan', { size: 11.5, fill: COL.greenDark, halo: true });
+      g += tx(mid, bracketY - 9, '\u00B1 ' + c.f(p.moe), { size: 13, weight: 700, fill: COL.greenDark, halo: true });
+    } else {
+      g += tx(mid, bracketY - 10, '\u00B1 ' + c.f(p.moe), { size: 12.5, weight: 700, fill: COL.greenDark, halo: true });
+    }
+    return g;
+  };
+  if (tiny) s += arm(xl, xh, true); else s += arm(xl, xe) + arm(xe, xh);
+
+  // batang selang
+  s += ln(xl, barY, xh, barY, COL.green, 10);
+  s += ln(xl, barY - 15, xl, barY + 15, COL.ink, 3, ' stroke-linecap="round"');
+  s += ln(xh, barY - 15, xh, barY + 15, COL.ink, 3, ' stroke-linecap="round"');
+
+  // selang pembanding
+  if (c.secondary) {
+    var q = c.secondary, ql = sx(q.lo), qh = sx(q.hi);
+    s += ln(xe, barY + 14, xe, y2, COL.blue, 1.2, ' stroke-opacity="0.45" stroke-dasharray="3 3"');
+    s += tx(clamp(ql, 6, W - 120), y2 - 22, q.name, { size: 11.5, weight: 600, fill: COL.orangeDark, anchor: 'start' });
+    s += ln(ql, y2, qh, y2, COL.orange, 8);
+    s += ln(ql, y2 - 12, ql, y2 + 12, COL.orangeDark, 3, ' stroke-linecap="round"');
+    s += ln(qh, y2 - 12, qh, y2 + 12, COL.orangeDark, 3, ' stroke-linecap="round"');
+    if (q.center !== undefined && q.center !== null) s += diamond(sx(q.center), y2, 9, '#ffffff', COL.orangeDark, 2.5);
+    else s += circ(sx(q.est), y2, 6, COL.orange, '#ffffff', 2);
+    var qs = Math.abs(qh - ql) < 100;
+    if (qs) s += tx(clamp((ql + qh) / 2, 60, W - 60), y2 + 32, c.f(q.lo) + ' s.d. ' + c.f(q.hi), { size: 12.5, weight: 700, fill: COL.orangeDark });
+    else {
+      s += tx(clamp(ql, 40, W - 40), y2 + 32, c.f(q.lo), { size: 12.5, weight: 700, fill: COL.orangeDark });
+      s += tx(clamp(qh, 40, W - 40), y2 + 32, c.f(q.hi), { size: 12.5, weight: 700, fill: COL.orangeDark });
+    }
+  }
+
+  s += circ(xe, barY, 10, COL.blue, '#ffffff', 3);
+
+  var cap = function (x, yl, yv, name, val, color) {
+    var cx = clamp(x, 46, W - 46);
+    return tx(cx, yl, name, { size: 11, fill: COL.muted, halo: true }) + tx(cx, yv, val, { size: 13, weight: 700, fill: color, halo: true });
+  };
+  if (xh - xl < 100) {
+    var cm = clamp((xl + xh) / 2, 84, W - 84);
+    s += tx(cm, lblY, 'batas bawah ' + c.f(p.lo), { size: 12.5, weight: 700, fill: COL.ink, halo: true });
+    s += tx(cm, valY, 'batas atas ' + c.f(p.hi), { size: 12.5, weight: 700, fill: COL.ink, halo: true });
+  } else {
+    s += cap(xl, lblY, valY, 'batas bawah', c.f(p.lo), COL.ink);
+    s += cap(xh, lblY, valY, 'batas atas', c.f(p.hi), COL.ink);
+  }
+  s += cap(xe, estLblY, estValY, 'estimasi titik', c.f(p.est), COL.blue);
+
+  // lebar total
+  s += ln(xl, widthY, xh, widthY, COL.muted, 1.2)
+    + ln(xl, widthY - 5, xl, widthY + 5, COL.muted, 1.2)
+    + ln(xh, widthY - 5, xh, widthY + 5, COL.muted, 1.2);
+  var wtw = c.widthText.length * 7.2;
+  s += tx(clamp((xl + xh) / 2, wtw / 2 + 6, W - wtw / 2 - 6), widthTxtY, c.widthText, { size: 12.5, fill: COL.muted });
+
+  s += axisSVG(ax, sx, axisY, W, ml, mr, c.tick, c.unit);
+  s += '</svg>';
+  el.innerHTML = s;
+}
+
+/* ===== Grafik 2 dan 3: batang selang berbaris ===== */
+function drawBars(el, c) {
+  var W = chartWidth(el), gutter = c.labelMode === 'gutter';
+  var ml = gutter ? 62 : 30, mr = 30;
+  var ax = c.axis, span = (ax.hi - ax.lo) || 1;
+  var sx = function (v) { return ml + (v - ax.lo) / span * (W - ml - mr); };
+  var rowH = gutter ? 60 : 80;
+  var hasParam = c.param !== null && c.param !== undefined;
+  var top = hasParam ? 30 : 8;
+  var axisY = top + rowH * c.rows.length + 4;
+  var H = axisY + (c.unit ? 46 : 32);
+  var s = svgOpen(W, H, c.aria);
+
+  c.rows.forEach(function (row, i) {
+    if (row.hl) s += '<rect x="4" y="' + rr(top + i * rowH - 2) + '" width="' + (W - 8) + '" height="' + (rowH - 6) + '" rx="10" fill="#f5f5f7"/>';
+  });
+  if (hasParam) {
+    var xp = sx(c.param);
+    s += ln(xp, 24, xp, axisY, COL.red, 1.6, ' stroke-dasharray="5 4"');
+    var pl = c.paramName + ' = ' + c.f(c.param);
+    var pw = pl.length * 7 + 20;
+    s += tx(clamp(xp, pw / 2 + 4, W - pw / 2 - 4), 16, pl, { size: 12, weight: 700, fill: COL.red, halo: true });
+  }
+  if (c.guide !== null && c.guide !== undefined) {
+    var xg = sx(c.guide);
+    s += ln(xg, top, xg, axisY, COL.blue, 1.2, ' stroke-opacity="0.35" stroke-dasharray="3 3"');
+  }
+
+  c.rows.forEach(function (row, i) {
+    var y0 = top + i * rowH;
+    var barY = y0 + (gutter ? 24 : 46);
+    var xl = sx(row.lo), xh = sx(row.hi), xe = sx(row.est);
+    var barCol = row.kind === 'soft' ? COL.greenSoft : row.kind === 'ghost' ? COL.ghost : COL.green;
+    var capCol = row.kind === 'sel' || row.kind === 'scn' ? COL.ink : COL.ghostCap;
+    var dotCol = row.kind === 'ghost' ? COL.ghostCap : COL.blue;
+    if (gutter) s += tx(12, barY + 5, row.label, { size: 13, weight: row.hl ? 700 : 500, anchor: 'start' });
+    else s += tx(ml, y0 + 16, row.label, { size: 12.5, weight: 600, anchor: 'start' });
+    s += ln(xl, barY, xh, barY, barCol, 10);
+    s += ln(xl, barY - 12, xl, barY + 12, capCol, 3, ' stroke-linecap="round"');
+    s += ln(xh, barY - 12, xh, barY + 12, capCol, 3, ' stroke-linecap="round"');
+    s += circ(xe, barY, 5.5, dotCol, '#ffffff', 2);
+    var vc = row.kind === 'ghost' ? COL.muted : COL.ink;
+    if (Math.abs(xh - xl) < 96) {
+      s += tx(clamp(xe, 56, W - 56), barY + 32, c.f(row.lo) + ' s.d. ' + c.f(row.hi), { size: 12, weight: 700, fill: vc });
+    } else {
+      s += tx(clamp(xl, 40, W - 40), barY + 32, c.f(row.lo), { size: 12, weight: 700, fill: vc });
+      s += tx(clamp(xh, 40, W - 40), barY + 32, c.f(row.hi), { size: 12, weight: 700, fill: vc });
+    }
+  });
+
+  s += axisSVG(ax, sx, axisY, W, ml, mr, c.tick, c.unit);
+  s += '</svg>';
+  el.innerHTML = s;
+}
+
+/* ===== Grafik 4: kurva lebar selang terhadap n ===== */
+function drawCurve(el, c) {
+  var W = chartWidth(el), H = 260, ml = 66, mr = 22, mt = 18, mb = 52;
+  var pw = W - ml - mr, ph = H - mt - mb;
+  var sx = function (n) { return ml + (n - c.x0) / ((c.x1 - c.x0) || 1) * pw; };
+  var sy = function (v) { return mt + ph - (v / c.ymax) * ph; };
+  var s = svgOpen(W, H, c.aria);
+  var yt = niceTicks(0, c.ymax, 4);
+  yt.ticks.forEach(function (t) {
+    var y = sy(t);
+    s += ln(ml, y, W - mr, y, COL.grid, 1) + tx(ml - 8, y + 4, c.yFmt(t, yt.step), { size: 11.5, fill: COL.muted, anchor: 'end' });
+  });
+  var xt = niceTicks(c.x0, c.x1, W < 520 ? 4 : 7);
+  s += ln(ml, mt + ph, W - mr, mt + ph, COL.axis, 1);
+  xt.ticks.forEach(function (t) {
+    var x = sx(t);
+    s += ln(x, mt + ph, x, mt + ph + 5, COL.axis, 1) + tx(x, mt + ph + 20, fmt(t, 0), { size: 11.5, fill: COL.muted });
+  });
+  c.curves.forEach(function (cv) {
+    var d = cv.pts.map(function (pt, i) { return (i ? 'L' : 'M') + rr(sx(pt[0])) + ' ' + rr(sy(Math.min(pt[1], c.ymax))); }).join(' ');
+    s += '<path d="' + d + '" fill="none" stroke="' + cv.color + '" stroke-width="2.5" stroke-linejoin="round"' + (cv.dash ? ' stroke-dasharray="6 5"' : '') + '/>';
+  });
+  c.markers.forEach(function (m) {
+    var x = sx(m.n), y = sy(Math.min(m.w, c.ymax));
+    s += ln(x, y, x, mt + ph, m.color, 1.2, ' stroke-opacity="0.5" stroke-dasharray="3 3"');
+    s += circ(x, y, 6.5, m.fill, m.color, 2.5);
+    if (m.label) {
+      var right = x > W * 0.6;
+      s += tx(x + (right ? -12 : 12), Math.max(y - 12, 12), m.label, { size: 12, weight: 700, fill: m.text || m.color, anchor: right ? 'end' : 'start' });
+    }
+  });
+  s += tx(ml + pw / 2, H - 8, 'Jumlah sampel (n)', { size: 12, fill: COL.muted });
+  s += '<text transform="rotate(-90 14 ' + rr(mt + ph / 2) + ')" x="14" y="' + rr(mt + ph / 2) + '" font-family="' + FONT + '" font-size="12" fill="' + COL.muted + '" text-anchor="middle">' + esc(c.yTitle) + '</text>';
+  s += '</svg>';
+  el.innerHTML = s;
+}
+
+/* ===== Elemen pendukung ===== */
+function legendHTML(items) {
+  return items.map(function (i) {
+    return '<span class="lg"><span class="lg-sw" style="background:' + i.color + ';' + (i.style || '') + '"></span>' + esc(i.text) + '</span>';
+  }).join('');
+}
+function badge(kind, text) { return '<span class="badge ' + kind + '">' + esc(text) + '</span>'; }
+function stepHTML(name, formula, value, note) {
+  return '<div class="step"><div class="step-head"><span class="step-name">' + name + '</span><span class="step-value">' + value + '</span></div>'
+    + (formula ? '<div class="step-formula">' + formula + '</div>' : '')
+    + (note ? '<div class="step-note">' + note + '</div>' : '') + '</div>';
+}
+function tilesHTML(items) {
+  return items.map(function (t) {
+    return '<div class="tile ' + (t.cls || '') + '"><div class="k">' + t.k + '</div><div class="v">' + t.v + '</div></div>';
+  }).join('');
+}
+function setErr(id, msg) {
+  var e = $(id + '-err'), inp = $(id);
+  if (!e) return;
+  e.textContent = msg || '';
+  e.classList.toggle('show', !!msg);
+  if (inp) inp.classList.toggle('invalid', !!msg);
+}
+function statusLine(M) {
+  if (M.paramD === null) return '';
+  var covers = M.base.lo <= M.param && M.param <= M.base.hi;
+  var diff = Math.abs(M.base.est - M.param);
+  return '<p class="status-line">' + badge(covers ? 'ok' : 'no', covers ? 'Selang mencakup parameter' : 'Selang tidak mencakup parameter')
+    + ' <span style="color:var(--text-soft)">Selisih estimasi titik dan parameter: ' + M.fv(diff * M.k) + '; batas kesalahan: ' + M.fv(M.base.moe * M.k) + '.</span></p>';
+}
+
+/* ===== Model kuantitatif ===== */
+function readQuant() {
+  var err = {}, v = {};
+  v.level = parseFloat($('q-level').value);
+  v.method = document.querySelector('input[name="q-method"]:checked').value;
+  v.mean = parseNum($('q-mean').value);
+  if (isNaN(v.mean)) err.mean = 'Masukkan angka untuk rata-rata sampel.';
+  v.sd = parseNum($('q-sd').value);
+  if (isNaN(v.sd) || v.sd <= 0) err.sd = (v.method === 'z' ? '\u03C3' : 'SD') + ' harus berupa angka lebih besar dari 0.';
+  v.n = parseNum($('q-n').value);
+  v.minN = v.method === 't' ? 2 : 1;
+  if (isNaN(v.n) || !Number.isInteger(v.n) || v.n < v.minN) err.n = 'n harus bilangan bulat \u2265 ' + v.minN + (v.method === 't' ? ' untuk metode t.' : '.');
+  v.unit = $('q-unit').value.trim();
+  v.fpc = $('q-fpc').checked;
+  v.N = null;
+  if (v.fpc) {
+    var N = parseNum($('q-N').value);
+    if (isNaN(N) || !Number.isInteger(N) || N < 2) err.N = 'N harus bilangan bulat \u2265 2.';
+    else if (!err.n && N <= v.n) err.N = 'N harus lebih besar dari n. Jika n sama dengan N, seluruh populasi sudah terdata.';
+    else v.N = N;
+    var note = '';
+    if (!err.N && !err.n) note = 'n adalah ' + fmt(v.n / N * 100, 1) + '% dari N.';
+    $('q-fin-note').textContent = note;
+  }
+  var muRaw = $('q-mu').value.trim();
+  v.mu = null;
+  if (muRaw !== '') {
+    var m = parseNum(muRaw);
+    if (isNaN(m)) err.mu = 'Masukkan angka atau kosongkan kolom ini.'; else v.mu = m;
+  }
+  v.dec = parseInt($('q-dec').value, 10);
+  v.cmp = $('q-cmp').checked;
+  return { v: v, err: err };
+}
+
+function buildQuant(v) {
+  var fpcN = v.fpc ? v.N : null;
+  var at = function (n, level, method) {
+    var m = method || v.method;
+    var df = n - 1;
+    var crit = m === 't' ? critT(level, df) : critZ(level);
+    var fp = fpcN ? Math.sqrt((fpcN - n) / (fpcN - 1)) : 1;
+    var se = v.sd / Math.sqrt(n) * fp;
+    var moe = crit * se;
+    var lo = v.mean - moe, hi = v.mean + moe;
+    return { n: n, level: level, method: m, df: df, crit: crit, fp: fp, se: se, moe: moe, est: v.mean, lo: lo, hi: hi, width: hi - lo };
+  };
+  var d = v.dec, u = v.unit;
+  var M = {
+    isProp: false, v: v, k: 1, d: d, unit: u, clamp: null, minN: v.minN, N: fpcN,
+    sig: 'q|' + v.sd + '|' + v.method + '|' + (fpcN || 0),
+    at: at, base: at(v.n, v.level), levels: [0.9, 0.95, 0.99].map(function (l) { return at(v.n, l); }),
+    fv: function (x) { return fmt(x, d); },
+    tick: function (t, step) { return fmt(t, decsForStep(step)); },
+    unitTitle: u ? 'satuan: ' + u : '',
+    paramD: v.mu, param: v.mu, paramName: '\u03BC',
+    primaryName: v.method === 't' ? 'Selang t' : 'Selang Z',
+    widthText: function (w) { return 'lebar selang = 2 \u00D7 batas kesalahan = ' + fmt(w, d); },
+    ariaSel: function (iv) { return 'Estimasi selang dari ' + fmt(iv.lo, d) + ' sampai ' + fmt(iv.hi, d) + ' dengan estimasi titik ' + fmt(iv.est, d); },
+    yTitle: 'Lebar selang' + (u ? ' (' + u + ')' : '')
+  };
+  M.disp = function (iv) { return { est: iv.est, lo: iv.lo, hi: iv.hi, moe: iv.moe, width: iv.width }; };
+  M.sec = null;
+  if (v.cmp && v.n >= 2) {
+    var other = v.method === 't' ? 'z' : 't';
+    var o = at(v.n, v.level, other), o99 = at(v.n, 0.99, other);
+    M.sec = { name: 'Selang ' + (other === 't' ? 't' : 'Z') + ' (pembanding)', lo: o.lo, hi: o.hi, est: o.est, lo99: o99.lo, hi99: o99.hi, iv: o };
+  }
+  return M;
+}
+
+function renderQuant(M) {
+  var v = M.v, b = M.base, d = M.d, F = function (x) { return fmt(x, d); };
+  var u = v.unit ? ' ' + esc(v.unit) : '';
+  var lvl = Math.round(v.level * 100);
+  var sym = v.method === 't' ? 's' : '\u03C3';
+  var cs = v.method === 't' ? 't' : 'Z';
+  var tail = fmt((1 - v.level) / 2, 3);
+
+  $('q-big').innerHTML = F(b.lo) + ' s.d. ' + F(b.hi) + (v.unit ? '<span class="unit">' + esc(v.unit) + '</span>' : '');
+  $('q-big-label').textContent = 'Estimasi selang (CI ' + lvl + '%)';
+  $('q-tiles').innerHTML = tilesHTML([
+    { k: 'Estimasi titik', v: F(b.est) + u, cls: 'blue' },
+    { k: 'Batas kesalahan', v: '\u00B1 ' + F(b.moe) + u, cls: 'green' },
+    { k: 'Lebar selang', v: F(b.width) + u }
+  ]);
+
+  var rows = '<span class="formula-title">Langkah perhitungan</span>';
+  rows += stepHTML('Estimasi titik', 'x&#772; = rata-rata sampel', F(b.est) + u);
+  if (v.method === 't') rows += stepHTML('Derajat bebas', 'df = n &minus; 1 = ' + v.n + ' &minus; 1', String(b.df));
+  var seF = v.fpc
+    ? 'SE = (' + sym + ' / ' + sq('n') + ') &times; ' + sq('(N &minus; n) / (N &minus; 1)') + ' = (' + F(v.sd) + ' / ' + sq(v.n) + ') &times; ' + sq('(' + v.N + ' &minus; ' + v.n + ') / (' + v.N + ' &minus; 1)')
+    : 'SE = ' + sym + ' / ' + sq('n') + ' = ' + F(v.sd) + ' / ' + sq(v.n);
+  rows += stepHTML('Kesalahan baku (SE)', seF, F(b.se) + u);
+  rows += stepHTML('Nilai kritis ' + cs, cs + ' dengan luas ekor kanan ' + tail + (v.method === 't' ? ' dan df = ' + b.df : ''), fmt(b.crit, 3));
+  rows += stepHTML('Batas kesalahan', cs + ' &times; SE = ' + fmt(b.crit, 3) + ' &times; ' + F(b.se), F(b.moe) + u);
+  rows += stepHTML('Batas bawah', 'x&#772; &minus; batas kesalahan = ' + F(b.est) + ' &minus; ' + F(b.moe), F(b.lo) + u);
+  rows += stepHTML('Batas atas', 'x&#772; + batas kesalahan = ' + F(b.est) + ' + ' + F(b.moe), F(b.hi) + u);
+  rows += stepHTML('Lebar selang', '2 &times; batas kesalahan = 2 &times; ' + F(b.moe), F(b.width) + u);
+  rows += '<p class="foot-note">Perhitungan memakai presisi penuh. Angka pada substitusi dibulatkan untuk tampilan, sehingga hasil hitung tangan bisa berbeda pada desimal terakhir.</p>';
+  $('q-steps').innerHTML = rows;
+
+  var extra = '';
+  if (v.mu !== null) {
+    var covers = b.lo <= v.mu && v.mu <= b.hi, diff = Math.abs(b.est - v.mu);
+    extra += '<div class="extra-card"><span class="formula-title">Perbandingan dengan parameter</span>'
+      + stepHTML('Rata-rata populasi (\u03BC)', '', F(v.mu) + u)
+      + stepHTML('Selisih estimasi titik dan parameter', '|x&#772; &minus; \u03BC| = |' + F(b.est) + ' &minus; ' + F(v.mu) + '|', F(diff) + u,
+        'Selisih ' + (diff <= b.moe ? '\u2264' : '>') + ' batas kesalahan (' + F(b.moe) + ')')
+      + '<div style="margin-top:8px">' + badge(covers ? 'ok' : 'no', covers ? 'Selang mencakup parameter' : 'Selang tidak mencakup parameter') + '</div></div>';
+  }
+  if (v.cmp) {
+    if (M.sec) {
+      var o = M.sec.iv, tI = v.method === 't' ? b : o, zI = v.method === 't' ? o : b;
+      var pctW = (tI.width / zI.width - 1) * 100;
+      extra += '<div class="extra-card"><span class="formula-title">Perbandingan selang t dan Z</span><table class="mini"><thead><tr><th></th><th class="num">t</th><th class="num">Z</th></tr></thead><tbody>'
+        + '<tr><td>Nilai kritis</td><td class="num">' + fmt(tI.crit, 3) + '</td><td class="num">' + fmt(zI.crit, 3) + '</td></tr>'
+        + '<tr><td>Batas kesalahan</td><td class="num">' + F(tI.moe) + '</td><td class="num">' + F(zI.moe) + '</td></tr>'
+        + '<tr><td>Batas bawah</td><td class="num">' + F(tI.lo) + '</td><td class="num">' + F(zI.lo) + '</td></tr>'
+        + '<tr><td>Batas atas</td><td class="num">' + F(tI.hi) + '</td><td class="num">' + F(zI.hi) + '</td></tr>'
+        + '<tr><td>Lebar selang</td><td class="num">' + F(tI.width) + '</td><td class="num">' + F(zI.width) + '</td></tr>'
+        + '</tbody></table><p class="foot-note">Selang t lebih lebar ' + fmt(pctW, 1) + '% daripada selang Z. Selang Z memakai nilai SD yang sama seolah-olah itu σ populasi.</p></div>';
+    } else {
+      extra += '<div class="warn">Perbandingan dengan t memerlukan n \u2265 2.</div>';
+    }
+  }
+  $('q-extra').innerHTML = extra;
+
+  // catatan dinamis pada input
+  var note = '';
+  if (v.n >= 2) {
+    var t1 = critT(v.level, v.n - 1), z1 = critZ(v.level);
+    note = 'Pada df = ' + (v.n - 1) + ' dan tingkat kepercayaan ' + lvl + '%: t = ' + fmt(t1, 3) + ' dan Z = ' + fmt(z1, 3) + ' (t lebih besar ' + fmt((t1 / z1 - 1) * 100, 1) + '%).';
+  }
+  $('q-tz-note').textContent = note;
+  var zw = $('q-z-warn');
+  if (v.method === 'z' && v.n < 30) {
+    zw.hidden = false;
+    zw.textContent = 'n kecil (n < 30). Gunakan t kecuali σ populasi benar-benar diketahui.';
+  } else zw.hidden = true;
+}
+
+/* ===== Model kualitatif ===== */
+function readProp() {
+  var err = {}, v = {};
+  v.level = parseFloat($('p-level').value);
+  v.mode = document.querySelector('input[name="p-mode"]:checked').value;
+  v.n = parseNum($('p-n').value);
+  var nOk = Number.isInteger(v.n) && v.n >= 1;
+  if (!nOk) err.n = 'n harus bilangan bulat \u2265 1.';
+  $('p-pct-note').textContent = '';
+  $('p-x-note').textContent = '';
+  if (v.mode === 'pct') {
+    var pct = parseNum($('p-pct').value);
+    if (isNaN(pct) || pct < 0 || pct > 100) err.pct = 'Masukkan persentase antara 0 dan 100.';
+    else {
+      v.pct = pct; v.phat = pct / 100;
+      var msgs = [];
+      if (nOk) {
+        var cnt = v.n * pct / 100;
+        msgs.push(Math.abs(cnt - Math.round(cnt)) < 0.01 ? Math.round(cnt) + ' kejadian dari ' + v.n + ' sampel.' : 'Sekitar ' + fmt(cnt, 1) + ' kejadian dari ' + v.n + ' sampel.');
+      }
+      if (pct > 0 && pct <= 1) msgs.push('Nilai ini dibaca sebagai ' + fmt(pct, 2) + '%. Jika maksud Anda ' + fmt(pct * 100, 2) + '%, ketik ' + fmt(pct * 100, 2) + '.');
+      $('p-pct-note').textContent = msgs.join(' ');
+    }
+  } else {
+    var x = parseNum($('p-x').value);
+    if (isNaN(x) || !Number.isInteger(x) || x < 0) err.x = 'x harus bilangan bulat \u2265 0.';
+    else if (nOk && x > v.n) err.x = 'x tidak boleh lebih besar dari n.';
+    else if (nOk) {
+      v.x = x; v.phat = x / v.n; v.pct = v.phat * 100;
+      $('p-x-note').textContent = 'Persentase sampel = ' + fmt(v.pct, 2) + '%.';
+    }
+  }
+  v.fpc = $('p-fpc').checked;
+  v.N = null;
+  if (v.fpc) {
+    var N = parseNum($('p-N').value);
+    if (isNaN(N) || !Number.isInteger(N) || N < 2) err.N = 'N harus bilangan bulat \u2265 2.';
+    else if (nOk && N <= v.n) err.N = 'N harus lebih besar dari n. Jika n sama dengan N, seluruh populasi sudah terdata.';
+    else v.N = N;
+    $('p-fin-note').textContent = (nOk && !err.N) ? 'n adalah ' + fmt(v.n / N * 100, 1) + '% dari N.' : '';
+  }
+  var piRaw = $('p-pi').value.trim();
+  v.pi = null;
+  if (piRaw !== '') {
+    var pv = parseNum(piRaw);
+    if (isNaN(pv) || pv < 0 || pv > 100) err.pi = 'Masukkan persentase antara 0 dan 100, atau kosongkan kolom ini.'; else v.pi = pv / 100;
+  }
+  v.dec = parseInt($('p-dec').value, 10);
+  v.wil = $('p-wil').checked;
+  return { v: v, err: err };
+}
+
+function buildProp(v) {
+  var fpcN = v.fpc ? v.N : null, ph = v.phat, d = v.dec;
+  var at = function (n, level) {
+    var z = critZ(level);
+    var fp = fpcN ? Math.sqrt((fpcN - n) / (fpcN - 1)) : 1;
+    var se = Math.sqrt(ph * (1 - ph) / n) * fp;
+    var moe = z * se;
+    var rawLo = ph - moe, rawHi = ph + moe;
+    var lo = Math.max(0, rawLo), hi = Math.min(1, rawHi);
+    var z2 = z * z, dd = 1 + z2 / n;
+    var center = (ph + z2 / (2 * n)) / dd;
+    var half = z * Math.sqrt(ph * (1 - ph) / n + z2 / (4 * n * n)) / dd;
+    return {
+      n: n, level: level, crit: z, fp: fp, se: se, moe: moe, est: ph, rawLo: rawLo, rawHi: rawHi, lo: lo, hi: hi, width: hi - lo,
+      wil: { center: center, half: half, lo: Math.max(0, center - half), hi: Math.min(1, center + half) },
+      c1: n * ph, c2: n * (1 - ph), condOk: n * ph >= 10 && n * (1 - ph) >= 10
+    };
+  };
+  var M = {
+    isProp: true, v: v, k: 100, d: d, unit: '%', clamp: [0, 100], minN: 1, N: fpcN,
+    sig: 'p|' + ph + '|' + (fpcN || 0),
+    at: at, base: at(v.n, v.level), levels: [0.9, 0.95, 0.99].map(function (l) { return at(v.n, l); }),
+    fv: function (x) { return fmt(x, d) + '%'; },
+    tick: function (t, step) { return fmt(t, decsForStep(step)) + '%'; },
+    unitTitle: '',
+    paramD: v.pi, param: v.pi, paramName: '\u03C0',
+    primaryName: 'Selang standar (Wald)',
+    widthText: function (w) { return 'lebar selang = batas atas \u2212 batas bawah = ' + fmt(w, d) + '%'; },
+    ariaSel: function (iv) { return 'Estimasi selang dari ' + fmt(iv.lo, d) + ' persen sampai ' + fmt(iv.hi, d) + ' persen dengan estimasi titik ' + fmt(iv.est, d) + ' persen'; },
+    yTitle: 'Lebar selang (poin persen)'
+  };
+  M.disp = function (iv) { return { est: iv.est * 100, lo: iv.lo * 100, hi: iv.hi * 100, moe: iv.moe * 100, width: iv.width * 100 }; };
+  M.paramD = v.pi === null ? null : v.pi * 100;
+  M.sec = null;
+  if (v.wil) {
+    var b = M.base, w = b.wil, w99 = M.levels[2].wil;
+    M.sec = { name: 'Selang Wilson (pembanding)', lo: w.lo * 100, hi: w.hi * 100, est: b.est * 100, center: w.center * 100, lo99: w99.lo * 100, hi99: w99.hi * 100, iv: w };
+  }
+  return M;
+}
+
+function renderProp(M) {
+  var v = M.v, b = M.base, d = M.d, ph = v.phat;
+  var P = function (x) { return fmt(x * 100, d) + '%'; };
+  var lvl = Math.round(v.level * 100), tail = fmt((1 - v.level) / 2, 3);
+  var ph4 = fmt(ph, 4), q4 = fmt(1 - ph, 4);
+
+  $('p-big').innerHTML = P(b.lo) + ' s.d. ' + P(b.hi);
+  $('p-big-label').textContent = 'Estimasi selang (CI ' + lvl + '%) dengan rumus standar (Wald)';
+  $('p-tiles').innerHTML = tilesHTML([
+    { k: 'Estimasi titik', v: P(b.est), cls: 'blue' },
+    { k: 'Batas kesalahan', v: '\u00B1 ' + P(b.moe), cls: 'green' },
+    { k: 'Lebar selang', v: P(b.width) }
+  ]);
+
+  var warns = [];
+  if (!b.condOk) warns.push('Syarat rumus standar belum terpenuhi (n \u00D7 p&#770; = ' + fmt(b.c1, 1) + '; n \u00D7 (1 &minus; p&#770;) = ' + fmt(b.c2, 1) + '). Selang standar kurang dapat diandalkan, sehingga bandingkan dengan selang Wilson.');
+  if (ph === 0 || ph === 1) warns.push('Estimasi titik ' + (ph === 0 ? '0%' : '100%') + ' membuat selang standar berlebar nol. Gunakan selang Wilson.');
+  var wEl = $('p-warn');
+  if (warns.length) { wEl.hidden = false; wEl.innerHTML = warns.join('<br>'); } else wEl.hidden = true;
+
+  var rows = '<span class="formula-title">Langkah perhitungan</span>';
+  rows += stepHTML('Estimasi titik', v.mode === 'cnt' ? 'p&#770; = x / n = ' + v.x + ' / ' + v.n : 'p&#770; = ' + fmt(v.pct, d) + '% = ' + ph4, P(ph));
+  var okBadge = b.condOk ? badge('ok', 'Terpenuhi') : badge('warn', 'Belum terpenuhi');
+  rows += stepHTML('Pemeriksaan syarat',
+    'n &times; p&#770; = ' + v.n + ' &times; ' + ph4 + ' = ' + fmt(b.c1, 1) + (b.c1 >= 10 ? ' (\u2265 10)' : ' (< 10)') + '<br>n &times; (1 &minus; p&#770;) = ' + v.n + ' &times; ' + q4 + ' = ' + fmt(b.c2, 1) + (b.c2 >= 10 ? ' (\u2265 10)' : ' (< 10)'),
+    okBadge);
+  var seF = v.fpc
+    ? 'SE = ' + sq('p&#770;(1 &minus; p&#770;) / n') + ' &times; ' + sq('(N &minus; n) / (N &minus; 1)') + ' = ' + sq(ph4 + ' &times; ' + q4 + ' / ' + v.n) + ' &times; ' + sq('(' + v.N + ' &minus; ' + v.n + ') / (' + v.N + ' &minus; 1)')
+    : 'SE = ' + sq('p&#770;(1 &minus; p&#770;) / n') + ' = ' + sq(ph4 + ' &times; ' + q4 + ' / ' + v.n);
+  rows += stepHTML('Kesalahan baku (SE)', seF, P(b.se));
+  rows += stepHTML('Nilai kritis Z', 'Z dengan luas ekor kanan ' + tail, fmt(b.crit, 3));
+  rows += stepHTML('Batas kesalahan', 'Z &times; SE = ' + fmt(b.crit, 3) + ' &times; ' + fmt(b.se, 4), P(b.moe));
+  rows += stepHTML('Batas bawah', 'p&#770; &minus; batas kesalahan = ' + ph4 + ' &minus; ' + fmt(b.moe, 4), P(b.lo),
+    b.rawLo < 0 ? 'Nilai hitung ' + P(b.rawLo) + ' dipotong menjadi 0% karena proporsi tidak bisa negatif.' : '');
+  rows += stepHTML('Batas atas', 'p&#770; + batas kesalahan = ' + ph4 + ' + ' + fmt(b.moe, 4), P(b.hi),
+    b.rawHi > 1 ? 'Nilai hitung ' + P(b.rawHi) + ' dipotong menjadi 100% karena proporsi tidak bisa melebihi 100%.' : '');
+  rows += stepHTML('Lebar selang', 'batas atas &minus; batas bawah', P(b.width));
+  rows += '<p class="foot-note">Perhitungan memakai proporsi (misalnya 8,82% = 0,0882) dan hasilnya ditampilkan dalam persen. Angka pada substitusi dibulatkan untuk tampilan, sehingga hasil hitung tangan bisa berbeda pada desimal terakhir.</p>';
+  $('p-steps').innerHTML = rows;
+
+  var extra = '';
+  if (v.pi !== null) {
+    var covers = b.lo <= v.pi && v.pi <= b.hi, diff = Math.abs(b.est - v.pi);
+    extra += '<div class="extra-card"><span class="formula-title">Perbandingan dengan parameter</span>'
+      + stepHTML('Persentase populasi (\u03C0)', '', P(v.pi))
+      + stepHTML('Selisih estimasi titik dan parameter', '|p&#770; &minus; \u03C0| = |' + P(b.est) + ' &minus; ' + P(v.pi) + '|', P(diff),
+        'Selisih ' + (diff <= b.moe ? '\u2264' : '>') + ' batas kesalahan (' + P(b.moe) + ')')
+      + '<div style="margin-top:8px">' + badge(covers ? 'ok' : 'no', covers ? 'Selang standar mencakup parameter' : 'Selang standar tidak mencakup parameter') + '</div></div>';
+  }
+  if (v.wil) {
+    var w = b.wil;
+    extra += '<div class="extra-card"><span class="formula-title">Pembanding: rumus Wilson</span><table class="mini"><thead><tr><th></th><th class="num">Standar (Wald)</th><th class="num">Wilson</th></tr></thead><tbody>'
+      + '<tr><td>Pusat selang</td><td class="num">' + P(b.est) + '</td><td class="num">' + P(w.center) + '</td></tr>'
+      + '<tr><td>Batas bawah</td><td class="num">' + P(b.lo) + '</td><td class="num">' + P(w.lo) + '</td></tr>'
+      + '<tr><td>Batas atas</td><td class="num">' + P(b.hi) + '</td><td class="num">' + P(w.hi) + '</td></tr>'
+      + '<tr><td>Lebar selang</td><td class="num">' + P(b.width) + '</td><td class="num">' + P(w.hi - w.lo) + '</td></tr>'
+      + '</tbody></table>'
+      + '<p class="foot-note">Rumus Wilson: pusat p&#771; = (p&#770; + Z&sup2; / 2n) / (1 + Z&sup2; / n); batas = p&#771; ± Z &times; ' + sq('p&#770;(1 &minus; p&#770;) / n + Z&sup2; / 4n&sup2;') + ' / (1 + Z&sup2; / n).'
+      + (v.fpc ? ' Rumus Wilson ditampilkan tanpa koreksi populasi terhingga.' : '') + '</p></div>';
+  }
+  $('p-extra').innerHTML = extra;
+}
+
+/* ===== Kartu visualisasi ===== */
+function readCardHTML(isProp) {
+  var s = '<p><strong>Estimasi titik</strong> adalah satu angka dari sampel, yaitu ' + (isProp ? 'proporsi' : 'rata-rata') + ' sampel. Angka ini hampir pasti tidak sama persis dengan parameter populasi.</p>'
+    + '<p><strong>Estimasi selang</strong> menambahkan batas kesalahan di kiri dan kanan estimasi titik. Batas bawah = estimasi titik \u2212 batas kesalahan, dan batas atas = estimasi titik + batas kesalahan. Rentang ini memuat nilai-nilai parameter yang masih masuk akal berdasarkan sampel.</p>'
+    + '<p><strong>Tingkat kepercayaan</strong> 95% menggambarkan kehandalan prosedurnya: jika pengambilan sampel dan pembuatan selang diulang berkali-kali, sekitar 95% selang yang dihasilkan akan mencakup parameter populasi. Satu selang yang sudah dihitung mencakup parameter atau tidak. Peluang 95% melekat pada prosedurnya.</p>'
+    + '<p><strong>Lebar selang</strong> bertambah jika tingkat kepercayaan dinaikkan atau ' + (isProp ? 'proporsi mendekati 50%' : 'SD makin besar') + ', dan berkurang jika n bertambah. Sebaran nilai antar individu digambarkan oleh ' + (isProp ? 'proporsinya sendiri, sedangkan selang menggambarkan ketidakpastian estimasi.' : 'SD, sedangkan selang menggambarkan ketidakpastian estimasi rata-rata.') + '</p>'
+    + '<p><strong>Asumsi:</strong> sampel diambil secara acak. ' + (isProp ? 'Rumus standar membutuhkan n \u00D7 p\u0302 dan n \u00D7 (1 \u2212 p\u0302) sama-sama \u2265 10.' : 'Data mendekati normal, atau n cukup besar (n \u2265 30 sering dipakai sebagai pedoman).') + '</p>';
+  return s;
+}
+
+function vizTemplate(P, isProp) {
+  var what = isProp ? 'Persentase sampel dianggap tetap saat n berubah.' : 'SD sampel dianggap tetap saat n berubah.';
+  var anatDesc = isProp
+    ? 'Estimasi selang = estimasi titik \u00B1 batas kesalahan. Pada rumus standar, kedua lengan sama panjang kecuali terpotong di 0% atau 100%.'
+    : 'Estimasi selang = estimasi titik \u00B1 batas kesalahan. Kedua lengan selalu sama panjang.';
+  return '<div class="empty-state" id="' + P + '-viz-empty" hidden>Lengkapi input yang bertanda merah untuk melihat grafik.</div>'
+    + '<div class="viz-card needs-data"><div class="viz-title">Anatomi estimasi selang</div><div class="viz-desc">' + anatDesc + '</div>'
+    + '<div class="legend" id="' + P + '-anat-legend"></div><div id="' + P + '-anat-status"></div><div class="chart" id="' + P + '-anat"></div><div class="chart-note" id="' + P + '-anat-note"></div></div>'
+    + '<div class="viz-card needs-data"><div class="viz-title">Perubahan tingkat kepercayaan</div><div class="viz-desc">Tingkat kepercayaan yang lebih tinggi memberi selang yang lebih lebar. Selang 90% berada di dalam selang 95%, dan selang 95% berada di dalam selang 99%.</div>'
+    + '<div class="chart" id="' + P + '-lev"></div></div>'
+    + '<div class="viz-card needs-data"><div class="viz-title">Bagaimana jika n dan tingkat kepercayaan berubah?</div><div class="viz-desc">Geser kedua penggeser untuk membandingkan skenario dengan input saat ini. ' + what + '</div>'
+    + '<div class="wi-controls">'
+    + '<div class="wi-item"><label for="' + P + '-wi-n">Jumlah sampel (n)</label><div class="wi-row"><input type="range" id="' + P + '-wi-n" min="2" max="100" step="1" value="30"><output id="' + P + '-wi-n-out" for="' + P + '-wi-n">30</output></div></div>'
+    + '<div class="wi-item"><label for="' + P + '-wi-lv">Tingkat kepercayaan</label><div class="wi-row"><input type="range" id="' + P + '-wi-lv" min="80" max="99" step="1" value="95"><output id="' + P + '-wi-lv-out" for="' + P + '-wi-lv">95%</output></div></div>'
+    + '</div>'
+    + '<div class="wi-actions"><button type="button" class="btn-secondary" id="' + P + '-wi-reset">Samakan dengan input</button><button type="button" class="btn-secondary" id="' + P + '-wi-axis">Atur ulang sumbu</button></div>'
+    + '<div class="wi-table" id="' + P + '-wi-table"></div>'
+    + '<div class="legend"><span class="lg"><span class="lg-sw" style="background:' + COL.ghost + '"></span>Input saat ini</span><span class="lg"><span class="lg-sw" style="background:' + COL.green + '"></span>Skenario</span><span class="lg"><span class="lg-sw" style="background:' + COL.blue + ';width:9px;height:9px;border-radius:50%"></span>Estimasi titik</span></div>'
+    + '<div class="chart" id="' + P + '-wi-bars"></div>'
+    + '<div class="wi-sub">Lebar selang menurut jumlah sampel</div>'
+    + '<div class="legend" id="' + P + '-wi-curve-legend"></div>'
+    + '<div class="chart" id="' + P + '-wi-curve"></div></div>'
+    + '<div class="viz-card read-card"><div class="viz-title" style="margin-bottom:12px">Cara membaca estimasi selang</div>' + readCardHTML(isProp) + '</div>';
+}
+
+/* ===== Pengendali panel ===== */
+function makePanel(cfg) {
+  var P = cfg.P;
+  var st = { M: null, axisMain: null, axisW: null, curves: {} };
+  var $$ = function (s) { return $(P + '-' + s); };
+
+  function fitMain(M) {
+    var k = M.k, l99 = M.levels[2];
+    var vals = [l99.lo * k, l99.hi * k, M.base.est * k, M.base.lo * k, M.base.hi * k];
+    if (M.paramD !== null) vals.push(M.paramD);
+    if (M.sec) vals.push(M.sec.lo99, M.sec.hi99, M.sec.lo, M.sec.hi);
+    return fitAxis(vals, M.clamp);
+  }
+
+  function drawAnat() {
+    var M = st.M, k = M.k, b = M.disp(M.base);
+    var items = [
+      { color: COL.blue, text: 'Estimasi titik', style: 'width:10px;height:10px;border-radius:50%' },
+      { color: COL.green, text: M.primaryName + ' (utama)' },
+      { color: COL.ink, text: 'Batas bawah dan batas atas', style: 'width:3px;height:14px;border-radius:2px' }
+    ];
+    if (M.paramD !== null) items.push({ color: COL.red, text: 'Parameter populasi', style: 'width:16px;height:0;border-top:2px dashed ' + COL.red + ';background:transparent;border-radius:0' });
+    if (M.sec) items.push({ color: COL.orange, text: M.sec.name });
+    $$('anat-legend').innerHTML = legendHTML(items);
+    $$('anat-status').innerHTML = statusLine(M);
+    var note = '';
+    if (M.isProp && M.base.rawLo < 0) note = 'Batas bawah dipotong di 0% karena proporsi tidak bisa negatif (nilai hitung ' + fmt(M.base.rawLo * 100, M.d) + '%).';
+    else if (M.isProp && M.base.rawHi > 1) note = 'Batas atas dipotong di 100% karena proporsi tidak bisa melebihi 100% (nilai hitung ' + fmt(M.base.rawHi * 100, M.d) + '%).';
+    if (M.isProp && M.sec) note += (note ? ' ' : '') + 'Belah ketupat pada selang Wilson menandai pusatnya, yang bergeser dari estimasi titik.';
+    $$('anat-note').textContent = note;
+    drawAnatomy($$('anat'), {
+      primary: b, secondary: M.sec, axis: st.axisMain, param: M.paramD, paramName: M.paramName,
+      f: M.fv, tick: M.tick, unit: M.unitTitle, widthText: M.widthText(b.width), aria: M.ariaSel(M.base)
+    });
+  }
+
+  function drawLev() {
+    var M = st.M, k = M.k;
+    var rows = M.levels.map(function (iv) {
+      var d = M.disp(iv), sel = Math.abs(iv.level - M.base.level) < 1e-9;
+      return { label: Math.round(iv.level * 100) + '%', lo: d.lo, hi: d.hi, est: d.est, kind: sel ? 'sel' : 'soft', hl: sel };
+    });
+    drawBars($$('lev'), {
+      rows: rows, axis: st.axisMain, param: M.paramD, paramName: M.paramName, guide: M.base.est * k,
+      f: M.fv, tick: M.tick, unit: M.unitTitle, labelMode: 'gutter', aria: 'Selang pada tingkat kepercayaan 90, 95, dan 99 persen'
+    });
+  }
+
+  function curveFor(level, nLo, nHi) {
+    var M = st.M, key = M.sig + '|' + level + '|' + nLo + '|' + nHi;
+    if (st.curves[key]) return st.curves[key];
+    var step = Math.max(1, Math.ceil((nHi - nLo) / 220)), pts = [];
+    for (var n = nLo; n <= nHi; n += step) pts.push([n, M.at(n, level).width * M.k]);
+    if (pts[pts.length - 1][0] !== nHi) pts.push([nHi, M.at(nHi, level).width * M.k]);
+    st.curves[key] = pts;
+    return pts;
+  }
+
+  function setupWhatIf() {
+    var M = st.M, b = M.base;
+    var nLo = Math.max(M.minN, Math.min(5, b.n));
+    var nHi = Math.max(150, 2 * b.n);
+    if (M.N) nHi = Math.min(nHi, M.N - 1);
+    nHi = Math.max(nHi, b.n, nLo + 1);
+    if (M.N && nHi > M.N - 1) nHi = Math.max(b.n, M.N - 1);
+    st.nLo = nLo; st.nHi = nHi;
+    var rn = $$('wi-n'), rl = $$('wi-lv');
+    rn.min = nLo; rn.max = nHi; rn.value = b.n;
+    rl.min = 80; rl.max = 99; rl.value = Math.round(b.level * 100);
+    st.axisW = { lo: st.axisMain.lo, hi: st.axisMain.hi };
+  }
+
+  function drawWhatIf() {
+    var M = st.M, k = M.k, b = M.base, d = M.d;
+    var n = parseInt($$('wi-n').value, 10), level = parseInt($$('wi-lv').value, 10) / 100;
+    $$('wi-n-out').textContent = n;
+    $$('wi-lv-out').textContent = Math.round(level * 100) + '%';
+    var sc = M.at(n, level), bd = M.disp(b), sd = M.disp(sc);
+    expandAxis(st.axisW, [sd.lo, sd.hi], M.clamp);
+
+    // tabel
+    var F = function (x) { return M.fv(x); };
+    var tr = function (name, a, c) { return '<tr><td>' + name + '</td><td class="num">' + a + '</td><td class="num">' + c + '</td></tr>'; };
+    var html = '<table class="mini"><thead><tr><th></th><th class="num">Input saat ini</th><th class="num">Skenario</th></tr></thead><tbody>'
+      + tr('Jumlah sampel (n)', b.n, sc.n)
+      + tr('Tingkat kepercayaan', Math.round(b.level * 100) + '%', Math.round(sc.level * 100) + '%')
+      + tr('Nilai kritis', fmt(b.crit, 3), fmt(sc.crit, 3))
+      + tr('Kesalahan baku (SE)', F(b.se * k), F(sc.se * k))
+      + tr('Batas kesalahan', F(bd.moe), F(sd.moe))
+      + tr('Batas bawah', F(bd.lo), F(sd.lo))
+      + tr('Batas atas', F(bd.hi), F(sd.hi))
+      + tr('Lebar selang', F(bd.width), F(sd.width));
+    if (M.isProp) {
+      var ck = function (iv) { return (iv.condOk ? 'terpenuhi' : 'belum terpenuhi') + ' (' + fmt(iv.c1, 1) + '; ' + fmt(iv.c2, 1) + ')'; };
+      html += tr('Syarat n \u00D7 p\u0302 dan n \u00D7 (1 \u2212 p\u0302) \u2265 10', ck(b), ck(sc));
+    }
+    html += '</tbody></table>';
+    var ratio = sd.width / bd.width, rt = '';
+    if (isFinite(ratio) && bd.width > 0) {
+      if (Math.abs(ratio - 1) < 0.005) rt = 'Lebar selang skenario sama dengan lebar selang input.';
+      else rt = 'Lebar selang skenario adalah ' + fmt(ratio, 2) + ' kali lebar selang input (' + (ratio > 1 ? 'lebih lebar' : 'lebih sempit') + ').';
+    }
+    $$('wi-table').innerHTML = html + (rt ? '<p class="chart-note" style="margin-top:10px"><strong>' + rt + '</strong></p>' : '');
+
+    drawBars($$('wi-bars'), {
+      rows: [
+        { label: 'Input saat ini: n = ' + b.n + ', tingkat kepercayaan ' + Math.round(b.level * 100) + '%', lo: bd.lo, hi: bd.hi, est: bd.est, kind: 'ghost' },
+        { label: 'Skenario: n = ' + sc.n + ', tingkat kepercayaan ' + Math.round(sc.level * 100) + '%', lo: sd.lo, hi: sd.hi, est: sd.est, kind: 'scn' }
+      ],
+      axis: st.axisW, param: M.paramD, paramName: M.paramName, guide: b.est * k,
+      f: M.fv, tick: M.tick, unit: M.unitTitle, labelMode: 'above', aria: 'Perbandingan selang input dan skenario'
+    });
+
+    // kurva
+    var curves = [], sameLevel = Math.abs(level - b.level) < 1e-9;
+    var scnPts = curveFor(level, st.nLo, st.nHi);
+    if (!sameLevel) curves.push({ pts: curveFor(b.level, st.nLo, st.nHi), color: COL.ghostCap, dash: true });
+    curves.push({ pts: scnPts, color: COL.green });
+    var ymax = 0;
+    curves.forEach(function (cv) { ymax = Math.max(ymax, cv.pts[0][1]); });
+    ymax = ymax * 1.06 || 1;
+    var legend = [{ color: COL.green, text: 'Kurva pada tingkat kepercayaan skenario (' + Math.round(level * 100) + '%)' }];
+    if (!sameLevel) legend.push({ color: COL.ghostCap, text: 'Kurva pada tingkat kepercayaan input (' + Math.round(b.level * 100) + '%)', style: 'height:0;border-top:2px dashed ' + COL.ghostCap + ';background:transparent;border-radius:0' });
+    $$('wi-curve-legend').innerHTML = legendHTML(legend);
+    drawCurve($$('wi-curve'), {
+      curves: curves, x0: st.nLo, x1: st.nHi, ymax: ymax,
+      markers: [
+        { n: b.n, w: bd.width, color: COL.ghostCap, fill: '#ffffff' },
+        { n: sc.n, w: sd.width, color: COL.green, fill: COL.green, label: 'n = ' + sc.n + ', lebar = ' + F(sd.width), text: COL.greenDark }
+      ],
+      yFmt: function (t, step) { return fmt(t, decsForStep(step)); }, yTitle: M.yTitle,
+      aria: 'Kurva lebar selang menurut jumlah sampel'
+    });
+  }
+
+  function setVisible(has) {
+    $$('viz-empty').hidden = has;
+    $$('viz').querySelectorAll('.needs-data').forEach(function (e) { e.hidden = !has; });
+  }
+
+  function drawAll() {
+    if (!st.M) return;
+    drawAnat(); drawLev(); drawWhatIf();
+  }
+
+  function clearResults() {
+    $$('big').textContent = '\u2013';
+    $$('big-label').textContent = 'Lengkapi input untuk melihat hasil';
+    $$('tiles').innerHTML = '';
+    $$('steps').innerHTML = '';
+    $$('extra').innerHTML = '';
+    var w = $$('warn'); if (w) w.hidden = true;
+  }
+
+  function update() {
+    var r = cfg.read();
+    Object.keys(cfg.fields).forEach(function (f) { setErr(cfg.fields[f], r.err[f] || ''); });
+    if (Object.keys(r.err).length) { st.M = null; clearResults(); setVisible(false); return; }
+    st.M = cfg.build(r.v);
+    cfg.render(st.M);
+    st.axisMain = fitMain(st.M);
+    setupWhatIf();
+    setVisible(true);
+    drawAll();
+  }
+
+  $$('viz').innerHTML = vizTemplate(P, cfg.isProp);
+  $$('wi-n').addEventListener('input', function () { if (st.M) drawWhatIf(); });
+  $$('wi-lv').addEventListener('input', function () { if (st.M) drawWhatIf(); });
+  $$('wi-reset').addEventListener('click', function () {
+    if (!st.M) return;
+    $$('wi-n').value = st.M.base.n; $$('wi-lv').value = Math.round(st.M.base.level * 100);
+    st.axisW = { lo: st.axisMain.lo, hi: st.axisMain.hi };
+    drawWhatIf();
+  });
+  $$('wi-axis').addEventListener('click', function () {
+    if (!st.M) return;
+    st.axisW = { lo: st.axisMain.lo, hi: st.axisMain.hi };
+    drawWhatIf();
+  });
+
+  cfg.inputs.forEach(function (id) {
+    var e = $(id);
+    e.addEventListener(e.tagName === 'SELECT' || e.type === 'checkbox' || e.type === 'radio' ? 'change' : 'input', function () { cfg.onInput && cfg.onInput(id); update(); });
+  });
+
+  return { update: update, drawAll: drawAll, state: st };
+}
+
+/* ===== Inisialisasi ===== */
+var quant = makePanel({
+  P: 'q', isProp: false, read: readQuant, build: buildQuant, render: renderQuant,
+  fields: { mean: 'q-mean', sd: 'q-sd', n: 'q-n', N: 'q-N', mu: 'q-mu' },
+  inputs: ['q-level', 'q-mean', 'q-sd', 'q-n', 'q-unit', 'q-N', 'q-mu', 'q-dec', 'q-method-t', 'q-method-z', 'q-cmp', 'q-fpc'],
+  onInput: function (id) {
+    if (id === 'q-fpc') $('q-fin').classList.toggle('show', $('q-fpc').checked);
+    if (id === 'q-method-t' || id === 'q-method-z') {
+      var z = $('q-method-z').checked;
+      $('q-sd-label').textContent = z ? 'Simpangan baku populasi (\u03C3), diketahui' : 'Simpangan baku sampel (s)';
+      $('q-sd-help').textContent = z ? 'Isi dengan \u03C3 yang berasal dari pengukuran seluruh populasi.' : 'Gunakan satuan yang sama dengan rata-rata.';
+    }
+  }
+});
+
+var prop = makePanel({
+  P: 'p', isProp: true, read: readProp, build: buildProp, render: renderProp,
+  fields: { pct: 'p-pct', x: 'p-x', n: 'p-n', N: 'p-N', pi: 'p-pi' },
+  inputs: ['p-level', 'p-pct', 'p-x', 'p-n', 'p-N', 'p-pi', 'p-dec', 'p-mode-pct', 'p-mode-cnt', 'p-wil', 'p-fpc'],
+  onInput: function (id) {
+    if (id === 'p-fpc') $('p-fin').classList.toggle('show', $('p-fpc').checked);
+    if (id === 'p-mode-pct' || id === 'p-mode-cnt') {
+      var cnt = $('p-mode-cnt').checked;
+      $('p-box-pct').hidden = cnt;
+      $('p-box-cnt').hidden = !cnt;
+    }
+  }
+});
+
+function activePanel() { return document.querySelector('input[name="data-type"]:checked').value === 'qual' ? prop : quant; }
+document.querySelectorAll('input[name="data-type"]').forEach(function (r) {
+  r.addEventListener('change', function () {
+    var qual = $('tab-qual').checked;
+    $('panel-qual').classList.toggle('active', qual);
+    $('panel-quant').classList.toggle('active', !qual);
+    activePanel().drawAll();
+  });
+});
+
+var resizeTimer = null;
+window.addEventListener('resize', function () {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(function () { activePanel().drawAll(); }, 120);
+});
+
+quant.update();
+prop.update();
+</script>
+
+</body>
+</html>
