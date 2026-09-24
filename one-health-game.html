@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5f5f7">
+<meta name="description" content="One Health Card Game: permainan kartu kolaborasi empat kantor untuk mahasiswa, dimainkan bergiliran di satu perangkat.">
+<title>One Health Card Game</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='26' r='24' fill='%23F9CB9C'/%3E%3Ccircle cx='26' cy='60' r='24' fill='%23EA9999'/%3E%3Ccircle cx='94' cy='60' r='24' fill='%23B6D7A8'/%3E%3Ccircle cx='60' cy='94' r='24' fill='%23B4A7D6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== One Health Card Game: gaya ===== */
+:root {
+  color-scheme: light;
+  --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --muted: #6e6e73;
+  --line: #d2d2d7; --line-soft: #ececf0; --track: #e3e3e8;
+  --shadow: 0 8px 24px rgba(0,0,0,0.06);
+
+  /* Warna papan: c = isi, d = garis/tombol, t = tint terang */
+  --c0: #F9CB9C; --d0: #8A4700; --t0: #FDEBD6;
+  --c1: #EA9999; --d1: #8F1414; --t1: #F8DCDC;
+  --c2: #B4A7D6; --d2: #33257A; --t2: #E7E2F3;
+  --c3: #B6D7A8; --d3: #245C14; --t3: #E2EFDC;
+  --wk: #A4C2F4; --wk-deep: #1C4587;
+  --ev: #D0E0E3; --ev-line: #b3c9ce; --ev-ink: #3b4d51;
+  --neg-bg: #F4CCCC; --neg-ink: #990000;
+  --pos-bg: #D9EAD3; --pos-ink: #274E13;
+  --neu-bg: #FFF2CC; --neu-ink: #7F6000;
+  --focus: #1C4587;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.5; margin: 0;
+  padding: 32px 20px 56px; -webkit-font-smoothing: antialiased;
+}
+.app { max-width: 1180px; margin: 0 auto; }
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+[hidden] { display: none !important; }
+.ic { display: block; flex: none; }
+.card { background: var(--card); border-radius: 20px; padding: 26px; box-shadow: var(--shadow); }
+.section-title { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 18px; }
+.help-text { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+/* ---------- Tombol ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 20px; border-radius: 12px; border: 1px solid transparent;
+  background: var(--acc, var(--text)); color: #fff; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: filter .15s ease, transform .15s ease; min-height: 44px;
+}
+.btn:hover:not(:disabled) { filter: brightness(1.12); }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: .38; cursor: not-allowed; }
+.btn.secondary { background: var(--track); color: var(--text); }
+.btn.ghost { background: transparent; color: var(--text); border-color: var(--line); }
+.btn.big { width: 100%; padding: 16px 24px; font-size: 16px; }
+.btn.small { padding: 8px 14px; min-height: 36px; font-size: 14px; border-radius: 10px; }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--card); cursor: pointer;
+}
+.icon-btn:hover { background: var(--bg); }
+
+/* ---------- Kontrol segmen (seperti halaman acuan) ---------- */
+.tabs { display: flex; background: var(--track); border-radius: 12px; padding: 4px; }
+.tabs input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tabs label {
+  flex: 1; text-align: center; padding: 10px 12px; font-size: 14px; font-weight: 600;
+  border-radius: 9px; cursor: pointer; transition: background .2s ease, box-shadow .2s ease;
+}
+.tabs input:checked + label { background: var(--card); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.tabs input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 1px; }
+.form-group { margin-bottom: 24px; }
+.form-group > label, .form-group > .lbl { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+
+/* ---------- Layar pengaturan ---------- */
+.hero { text-align: center; margin-bottom: 36px; }
+.hero .logo { margin: 0 auto 14px; }
+.hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+.hero p { color: var(--muted); font-size: 16px; max-width: 640px; margin: 0 auto; }
+.panel { display: flex; gap: 24px; align-items: flex-start; }
+.input-side, .result-side { flex: 1; }
+.result-side { text-align: center; }
+.big-number { font-size: 64px; font-weight: 800; letter-spacing: -2px; line-height: 1; margin: 6px 0 8px; font-variant-numeric: tabular-nums; }
+.big-label { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.kv { background: var(--bg); border-radius: 12px; padding: 6px 18px; text-align: left; margin: 22px 0; }
+.kv > div { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; font-size: 14px; }
+.kv > div + div { border-top: 1px solid var(--line); }
+.kv b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.goal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+.goal > div { background: var(--bg); border-radius: 12px; padding: 14px 16px; font-size: 14px; }
+.goal b { display: block; font-size: 14px; margin-bottom: 2px; }
+.link-btn { background: none; border: 0; padding: 0; color: var(--focus); font-weight: 600; text-decoration: underline; cursor: pointer; font-size: 14px; }
+
+/* ---------- Layar permainan: bilah atas & status ---------- */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.2px; }
+.top-actions { display: flex; gap: 8px; }
+.top-actions .btn { white-space: nowrap; }
+.status { display: grid; grid-template-columns: auto auto auto 1fr; gap: 12px 32px; align-items: center; padding: 16px 24px; }
+.stat-l { display: block; font-size: 12px; font-weight: 600; color: var(--muted); }
+.stat-v { display: block; font-size: 22px; font-weight: 700; letter-spacing: -0.4px; font-variant-numeric: tabular-nums; line-height: 1.25; }
+.who { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; padding: 4px 12px 4px 4px; border-radius: 999px; background: var(--ci); }
+.who .ic-wrap { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.6); }
+.who small { font-weight: 500; font-size: 13px; }
+.meter-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+.meter-top b { font-size: 15px; font-variant-numeric: tabular-nums; }
+.meter-top span { font-size: 12px; color: var(--muted); }
+.meter { display: flex; height: 16px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.meter .seg { background: var(--ci); border-right: 2px solid #fff; transition: width .5s ease; min-width: 0; }
+.meter .seg:last-of-type { border-right: 0; }
+
+/* ---------- Kartu kantor ---------- */
+.players { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 16px; }
+.pc { background: var(--ci); border: 2px solid transparent; border-radius: 20px; padding: 16px; transition: border-color .2s ease, box-shadow .2s ease; }
+.pc.turn { border-color: var(--di); box-shadow: 0 10px 28px rgba(0,0,0,0.12); }
+
+.pc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; min-height: 42px; }
+.pc-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.6); flex: none; }
+.pc-head h3 { font-size: 15px; font-weight: 700; line-height: 1.25; flex: 1; letter-spacing: -0.1px; }
+.pc-head h3 .short { display: none; }
+.pill { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--di); color: #fff; white-space: nowrap; }
+.pc-row { display: flex; justify-content: space-between; align-items: baseline; margin: 10px 0 5px; }
+.pc-row .lbl { font-size: 13px; font-weight: 600; }
+.pc-row .val { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; border-radius: 6px; padding: 0 4px; }
+.pc-row .val small { font-weight: 500; opacity: .7; font-size: 12px; }
+.track { display: grid; gap: 3px; }
+.track.t10 { grid-template-columns: repeat(10, 1fr); }
+.track.t5 { grid-template-columns: repeat(5, 1fr); }
+.cell { display: grid; place-items: center; aspect-ratio: 1 / 1.1; font-size: 11px; font-weight: 600; background: #fff; color: var(--di); border: 1px solid var(--di); border-radius: 5px; transition: background .3s ease, color .3s ease; }
+.cell.on { background: var(--di); color: #fff; }
+.track.wk .cell { border-color: var(--wk-deep); color: var(--wk-deep); }
+.track.wk .cell.on { background: var(--wk); color: var(--wk-deep); }
+.money .val { display: inline-flex; align-items: center; gap: 6px; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+.money .val .ic { width: 20px; height: 20px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; min-height: 4px; }
+.chip { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,.72); color: var(--text); }
+.chip.warn { background: #fff; color: var(--d1); border: 1px solid var(--d1); }
+.val.up { animation: flashUp 1.2s ease; }
+.val.down { animation: flashDown 1.2s ease; }
+@keyframes flashUp { 0% { background: #34c759; color: #fff; } 100% { background: transparent; } }
+@keyframes flashDown { 0% { background: #e5484d; color: #fff; } 100% { background: transparent; } }
+
+/* ---------- Meja: kartu peristiwa + panel interaksi ---------- */
+.table { display: grid; grid-template-columns: minmax(270px, 330px) 1fr; gap: 18px; margin-top: 18px; align-items: start; }
+.evcol { display: grid; gap: 12px; }
+.ev { background: var(--ev); border: 1px solid var(--ev-line); border-radius: 20px; padding: 18px 18px 16px; text-align: center; }
+.ev-title { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; line-height: 1.3; }
+.ev-art { margin: 12px 0; aspect-ratio: 16 / 10; border-radius: 14px; display: grid; place-items: center; background: rgba(255,255,255,.5); }
+.ev-art .ic { width: 68px; height: 68px; stroke-width: 1.5; }
+.ev-art.tone-neg { background: var(--neg-bg); color: var(--neg-ink); }
+.ev-art.tone-pos { background: var(--pos-bg); color: var(--pos-ink); }
+.ev-art.tone-neu { background: var(--neu-bg); color: var(--neu-ink); }
+.ev-quote { font-size: 13.5px; font-style: italic; color: var(--ev-ink); margin-bottom: 10px; }
+.ev-text { font-size: 13.5px; text-align: left; line-height: 1.5; }
+.ev-text + .ev-text { margin-top: 6px; }
+.ev-list { margin: 6px 0 0; padding-left: 20px; text-align: left; font-size: 13.5px; }
+.ev-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; text-align: left; }
+.ev-rows li { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
+.ev-rows .sw { width: 12px; height: 12px; border-radius: 4px; background: var(--ci); border: 1px solid var(--di); flex: none; }
+.ev-rows .nm { flex: 1; }
+.ev-rows .val { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ev-rows .val.neg { color: var(--neg-ink); }
+.ev-rows .val.pos { color: var(--pos-ink); }
+.ev-rows .val.nil { color: var(--ev-ink); font-weight: 500; }
+.ev.back { border-style: dashed; }
+.ev.back .ev-art { background: rgba(255,255,255,.45); }
+.rules-now { display: flex; flex-wrap: wrap; gap: 6px; }
+.rule-chip { font-size: 12.5px; font-weight: 600; padding: 5px 11px; border-radius: 999px; background: var(--card); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.rule-chip.alert { background: var(--neg-ink); color: #fff; }
+
+/* ---------- Panel interaksi ---------- */
+.stage { padding: 24px; }
+.stage-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.badge { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ci); flex: none; }
+.stage-head h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.25; }
+.stage-head h2:focus { outline: none; }
+.stage-head small { display: block; font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.stage p.lead { font-size: 15px; margin-bottom: 16px; }
+.stage .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.stage .row .btn { flex: none; }
+.btn.acc { background: var(--di); }
+
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.opt { position: relative; text-align: left; padding: 14px 16px 14px 20px; border-radius: 14px; background: var(--ti, var(--bg)); border: 2px solid transparent; cursor: pointer; }
+.opt::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 5px; border-radius: 0 4px 4px 0; background: var(--ci, var(--line)); }
+.opt b { display: block; font-size: 15px; }
+.opt span { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.opt:hover:not(:disabled) { border-color: var(--line); }
+.opt[aria-pressed="true"] { border-color: var(--di, var(--text)); background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+.opt:disabled { opacity: .45; cursor: not-allowed; }
+
+.dist { display: grid; gap: 8px; margin: 4px 0 4px; }
+.dist-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 14px; background: var(--ci); }
+.dist-row .nm { font-weight: 600; font-size: 14.5px; }
+.dist-row .nm small { display: block; font-weight: 500; font-size: 12.5px; }
+.stepper { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,.75); border-radius: 12px; padding: 3px; }
+.stepper button { width: 36px; height: 36px; border-radius: 9px; border: 0; background: #fff; cursor: pointer; display: grid; place-items: center; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.stepper button:disabled { opacity: .35; cursor: not-allowed; }
+.stepper output { min-width: 34px; text-align: center; font-weight: 700; font-size: 17px; font-variant-numeric: tabular-nums; }
+.remain { font-size: 14px; font-weight: 600; }
+
+.acts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.act { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 12px; border-radius: 14px; background: var(--ci); border: 2px solid transparent; cursor: pointer; min-height: 128px; transition: transform .15s ease, box-shadow .15s ease; }
+.act:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.1); }
+.act[aria-pressed="true"] { border-color: var(--di); box-shadow: 0 6px 18px rgba(0,0,0,.14); background: var(--ci); }
+.act:disabled { cursor: not-allowed; background: var(--track); color: var(--muted); }
+.act-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,.62); margin-bottom: 4px; }
+.act:disabled .act-ico { background: rgba(255,255,255,.7); }
+.act-name { font-size: 13.5px; font-weight: 700; line-height: 1.25; }
+.act-meta { font-size: 12px; font-weight: 600; }
+.act-brief, .act-why { font-size: 12px; line-height: 1.35; opacity: .85; }
+.act-why { font-weight: 600; }
+.detail { margin-top: 14px; background: var(--ti); border-radius: 16px; padding: 18px; }
+.detail h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.detail p { font-size: 14px; }
+.detail .block { margin-top: 14px; }
+.detail .block > .lbl { font-size: 13px; font-weight: 700; margin-bottom: 6px; display: block; }
+.targets { display: flex; flex-wrap: wrap; gap: 8px; }
+.tgt { padding: 8px 14px; border-radius: 999px; background: var(--ci); border: 2px solid transparent; font-weight: 600; font-size: 14px; cursor: pointer; }
+.tgt[aria-pressed="true"] { border-color: var(--di); background: #fff; }
+.tgt:disabled { opacity: .4; cursor: not-allowed; }
+.odds { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.odds .who-l { font-size: 13px; font-weight: 600; min-width: 90px; }
+.odds .six { display: inline-grid; grid-template-columns: repeat(6, 26px); gap: 3px; }
+.odds .six span { display: grid; place-items: center; height: 26px; font-size: 12px; font-weight: 700; border-radius: 6px; background: #fff; border: 1px solid var(--line); color: var(--muted); }
+.odds .six span.ok { background: var(--wk); border-color: var(--wk-deep); color: var(--wk-deep); }
+.odds .pct { font-size: 13px; color: var(--muted); }
+.detail .warn { font-size: 13px; color: var(--neg-ink); font-weight: 600; margin-top: 10px; }
+
+/* Dadu */
+.dice-wrap { display: flex; flex-wrap: wrap; gap: 16px 28px; margin: 6px 0 14px; }
+.dice-group .cap { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.dice { display: flex; gap: 10px; }
+.die { display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); width: 56px; height: 56px; padding: 8px; border-radius: 13px; background: #fff; border: 2px solid var(--text); }
+.die .pip { width: 10px; height: 10px; border-radius: 50%; background: var(--text); place-self: center; }
+.die.ok { border-color: var(--d3); background: var(--t3); }
+.die.ok .pip { background: var(--d3); }
+.die.fail { border-color: var(--d1); background: var(--t1); }
+.die.fail .pip { background: var(--d1); }
+.die.roll { animation: tumble .45s linear infinite; }
+@keyframes tumble { 0% { transform: rotate(0) scale(1); } 25% { transform: rotate(-9deg) scale(1.06); } 75% { transform: rotate(9deg) scale(1.06); } 100% { transform: rotate(0) scale(1); } }
+.result .res-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.result.ok .res-title { color: var(--d3); }
+.result.fail .res-title { color: var(--d1); }
+.result ul { margin: 0; padding-left: 20px; font-size: 14.5px; }
+.result-box { background: var(--bg); border-radius: 16px; padding: 18px; }
+.peek-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 8px; }
+.peek-grid .ev { display: flex; flex-direction: column; }
+.peek-grid .btn { margin-top: 12px; width: 100%; }
+.notice { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; background: var(--neu-bg); color: #4d3a00; font-size: 14.5px; font-weight: 600; margin: 4px 0 4px; }
+
+/* ---------- Riwayat ---------- */
+.logcard { margin-top: 18px; padding: 8px 26px; }
+.logcard summary { cursor: pointer; font-size: 14px; font-weight: 700; padding: 14px 0; list-style: none; display: flex; align-items: center; gap: 8px; }
+.logcard summary::-webkit-details-marker { display: none; }
+.log { list-style: none; margin: 0 0 14px; padding: 0; max-height: 300px; overflow: auto; }
+.log li { display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 14px; }
+.log .r { color: var(--muted); font-size: 12.5px; font-weight: 600; padding-top: 1px; }
+.log li.event { font-weight: 700; }
+.log li.bad .t::before, .log li.good .t::before, .log li.win .t::before, .log li.lose .t::before, .log li.manual .t::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+.log li.bad .t::before, .log li.lose .t::before { background: var(--d1); }
+.log li.good .t::before, .log li.win .t::before { background: var(--d3); }
+.log li.manual .t::before { background: var(--wk-deep); }
+
+/* ---------- Dialog ---------- */
+dialog.dlg { border: 0; border-radius: 22px; padding: 26px; width: min(680px, calc(100vw - 32px)); max-height: calc(100vh - 32px); box-shadow: 0 24px 64px rgba(0,0,0,.28); color: var(--text); background: var(--card); }
+dialog.dlg::backdrop { background: rgba(29,29,31,.45); }
+.dlg-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.dlg-head h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+.dlg-foot { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 20px; }
+.dlg h3 { font-size: 15px; font-weight: 700; margin: 18px 0 6px; }
+.dlg p, .dlg li { font-size: 14.5px; }
+.dlg ul { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 4px; }
+.gm-grid { display: grid; grid-template-columns: 1.4fr repeat(3, auto); gap: 8px 14px; align-items: center; margin-top: 14px; }
+.gm-grid .h { font-size: 12.5px; font-weight: 700; color: var(--muted); text-align: center; }
+.gm-grid .nm { font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 10px; background: var(--ci); }
+.end-hero { text-align: center; padding: 6px 0 4px; }
+.end-hero .big-number { font-size: 56px; }
+.end-hero h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.6px; margin-bottom: 4px; }
+.end-hero.win h2 { color: var(--d3); }
+.end-hero.lose h2 { color: var(--d1); }
+.end-hero .rec { display: inline-block; margin-top: 6px; font-size: 13.5px; font-weight: 700; padding: 5px 12px; border-radius: 999px; background: var(--pos-bg); color: var(--pos-ink); }
+.end-hero .rec.no { background: var(--track); color: var(--muted); }
+
+/* ---------- Responsif ---------- */
+@media (max-width: 1100px) {
+  .players { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 860px) {
+  body { padding: 20px 14px 40px; }
+  .panel { flex-direction: column; }
+  .input-side, .result-side { width: 100%; }
+  .status { grid-template-columns: 1fr 1fr; }
+  .status .meter-wrap { grid-column: 1 / -1; }
+  .acts { grid-template-columns: repeat(2, 1fr); }
+  .hero h1 { font-size: 24px; }
+  .big-number { font-size: 48px; }
+}
+@media (max-width: 700px) {
+  .table { grid-template-columns: 1fr; }
+  .stage { order: -1; }
+  .evcol { grid-template-columns: minmax(0, 340px); justify-content: center; }
+}
+@media (max-width: 560px) {
+  .players { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pc { padding: 12px; border-radius: 16px; }
+  .pc-head { margin-bottom: 8px; min-height: 0; gap: 8px; }
+  .pc-ico { width: 32px; height: 32px; }
+  .pc-ico .ic { width: 18px; height: 18px; }
+  .pc-head h3 { font-size: 14px; }
+  .pc-head h3 .full, .who .full { display: none; }
+  .pc-head h3 .short { display: inline; }
+  .pc .pill { display: none; }
+  .cell { font-size: 0; aspect-ratio: 1 / 1.25; border-radius: 3px; }
+  .track { gap: 2px; }
+  .pc-row { margin: 8px 0 4px; }
+  .money .val { font-size: 22px; }
+  .chip { font-size: 11px; }
+  .card { padding: 20px; }
+  .stage { padding: 18px; }
+  .brand h1 { font-size: 16px; }
+  .peek-grid { grid-template-columns: 1fr; }
+  .gm-grid { grid-template-columns: 1fr repeat(3, auto); gap: 6px 8px; }
+  .goal { grid-template-columns: 1fr; }
+  .logcard { padding: 4px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ===== Layar pengaturan ===== -->
+  <section id="screen-setup" aria-labelledby="setup-title">
+    <header class="hero">
+      <div id="hero-logo"></div>
+      <h1 id="setup-title">One Health Card Game</h1>
+      <p>Empat kantor bekerja sama menjaga kesehatan manusia, hewan, dan lingkungan. Satu perangkat, empat pemain, bergiliran.</p>
+    </header>
+
+    <div class="panel">
+      <div class="input-side card">
+        <div class="section-title">Pengaturan permainan</div>
+
+        <div class="form-group">
+          <span class="lbl" id="lbl-diff">Tingkat kesulitan</span>
+          <div class="tabs" id="seg-diff" role="radiogroup" aria-labelledby="lbl-diff">
+            <input type="radio" name="diff" id="diff-mudah" value="mudah"><label for="diff-mudah">Mudah</label>
+            <input type="radio" name="diff" id="diff-sedang" value="sedang"><label for="diff-sedang">Sedang</label>
+            <input type="radio" name="diff" id="diff-susah" value="susah"><label for="diff-susah">Susah</label>
+          </div>
+          <div class="help-text" id="diff-help"></div>
+        </div>
+
+        <div class="form-group">
+          <span class="lbl" id="lbl-copies">Salinan tiap kartu peristiwa positif</span>
+          <div class="tabs" id="seg-copies" role="radiogroup" aria-labelledby="lbl-copies">
+            <input type="radio" name="copies" id="copies-1" value="1"><label for="copies-1">1 salinan</label>
+            <input type="radio" name="copies" id="copies-2" value="2"><label for="copies-2">2 salinan</label>
+            <input type="radio" name="copies" id="copies-3" value="3"><label for="copies-3">3 salinan</label>
+          </div>
+          <div class="help-text" id="copies-help"></div>
+        </div>
+
+        <div class="goal">
+          <div><b>Menang</b>Total poin keempat kantor mencapai 36.</div>
+          <div><b>Kalah</b>Salah satu kantor mencapai 0 poin.</div>
+        </div>
+        <p class="help-text" style="margin-top:16px"><button type="button" class="link-btn" data-act="rules-open">Baca ringkasan aturan</button></p>
+      </div>
+
+      <div class="result-side card">
+        <div class="section-title">Ringkasan</div>
+        <div class="big-number" id="rec-time">Belum ada</div>
+        <div class="big-label">Rekor waktu terbaik</div>
+        <div class="help-text" id="rec-help"></div>
+        <div class="kv">
+          <div><span>Poin awal tiap kantor</span><b id="s-pts"></b></div>
+          <div><span>Uang awal tiap kantor</span><b id="s-money"></b></div>
+          <div><span>Pekerja awal tiap kantor</span><b id="s-wk"></b></div>
+          <div><span>Kartu peristiwa di tumpukan</span><b id="s-deck"></b></div>
+        </div>
+        <button type="button" class="btn big" data-act="start">Mulai permainan</button>
+        <button type="button" class="btn big secondary" id="btn-resume" data-act="resume" style="margin-top:10px" hidden>Lanjutkan permainan tersimpan</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Layar permainan ===== -->
+  <section id="screen-game" hidden>
+    <div class="topbar">
+      <div class="brand"><span id="brand-logo"></span><h1>One Health Card Game</h1></div>
+      <div class="top-actions">
+        <button type="button" class="icon-btn" data-act="rules-open" aria-label="Aturan singkat" title="Aturan singkat"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.1"/></svg></button>
+        <button type="button" class="btn secondary small" data-act="gm-open"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Game Master</button>
+      </div>
+    </div>
+
+    <div class="card status" id="status"></div>
+    <div class="players" id="players"></div>
+
+    <div class="table">
+      <div class="evcol" id="evcol"></div>
+      <div class="card stage" id="stage"></div>
+    </div>
+
+    <details class="card logcard" id="logcard" open>
+      <summary>Riwayat permainan</summary>
+      <ol class="log" id="log"></ol>
+    </details>
+  </section>
+</div>
+
+<div class="sr" id="live" role="status" aria-live="polite"></div>
+
+<!-- ===== Dialog ===== -->
+<dialog class="dlg" id="dlg-gm" aria-labelledby="gm-title">
+  <div class="dlg-head"><h2 id="gm-title">Panel Game Master</h2><button type="button" class="icon-btn" data-act="close-dlg" data-target="dlg-gm" aria-label="Tutup">&#x2715;</button></div>
+  <p class="help-text" style="margin-top:0">Koreksi manual dan pembatalan langkah membuat waktu permainan ini tidak tercatat sebagai rekor.</p>
+  <div class="gm-grid" id="gm-body"></div>
+  <div class="dlg-foot">
+    <button type="button" class="btn secondary" data-act="undo" id="btn-undo">Batalkan langkah terakhir</button>
+    <button type="button" class="btn ghost" data-act="restart">Mulai ulang</button>
+  </div>
+</dialog>
+
+<dialog class="dlg" id="dlg-rules" aria-labelledby="rules-title">
+  <div class="dlg-head"><h2 id="rules-title">Ringkasan aturan</h2><button type="button" class="icon-btn" data-act="close-dlg" data-target="dlg-rules" aria-label="Tutup">&#x2715;</button></div>
+  <div style="overflow:auto; max-height: calc(100vh - 170px); padding-right:4px">
+    <h3>Tujuan</h3>
+    <p>Empat pemain memegang Pemerintah Pusat dan tiga kantor kesehatan (manusia, hewan, lingkungan). Menang jika total poin keempat kantor mencapai 36. Kalah jika salah satu kantor mencapai 0 poin.</p>
+    <h3>Satu putaran</h3>
+    <ul>
+      <li>Pemerintah Pusat menarik satu Kartu Peristiwa dan efeknya langsung berlaku.</li>
+      <li>Pemerintah Pusat menerima 3 uang dari Game Master, lalu membagikannya ke pemain mana pun.</li>
+      <li>Pusat, Manusia, Hewan, lalu Lingkungan bergiliran memakai satu Kartu Aksi dengan membayar biayanya.</li>
+    </ul>
+    <h3>Dadu</h3>
+    <p>Aksi berdadu berhasil jika angka dadu tidak melebihi jumlah pekerja kantor itu.</p>
+    <h3>Batas</h3>
+    <p>Poin 0 sampai 10, pekerja 1 sampai 5, uang tanpa batas.</p>
+    <h3>Tafsir aturan pada versi digital</h3>
+    <ul>
+      <li>Poin di atas 10 hangus. Pekerja tidak turun di bawah 1 dan uang tidak menjadi negatif.</li>
+      <li>Jika tumpukan kartu peristiwa habis, kartu bekas dikocok menjadi tumpukan baru.</li>
+      <li>Menang dan kalah dicek setiap poin berubah. Jika terjadi bersamaan, kalah didahulukan.</li>
+      <li>Korupsi mengambil separuh uang dibulatkan ke atas.</li>
+      <li>Hasil Ganda berlaku untuk poin dari aksi yang berhasil, uang dari Investasi, dan pekerja dari Perekrutan.</li>
+      <li>Sosialisasi hanya melindungi dari pengurangan poin oleh Kartu Peristiwa, selama 2 putaran berikutnya.</li>
+      <li>Fokus Media hanya berlaku untuk aksi yang memakai dadu.</li>
+      <li>Kerja Keras memberi dua aksi dengan dua kartu yang berbeda. Aksi kedua boleh dilewati.</li>
+      <li>Aturan Tak Sinkron: para pemain bersepakat lebih dulu, lalu Game Master memilih dua pemain.</li>
+      <li>Investasi cair di akhir putaran berikutnya.</li>
+      <li>Aksi boleh dilewati, misalnya saat uang habis.</li>
+      <li>Waktu berjalan sejak Kartu Peristiwa pertama ditarik. Rekor hanya dicatat dari kemenangan tanpa koreksi manual atau pembatalan.</li>
+    </ul>
+  </div>
+</dialog>
+
+<dialog class="dlg" id="dlg-end" aria-labelledby="end-title">
+  <div id="end-body"></div>
+  <div class="dlg-foot">
+    <button type="button" class="btn ghost" data-act="close-dlg" data-target="dlg-end">Lihat papan</button>
+    <button type="button" class="btn secondary" data-act="to-setup">Ubah pengaturan</button>
+    <button type="button" class="btn" data-act="again">Main lagi</button>
+  </div>
+</dialog>
+
+<noscript><p style="text-align:center;padding:24px">Permainan ini memerlukan JavaScript.</p></noscript>
+
+<script>
+/* ===== IKON SVG (24x24, garis) ===== */
+const ICONS = {
+  /* kantor */
+  gov: '<path d="M3 9.5 12 4l9 5.5"/><path d="M5 9.5h14"/><path d="M6.5 12v5.5M10 12v5.5M14 12v5.5M17.5 12v5.5"/><path d="M4.5 17.5h15M3 21h18"/>',
+  man: '<path d="M12 20.5 4.9 13.6A4.9 4.9 0 0 1 12 6.7a4.9 4.9 0 0 1 7.1 6.9z"/><path d="M4 12.5h4l1.6-3.2 2.4 6 1.8-4 1.2 1.2H20"/>',
+  hew: '<path d="M12 12.5c-3 0-5.5 2.7-5.5 5 0 1.7 1.4 2.5 2.9 2.5 1 0 1.6-.5 2.6-.5s1.6.5 2.6.5c1.5 0 2.9-.8 2.9-2.5 0-2.3-2.5-5-5.5-5z"/><ellipse cx="5.8" cy="10" rx="1.6" ry="2.1"/><ellipse cx="9.8" cy="6.6" rx="1.6" ry="2.2"/><ellipse cx="14.2" cy="6.6" rx="1.6" ry="2.2"/><ellipse cx="18.2" cy="10" rx="1.6" ry="2.1"/>',
+  lin: '<path d="M5 19C5 10 10 5 20 4c0 10-5 15-14 15z"/><path d="M5 19 15 9"/><path d="M11 15.5H8.5M13.5 12.5H11"/>',
+
+  /* kartu peristiwa */
+  burst: '<path d="M12 2.5 14 8l5.500-2-2 5.500 5 2-5.500 1.500 1.500 5.500-5-3L12 22l-2-5-5 3 1.500-5.500L2.500 13.500l5-2L5.500 6 11 8z"/>',
+  virus: '<circle cx="12" cy="12" r="4.2"/><path d="M12 7.8V3.500M12 16.200v4.300M7.800 12H3.500M16.200 12h4.300M8.900 8.900 5.800 5.800M15.100 15.100l3.100 3.100M15.100 8.900l3.100-3.100M8.900 15.100l-3.100 3.100"/><circle cx="12" cy="3" r=".9"/><circle cx="12" cy="21" r=".9"/><circle cx="3" cy="12" r=".9"/><circle cx="21" cy="12" r=".9"/>',
+  drought: '<circle cx="12" cy="7" r="2.800"/><path d="M12 1.800v.9M12 11.300v.9M6.800 7h.9M16.300 7h.9M8.300 3.300l.6.6M15.100 10.100l.6.6M15.700 3.300l-.6.6M8.900 10.100l-.6.6"/><path d="M2.500 14.500h19v6h-19z"/><path d="M8 14.500l1.500 2.500-2 1.500 1.500 2M15 14.500l-1.500 2.500 2 1.500-1.500 2"/>',
+  quake: '<path d="M2 9h4l2-5 3.500 11 2.500-8 1.500 2H22"/><path d="M2 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>',
+  smog: '<path d="M3 20.500V11l5 3v-3l5 3V8h5v12.500z"/><path d="M3 20.500h18"/><path d="M15.500 5.500c0-1.200 1.200-1.800 1.200-3M19 5.500c0-1 1-1.500 1-2.500"/>',
+  pickaxe: '<path d="M3.500 20.500 16.500 7.500"/><path d="M8.500 4.500Q19 5 19.500 15.500"/><path d="M8.500 4.500 10 6.500M19.500 15.500 17.500 14"/>',
+  toilet: '<path d="M8 3.500h8v5H8z"/><path d="M5.500 9h13c0 4.800-2.500 8-6.500 8S5.500 13.800 5.500 9z"/><path d="M9 20.500h6"/><path d="M3 3l18 18"/>',
+  petri: '<circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1.600"/><circle cx="14.600" cy="8.800" r="1"/><circle cx="13.400" cy="14.600" r="2.100"/><circle cx="8.600" cy="15.400" r=".8"/>',
+  fish: '<path d="M2.500 12c2.800-4.800 8.300-5.500 12.500-2l4.500-2.500v9L15 14c-4.200 3.500-9.700 2.800-12.500-2z"/><circle cx="7.500" cy="11" r=".8"/><rect x="19.500" y="3" width="2" height="2" rx=".4"/><rect x="16.500" y="18.500" width="2" height="2" rx=".4"/><rect x="3" y="18" width="2" height="2" rx=".4"/>',
+  food: '<path d="M5 3v6a2.500 2.500 0 0 0 5 0V3M7.500 3v18"/><path d="M16 3c-2 1.500-3 4-3 7h3v11"/><circle cx="20" cy="4" r="2.200"/><path d="M20 3.200v1M20 5.100v.1"/>',
+  droplet: '<path d="M12 3s6 6.500 6 11a6 6 0 0 1-12 0c0-4.500 6-11 6-11z"/><circle cx="10" cy="14" r=".9"/><circle cx="13.500" cy="16.500" r=".9"/><circle cx="14" cy="12.500" r=".7"/>',
+  cow: '<ellipse cx="12" cy="13.500" rx="5.500" ry="6.500"/><path d="M7 8.500 2.500 8M17 8.500 21.500 8M8.500 7 7 3M15.500 7 17 3"/><ellipse cx="12" cy="17" rx="3" ry="2"/><circle cx="10.800" cy="17" r=".5"/><circle cx="13.200" cy="17" r=".5"/><circle cx="9.800" cy="12" r=".7"/><circle cx="14.200" cy="12" r=".7"/>',
+  cage: '<path d="M6 11a6 6 0 0 1 12 0v9H6z"/><path d="M10 11v9M14 11v9M6 15.500h12"/><path d="M12 5V3"/><circle cx="12" cy="2.300" r=".9"/>',
+  flood: '<path d="M5 12 12 6l7 6"/><path d="M7 11v3M17 11v3"/><path d="M2.500 16.500c1.800-1.500 3.400-1.500 5.200 0s3.400 1.500 5.200 0 3.400-1.500 5.200 0 2.200 1.200 3.400 0"/><path d="M2.500 20.500c1.800-1.500 3.400-1.500 5.200 0s3.400 1.500 5.200 0 3.400-1.500 5.200 0 2.200 1.200 3.400 0"/>',
+  flame: '<path d="M12 2.500c.8 4 5.500 5.500 5.500 10.500a5.500 5.500 0 0 1-11 0c0-2 .8-3.500 2.200-4.700.1 1.800.9 2.700 1.900 2.900C10.200 8.500 10.800 5.200 12 2.500z"/><path d="M12 21c-1.500 0-2.500-1-2.500-2.500 0-1.300 1-2.300 2.500-3.500 1.500 1.200 2.500 2.200 2.500 3.500S13.500 21 12 21z"/>',
+  recession: '<path d="M3 4v16h18"/><path d="M6.500 8l4 4.500 3-2.500 5 6"/><path d="M19.500 12.500V16.500H15.500"/>',
+  chat: '<path d="M3 4.500h11.500v7.500H8.500L5.500 15v-3H3z"/><path d="M11 12h10v6.500h-2V22l-3.500-3.500H11z"/>',
+  wage: '<rect x="2.500" y="8" width="19" height="11" rx="2"/><circle cx="12" cy="13.500" r="2.600"/><path d="M6 11.500v4M18 11.500v4"/><path d="M19 2.500v4M17 4.500l2-2 2 2"/>',
+  neq: '<circle cx="12" cy="12" r="9"/><path d="M7.500 9.500h9M7.500 14.500h9M13.800 6.500 10.200 17.500"/>',
+  moneybag: '<path d="M9 3.500h6l-1.500 3h-3z"/><path d="M8.500 6.500C5 10 4 13 4 16a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4c0-3-1-6-4.500-9.500"/><path d="M12 10.500v7M10 12.500c0-1 1-1.500 2-1.500s2 .5 2 1.500-1 1.300-2 1.500-2 .5-2 1.500 1 1.500 2 1.500 2-.5 2-1.500"/>',
+  megaphone: '<path d="M3 10v4h4l9 4.500V5.500L7 10z"/><path d="M7 14l1 5h3l-1-4.500"/><path d="M19 9c1.500 1.500 1.500 4.500 0 6"/>',
+  briefcase: '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 13.500h18M10.500 13.500v2h3v-2"/>',
+  dice2: '<rect x="2.500" y="11" width="9" height="9" rx="2"/><rect x="12.500" y="4" width="9" height="9" rx="2"/><circle cx="5.500" cy="14" r=".8"/><circle cx="8.500" cy="17" r=".8"/><circle cx="15.500" cy="7" r=".8"/><circle cx="18.500" cy="10" r=".8"/><circle cx="17" cy="8.500" r=".8"/>',
+  safe: '<rect x="3" y="4" width="18" height="16" rx="2"/><rect x="6" y="7" width="12" height="10" rx="1"/><circle cx="12" cy="12" r="2.200"/><path d="M12 9.800v-1M12 15.200v1M6 20v1.500M18 20v1.500"/>',
+  shield: '<path d="M12 3 20 6v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6z"/><path d="M8.500 12l2.500 2.500 4.500-5"/>',
+  dumbbell: '<path d="M6 7v10M3 9.500v5M18 7v10M21 9.500v5M6 12h12"/>',
+  gift: '<rect x="3" y="9" width="18" height="11.500" rx="1.200"/><path d="M12 9v11.500M3 13.500h18"/><path d="M12 9c-1.500-4.500-6-3.500-5-1.500S10.500 9 12 9zm0 0c1.500-4.500 6-3.500 5-1.500S13.500 9 12 9z"/>',
+  trophy: '<path d="M8 4h8v5.500a4 4 0 0 1-8 0z"/><path d="M8 6H5v1.500A3 3 0 0 0 8 10.500M16 6h3v1.500a3 3 0 0 1-3 3"/><path d="M12 13.500v4M8.500 20.500h7M10 17.500h4"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.500 3.500 3.500 14.500 0 18M12 3c-3.500 3.500-3.500 14.500 0 18"/>',
+  tree: '<path d="M12 21v-6.500"/><path d="M12 14.500c-4 0-7-2.500-7-6 0-2.500 2-4.500 4-4.500 0-1.500 1.500-2.500 3-2.500s3 1 3 2.500c2 0 4 2 4 4.500 0 3.500-3 6-7 6z"/><path d="M12 11.500 9.500 9M12 13l3-3"/>',
+  flask: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.800 3h10.400A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.500 15h9"/><circle cx="11" cy="18" r=".7"/><circle cx="14" cy="17" r=".7"/>',
+  camera: '<rect x="2.500" y="7" width="19" height="12.500" rx="2"/><circle cx="12" cy="13.200" r="3.600"/><path d="M8 7l1.500-3h5L16 7"/>',
+  car: '<path d="M4 14.500v-3.500l2-4.500h12l2 4.500v3.500"/><path d="M2.500 14.500h19V18h-19z"/><circle cx="7" cy="18" r="1.700"/><circle cx="17" cy="18" r="1.700"/><path d="M6 11h12"/>',
+  ballot: '<rect x="3.500" y="11.500" width="17" height="9" rx="1.500"/><path d="M9 15.500h6"/><path d="M8 11.500V4h8v7.500"/><path d="M10.500 7.500l1.200 1.200 2-2.400"/>',
+  team: '<circle cx="9" cy="8" r="3.200"/><path d="M2.800 20c0-3.600 2.600-6 6.200-6s6.200 2.400 6.200 6"/><circle cx="17.200" cy="9" r="2.500"/><path d="M16.500 14.200c2.800.1 4.700 2 4.700 5"/>',
+  flag: '<path d="M5 21V4"/><path d="M5 5h13.500l-2.500 3.500 2.500 3.500H5"/>',
+  pack: '<path d="M6 4h12l1 3.500H5z"/><path d="M5 7.500V20h14V7.500"/><path d="M9 12h6M9 15.500h6"/>',
+  container: '<path d="M3 6.500h18V17H3z"/><path d="M7 6.500V17M11 6.500V17M15 6.500V17M19 6.500V17"/><path d="M3 20.500h18"/>',
+  digger: '<rect x="2.500" y="16.500" width="12" height="4" rx="2"/><path d="M4.500 16.500V12h6l1.500 4.500"/><path d="M10.500 12 15 5.500l4.500 3"/><path d="M19.500 8.500 18.500 14h3.500l-.5-3.500"/>',
+  onehealth: '<circle cx="12" cy="5.500" r="3"/><circle cx="5.500" cy="12" r="3"/><circle cx="18.500" cy="12" r="3"/><circle cx="12" cy="18.500" r="3"/>',
+
+  /* kartu aksi */
+  arrowup: '<circle cx="12" cy="12" r="9"/><path d="M12 16.500V8M8.200 11.500 12 7.700l3.800 3.800"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.700 0l3-3a4 4 0 0 0-5.700-5.700l-1 1"/><path d="M14 10a4 4 0 0 0-5.700 0l-3 3a4 4 0 0 0 5.700 5.700l1-1"/>',
+  userplus: '<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c0-4 3-6 6.500-6s6.500 2 6.500 6"/><path d="M19 8v6M16 11h6"/>',
+  eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  coins: '<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.700 3.100 3 7 3s7-1.300 7-3V6"/><path d="M5 12v6c0 1.700 3.100 3 7 3s7-1.300 7-3v-6"/>',
+  swap: '<path d="M4 8h14M14 4l4 4-4 4"/><path d="M20 16H6M10 12l-4 4 4 4"/>',
+  usermove: '<circle cx="8" cy="8" r="3.500"/><path d="M2 20c0-4 2.500-6 6-6s6 2 6 6"/><path d="M16 12h6M19 9l3 3-3 3"/>',
+  crown: '<path d="M3 8l4.500 4L12 5l4.500 7L21 8l-2 11H5z"/><path d="M5.500 21.500h13"/>',
+
+  /* antarmuka */
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  coin: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.500 9.500c0-1 1-1.700 2.500-1.700s2.500.7 2.500 1.700-1 1.500-2.500 1.900-2.500.9-2.500 2 1 1.800 2.500 1.800 2.500-.8 2.500-1.800"/>',
+  worker: '<circle cx="12" cy="7.500" r="3.200"/><path d="M5 20c0-4 3-6.500 7-6.500s7 2.500 7 6.500"/>',
+  star: '<path d="M12 3l2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9z"/>',
+  check: '<path d="M4.500 12.500l5 5 10-11"/>',
+  x: '<path d="M6 6l12 12M18 6 6 18"/>',
+  undo: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.500a5.500 5.500 0 0 1 0 11H11"/>',
+  sliders: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.500v.1"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  minus: '<path d="M5 12h14"/>',
+  alert: '<path d="M12 3.500 22 20H2z"/><path d="M12 10v4.500M12 17.500v.1"/>',
+  card: '<rect x="4" y="3" width="16" height="18" rx="2.500"/><path d="M12 8v5M9.500 10.500h5"/>',
+  logfile: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 14.500h7M9 18h4"/>',
+  restart: '<path d="M4 12a8 8 0 1 0 2.500-5.800"/><path d="M4 4v4.500h4.500"/>'
+};
+function icon(name, size, cls) {
+  const s = size || 20;
+  return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" width="' + s + '" height="' + s +
+    '" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    (ICONS[name] || '') + '</svg>';
+}
+
+/* ===== MESIN ATURAN (tanpa DOM) ===== */
+const OHCG = (function () {
+  'use strict';
+
+  const OFFICES = [
+    { key: 'gov', name: 'Pemerintah Pusat', short: 'Pusat' },
+    { key: 'man', name: 'Kantor Kesehatan Manusia', short: 'Manusia' },
+    { key: 'hew', name: 'Kantor Kesehatan Hewan', short: 'Hewan' },
+    { key: 'lin', name: 'Kantor Kesehatan Lingkungan', short: 'Lingkungan' }
+  ];
+  const HEALTH = [1, 2, 3];
+  const DIFFICULTY = {
+    mudah:  { label: 'Mudah',  note: 'Negara kaya',       pts: 6, money: 7, wk: 4 },
+    sedang: { label: 'Sedang', note: 'Negara berkembang', pts: 5, money: 5, wk: 3 },
+    susah:  { label: 'Susah',  note: 'Negara miskin',     pts: 4, money: 3, wk: 2 }
+  };
+  const WIN_TOTAL = 36, MAX_PTS = 10, MAX_WK = 5, MIN_WK = 1;
+
+  /* ---------- Kartu peristiwa ---------- */
+  const EVENTS = [
+    { id: 'perang', title: 'Perang Saudara', quote: 'Peperangan merugikan semua pihak.', tone: 'neg', icon: 'burst', deltas: [-2, -2, -2, -2] },
+    { id: 'pandemi', title: 'Pandemi Zoonosis', quote: 'Wabah penyakit zoonotik melanda dunia.', tone: 'neg', icon: 'virus', deltas: [-1, -3, -2, -2] },
+    { id: 'kekeringan', title: 'Kekeringan Panjang', quote: 'Kemarau ekstrem menyulitkan akses air.', tone: 'neg', icon: 'drought', deltas: [-1, -2, -3, -2] },
+    { id: 'gempa', title: 'Gempa Bumi & Tsunami', quote: 'Bencana alam menghancurkan kehidupan.', tone: 'neg', icon: 'quake', deltas: [-1, -2, -2, -3] },
+    { id: 'polusiudara', title: 'Polusi Udara', quote: 'Semuanya sulit mendapatkan udara segar.', tone: 'neg', icon: 'smog', deltas: [-1, -1, -1, -1] },
+    { id: 'tambang', title: 'Penambangan Berlebihan', quote: 'Eksploitasi yang mengabaikan keberlanjutan.', tone: 'neg', icon: 'pickaxe', deltas: [-1, 0, -1, -1] },
+    { id: 'defekasi', title: 'Defekasi Terbuka', quote: 'Sanitasi buruk menurunkan kualitas hidup.', tone: 'neg', icon: 'toilet', deltas: [-1, -1, 0, -1] },
+    { id: 'amr', title: 'Resistansi Antimikroba', quote: 'Kuman menjadi semakin kebal.', tone: 'neg', icon: 'petri', deltas: [-1, -1, -1, 0] },
+    { id: 'plastik', title: 'Polusi Plastik Mikro', quote: 'Akumulasi partikel tak kasat mata.', tone: 'neg', icon: 'fish', deltas: [0, -1, -1, -1] },
+    { id: 'keracunan', title: 'Keracunan Makanan', quote: 'Produk hewan rusak dan tak layak dimakan.', tone: 'neg', icon: 'food', deltas: [0, -2, -1, 0] },
+    { id: 'airminum', title: 'Polusi Air Minum', quote: 'Ada yang mencemari suplai air.', tone: 'neg', icon: 'droplet', deltas: [0, -2, 0, -1] },
+    { id: 'wabah', title: 'Wabah Zoonosis', quote: 'Hewan-hewan sakit dan menulari manusia.', tone: 'neg', icon: 'cow', deltas: [0, -1, -2, 0] },
+    { id: 'perburuan', title: 'Perburuan Ilegal', quote: 'Mereka ke hutan untuk menangkap satwa.', tone: 'neg', icon: 'cage', deltas: [0, 0, -2, -1] },
+    { id: 'banjir', title: 'Banjir', quote: 'Para korban kedinginan dan mulai sakit.', tone: 'neg', icon: 'flood', deltas: [0, -1, 0, -2] },
+    { id: 'kebakaran', title: 'Kebakaran Hutan', quote: 'Hutan hilang, satwa liar tak bisa pulang.', tone: 'neg', icon: 'flame', deltas: [0, 0, -1, -2] },
+    { id: 'resesi', title: 'Resesi', quote: 'Ekonomi terpuruk, PHK di mana-mana.', tone: 'neg', icon: 'recession', workers: [-1, -1, -1, -1] },
+
+    { id: 'miskom', title: 'Miskomunikasi', quote: 'Miskomunikasi bikin orang bertindak sendiri.', tone: 'neg', icon: 'chat',
+      text: 'Semua pemain dilarang berkomunikasi (baik secara verbal maupun nonverbal) selama putaran ini.' },
+    { id: 'upah', title: 'Kenaikan Upah Minimum', quote: 'Para pekerja menuntut kenaikan gaji.', tone: 'neg', icon: 'wage',
+      text: 'Setiap pemain memilih salah satu opsi:', list: ['Bayar 3 unit uang', 'Kurangi 1 pekerja'] },
+    { id: 'taksinkron', title: 'Aturan Tak Sinkron', quote: 'Regulasi berbenturan, program tak berjalan.', tone: 'neg', icon: 'neq',
+      text: 'Hanya dua pemain yang bisa menggunakan Kartu Aksi pada putaran ini.' },
+    { id: 'korupsi', title: 'Korupsi', quote: 'Keserakahan memakan korban.', tone: 'neg', icon: 'moneybag',
+      text: 'Pemerintah Pusat mengambil minimum separuh uang dari satu kantor kesehatan yang memiliki uang terbanyak.' },
+    { id: 'otoriter', title: 'Kebijakan Otoriter', quote: 'Penguasa menentukan siapa yang bekerja.', tone: 'neg', icon: 'crown',
+      text: 'Pemerintah Pusat melarang salah satu kantor kesehatan untuk menggunakan Kartu Aksi pada putaran ini.' },
+    { id: 'pensiun', title: 'Pegawai Senior Pensiun', quote: 'Saatnya ia berhenti memikirkan masalah.', tone: 'neg', icon: 'briefcase',
+      text: 'Kantor kesehatan dengan poin terendah kehilangan satu pekerja. Jika beberapa kantor poinnya sama, kantor dengan uang paling sedikit yang kehilangan pekerja.' },
+    { id: 'usaha', title: 'Usaha Ekstra', quote: 'Kerja lebih keras untuk mewujudkan sesuatu.', tone: 'neg', icon: 'dice2',
+      text: 'Pada putaran ini, setiap pemain harus dua kali melempar dadu sebagai syarat keberhasilan Kartu Aksi.' },
+    { id: 'krisis', title: 'Krisis Ekonomi', quote: 'Perputaran ekonomi terhambat', tone: 'neg', icon: 'safe',
+      text: 'Pada putaran ini, Pemerintah Pusat hanya memperoleh 1 uang untuk didistribusikan.' },
+
+    { id: 'mr', title: 'Manajemen Risiko', quote: 'Risiko kegagalan telah diminimalkan.', tone: 'pos', icon: 'shield', pos: true,
+      text: 'Selama putaran ini, semua Kartu Aksi tidak memerlukan lemparan dadu dan dipastikan akan berhasil.' },
+    { id: 'kk', title: 'Kerja Keras', quote: 'Peningkatan dedikasi dalam bekerja.', tone: 'pos', icon: 'dumbbell', pos: true,
+      text: 'Pada putaran ini, setiap pemain dapat menggunakan dua Kartu Aksi.' },
+    { id: 'hg', title: 'Hasil Ganda', quote: 'Hasil yang tidak mengkhianati usaha.', tone: 'pos', icon: 'gift', pos: true,
+      text: 'Pada putaran ini, setiap pemain menerima hasil ganda (2x lipat) dari setiap Kartu Aksi yang berhasil.' },
+    { id: 'apres', title: 'Apresiasi bagi Prestasi', quote: 'Penghargaan kepada pihak yang berkualitas.', tone: 'pos', icon: 'trophy', pos: true,
+      text: 'Kantor dengan poin tertinggi memperoleh +2 uang. Jika beberapa kantor poinnya sama, kantor dengan uang paling banyak yang mendapatkan tambahan uang.' },
+    { id: 'hibah', title: 'Hibah Internasional', quote: 'Dana bantuan mengalir dari mancanegara.', tone: 'pos', icon: 'globe', pos: true,
+      text: 'Pada putaran ini, Pemerintah Pusat memperoleh 5 uang (bukan 3 uang) untuk didistribusikan.' },
+    { id: 'kons', title: 'Kawasan Konservasi Baru', quote: 'Negara berkomitmen pada konservasi alam.', tone: 'pos', icon: 'tree', pos: true, deltas: [1, 0, 0, 1] },
+    { id: 'riset', title: 'Riset yang Berhasil', quote: 'Peneliti menemukan vaksin baru.', tone: 'pos', icon: 'flask', pos: true, deltas: [0, 1, 1, 0] },
+    { id: 'onehealth', title: 'Kesepakatan One Health', quote: 'Semua sektor bersatu menjaga kehidupan.', tone: 'pos', icon: 'onehealth', pos: true,
+      deltas: [1, 1, 1, 1], moneyEach: 1, text: 'Setiap pemain memperoleh +1 poin dan +1 uang.' },
+
+    { id: 'fokus', title: 'Fokus Media', quote: 'Pers sedang mengawasi kinerja Anda.', tone: 'neu', icon: 'camera',
+      text: 'Jika Kartu Aksi gagal (lemparan dadu gagal) di putaran ini, setiap pemain yang gagal juga kehilangan 1 poin. Jika aksi berhasil, pemain tersebut mendapat 1 poin tambahan.' },
+    { id: 'kunjungan', title: 'Kunjungan Kerja', quote: 'Presiden berkunjung ke kantor kesehatan.', tone: 'neu', icon: 'car',
+      text: 'Pemerintah Pusat memilih salah satu kantor kesehatan. Kantor terpilih mendapat +2 uang dari GM, tetapi tidak bisa menggunakan Kartu Aksi di putaran ini.' },
+    { id: 'pemilu', title: 'Tahun Pemilu', quote: 'Janji politik ditebar kepada berbagai pihak.', tone: 'neu', icon: 'ballot',
+      text: 'Pemerintah Pusat memilih dua kantor kesehatan yang berbeda. Mereka mendapat +1 poin. Namun, mereka tidak boleh menggunakan Kartu Aksi (sibuk kampanye).' },
+    { id: 'bantuan', title: 'Bantuan Tim Ahli', quote: 'Tim ahli dari PBB datang membantu negara.', tone: 'pos', icon: 'team', pos: true,
+      text: 'Pemerintah Pusat memilih salah satu kantor kesehatan untuk mendapatkan +1 pekerja. Jika jumlah pekerja setiap kantor telah maksimum, efek kartu ini dibatalkan.' },
+    { id: 'libur', title: 'Libur Nasional', quote: 'Saatnya istirahat sejenak.', tone: 'neu', icon: 'flag',
+      text: 'Pada putaran ini, tidak ada Fase Aksi. Setelah Pemerintah Pusat mendistribusikan uang, lanjutkan ke putaran berikutnya (Pemerintah menarik Kartu Peristiwa lagi).' },
+    { id: 'banjirmakanan', title: 'Banjir Makanan Kemasan', quote: 'Ultra-processed food diimpor besar-besaran.', tone: 'neu', icon: 'pack',
+      text: 'Pemerintah Pusat memilih terima atau tolak.', accept: { target: 1, text: 'Pemerintah Pusat: +5 uang. Kantor Kesehatan Manusia: −1 poin.' } },
+    { id: 'relaksasi', title: 'Relaksasi Aturan Karantina', quote: 'Importir daging minta proses dipercepat.', tone: 'neu', icon: 'container',
+      text: 'Pemerintah Pusat memilih terima atau tolak.', accept: { target: 2, text: 'Pemerintah Pusat: +5 uang. Kantor Kesehatan Hewan: −1 poin.' } },
+    { id: 'investasiasing', title: 'Investasi Asing Masuk', quote: 'Perusahaan asing ingin membuka tambang.', tone: 'neu', icon: 'digger',
+      text: 'Pemerintah Pusat memilih terima atau tolak.', accept: { target: 3, text: 'Pemerintah Pusat: +5 uang. Kantor Kesehatan Lingkungan: −1 poin.' } }
+  ];
+  const EV = {};
+  EVENTS.forEach(function (e) { EV[e.id] = e; });
+
+  /* ---------- Kartu aksi ---------- */
+  const ACTIONS = [
+    { id: 'layanan', name: 'Peningkatan Layanan', cost: 1, dice: true, icon: 'arrowup',
+      brief: '+1 poin',
+      desc: 'Belanjakan 1 unit uang untuk meningkatkan kualitas kantormu. Keberhasilan aksi ini dipengaruhi jumlah pekerja. Jika lemparan dadu berhasil, kantormu memperoleh 1 poin.' },
+    { id: 'kerjasama', name: 'Perjanjian Kerja Sama', cost: 1, dice: true, target: true, icon: 'link',
+      brief: '+1 poin untuk dua kantor',
+      desc: 'Pilih pemain lain untuk diajak kerja sama. Setiap pemain membelanjakan 1 unit uang. Keberhasilan aksi ini dipengaruhi jumlah pekerja masing-masing kantor. Kedua pemain melempar dadu. Jika dua-duanya berhasil, setiap kantor memperoleh 1 poin.' },
+    { id: 'rekrut', name: 'Perekrutan Pegawai', cost: 1, dice: true, icon: 'userplus',
+      brief: '+1 pekerja',
+      desc: 'Belanjakan 1 unit uang untuk mengadakan perekrutan. Keberhasilan aksi ini dipengaruhi jumlah pekerja. Jika lemparan dadu berhasil, kantormu memperoleh 1 tambahan pekerja.' },
+    { id: 'sosialisasi', name: 'Sosialisasi', cost: 2, dice: true, icon: 'megaphone',
+      brief: 'Kebal kehilangan poin 2 putaran',
+      desc: 'Belanjakan 2 unit uang untuk meningkatkan kesadaran masyarakat. Keberhasilan aksi ini ditentukan jumlah pekerja. Jika lemparan dadu berhasil, kantormu tidak akan kehilangan poin akibat Kartu Peristiwa selama 2 putaran berikutnya.' },
+    { id: 'masadepan', name: 'Pemilihan Masa Depan', cost: 3, dice: true, icon: 'eye',
+      brief: 'Atur dua kartu peristiwa teratas',
+      desc: 'Belanjakan 3 unit uang. Keberhasilan aksi ini dipengaruhi jumlah pekerja. Jika lemparan dadu berhasil, ambil 2 Kartu Peristiwa paling atas. Pilih satu kartu dan kembalikan ke atas tumpukan kartu. Letakkan satu kartu lainnya di dasar tumpukan kartu.' },
+    { id: 'investasi', name: 'Investasi', cost: 1, dice: false, icon: 'coins',
+      brief: '+2 uang di akhir putaran berikutnya',
+      desc: 'Belanjakan 1 unit uang. Dapatkan 2 unit uang pada akhir putaran selanjutnya. Keberhasilan aksi ini tidak dipengaruhi oleh jumlah pekerja dan lemparan dadu.' },
+    { id: 'transfer', name: 'Transfer Dana', cost: 0, dice: false, target: true, amount: true, icon: 'swap',
+      brief: 'Beri uang ke kantor lain',
+      desc: 'Berikan berapapun unit uang ke kantor lain. Keberhasilan aksi ini tidak dipengaruhi oleh jumlah pekerja dan lemparan dadu.' },
+    { id: 'mutasi', name: 'Mutasi Pegawai', cost: 0, dice: false, target: true, icon: 'usermove',
+      brief: 'Beri 1 pekerja ke kantor lain',
+      desc: 'Berikan 1 unit pekerja ke kantor lain. Keberhasilan aksi ini tidak dipengaruhi oleh jumlah pekerja dan lemparan dadu.' }
+  ];
+  const ACT = {};
+  ACTIONS.forEach(function (a) { ACT[a.id] = a; });
+
+  function deckIds(copies) {
+    const out = [];
+    EVENTS.forEach(function (e) {
+      const n = e.pos ? copies : 1;
+      for (let k = 0; k < n; k++) out.push(e.id);
+    });
+    return out;
+  }
+  function shuffle(arr, rng) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
+  function signed(n) { return (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n); }
+
+  /* ---------- Permainan ---------- */
+  class Game {
+    constructor(opts, rng) {
+      this.rng = rng || Math.random;
+      this.history = [];
+      const d = DIFFICULTY[opts.difficulty];
+      const copies = opts.copies || 1;
+      this.S = {
+        difficulty: opts.difficulty, copies: copies,
+        pts: [d.pts, d.pts, d.pts, d.pts],
+        money: [d.money, d.money, d.money, d.money],
+        wk: [d.wk, d.wk, d.wk, d.wk],
+        round: 0, deck: shuffle(deckIds(copies), this.rng), discard: [], current: null,
+        flags: this._flags(), protect: [0, 0, 0, 0], active: [false, false, false, false],
+        invest: [], status: 'playing', reason: null,
+        pending: { kind: 'draw' }, turn: null,
+        startedAt: null, endedAt: null, manual: false, log: []
+      };
+    }
+
+    /* --- util --- */
+    _flags() {
+      return { noAct: [], only2: null, two: false, dice2: false, auto: false, dbl: false, media: false, gov: 3, holiday: false, miskom: false };
+    }
+    _snap() {
+      if (this.noHistory) return;
+      this.history.push(JSON.stringify(this.S));
+      if (this.history.length > 120) this.history.shift();
+    }
+    _log(text, tone) {
+      this.S.log.push({ r: this.S.round, t: text, tone: tone || '' });
+      if (this.S.log.length > 300) this.S.log.shift();
+    }
+    _reshuffle() {
+      const S = this.S;
+      S.deck = S.deck.concat(shuffle(S.discard, this.rng));
+      S.discard = [];
+    }
+    undo() {
+      if (!this.history.length) return false;
+      this.S = JSON.parse(this.history.pop());
+      this.S.manual = true;
+      return true;
+    }
+    total() { return sum(this.S.pts); }
+    elapsed(now) {
+      const S = this.S;
+      if (S.startedAt === null) return 0;
+      return (S.endedAt !== null ? S.endedAt : (now || Date.now())) - S.startedAt;
+    }
+
+    /* --- poin --- */
+    _pts(deltas, src) {
+      const S = this.S, applied = [0, 0, 0, 0];
+      for (let i = 0; i < 4; i++) {
+        const d = deltas[i];
+        if (!d) continue;
+        if (d < 0 && src === 'event' && S.active[i]) {
+          this._log(OFFICES[i].name + ' terlindungi Sosialisasi: pengurangan poin dibatalkan.', 'info');
+          continue;
+        }
+        const before = S.pts[i];
+        S.pts[i] = Math.max(0, Math.min(MAX_PTS, before + d));
+        applied[i] = S.pts[i] - before;
+      }
+      return applied;
+    }
+    _ptsText(applied) {
+      const parts = [];
+      for (let i = 0; i < 4; i++) if (applied[i]) parts.push(OFFICES[i].short + ' ' + signed(applied[i]));
+      return parts.join(', ');
+    }
+    _checkEnd() {
+      const S = this.S;
+      if (S.status !== 'playing') return true;
+      const zero = S.pts.findIndex(function (p) { return p <= 0; });
+      if (zero >= 0) {
+        S.status = 'lost'; S.reason = { type: 'zero', who: zero };
+        this._log(OFFICES[zero].name + ' mencapai 0 poin. Permainan berakhir: kalah.', 'lose');
+      } else if (sum(S.pts) >= WIN_TOTAL) {
+        S.status = 'won'; S.reason = { type: 'total' };
+        this._log('Total poin mencapai ' + sum(S.pts) + '. Permainan berakhir: menang.', 'win');
+      } else return false;
+      S.endedAt = Date.now();
+      S.pending = { kind: 'end' };
+      S.turn = null;
+      return true;
+    }
+
+    /* --- tarik kartu peristiwa --- */
+    drawEvent() {
+      const S = this.S;
+      if (S.status !== 'playing' || S.pending.kind !== 'draw') return false;
+      this._snap();
+      if (S.startedAt === null) S.startedAt = Date.now();
+      if (S.current) { S.discard.push(S.current); S.current = null; }
+      if (S.deck.length === 0) this._reshuffle();
+      S.round++;
+      S.current = S.deck.shift();
+      S.flags = this._flags();
+      S.active = S.protect.map(function (x) { return x > 0; });
+      S.protect = S.protect.map(function (x) { return Math.max(0, x - 1); });
+      S.turn = null;
+      this._log('Ronde ' + S.round + ': kartu “' + EV[S.current].title + '”.', 'event');
+      this._resolveEvent();
+      return true;
+    }
+
+    _afterEvent() {
+      const S = this.S;
+      if (this._checkEnd()) return;
+      S.pending = { kind: 'distribute', amount: S.flags.gov };
+    }
+
+    _ask(tag, o) {
+      const S = this.S;
+      S.pending = Object.assign({ kind: 'choose', tag: tag, mode: 'single', count: 1 }, o);
+    }
+    _healthOpts(filter) {
+      return HEALTH.map(function (i) {
+        const bad = filter ? filter(i) : null;
+        return { v: i, off: i, label: OFFICES[i].name, disabled: !!bad, reason: bad || '' };
+      });
+    }
+
+    _resolveEvent() {
+      const S = this.S, ev = EV[S.current], F = S.flags;
+      const self = this;
+      if (ev.deltas) {
+        if (ev.moneyEach) {
+          for (let i = 0; i < 4; i++) S.money[i] += ev.moneyEach;
+        }
+        const ap = this._pts(ev.deltas, 'event');
+        const t = this._ptsText(ap);
+        this._log((t ? t + ' poin' : 'Tidak ada perubahan poin') + (ev.moneyEach ? '; setiap kantor +' + ev.moneyEach + ' uang' : '') + '.', ap.some(function (x) { return x < 0; }) ? 'bad' : (ap.some(function (x) { return x > 0; }) ? 'good' : 'info'));
+        return this._afterEvent();
+      }
+      if (ev.workers) {
+        for (let i = 0; i < 4; i++) S.wk[i] = Math.max(MIN_WK, S.wk[i] + ev.workers[i]);
+        this._log('Setiap kantor kehilangan 1 pekerja (minimum 1).', 'bad');
+        return this._afterEvent();
+      }
+      switch (ev.id) {
+        case 'miskom':
+          F.miskom = true;
+          this._log('Semua pemain dilarang berkomunikasi selama putaran ini.', 'info');
+          return this._afterEvent();
+        case 'usaha': F.dice2 = true; this._log('Setiap Kartu Aksi berdadu perlu dua lemparan yang berhasil.', 'info'); return this._afterEvent();
+        case 'krisis': F.gov = 1; this._log('Pemerintah Pusat hanya menerima 1 uang untuk dibagikan.', 'bad'); return this._afterEvent();
+        case 'mr': F.auto = true; this._log('Semua Kartu Aksi dipastikan berhasil tanpa lemparan dadu.', 'good'); return this._afterEvent();
+        case 'kk': F.two = true; this._log('Setiap pemain dapat menggunakan dua Kartu Aksi.', 'good'); return this._afterEvent();
+        case 'hg': F.dbl = true; this._log('Setiap Kartu Aksi yang berhasil memberi hasil dua kali lipat.', 'good'); return this._afterEvent();
+        case 'hibah': F.gov = 5; this._log('Pemerintah Pusat menerima 5 uang untuk dibagikan.', 'good'); return this._afterEvent();
+        case 'fokus': F.media = true; this._log('Aksi berdadu yang gagal mengurangi 1 poin, yang berhasil menambah 1 poin.', 'info'); return this._afterEvent();
+        case 'libur': F.holiday = true; this._log('Tidak ada Fase Aksi pada putaran ini.', 'info'); return this._afterEvent();
+
+        case 'upah': return this._upahFrom(0);
+
+        case 'taksinkron':
+          this._ask('only2', {
+            title: 'Aturan Tak Sinkron', who: 0, mode: 'multi', count: 2,
+            help: 'Hanya dua pemain yang boleh menggunakan Kartu Aksi putaran ini. Para pemain bersepakat, lalu Game Master memilih dua pemain.',
+            options: OFFICES.map(function (o, i) { return { v: i, off: i, label: o.name }; })
+          });
+          return;
+
+        case 'otoriter':
+          this._ask('otoriter', {
+            title: 'Kebijakan Otoriter', who: 0,
+            help: 'Pemerintah Pusat melarang satu kantor kesehatan menggunakan Kartu Aksi pada putaran ini.',
+            options: this._healthOpts()
+          });
+          return;
+
+        case 'kunjungan':
+          this._ask('kunjungan', {
+            title: 'Kunjungan Kerja', who: 0,
+            help: 'Pemerintah Pusat memilih satu kantor kesehatan. Kantor itu mendapat +2 uang, tetapi tidak bisa beraksi putaran ini.',
+            options: this._healthOpts()
+          });
+          return;
+
+        case 'pemilu':
+          this._ask('pemilu', {
+            title: 'Tahun Pemilu', who: 0, mode: 'multi', count: 2,
+            help: 'Pemerintah Pusat memilih dua kantor kesehatan berbeda. Keduanya mendapat +1 poin, tetapi tidak bisa beraksi putaran ini.',
+            options: this._healthOpts()
+          });
+          return;
+
+        case 'bantuan': {
+          const opts = this._healthOpts(function (i) { return S.wk[i] >= MAX_WK ? 'Pekerja sudah maksimum' : null; });
+          const free = opts.filter(function (o) { return !o.disabled; });
+          if (!free.length) { this._log('Semua kantor kesehatan sudah punya pekerja maksimum. Efek kartu dibatalkan.', 'info'); return this._afterEvent(); }
+          this._ask('bantuan', { title: 'Bantuan Tim Ahli', who: 0, help: 'Pemerintah Pusat memilih satu kantor kesehatan untuk mendapat +1 pekerja.', options: opts });
+          return;
+        }
+
+        case 'korupsi': {
+          const mx = Math.max.apply(null, HEALTH.map(function (i) { return S.money[i]; }));
+          const tied = HEALTH.filter(function (i) { return S.money[i] === mx; });
+          if (mx <= 0) { this._log('Tidak ada uang di kantor kesehatan mana pun. Tidak ada yang diambil.', 'info'); return this._afterEvent(); }
+          if (tied.length === 1) return this._doKorupsi(tied[0]);
+          this._ask('korupsi', {
+            title: 'Korupsi', who: 0,
+            help: 'Beberapa kantor kesehatan memiliki uang terbanyak. Pemerintah Pusat memilih salah satunya.',
+            options: this._healthOpts(function (i) { return tied.indexOf(i) < 0 ? 'Bukan yang terkaya' : null; })
+          });
+          return;
+        }
+
+        case 'pensiun': {
+          const mn = Math.min.apply(null, HEALTH.map(function (i) { return S.pts[i]; }));
+          let tied = HEALTH.filter(function (i) { return S.pts[i] === mn; });
+          if (tied.length > 1) {
+            const mm = Math.min.apply(null, tied.map(function (i) { return S.money[i]; }));
+            tied = tied.filter(function (i) { return S.money[i] === mm; });
+          }
+          if (tied.length === 1) return this._doPensiun(tied[0]);
+          this._ask('pensiun', {
+            title: 'Pegawai Senior Pensiun', who: 0,
+            help: 'Poin dan uang beberapa kantor kesehatan sama. Game Master memilih satu kantor yang kehilangan pekerja.',
+            options: this._healthOpts(function (i) { return tied.indexOf(i) < 0 ? 'Bukan yang terendah' : null; })
+          });
+          return;
+        }
+
+        case 'apres': {
+          const mx = Math.max.apply(null, S.pts);
+          let tied = [0, 1, 2, 3].filter(function (i) { return S.pts[i] === mx; });
+          if (tied.length > 1) {
+            const mm = Math.max.apply(null, tied.map(function (i) { return S.money[i]; }));
+            tied = tied.filter(function (i) { return S.money[i] === mm; });
+          }
+          if (tied.length === 1) return this._doApres(tied[0]);
+          this._ask('apres', {
+            title: 'Apresiasi bagi Prestasi', who: 0,
+            help: 'Poin dan uang beberapa kantor sama. Game Master memilih satu kantor yang menerima +2 uang.',
+            options: OFFICES.map(function (o, i) { return { v: i, off: i, label: o.name, disabled: tied.indexOf(i) < 0, reason: tied.indexOf(i) < 0 ? 'Bukan yang tertinggi' : '' }; })
+          });
+          return;
+        }
+
+        case 'banjirmakanan': case 'relaksasi': case 'investasiasing': {
+          const t = ev.accept.target;
+          this._ask('terima', {
+            title: ev.title, who: 0,
+            help: 'Pemerintah Pusat memutuskan menerima atau menolak.',
+            options: [
+              { v: 'terima', label: 'Terima', sub: ev.accept.text },
+              { v: 'tolak', label: 'Tolak', sub: 'Tidak ada perubahan.' }
+            ],
+            target: t
+          });
+          return;
+        }
+      }
+      this._afterEvent();
+    }
+
+    /* --- Kenaikan Upah Minimum: satu prompt per pemain --- */
+    _upahFrom(w) {
+      const S = this.S;
+      for (let i = w; i < 4; i++) {
+        const canPay = S.money[i] >= 3, canCut = S.wk[i] > MIN_WK;
+        if (canPay && canCut) {
+          this._ask('upah', {
+            title: 'Kenaikan Upah Minimum', who: i,
+            help: OFFICES[i].name + ' memilih salah satu opsi.',
+            options: [
+              { v: 'pay', label: 'Bayar 3 unit uang', sub: 'Uang ' + S.money[i] + ' menjadi ' + (S.money[i] - 3) },
+              { v: 'cut', label: 'Kurangi 1 pekerja', sub: 'Pekerja ' + S.wk[i] + ' menjadi ' + (S.wk[i] - 1) }
+            ]
+          });
+          return;
+        }
+        if (canPay) { S.money[i] -= 3; this._log(OFFICES[i].short + ' membayar 3 uang (satu-satunya opsi yang mungkin).', 'bad'); }
+        else if (canCut) { S.wk[i] -= 1; this._log(OFFICES[i].short + ' kehilangan 1 pekerja (uang tidak cukup).', 'bad'); }
+        else this._log(OFFICES[i].short + ' tidak dapat memenuhi kedua opsi. Tidak ada efek.', 'info');
+      }
+      this._afterEvent();
+    }
+    _doKorupsi(t) {
+      const S = this.S, take = Math.ceil(S.money[t] / 2);
+      S.money[t] -= take; S.money[0] += take;
+      this._log('Pemerintah Pusat mengambil ' + take + ' uang dari ' + OFFICES[t].name + '.', 'bad');
+      this._afterEvent();
+    }
+    _doPensiun(t) {
+      const S = this.S;
+      if (S.wk[t] > MIN_WK) { S.wk[t] -= 1; this._log(OFFICES[t].name + ' kehilangan 1 pekerja.', 'bad'); }
+      else this._log(OFFICES[t].name + ' sudah pada jumlah pekerja minimum. Tidak ada efek.', 'info');
+      this._afterEvent();
+    }
+    _doApres(t) {
+      this.S.money[t] += 2;
+      this._log(OFFICES[t].name + ' menerima +2 uang.', 'good');
+      this._afterEvent();
+    }
+
+    /* --- jawaban atas pilihan --- */
+    answerChoose(vals) {
+      const S = this.S, P = S.pending;
+      if (S.status !== 'playing' || P.kind !== 'choose') return false;
+      const chosen = (Array.isArray(vals) ? vals : [vals]);
+      const need = P.mode === 'multi' ? P.count : 1;
+      if (chosen.length !== need) return false;
+      if (new Set(chosen).size !== chosen.length) return false;
+      for (let k = 0; k < chosen.length; k++) {
+        const o = P.options.find(function (x) { return x.v === chosen[k]; });
+        if (!o || o.disabled) return false;
+      }
+      this._snap();
+      const F = S.flags, v = chosen[0];
+      switch (P.tag) {
+        case 'upah':
+          if (v === 'pay') { S.money[P.who] -= 3; this._log(OFFICES[P.who].short + ' membayar 3 uang.', 'bad'); }
+          else { S.wk[P.who] -= 1; this._log(OFFICES[P.who].short + ' mengurangi 1 pekerja.', 'bad'); }
+          return this._upahFrom(P.who + 1), true;
+        case 'only2':
+          F.only2 = chosen.slice().sort();
+          this._log('Kantor yang boleh beraksi: ' + chosen.map(function (i) { return OFFICES[i].short; }).join(' dan ') + '.', 'info');
+          return this._afterEvent(), true;
+        case 'otoriter':
+          F.noAct.push(v); this._log(OFFICES[v].name + ' dilarang beraksi putaran ini.', 'bad');
+          return this._afterEvent(), true;
+        case 'kunjungan':
+          S.money[v] += 2; F.noAct.push(v);
+          this._log(OFFICES[v].name + ' menerima +2 uang, tetapi tidak dapat beraksi putaran ini.', 'info');
+          return this._afterEvent(), true;
+        case 'pemilu': {
+          const d = [0, 0, 0, 0];
+          chosen.forEach(function (i) { d[i] = 1; F.noAct.push(i); });
+          const ap = this._pts(d, 'event');
+          this._log(this._ptsText(ap) + ' poin; keduanya sibuk kampanye dan tidak dapat beraksi.', 'info');
+          return this._afterEvent(), true;
+        }
+        case 'bantuan':
+          S.wk[v] += 1; this._log(OFFICES[v].name + ' mendapat +1 pekerja.', 'good');
+          return this._afterEvent(), true;
+        case 'korupsi': return this._doKorupsi(v), true;
+        case 'pensiun': return this._doPensiun(v), true;
+        case 'apres': return this._doApres(v), true;
+        case 'terima':
+          if (v === 'terima') {
+            S.money[0] += 5;
+            const d = [0, 0, 0, 0]; d[P.target] = -1;
+            const ap = this._pts(d, 'event');
+            this._log('Diterima: Pemerintah Pusat +5 uang' + (ap[P.target] ? '; ' + OFFICES[P.target].short + ' −1 poin' : '') + '.', 'info');
+          } else this._log('Ditolak: tidak ada perubahan.', 'info');
+          return this._afterEvent(), true;
+      }
+      return false;
+    }
+
+    /* --- distribusi uang --- */
+    distribute(alloc) {
+      const S = this.S, P = S.pending;
+      if (S.status !== 'playing' || P.kind !== 'distribute') return false;
+      if (!Array.isArray(alloc) || alloc.length !== 4) return false;
+      if (!alloc.every(function (x) { return Number.isInteger(x) && x >= 0; })) return false;
+      if (sum(alloc) !== P.amount) return false;
+      this._snap();
+      for (let i = 0; i < 4; i++) S.money[i] += alloc[i];
+      const parts = [];
+      for (let i = 0; i < 4; i++) if (alloc[i]) parts.push(OFFICES[i].short + ' +' + alloc[i]);
+      this._log('Distribusi uang: ' + parts.join(', ') + '.', 'info');
+      if (S.flags.holiday) { this._endRound(); return true; }
+      this._startTurn(0);
+      return true;
+    }
+
+    /* --- giliran aksi --- */
+    _startTurn(i) {
+      const S = this.S, F = S.flags;
+      let blocked = null;
+      if (F.noAct.indexOf(i) >= 0) blocked = 'Dilarang beraksi oleh kartu peristiwa putaran ini.';
+      else if (F.only2 && F.only2.indexOf(i) < 0) blocked = 'Tidak terpilih pada Aturan Tak Sinkron.';
+      S.turn = { player: i, used: [], max: F.two ? 2 : 1, blocked: blocked, stage: 'select', result: null };
+      S.pending = { kind: 'turn' };
+    }
+    _endTurn() {
+      const S = this.S, n = S.turn.player + 1;
+      S.turn = null;
+      if (n <= 3) this._startTurn(n); else this._endRound();
+    }
+    _endRound() {
+      const S = this.S;
+      const due = S.invest.filter(function (x) { return x.due <= S.round; });
+      S.invest = S.invest.filter(function (x) { return x.due > S.round; });
+      const self = this;
+      due.forEach(function (x) { S.money[x.who] += x.amount; self._log(OFFICES[x.who].name + ' menerima hasil investasi +' + x.amount + ' uang.', 'good'); });
+      S.turn = null;
+      S.pending = { kind: 'draw' };
+    }
+    finishBlocked() {
+      const S = this.S;
+      if (S.status !== 'playing' || S.pending.kind !== 'turn' || !S.turn || !S.turn.blocked) return false;
+      this._snap();
+      this._log(OFFICES[S.turn.player].short + ' tidak dapat beraksi: ' + S.turn.blocked, 'info');
+      this._endTurn();
+      return true;
+    }
+    finishTurn() {
+      const S = this.S;
+      if (S.status !== 'playing' || S.pending.kind !== 'turn' || !S.turn || S.turn.stage !== 'select') return false;
+      this._snap();
+      if (!S.turn.used.length) this._log(OFFICES[S.turn.player].short + ' melewati fase aksi.', 'info');
+      this._endTurn();
+      return true;
+    }
+    continueTurn() {
+      const S = this.S, T = S.turn;
+      if (S.status !== 'playing' || S.pending.kind !== 'turn' || !T || T.stage !== 'result') return false;
+      this._snap();
+      if (T.used.length < T.max) { T.stage = 'select'; T.result = null; }
+      else this._endTurn();
+      return true;
+    }
+
+    canPerform(cardId, params) {
+      const S = this.S, T = S.turn, a = ACT[cardId];
+      params = params || {};
+      if (S.status !== 'playing' || S.pending.kind !== 'turn' || !T) return { ok: false, reason: 'Bukan fase aksi.' };
+      if (!a) return { ok: false, reason: 'Kartu tidak dikenal.' };
+      if (T.blocked) return { ok: false, reason: T.blocked };
+      if (T.stage !== 'select') return { ok: false, reason: 'Selesaikan aksi sebelumnya dahulu.' };
+      if (T.used.length >= T.max) return { ok: false, reason: 'Jatah aksi habis.' };
+      if (T.used.indexOf(cardId) >= 0) return { ok: false, reason: 'Kartu ini sudah dipakai pada giliran ini.' };
+      const i = T.player;
+      if (S.money[i] < a.cost) return { ok: false, reason: 'Uang kurang (butuh ' + a.cost + ').' };
+      if (a.target) {
+        const t = params.target;
+        if (!Number.isInteger(t) || t < 0 || t > 3 || t === i) return { ok: false, reason: 'Pilih kantor lain sebagai tujuan.' };
+        if (cardId === 'kerjasama' && S.money[t] < 1) return { ok: false, reason: OFFICES[t].short + ' tidak punya uang untuk biaya kerja sama.' };
+        if (cardId === 'mutasi') {
+          if (S.wk[i] <= MIN_WK) return { ok: false, reason: 'Pekerjamu tinggal ' + MIN_WK + ' dan tidak dapat diberikan.' };
+          if (S.wk[t] >= MAX_WK) return { ok: false, reason: OFFICES[t].short + ' sudah punya pekerja maksimum.' };
+        }
+        if (cardId === 'transfer') {
+          const n = params.amount;
+          if (!Number.isInteger(n) || n < 1 || n > S.money[i]) return { ok: false, reason: 'Jumlah uang tidak valid.' };
+        }
+      }
+      return { ok: true };
+    }
+    /* Alasan kartu tidak bisa dipakai, terlepas dari tujuan yang dipilih (untuk tampilan) */
+    cardBlockReason(cardId) {
+      const S = this.S, T = S.turn, a = ACT[cardId], i = T ? T.player : 0;
+      if (!T || T.blocked) return T && T.blocked ? T.blocked : 'Bukan fase aksi.';
+      if (T.used.indexOf(cardId) >= 0) return 'Sudah dipakai giliran ini.';
+      if (S.money[i] < a.cost) return 'Uang kurang (butuh ' + a.cost + ').';
+      if (cardId === 'transfer' && S.money[i] < 1) return 'Tidak ada uang untuk diberikan.';
+      if (cardId === 'mutasi') {
+        const anyTarget = [0, 1, 2, 3].some(function (t) { return t !== i && S.wk[t] < MAX_WK; });
+        if (S.wk[i] <= MIN_WK) return 'Pekerja tinggal ' + MIN_WK + '.';
+        if (!anyTarget) return 'Semua kantor lain sudah maksimum.';
+      }
+      if (cardId === 'kerjasama') {
+        const any = [0, 1, 2, 3].some(function (t) { return t !== i && S.money[t] >= 1; });
+        if (!any) return 'Tidak ada mitra yang punya uang.';
+      }
+      return null;
+    }
+
+    _roll(p) {
+      const n = this.S.flags.dice2 ? 2 : 1, dice = [];
+      for (let k = 0; k < n; k++) dice.push(1 + Math.floor(this.rng() * 6));
+      const need = this.S.wk[p];
+      return { dice: dice, need: need, ok: dice.every(function (d) { return d <= need; }) };
+    }
+
+    perform(cardId, params) {
+      params = params || {};
+      const chk = this.canPerform(cardId, params);
+      if (!chk.ok) return { ok: false, reason: chk.reason };
+      this._snap();
+      const S = this.S, T = S.turn, F = S.flags, a = ACT[cardId], i = T.player, t = params.target;
+      const g = F.dbl ? 2 : 1;
+      const res = { card: cardId, player: i, target: Number.isInteger(t) ? t : null, amount: params.amount || null, rolls: [], auto: false, success: true, lines: [] };
+      S.money[i] -= a.cost;
+      if (cardId === 'kerjasama') S.money[t] -= 1;
+
+      if (a.dice) {
+        if (F.auto) { res.auto = true; res.success = true; }
+        else if (cardId === 'kerjasama') {
+          const r1 = this._roll(i), r2 = this._roll(t);
+          res.rolls = [Object.assign({ who: i }, r1), Object.assign({ who: t }, r2)];
+          res.success = r1.ok && r2.ok;
+        } else {
+          const r = this._roll(i);
+          res.rolls = [Object.assign({ who: i }, r)];
+          res.success = r.ok;
+        }
+      }
+
+      const d = [0, 0, 0, 0];
+      const name = OFFICES[i].name;
+      let logText = name + ' memakai ' + a.name + (t !== null && res.target !== null ? ' bersama ' + OFFICES[t].short : '') + ': ';
+      let peek = false;
+      switch (cardId) {
+        case 'layanan':
+          if (res.success) { d[i] += g; res.lines.push('Kantormu memperoleh ' + g + ' poin.'); }
+          break;
+        case 'kerjasama':
+          if (res.success) { d[i] += g; d[t] += g; res.lines.push('Kedua kantor memperoleh ' + g + ' poin.'); }
+          break;
+        case 'rekrut':
+          if (res.success) {
+            const before = S.wk[i]; S.wk[i] = Math.min(MAX_WK, S.wk[i] + g);
+            res.lines.push(S.wk[i] > before ? 'Pekerja bertambah ' + (S.wk[i] - before) + ' (kini ' + S.wk[i] + ').' : 'Pekerja sudah maksimum, tidak ada tambahan.');
+          }
+          break;
+        case 'sosialisasi':
+          if (res.success) { S.protect[i] = Math.max(S.protect[i], 2); res.lines.push('Kantormu tidak kehilangan poin akibat Kartu Peristiwa selama 2 putaran berikutnya.'); }
+          break;
+        case 'masadepan':
+          if (res.success) {
+            if (S.deck.length < 2) this._reshuffle();
+            if (S.deck.length >= 2) { peek = true; res.lines.push('Kamu boleh melihat dua kartu peristiwa teratas.'); }
+            else res.lines.push('Tumpukan kartu terlalu sedikit. Tidak ada efek.');
+          }
+          break;
+        case 'investasi':
+          S.invest.push({ who: i, amount: 2 * g, due: S.round + 1 });
+          res.lines.push('Kamu menerima ' + (2 * g) + ' uang di akhir putaran berikutnya.');
+          break;
+        case 'transfer':
+          S.money[i] -= params.amount; S.money[t] += params.amount;
+          res.lines.push(params.amount + ' uang berpindah ke ' + OFFICES[t].name + '.');
+          break;
+        case 'mutasi':
+          S.wk[i] -= 1; S.wk[t] += 1;
+          res.lines.push('1 pekerja berpindah ke ' + OFFICES[t].name + '.');
+          break;
+      }
+      if (F.media && a.dice && !F.auto) {
+        if (cardId === 'kerjasama') {
+          if (res.success) { d[i] += 1; d[t] += 1; res.lines.push('Fokus Media: masing-masing +1 poin tambahan.'); }
+          else res.rolls.forEach(function (r) { if (!r.ok) { d[r.who] -= 1; res.lines.push('Fokus Media: ' + OFFICES[r.who].short + ' −1 poin karena gagal.'); } });
+        } else if (res.success) { d[i] += 1; res.lines.push('Fokus Media: +1 poin tambahan.'); }
+        else { d[i] -= 1; res.lines.push('Fokus Media: −1 poin karena gagal.'); }
+      }
+      const ap = this._pts(d, 'event');
+      res.applied = ap;
+      if (!res.success && a.dice) res.lines.unshift('Aksi gagal.');
+      else if (res.success && a.dice) res.lines.unshift('Aksi berhasil.');
+      logText += a.dice ? (res.auto ? 'otomatis berhasil' : (res.success ? 'berhasil' : 'gagal')) : 'selesai';
+      const pt = this._ptsText(ap);
+      if (pt) logText += ' (' + pt + ' poin)';
+      this._log(logText + '.', res.success ? 'good' : 'bad');
+
+      T.used.push(cardId);
+      T.stage = 'result';
+      T.result = res;
+      if (this._checkEnd()) return { ok: true, result: res };
+      if (peek) S.pending = { kind: 'peek', cards: [S.deck[0], S.deck[1]] };
+      return { ok: true, result: res };
+    }
+
+    answerPeek(topIndex) {
+      const S = this.S, P = S.pending;
+      if (S.status !== 'playing' || P.kind !== 'peek' || (topIndex !== 0 && topIndex !== 1)) return false;
+      this._snap();
+      const chosen = P.cards[topIndex], other = P.cards[1 - topIndex];
+      S.deck.splice(0, 2);
+      S.deck.unshift(chosen);
+      S.deck.push(other);
+      S.pending = { kind: 'turn' };
+      S.turn.result.peekDone = true;
+      this._log(OFFICES[S.turn.player].name + ' menyusun ulang dua kartu peristiwa teratas.', 'info');
+      return true;
+    }
+
+    /* --- koreksi manual Game Master --- */
+    adjust(i, field, delta) {
+      const S = this.S;
+      if (!(i >= 0 && i <= 3) || ['pts', 'wk', 'money'].indexOf(field) < 0 || !delta) return false;
+      const lo = field === 'wk' ? MIN_WK : 0, hi = field === 'pts' ? MAX_PTS : field === 'wk' ? MAX_WK : Infinity;
+      const nv = Math.max(lo, Math.min(hi, S[field][i] + delta));
+      if (nv === S[field][i]) return false;
+      this._snap();
+      S[field][i] = nv;
+      S.manual = true;
+      const lab = { pts: 'poin', wk: 'pekerja', money: 'uang' }[field];
+      this._log('Koreksi manual: ' + OFFICES[i].name + ' ' + lab + ' menjadi ' + nv + '.', 'manual');
+      if (field === 'pts' && S.status === 'playing') this._checkEnd();
+      return true;
+    }
+  }
+
+  return {
+    OFFICES: OFFICES, HEALTH: HEALTH, DIFFICULTY: DIFFICULTY, EVENTS: EVENTS, EV: EV, ACTIONS: ACTIONS, ACT: ACT,
+    WIN_TOTAL: WIN_TOTAL, MAX_PTS: MAX_PTS, MAX_WK: MAX_WK, MIN_WK: MIN_WK,
+    Game: Game, deckIds: deckIds, deckSize: function (c) { return deckIds(c).length; }, signed: signed
+  };
+})();
+if (typeof module !== 'undefined' && module.exports) module.exports = OHCG;
+
+/* ===== ANTARMUKA ===== */
+(function () {
+  'use strict';
+  const { OFFICES, DIFFICULTY, EV, ACTIONS, ACT, WIN_TOTAL, MAX_PTS, MAX_WK, Game, deckSize, signed } = OHCG;
+
+  const $ = (s, r) => (r || document).querySelector(s);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const KEY_REC = 'ohcg.records.v1', KEY_CFG = 'ohcg.cfg.v1', KEY_SAVE = 'ohcg.save.v1';
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { /* abaikan */ } }
+  };
+
+  let cfg = Object.assign({ difficulty: 'sedang', copies: 1 }, store.get(KEY_CFG) || {});
+  if (!DIFFICULTY[cfg.difficulty]) cfg.difficulty = 'sedang';
+  if ([1, 2, 3].indexOf(cfg.copies) < 0) cfg.copies = 1;
+
+  let game = null, gid = 0, ui = freshUI(), sig = '', endShown = false, busy = false, rollTimer = null, prev = null, lastLive = '';
+
+  function freshUI() { return { sel: null, target: null, amount: 1, choose: [], alloc: [0, 0, 0, 0], peekShown: false, rolling: 0 }; }
+  const oc = (i) => '--ci:var(--c' + i + ');--di:var(--d' + i + ');--ti:var(--t' + i + ')';
+  function fmtTime(ms) {
+    const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+    const p = (n) => String(n).padStart(2, '0');
+    return (h ? h + ':' + p(m) : p(m)) + ':' + p(ss);
+  }
+
+  /* ---------- Ikon bermerek ---------- */
+  function logo(px) {
+    const c = [['#F9CB9C', 'gov', 60, 26], ['#EA9999', 'man', 26, 60], ['#B6D7A8', 'lin', 94, 60], ['#B4A7D6', 'hew', 60, 94]];
+    return '<svg class="logo" viewBox="0 0 120 120" width="' + px + '" height="' + px + '" role="img" aria-label="Logo One Health">' +
+      c.map((x) => '<circle cx="' + x[2] + '" cy="' + x[3] + '" r="24" fill="' + x[0] + '"/><g transform="translate(' + (x[2] - 11) + ' ' + (x[3] - 11) +
+        ') scale(0.917)" fill="none" stroke="#1d1d1f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + ICONS[x[1]] + '</g>').join('') + '</svg>';
+  }
+
+  /* ---------- Rekor & simpan ---------- */
+  const recKey = (d, c) => d + '|' + c;
+  const getRecord = (d, c) => (store.get(KEY_REC) || {})[recKey(d, c)] || null;
+  function saveRecord(d, c, ms, rounds) {
+    const all = store.get(KEY_REC) || {}, old = all[recKey(d, c)];
+    if (!old || ms < old.ms) { all[recKey(d, c)] = { ms: ms, rounds: rounds, at: Date.now() }; store.set(KEY_REC, all); return { isNew: true, best: ms }; }
+    return { isNew: false, best: old.ms };
+  }
+  function saveGame() {
+    if (!game) return;
+    if (game.S.status !== 'playing') { store.del(KEY_SAVE); return; }
+    store.set(KEY_SAVE, { S: game.S, at: Date.now() });
+  }
+  function loadSaved() {
+    const v = store.get(KEY_SAVE);
+    if (!v || !v.S || v.S.status !== 'playing' || !Array.isArray(v.S.pts) || !Array.isArray(v.S.deck) || !DIFFICULTY[v.S.difficulty]) return null;
+    return v;
+  }
+
+  /* ---------- Layar pengaturan ---------- */
+  function renderSetup() {
+    const d = DIFFICULTY[cfg.difficulty];
+    $('#diff-' + cfg.difficulty).checked = true;
+    $('#copies-' + cfg.copies).checked = true;
+    $('#diff-help').textContent = d.note + '. Semakin sulit, semakin sedikit bekal awal tiap kantor.';
+    $('#copies-help').textContent = cfg.copies === 1
+      ? 'Bawaan aslinya. Kartu positif muncul paling jarang, permainan paling menantang.'
+      : 'Kartu positif diperbanyak, sehingga permainan lebih mudah dimenangkan.';
+    $('#s-pts').textContent = d.pts;
+    $('#s-money').textContent = d.money;
+    $('#s-wk').textContent = d.wk;
+    $('#s-deck').textContent = deckSize(cfg.copies) + ' kartu';
+    const rec = getRecord(cfg.difficulty, cfg.copies);
+    $('#rec-time').textContent = rec ? fmtTime(rec.ms) : 'Belum ada';
+    $('#rec-help').textContent = rec ? 'Kemenangan dalam ' + rec.rounds + ' ronde, untuk kombinasi pengaturan ini.' : 'Menangkan satu permainan untuk kombinasi pengaturan ini.';
+    const sv = loadSaved(), b = $('#btn-resume');
+    b.hidden = !sv;
+    if (sv) b.textContent = 'Lanjutkan permainan tersimpan (ronde ' + sv.S.round + ')';
+  }
+
+  /* ---------- Komponen tampilan ---------- */
+  const PIP = { 1: [5], 2: [1, 9], 3: [1, 5, 9], 4: [1, 3, 7, 9], 5: [1, 3, 5, 7, 9], 6: [1, 3, 4, 6, 7, 9] };
+  const pips = (n) => PIP[n].map((k) => '<i class="pip" style="grid-area:' + Math.ceil(k / 3) + '/' + ((k - 1) % 3 + 1) + '"></i>').join('');
+  const die = (n, cls) => '<span class="die ' + (cls || '') + '" role="img" aria-label="Dadu ' + n + '">' + pips(n) + '</span>';
+
+  function eventCard(id) {
+    const e = EV[id];
+    let body = '';
+    if (e.deltas || e.workers) {
+      const arr = e.deltas || e.workers, unit = e.deltas ? 'poin' : 'pekerja';
+      body += '<ul class="ev-rows">' + OFFICES.map((o, i) => {
+        const v = arr[i], cls = v < 0 ? 'neg' : v > 0 ? 'pos' : 'nil';
+        return '<li style="' + oc(i) + '"><span class="sw"></span><span class="nm">' + esc(o.name) + '</span><span class="val ' + cls + '">' + (v ? signed(v) + ' ' + unit : '–') + '</span></li>';
+      }).join('') + '</ul>';
+      if (e.moneyEach) body += '<p class="ev-text" style="margin-top:8px">Setiap pemain juga memperoleh +' + e.moneyEach + ' uang.</p>';
+    } else if (e.text) body += '<p class="ev-text">' + esc(e.text) + '</p>';
+    if (e.list) body += '<ul class="ev-list">' + e.list.map((t) => '<li>' + esc(t) + '</li>').join('') + '</ul>';
+    if (e.accept) body += '<p class="ev-text" style="margin-top:8px"><b>Pilihan 1 (terima):</b> ' + esc(e.accept.text) + '</p><p class="ev-text"><b>Pilihan 2 (tolak):</b> Tak ada perubahan.</p>';
+    return '<article class="ev" aria-label="Kartu peristiwa: ' + esc(e.title) + '"><h3 class="ev-title">' + esc(e.title) + '</h3>' +
+      '<div class="ev-art tone-' + e.tone + '">' + icon(e.icon, 68) + '</div><p class="ev-quote">“' + esc(e.quote) + '”</p>' + body + '</article>';
+  }
+  function eventBack() {
+    return '<article class="ev back" aria-label="Tumpukan kartu peristiwa"><div class="ev-art">' + logo(96) + '</div><h3 class="ev-title">Kartu Peristiwa</h3>' +
+      '<p class="ev-quote" style="margin:6px 0 0">' + game.S.deck.length + ' kartu di tumpukan</p></article>';
+  }
+  function flagChips(S) {
+    if (!S.round) return '';
+    const F = S.flags, c = [];
+    const names = (a) => a.map((i) => OFFICES[i].short).join(', ');
+    if (F.miskom) c.push(['Dilarang berkomunikasi', 1]);
+    if (F.holiday) c.push(['Tanpa fase aksi']);
+    if (F.gov !== 3) c.push(['Pusat menerima ' + F.gov + ' uang']);
+    if (F.dbl) c.push(['Hasil ganda aktif']);
+    if (F.dice2) c.push(['Dadu dilempar dua kali']);
+    if (F.auto) c.push(['Aksi pasti berhasil']);
+    if (F.two) c.push(['Dua aksi per pemain']);
+    if (F.media) c.push(['Fokus Media aktif']);
+    if (F.only2) c.push(['Boleh beraksi: ' + names(F.only2)]);
+    if (F.noAct.length) c.push(['Dilarang beraksi: ' + names(F.noAct)]);
+    if (!c.length) return '';
+    return '<div class="rules-now" aria-label="Aturan aktif putaran ini">' + c.map((x) => '<span class="rule-chip' + (x[1] ? ' alert' : '') + '">' + esc(x[0]) + '</span>').join('') + '</div>';
+  }
+
+  function actorOf(S) {
+    const P = S.pending;
+    if (P.kind === 'choose') return P.who || 0;
+    if ((P.kind === 'turn' || P.kind === 'peek') && S.turn) return S.turn.player;
+    return 0;
+  }
+  function phaseLabel(S) {
+    const P = S.pending;
+    switch (P.kind) {
+      case 'draw': return 'Tarik kartu peristiwa';
+      case 'choose': return 'Keputusan kartu peristiwa';
+      case 'distribute': return 'Distribusi uang';
+      case 'turn': return S.turn && S.turn.blocked ? 'Tidak dapat beraksi' : 'Fase aksi';
+      case 'peek': return 'Pemilihan Masa Depan';
+      default: return 'Permainan selesai';
+    }
+  }
+
+  function renderStatus() {
+    const S = game.S, a = actorOf(S), tot = game.total();
+    const segs = S.pts.map((p, i) => '<span class="seg" style="' + oc(i) + ';width:' + (p / WIN_TOTAL * 100) + '%" title="' + esc(OFFICES[i].short) + ': ' + p + '"></span>').join('');
+    return '<div class="stat"><span class="stat-l">Ronde</span><span class="stat-v">' + Math.max(S.round, 1) + '</span></div>' +
+      '<div class="stat"><span class="stat-l">Waktu</span><span class="stat-v" id="timer">' + fmtTime(game.elapsed()) + '</span></div>' +
+      '<div class="stat"><span class="stat-l">Giliran</span><span class="stat-v"><span class="who" style="' + oc(a) + '"><span class="ic-wrap">' + icon(OFFICES[a].key, 18) + '</span>' +
+      esc(OFFICES[a].short) + ' <small>' + esc(phaseLabel(S)) + '</small></span></span></div>' +
+      '<div class="meter-wrap"><div class="meter-top"><b>Total poin ' + tot + ' dari ' + WIN_TOTAL + '</b><span>Kalah jika ada kantor 0 poin</span></div>' +
+      '<div class="meter" role="img" aria-label="Total poin ' + tot + ' dari ' + WIN_TOTAL + '">' + segs + '</div></div>';
+  }
+
+  function renderPlayers() {
+    const S = game.S, a = actorOf(S), playing = S.status === 'playing';
+    return OFFICES.map((o, i) => {
+      const cur = playing && a === i;
+      const chg = (k, v) => (prev && prev[k][i] !== v ? (v > prev[k][i] ? ' up' : ' down') : '');
+      const cells = (n, max) => Array.from({ length: max }, (_, k) => '<span class="cell' + (k < n ? ' on' : '') + '">' + (k + 1) + '</span>').join('');
+      const chips = [];
+      if (S.pts[i] === 1) chips.push('<span class="chip warn">Kritis: tinggal 1 poin</span>');
+      if (S.round && S.flags.noAct.indexOf(i) >= 0) chips.push('<span class="chip">Dilarang beraksi</span>');
+      else if (S.round && S.flags.only2 && S.flags.only2.indexOf(i) < 0) chips.push('<span class="chip">Tidak boleh beraksi</span>');
+      const shield = S.protect[i] + (S.active[i] ? 1 : 0);
+      if (shield > 0) chips.push('<span class="chip">Terlindungi Sosialisasi: ' + shield + ' ronde</span>');
+      S.invest.filter((x) => x.who === i).forEach((x) => chips.push('<span class="chip">Investasi +' + x.amount + ' di akhir ronde ' + x.due + '</span>'));
+      return '<article class="pc' + (cur ? ' turn' : '') + '" style="' + oc(i) + '" aria-label="' + esc(o.name) + (cur ? ', giliran sekarang' : '') + '">' +
+        '<header class="pc-head"><span class="pc-ico">' + icon(o.key, 22) + '</span><h3><span class="full">' + esc(o.name) + '</span><span class="short">' + esc(o.short) + '</span></h3>' + (cur ? '<span class="pill">Giliran</span>' : '') + '</header>' +
+        '<div class="pc-row"><span class="lbl">Poin</span><span class="val' + chg('pts', S.pts[i]) + '">' + S.pts[i] + '<small>/' + MAX_PTS + '</small></span></div>' +
+        '<div class="track t10">' + cells(S.pts[i], MAX_PTS) + '</div>' +
+        '<div class="pc-row"><span class="lbl">Pekerja</span><span class="val' + chg('wk', S.wk[i]) + '">' + S.wk[i] + '<small>/' + MAX_WK + '</small></span></div>' +
+        '<div class="track t5 wk">' + cells(S.wk[i], MAX_WK) + '</div>' +
+        '<div class="pc-row money"><span class="lbl">Uang</span><span class="val' + chg('money', S.money[i]) + '">' + icon('coin', 20) + S.money[i] + '</span></div>' +
+        '<div class="chips">' + chips.join('') + '</div></article>';
+    }).join('');
+  }
+
+  function renderLog() {
+    const S = game.S;
+    return S.log.slice(-80).reverse().map((l) => '<li class="' + esc(l.tone) + '"><span class="r">' + (l.r ? 'R' + l.r : '–') + '</span><span class="t">' + esc(l.t) + '</span></li>').join('');
+  }
+
+  /* ---------- Panel interaksi ---------- */
+  function head(i, title, sub) {
+    return '<div class="stage-head" style="' + oc(i) + '"><span class="badge">' + icon(OFFICES[i].key, 22) + '</span><h2 tabindex="-1">' + esc(title) +
+      (sub ? '<small>' + esc(sub) + '</small>' : '') + '</h2></div>';
+  }
+  const wrap = (i, inner) => '<div style="' + oc(i) + '">' + inner + '</div>';
+
+  function stageDraw(S) {
+    return wrap(0, head(0, 'Ronde ' + (S.round + 1), 'Pemerintah Pusat menarik kartu') +
+      '<p class="lead">Tarik satu Kartu Peristiwa dari tumpukan. Efeknya langsung berlaku.</p>' +
+      '<button type="button" class="btn big acc" data-act="draw">' + icon('card', 20) + 'Tarik kartu peristiwa</button>' +
+      '<p class="help-text">' + S.deck.length + ' kartu di tumpukan.' + (S.round === 0 ? ' Waktu mulai berjalan setelah kartu pertama ditarik.' : '') + '</p>');
+  }
+
+  function stageChoose(S) {
+    const P = S.pending, who = P.who || 0, need = P.mode === 'multi' ? P.count : 1;
+    const opts = P.options.map((o) => {
+      const on = ui.choose.indexOf(o.v) >= 0;
+      const sub = o.sub || o.reason || '';
+      return '<button type="button" class="opt" style="' + (o.off !== undefined ? oc(o.off) : oc(who)) + '" data-act="choose-toggle" data-v="' + esc(o.v) + '" aria-pressed="' + on + '"' + (o.disabled ? ' disabled' : '') + '>' +
+        '<b>' + esc(o.label) + '</b>' + (sub ? '<span>' + esc(sub) + '</span>' : '') + '</button>';
+    }).join('');
+    return wrap(who, head(who, P.title, OFFICES[who].name) + '<p class="lead">' + esc(P.help) + '</p><div class="opts">' + opts + '</div>' +
+      '<div class="row"><span class="help-text" style="margin:0">' + (need > 1 ? 'Pilih ' + need + ' opsi (' + ui.choose.length + ' dipilih)' : 'Pilih satu opsi') + '</span>' +
+      '<button type="button" class="btn acc" data-act="choose-confirm"' + (ui.choose.length === need ? '' : ' disabled') + '>Konfirmasi</button></div>');
+  }
+
+  function stageDistribute(S) {
+    const P = S.pending, used = ui.alloc.reduce((a, b) => a + b, 0), rest = P.amount - used;
+    const rows = OFFICES.map((o, i) =>
+      '<div class="dist-row" style="' + oc(i) + '"><div class="nm">' + esc(o.name) + '<small>Uang sekarang ' + S.money[i] + (ui.alloc[i] ? ', menjadi ' + (S.money[i] + ui.alloc[i]) : '') + '</small></div>' +
+      '<div class="stepper"><button type="button" data-act="alloc" data-i="' + i + '" data-d="-1" aria-label="Kurangi uang untuk ' + esc(o.short) + '"' + (ui.alloc[i] <= 0 ? ' disabled' : '') + '>' + icon('minus', 16) + '</button>' +
+      '<output>' + ui.alloc[i] + '</output>' +
+      '<button type="button" data-act="alloc" data-i="' + i + '" data-d="1" aria-label="Tambah uang untuk ' + esc(o.short) + '"' + (rest <= 0 ? ' disabled' : '') + '>' + icon('plus', 16) + '</button></div></div>').join('');
+    return wrap(0, head(0, 'Distribusi uang', 'Pemerintah Pusat') +
+      '<p class="lead">Pemerintah Pusat menerima <b>' + P.amount + ' uang</b> dari Game Master dan membagikannya ke pemain mana pun, termasuk dirinya sendiri.</p>' +
+      '<div class="dist">' + rows + '</div>' +
+      '<div class="row"><span class="remain">Sisa yang perlu dibagikan: ' + rest + '</span><button type="button" class="btn acc" data-act="distribute"' + (rest === 0 ? '' : ' disabled') + '>Bagikan uang</button></div>');
+  }
+
+  const costLabel = (a) => (a.cost > 0 ? 'Biaya ' + a.cost + ' uang' : 'Tanpa biaya');
+  function diceCount(id) {
+    const F = game.S.flags, a = ACT[id];
+    if (!a.dice || F.auto) return 0;
+    const per = F.dice2 ? 2 : 1;
+    return id === 'kerjasama' ? per * 2 : per;
+  }
+  function oddsRow(p) {
+    const w = game.S.wk[p], six = [1, 2, 3, 4, 5, 6].map((n) => '<span class="' + (n <= w ? 'ok' : '') + '">' + n + '</span>').join('');
+    return '<div class="odds"><span class="who-l">' + esc(OFFICES[p].short) + ', ' + w + ' pekerja</span><span class="six" role="img" aria-label="Berhasil jika dadu 1 sampai ' + w + '">' + six + '</span></div>';
+  }
+  function actionGrid(S) {
+    const i = S.turn.player;
+    return '<div class="acts" role="group" aria-label="Kartu aksi">' + ACTIONS.map((a) => {
+      const why = game.cardBlockReason(a.id), sel = ui.sel === a.id;
+      return '<button type="button" class="act" style="' + oc(i) + '" data-act="pick-card" data-id="' + a.id + '" aria-pressed="' + sel + '"' + (why ? ' disabled' : '') + '>' +
+        '<span class="act-ico">' + icon(a.icon, 24) + '</span><span class="act-name">' + esc(a.name) + '</span>' +
+        '<span class="act-meta">' + costLabel(a) + (a.dice ? ', dadu' : '') + '</span>' +
+        (why ? '<span class="act-why">' + esc(why) + '</span>' : '<span class="act-brief">' + esc(a.brief) + '</span>') + '</button>';
+    }).join('') + '</div>';
+  }
+  function actionDetail(S) {
+    const T = S.turn, i = T.player, F = S.flags, a = ACT[ui.sel];
+    let h = '<div class="detail" style="' + oc(i) + '"><h3>' + esc(a.name) + '</h3><p>' + esc(a.desc) + '</p>';
+    h += '<div class="block"><span class="lbl">Biaya</span><p>' + (a.cost > 0 ? a.cost + ' uang' + (a.id === 'kerjasama' ? ' untukmu dan 1 uang untuk mitra' : '') : 'Tidak ada, tetapi ada yang dipindahkan ke kantor lain') + '.</p></div>';
+    if (a.target) {
+      h += '<div class="block"><span class="lbl">Kantor tujuan</span><div class="targets">' + OFFICES.map((o, t) => {
+        if (t === i) return '';
+        const c = game.canPerform(a.id, { target: t, amount: 1 });
+        return '<button type="button" class="tgt" style="' + oc(t) + '" data-act="pick-target" data-i="' + t + '" aria-pressed="' + (ui.target === t) + '"' + (c.ok ? '' : ' disabled title="' + esc(c.reason) + '"') + '>' + esc(o.short) + '</button>';
+      }).join('') + '</div></div>';
+      const bad = OFFICES.map((o, t) => (t === i ? null : game.canPerform(a.id, { target: t, amount: 1 }))).filter((c) => c && !c.ok);
+      if (bad.length) h += '<p class="help-text">' + esc(bad.map((c) => c.reason).join(' ')) + '</p>';
+    }
+    if (a.amount) {
+      h += '<div class="block"><span class="lbl">Jumlah uang yang diberikan</span><div class="stepper"><button type="button" data-act="amount" data-d="-1" aria-label="Kurangi jumlah"' + (ui.amount <= 1 ? ' disabled' : '') + '>' + icon('minus', 16) +
+        '</button><output>' + ui.amount + '</output><button type="button" data-act="amount" data-d="1" aria-label="Tambah jumlah"' + (ui.amount >= S.money[i] ? ' disabled' : '') + '>' + icon('plus', 16) + '</button></div></div>';
+    }
+    if (a.dice) {
+      if (F.auto) h += '<div class="block"><span class="lbl">Peluang</span><p>Manajemen Risiko aktif: aksi ini pasti berhasil tanpa lemparan dadu.</p></div>';
+      else {
+        const parts = [i]; if (a.id === 'kerjasama' && ui.target !== null) parts.push(ui.target);
+        const n = F.dice2 ? 2 : 1;
+        const prob = parts.reduce((p, x) => p * Math.pow(S.wk[x] / 6, n), 1);
+        h += '<div class="block"><span class="lbl">Peluang berhasil</span>' + parts.map(oddsRow).join('') +
+          '<p class="help-text">Berhasil jika angka dadu tidak melebihi jumlah pekerja' + (F.dice2 ? '. Usaha Ekstra: dua lemparan, keduanya harus berhasil' : '') + (a.id === 'kerjasama' && ui.target === null ? '. Pilih mitra untuk melihat peluang gabungan' : '') +
+          '. Perkiraan peluang ' + Math.round(prob * 100) + '%.</p></div>';
+      }
+    }
+    if (F.dbl && a.dice && ['layanan', 'kerjasama', 'rekrut'].indexOf(a.id) >= 0 || (F.dbl && a.id === 'investasi')) h += '<p class="help-text" style="margin-top:10px">Hasil Ganda aktif: hasil aksi ini dua kali lipat jika berhasil.</p>';
+    const chk = game.canPerform(a.id, { target: ui.target, amount: ui.amount });
+    const label = a.dice && !F.auto ? 'Lempar dadu' : 'Jalankan aksi';
+    h += '<div class="row"><button type="button" class="btn ghost" data-act="cancel-pick">Pilih kartu lain</button><button type="button" class="btn acc" data-act="perform"' + (chk.ok ? '' : ' disabled') + '>' +
+      (a.dice && !F.auto ? icon('dice2', 20) : '') + label + '</button></div>';
+    if (!chk.ok && (!a.target || ui.target !== null)) h += '<p class="warn">' + esc(chk.reason) + '</p>';
+    return h + '</div>';
+  }
+  function stageResult(S) {
+    const T = S.turn, r = T.result, a = ACT[r.card];
+    let dice = '';
+    if (r.rolls.length) {
+      dice = '<div class="dice-wrap">' + r.rolls.map((x) => '<div class="dice-group"><div class="cap">' + esc(OFFICES[x.who].short) + ', ' + x.need + ' pekerja</div><div class="dice">' +
+        x.dice.map((d) => die(d, d <= x.need ? 'ok' : 'fail')).join('') + '</div></div>').join('') + '</div>';
+    } else if (r.auto) dice = '<div class="notice">' + icon('shield', 20) + '<span>Manajemen Risiko: aksi berhasil tanpa lemparan dadu.</span></div>';
+    const ok = !a.dice || r.success;
+    const title = a.name + (a.dice ? (r.success ? ' berhasil' : ' gagal') : ' selesai');
+    const lines = r.lines.filter((l) => !/^Aksi (berhasil|gagal)/.test(l) && !/^Kamu boleh melihat/.test(l));
+    if (r.card === 'masadepan' && r.peekDone) lines.push('Dua kartu peristiwa teratas telah disusun ulang.');
+    const last = T.used.length >= T.max;
+    const btn = last ? (T.player < 3 ? 'Selesai, lanjut ke ' + OFFICES[T.player + 1].short : 'Selesai, akhiri putaran') : 'Lanjut';
+    return dice + '<div class="result-box result ' + (ok ? 'ok' : 'fail') + '"><div class="res-title">' + esc(title) + '</div>' +
+      (lines.length ? '<ul>' + lines.map((l) => '<li>' + esc(l) + '</li>').join('') + '</ul>' : '') + '</div>' +
+      '<div class="row"><span></span><button type="button" class="btn acc" data-act="continue">' + btn + '</button></div>';
+  }
+  function stageTurn(S) {
+    const T = S.turn, i = T.player;
+    const sub = 'Fase aksi' + (T.max > 1 ? ', aksi ' + Math.min(T.used.length + 1, T.max) + ' dari ' + T.max : '');
+    if (T.blocked) {
+      return wrap(i, head(i, OFFICES[i].name, 'Fase aksi') + '<div class="notice">' + icon('alert', 20) + '<span>' + esc(T.blocked) + '</span></div>' +
+        '<div class="row"><span></span><button type="button" class="btn acc" data-act="finish-blocked">Lanjut ke giliran berikutnya</button></div>');
+    }
+    if (ui.rolling) {
+      return wrap(i, head(i, 'Melempar dadu', OFFICES[i].name) + '<div class="dice-wrap"><div class="dice">' +
+        Array.from({ length: ui.rolling }, () => die(1 + Math.floor(Math.random() * 6), 'roll')).join('') + '</div></div>');
+    }
+    if (T.stage === 'result') return wrap(i, head(i, OFFICES[i].name, sub) + stageResult(S));
+    return wrap(i, head(i, OFFICES[i].name, sub) +
+      '<p class="lead">Pilih satu Kartu Aksi. Uang ' + S.money[i] + ', pekerja ' + S.wk[i] + '.</p>' + actionGrid(S) + (ui.sel ? actionDetail(S) : '') +
+      '<div class="row"><span class="help-text" style="margin:0">' + (T.used.length ? 'Kamu boleh mengakhiri giliran sekarang.' : 'Aksi boleh dilewati, misalnya saat uang habis.') + '</span>' +
+      '<button type="button" class="btn ghost" data-act="finish-turn">' + (T.used.length ? 'Selesai giliran' : 'Lewati aksi') + '</button></div>');
+  }
+  function stagePeek(S) {
+    const i = S.turn.player, P = S.pending;
+    if (!ui.peekShown) {
+      return wrap(i, head(i, 'Pemilihan Masa Depan', OFFICES[i].name) +
+        '<div class="notice">' + icon('eye', 20) + '<span>Pemain lain, mohon membelakangi layar. Hanya ' + esc(OFFICES[i].name) + ' yang boleh melihat dua kartu peristiwa teratas.</span></div>' +
+        '<button type="button" class="btn big acc" style="margin-top:14px" data-act="peek-show">Saya siap, tampilkan kartu</button>');
+    }
+    return wrap(i, head(i, 'Pilih kartu untuk tumpukan atas', OFFICES[i].name) +
+      '<p class="lead">Satu kartu dikembalikan ke atas tumpukan. Kartu lainnya diletakkan di dasar tumpukan.</p><div class="peek-grid">' +
+      P.cards.map((id, k) => '<div>' + eventCard(id) + '<button type="button" class="btn acc" data-act="peek-top" data-i="' + k + '">Taruh di atas tumpukan</button></div>').join('') + '</div>');
+  }
+  function stageEnd(S) {
+    const won = S.status === 'won';
+    return '<div class="stage-head"><span class="badge" style="' + oc(won ? 3 : 1) + '">' + icon(won ? 'trophy' : 'alert', 22) + '</span><h2 tabindex="-1">' + (won ? 'Permainan selesai: menang' : 'Permainan selesai: kalah') + '</h2></div>' +
+      '<p class="lead">' + esc(endReason(S)) + '</p><div class="row"><button type="button" class="btn secondary" data-act="to-setup">Ubah pengaturan</button><button type="button" class="btn" data-act="again">Main lagi</button></div>';
+  }
+  function renderStage() {
+    const S = game.S;
+    switch (S.pending.kind) {
+      case 'draw': return stageDraw(S);
+      case 'choose': return stageChoose(S);
+      case 'distribute': return stageDistribute(S);
+      case 'turn': return stageTurn(S);
+      case 'peek': return stagePeek(S);
+      default: return stageEnd(S);
+    }
+  }
+  function endReason(S) {
+    if (S.status === 'won') return 'Total poin keempat kantor mencapai ' + game.total() + '.';
+    return OFFICES[S.reason.who].name + ' mencapai 0 poin.';
+  }
+
+  /* ---------- Render utama ---------- */
+  function signature(S) {
+    const P = S.pending, T = S.turn;
+    return [gid, S.round, P.kind, P.tag || '', P.who === undefined ? '' : P.who, T ? T.player : '', T ? T.stage : '', T ? T.used.length : '', S.status].join('|');
+  }
+  function focusSel(el) {
+    if (!el || !el.dataset || !el.dataset.act) return null;
+    let s = '[data-act="' + el.dataset.act + '"]';
+    ['v', 'i', 'id', 'f', 'd'].forEach((k) => { if (el.dataset[k] !== undefined) s += '[data-' + k + '="' + el.dataset[k] + '"]'; });
+    return s;
+  }
+  function show(which) {
+    $('#screen-setup').hidden = which !== 'setup';
+    $('#screen-game').hidden = which !== 'game';
+  }
+  function render() {
+    if (!game) { show('setup'); renderSetup(); return; }
+    show('game');
+    const S = game.S, s = signature(S), changed = s !== sig;
+    if (changed) { sig = s; ui = Object.assign(freshUI(), { rolling: ui.rolling }); }
+    const keep = focusSel(document.activeElement);
+    $('#status').innerHTML = renderStatus();
+    $('#players').innerHTML = renderPlayers();
+    $('#evcol').innerHTML = (S.current ? eventCard(S.current) : eventBack()) + flagChips(S);
+    $('#stage').innerHTML = renderStage();
+    $('#log').innerHTML = renderLog();
+    prev = { pts: S.pts.slice(), wk: S.wk.slice(), money: S.money.slice() };
+    if (changed) { const h = $('#stage h2'); if (h) h.focus({ preventScroll: true }); }
+    else if (keep) { const n = document.querySelector(keep); if (n && !n.disabled) n.focus({ preventScroll: true }); }
+    const last = S.log.length ? S.log[S.log.length - 1].t : '';
+    if (last && last !== lastLive) { lastLive = last; $('#live').textContent = last; }
+    saveGame();
+    if (S.status !== 'playing' && !endShown) { endShown = true; showEnd(); }
+  }
+
+  function showEnd() {
+    const S = game.S, ms = game.elapsed(), won = S.status === 'won';
+    let rec = '';
+    if (won) {
+      if (S.manual) rec = '<span class="rec no">Rekor tidak dicatat: ada koreksi manual atau pembatalan</span>';
+      else {
+        const r = saveRecord(S.difficulty, S.copies, ms, S.round);
+        rec = r.isNew ? '<span class="rec">Rekor waktu baru</span>' : '<span class="rec no">Rekor terbaik tetap ' + fmtTime(r.best) + '</span>';
+      }
+    }
+    const rows = OFFICES.map((o, i) => '<div><span>' + esc(o.name) + '</span><b>' + S.pts[i] + ' poin</b></div>').join('');
+    $('#end-body').innerHTML = '<div class="end-hero ' + (won ? 'win' : 'lose') + '"><h2 id="end-title">' + (won ? 'Kalian menang' : 'Kalian kalah') + '</h2><p>' + esc(endReason(S)) + '</p>' +
+      '<div class="big-number">' + fmtTime(ms) + '</div><p class="help-text" style="margin-top:0">' + S.round + ' ronde dimainkan</p>' + rec + '</div><div class="kv">' + rows + '</div>';
+    const dlg = $('#dlg-end');
+    dlg.setAttribute('aria-labelledby', 'end-title');
+    if (!dlg.open) dlg.showModal();
+  }
+
+  /* ---------- Alur permainan ---------- */
+  function startGame() {
+    game = new Game({ difficulty: cfg.difficulty, copies: cfg.copies });
+    gid++; ui = freshUI(); sig = ''; prev = null; endShown = false; lastLive = '';
+    store.del(KEY_SAVE);
+    render();
+    window.scrollTo(0, 0);
+  }
+  function resumeGame() {
+    const v = loadSaved();
+    if (!v) { renderSetup(); return; }
+    game = new Game({ difficulty: v.S.difficulty, copies: v.S.copies });
+    game.S = v.S;
+    if (game.S.startedAt !== null) game.S.startedAt += Date.now() - v.at;
+    gid++; ui = freshUI(); sig = ''; prev = null; endShown = false; lastLive = '';
+    render();
+  }
+  function doPerform() {
+    if (busy || !ui.sel) return;
+    const id = ui.sel, params = { target: ui.target, amount: ui.amount };
+    if (!game.canPerform(id, params).ok) return;
+    const n = diceCount(id);
+    if (n > 0 && !reduced) {
+      busy = true; ui.rolling = n; render();
+      rollTimer = setInterval(() => {
+        document.querySelectorAll('.die.roll').forEach((d) => { d.innerHTML = pips(1 + Math.floor(Math.random() * 6)); });
+      }, 90);
+      setTimeout(() => {
+        clearInterval(rollTimer); busy = false; ui.rolling = 0;
+        game.perform(id, params); render();
+      }, 800);
+    } else { game.perform(id, params); render(); }
+  }
+
+  function renderGM() {
+    const S = game.S;
+    const stp = (i, f, val, lo, hi) => '<div class="stepper"><button type="button" data-act="adj" data-i="' + i + '" data-f="' + f + '" data-d="-1" aria-label="Kurangi"' + (val <= lo ? ' disabled' : '') + '>' + icon('minus', 16) +
+      '</button><output>' + val + '</output><button type="button" data-act="adj" data-i="' + i + '" data-f="' + f + '" data-d="1" aria-label="Tambah"' + (val >= hi ? ' disabled' : '') + '>' + icon('plus', 16) + '</button></div>';
+    let h = '<span></span><span class="h">Poin</span><span class="h">Pekerja</span><span class="h">Uang</span>';
+    OFFICES.forEach((o, i) => {
+      h += '<div class="nm" style="' + oc(i) + '">' + esc(o.name) + '</div>' + stp(i, 'pts', S.pts[i], 0, MAX_PTS) + stp(i, 'wk', S.wk[i], 1, MAX_WK) + stp(i, 'money', S.money[i], 0, 9999);
+    });
+    $('#gm-body').innerHTML = h;
+    $('#btn-undo').disabled = !game.history.length;
+  }
+
+  /* ---------- Penanganan klik ---------- */
+  const H = {
+    start: () => startGame(),
+    resume: () => resumeGame(),
+    'rules-open': () => $('#dlg-rules').showModal(),
+    'gm-open': () => { renderGM(); $('#dlg-gm').showModal(); },
+    'close-dlg': (el) => document.getElementById(el.dataset.target).close(),
+    draw: () => { game.drawEvent(); render(); },
+    'choose-toggle': (el) => {
+      const P = game.S.pending; if (P.kind !== 'choose') return;
+      const o = P.options.find((x) => String(x.v) === el.dataset.v); if (!o || o.disabled) return;
+      const need = P.mode === 'multi' ? P.count : 1, at = ui.choose.indexOf(o.v);
+      if (need === 1) ui.choose = [o.v];
+      else if (at >= 0) ui.choose.splice(at, 1);
+      else { ui.choose.push(o.v); if (ui.choose.length > need) ui.choose.shift(); }
+      render();
+    },
+    'choose-confirm': () => { if (game.answerChoose(ui.choose.slice())) render(); },
+    alloc: (el) => {
+      const i = +el.dataset.i, d = +el.dataset.d, P = game.S.pending, used = ui.alloc.reduce((a, b) => a + b, 0);
+      if (d > 0 && used >= P.amount) return;
+      if (d < 0 && ui.alloc[i] <= 0) return;
+      ui.alloc[i] += d; render();
+    },
+    distribute: () => { if (game.distribute(ui.alloc.slice())) render(); },
+    'pick-card': (el) => { ui.sel = ui.sel === el.dataset.id ? null : el.dataset.id; ui.target = null; ui.amount = 1; render(); },
+    'pick-target': (el) => { ui.target = +el.dataset.i; ui.amount = Math.max(1, Math.min(ui.amount, game.S.money[game.S.turn.player])); render(); },
+    amount: (el) => { const m = game.S.money[game.S.turn.player]; ui.amount = Math.max(1, Math.min(m, ui.amount + (+el.dataset.d))); render(); },
+    'cancel-pick': () => { ui.sel = null; render(); },
+    perform: () => doPerform(),
+    continue: () => { game.continueTurn(); render(); },
+    'finish-turn': () => { game.finishTurn(); render(); },
+    'finish-blocked': () => { game.finishBlocked(); render(); },
+    'peek-show': () => { ui.peekShown = true; render(); },
+    'peek-top': (el) => { game.answerPeek(+el.dataset.i); render(); },
+    adj: (el) => { game.adjust(+el.dataset.i, el.dataset.f, +el.dataset.d); render(); renderGM(); const n = document.querySelector(focusSel(el)); if (n && !n.disabled) n.focus(); },
+    undo: () => {
+      if (!game.undo()) return;
+      endShown = false; if ($('#dlg-end').open) $('#dlg-end').close();
+      render(); renderGM();
+    },
+    restart: () => { if (window.confirm('Mulai ulang permainan? Kemajuan saat ini akan hilang.')) { $('#dlg-gm').close(); startGame(); } },
+    again: () => { $('#dlg-end').close(); startGame(); },
+    'to-setup': () => { $('#dlg-end').close(); $('#dlg-gm').close(); game = null; store.del(KEY_SAVE); render(); window.scrollTo(0, 0); }
+  };
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-act]');
+    if (!el || el.disabled || busy) return;
+    const fn = H[el.dataset.act];
+    if (fn) fn(el);
+  });
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (t.name === 'diff') cfg.difficulty = t.value;
+    else if (t.name === 'copies') cfg.copies = +t.value;
+    else return;
+    store.set(KEY_CFG, cfg); renderSetup();
+  });
+  setInterval(() => {
+    if (!game) return;
+    const el = document.getElementById('timer');
+    if (el) el.textContent = fmtTime(game.elapsed());
+  }, 250);
+
+  /* ---------- Mulai ---------- */
+  $('#hero-logo').innerHTML = logo(88);
+  $('#brand-logo').innerHTML = logo(36);
+  render();
+
+  // Untuk pengujian otomatis
+  window.__ohcg = { get game() { return game; }, render: render, cfg: cfg };
+})();
+
+</script>
+</body>
+</html>
