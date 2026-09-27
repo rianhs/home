@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Uji Hipotesis Satu Sampel</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg-color: #f5f5f7;
+    --card-bg: #ffffff;
+    --text-main: #1d1d1f;
+    --text-muted: #86868b;
+    --text-soft: #3a3a3c;
+    --accent-blue: #0071e3;
+    --accent-green: #34c759;
+    --green-dark: #1e9e46;
+    --accent-red: #ff3b30;
+    --accent-orange: #ff9500;
+    --border-color: #d2d2d7;
+    --shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.5;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1040px; width: 100%; min-width: 0; }
+
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 8px;
+    letter-spacing: -0.5px;
+}
+
+p.subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 16px;
+    margin: 0 0 36px;
+}
+
+.calc-row { display: flex; gap: 24px; align-items: flex-start; }
+
+.input-side {
+    flex: 0 0 380px;
+    min-width: 0;
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+}
+
+.result-side {
+    flex: 1;
+    min-width: 0;
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+}
+
+.section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+    font-weight: 700;
+}
+
+.section-title.spaced { margin-top: 26px; }
+
+.form-group { margin-bottom: 18px; }
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    background-color: #fbfbfd;
+    transition: all 0.2s ease;
+}
+
+.form-group input[type="number"]:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+}
+
+.help-text { font-size: 12.5px; color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+
+/* Saklar kecil (segmented) untuk arah pengujian dan jenis uji */
+.seg-label { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.seg { display: flex; background-color: #e3e3e8; border-radius: 11px; padding: 3px; margin-bottom: 6px; }
+.seg input[type="radio"] { display: none; }
+.seg label {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-main);
+    line-height: 1.35;
+}
+.seg input:checked + label { background-color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.1); color: var(--accent-blue); }
+.seg-sub { display: block; font-size: 10px; font-weight: 500; color: var(--text-muted); margin-top: 1px; }
+
+.hint { font-size: 12.5px; color: var(--text-muted); margin: 8px 0 0; line-height: 1.5; }
+.hint.warn { color: #b8720a; }
+
+/* Toggle Switch */
+.toggle-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 18px; }
+.toggle-switch { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e3e3e8; transition: .3s; border-radius: 26px; }
+.slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+input:checked + .slider { background-color: var(--accent-green); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+.finite-container { max-height: 0; overflow: hidden; transition: all 0.3s ease-out; opacity: 0; background-color: #f5f5f7; border-radius: 12px; padding: 0 15px; }
+.finite-container.show { max-height: 140px; margin: -4px 0 18px; padding: 14px 15px; opacity: 1; }
+
+/* Sisi hasil */
+.test-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 18px; }
+
+.muted-box { background-color: #f5f5f7; border-radius: 12px; padding: 16px 18px; font-size: 14.5px; line-height: 1.85; }
+.muted-box b { font-weight: 700; }
+.hyp-box { margin-bottom: 20px; }
+
+.stat-grid { margin-bottom: 6px; }
+.stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px solid #f0f0f2; font-size: 14px; }
+.stat-row:last-child { border-bottom: none; }
+.stat-label { color: var(--text-muted); }
+.stat-value { font-weight: 700; font-size: 15px; }
+
+.cmp-text { font-size: 13.5px; color: var(--text-soft); margin: 14px 0 0; line-height: 1.7; }
+
+.chart-wrap { width: 100%; overflow-x: auto; margin: 20px 0 8px; }
+.chart-wrap svg { display: block; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--text-muted); margin-bottom: 22px; }
+.legend span.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+.verdict-status { text-align: center; font-size: 22px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 14px; }
+.verdict-status.reject { color: var(--accent-red); }
+.verdict-status.fail { color: var(--green-dark); }
+
+.concl-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; }
+
+.error-box { background: #fff2f1; border: 1px solid #ffd4d1; color: #b3261e; border-radius: 12px; padding: 14px 16px; font-size: 13.5px; display: none; margin-bottom: 16px; }
+
+@media (max-width: 768px) {
+    .calc-row { flex-direction: column; }
+    .input-side, .result-side { width: 100%; }
+    h1 { font-size: 24px; }
+    .test-title { font-size: 17px; }
+    .verdict-status { font-size: 19px; }
+    .seg label { font-size: 11.5px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Kalkulator Uji Hipotesis Satu Sampel</h1>
+    <p class="subtitle">Uji-Z dan uji-t untuk membandingkan rata-rata sampel dengan nilai acuan populasi</p>
+
+    <div class="calc-row">
+        <div class="input-side">
+
+            <div class="section-title">Pengaturan Uji</div>
+            <div class="seg-label">Arah pengujian</div>
+            <div class="seg">
+                <input type="radio" name="arah" id="arah-kiri" value="kiri" checked>
+                <label for="arah-kiri">Kiri<span class="seg-sub">left-tailed</span></label>
+                <input type="radio" name="arah" id="arah-kanan" value="kanan">
+                <label for="arah-kanan">Kanan<span class="seg-sub">right-tailed</span></label>
+                <input type="radio" name="arah" id="arah-dua" value="dua">
+                <label for="arah-dua">Dua arah<span class="seg-sub">two-tailed</span></label>
+            </div>
+
+            <div class="section-title spaced">Nilai Acuan dan Signifikansi</div>
+            <div class="form-group">
+                <label for="mu0">Rata-rata populasi / nilai acuan (&mu;&#8320;)</label>
+                <input type="number" id="mu0" step="0.01" value="100">
+            </div>
+            <div class="form-group">
+                <label for="alpha">Tingkat signifikansi (&alpha;)</label>
+                <select id="alpha">
+                    <option value="0.10">10% (&alpha; = 0,10)</option>
+                    <option value="0.05" selected>5% (&alpha; = 0,05)</option>
+                    <option value="0.01">1% (&alpha; = 0,01)</option>
+                </select>
+            </div>
+            <div class="toggle-row">
+                <label for="toggle-sigma" style="font-size: 13.5px; font-weight: 600;">Simpangan baku populasi (&sigma;) diketahui?</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-sigma">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div id="sigma-container" class="finite-container">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="sigma">Simpangan baku populasi (&sigma;)</label>
+                    <input type="number" id="sigma" min="0.0001" step="0.01" value="3">
+                    <div class="help-text">Hanya dipakai pada uji-Z. Uji-t selalu memakai s sampel.</div>
+                </div>
+            </div>
+
+            <div class="section-title spaced">Data Sampel</div>
+            <div class="form-group">
+                <label for="n">Jumlah sampel (n)</label>
+                <input type="number" id="n" min="2" step="1" value="20">
+            </div>
+            <div class="form-group">
+                <label for="xbar">Rata-rata sampel (x&#772;)</label>
+                <input type="number" id="xbar" step="0.01" value="99">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="s">Simpangan baku sampel (s)</label>
+                <input type="number" id="s" min="0.0001" step="0.01" value="3">
+                <div class="help-text">Memakai pembagi n&minus;1 (STDEV.S)</div>
+            </div>
+
+            <div class="section-title spaced">Jenis Uji Statistika</div>
+            <div class="seg">
+                <input type="radio" name="jenis" id="jenis-z" value="z">
+                <label for="jenis-z">Uji-Z</label>
+                <input type="radio" name="jenis" id="jenis-t" value="t" checked>
+                <label for="jenis-t">Uji-t</label>
+            </div>
+            <div id="test-hint" class="hint"></div>
+
+        </div>
+
+        <div class="result-side">
+            <div id="error-box" class="error-box">Lengkapi seluruh input dengan angka yang valid (n &ge; 2, s &gt; 0).</div>
+
+            <div id="test-title" class="test-title">&nbsp;</div>
+
+            <div class="muted-box hyp-box">
+                H<sub>0</sub>: <b id="hyp-h0">&ndash;</b><br>
+                H<sub>1</sub>: <b id="hyp-h1">&ndash;</b>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-row"><span class="stat-label" id="stat-hitung-label">Nilai hitung</span><span class="stat-value" id="stat-hitung">&ndash;</span></div>
+                <div class="stat-row" id="stat-df-row"><span class="stat-label">Derajat bebas (df)</span><span class="stat-value" id="stat-df">&ndash;</span></div>
+                <div class="stat-row"><span class="stat-label" id="stat-kritis-label">Nilai tabel (kritis)</span><span class="stat-value" id="stat-kritis">&ndash;</span></div>
+                <div class="stat-row"><span class="stat-label">Nilai-p</span><span class="stat-value" id="stat-p">&ndash;</span></div>
+            </div>
+
+            <p class="cmp-text" id="cmp-text">&nbsp;</p>
+
+            <div class="chart-wrap"><div id="chart"></div></div>
+            <div class="legend">
+                <span><span class="sw" style="background:#ff3b30;opacity:.35;"></span>Daerah kritis (penolakan H<sub>0</sub>)</span>
+                <span><span class="sw" style="background:#ff3b30;"></span>Nilai kritis (garis putus-putus)</span>
+                <span><span class="sw" style="background:#0071e3;"></span>Nilai hitung sampel</span>
+            </div>
+
+            <div id="verdict-status" class="verdict-status">&nbsp;</div>
+
+            <div class="muted-box">
+                <div class="concl-title">Kesimpulan</div>
+                <div id="concl-text">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ===================== Utilitas numerik (distribusi normal &amp; t) ===================== */
+function lgamma(x) {
+    if (x >= 15) {
+        var x2 = x * x;
+        return (x - 0.5) * Math.log(x) - x + 0.9189385332046727 + 1 / (12 * x) - 1 / (360 * x * x2) + 1 / (1260 * x2 * x2 * x);
+    }
+    var c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+    var y = x, tmp = x + 5.5;
+    tmp -= (x + 0.5) * Math.log(tmp);
+    var ser = 1.000000000190015;
+    for (var j = 0; j < 6; j++) { y += 1; ser += c[j] / y; }
+    return -tmp + Math.log(2.5066282746310005 * ser / x);
+}
+
+function erf(x) {
+    var ax = Math.abs(x);
+    if (ax > 6) return x < 0 ? -1 : 1;
+    var term = ax, sum = ax;
+    for (var n = 1; n < 300; n++) {
+        term *= 2 * ax * ax / (2 * n + 1);
+        sum += term;
+        if (term < 1e-17 * sum) break;
+    }
+    var r = 2 / Math.sqrt(Math.PI) * Math.exp(-ax * ax) * sum;
+    return x < 0 ? -r : r;
+}
+
+function normTail(z) { return 0.5 * (1 - erf(z / Math.SQRT2)); } /* P(Z > z), berlaku untuk z apa saja */
+
+function betacf(a, b, x) {
+    var MAXIT = 3000, EPS = 3e-16, FPMIN = 1e-300;
+    var qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < FPMIN) d = FPMIN;
+    d = 1 / d;
+    var h = d;
+    for (var m = 1; m <= MAXIT; m++) {
+        var m2 = 2 * m;
+        var aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+        d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+        c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+        d = 1 / d; h *= d * c;
+        aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+        d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+        c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+        d = 1 / d;
+        var del = d * c;
+        h *= del;
+        if (Math.abs(del - 1) < EPS) break;
+    }
+    return h;
+}
+
+function betai(a, b, x) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    var bt = Math.exp(lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+    if (x < (a + 1) / (a + b + 2)) return bt * betacf(a, b, x) / a;
+    return 1 - bt * betacf(b, a, 1 - x) / b;
+}
+
+/* peluang ekor kanan distribusi t, hanya valid untuk t >= 0 */
+function tTailRaw(t, df) {
+    var x = df / (df + t * t);
+    return 0.5 * betai(df / 2, 0.5, x);
+}
+/* peluang ekor kanan distribusi t, berlaku untuk t apa saja (positif atau negatif) */
+function studentRightTail(t, df) { return t >= 0 ? tTailRaw(t, df) : 1 - tTailRaw(-t, df); }
+
+var zCache = {}, tCache = {};
+
+/* nilai kritis Z dua sisi untuk tingkat kepercayaan level (mis. 0.95 -> 1.960) */
+function critZ(level) {
+    if (zCache[level] !== undefined) return zCache[level];
+    var a = (1 - level) / 2, lo = 0, hi = 12;
+    for (var i = 0; i < 100; i++) {
+        var m = (lo + hi) / 2;
+        if (normTail(m) > a) lo = m; else hi = m;
+    }
+    zCache[level] = (lo + hi) / 2;
+    return zCache[level];
+}
+
+/* nilai kritis t dua sisi untuk tingkat kepercayaan level dan derajat bebas df */
+function critT(level, df) {
+    var key = level + '|' + df;
+    if (tCache[key] !== undefined) return tCache[key];
+    var a = (1 - level) / 2, lo = 0, hi = 5000;
+    for (var i = 0; i < 80; i++) {
+        var m = (lo + hi) / 2;
+        if (studentRightTail(m, df) > a) lo = m; else hi = m;
+    }
+    var v = (lo + hi) / 2;
+    tCache[key] = v;
+    return v;
+}
+
+function critZOneTail(alpha) { return critZ(1 - 2 * alpha); }
+function critTOneTail(alpha, df) { return critT(1 - 2 * alpha, df); }
+function critZTwoTail(alpha) { return critZ(1 - alpha); }
+function critTTwoTail(alpha, df) { return critT(1 - alpha, df); }
+
+function pdfNormal(x) { return Math.exp(-x * x / 2) / Math.sqrt(2 * Math.PI); }
+function pdfT(x, df) {
+    var lc = lgamma((df + 1) / 2) - lgamma(df / 2) - 0.5 * Math.log(df * Math.PI);
+    return Math.exp(lc - (df + 1) / 2 * Math.log(1 + x * x / df));
+}
+
+/* ===================== Format angka gaya Indonesia ===================== */
+var fmtCache = {};
+function fmt(x, d) {
+    if (x === null || x === undefined || typeof x !== 'number' || !isFinite(x)) return '\u2013';
+    if (!fmtCache[d]) fmtCache[d] = new Intl.NumberFormat('id-ID', { minimumFractionDigits: d, maximumFractionDigits: d });
+    var s = fmtCache[d].format(x);
+    if (/^-0(,0+)?$/.test(s)) s = s.slice(1);
+    return s;
+}
+function fmtSmart(x, maxD) {
+    maxD = maxD === undefined ? 2 : maxD;
+    if (x === null || x === undefined || !isFinite(x)) return '\u2013';
+    var f = Math.pow(10, maxD);
+    var rounded = Math.round(x * f) / f;
+    var d = 0;
+    for (var k = 0; k <= maxD; k++) {
+        var fk = Math.pow(10, k);
+        if (Math.abs(Math.round(rounded * fk) / fk - rounded) < 1e-9) { d = k; break; }
+    }
+    return fmt(rounded, d);
+}
+function fmtP(p) {
+    if (!isFinite(p)) return '\u2013';
+    if (p < 0.0005) return '< 0,001';
+    return fmt(p, 3);
+}
+function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+function rr(v) { return Math.round(v * 100) / 100; }
+
+/* ===================== Primitif SVG ringan ===================== */
+var FONT = "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+var SUB0 = '<tspan baseline-shift="sub" font-size="9">0</tspan>';
+function chartWidth(el) { var w = el.clientWidth; return Math.max(280, w > 0 ? w : 680); }
+function svgOpen(W, H, label) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + label + '">';
+}
+function ln(x1, y1, x2, y2, stroke, w, extra) {
+    return '<line x1="' + rr(x1) + '" y1="' + rr(y1) + '" x2="' + rr(x2) + '" y2="' + rr(y2) + '" stroke="' + stroke + '" stroke-width="' + w + '"' + (extra || '') + '/>';
+}
+function tx(x, y, s, o) {
+    o = o || {};
+    var size = o.size || 12, weight = o.weight || 400, fill = o.fill || '#1d1d1f', anchor = o.anchor || 'middle';
+    var base = ' x="' + rr(x) + '" y="' + rr(y) + '" font-family="' + FONT + '" font-size="' + size + '" font-weight="' + weight + '" text-anchor="' + anchor + '"';
+    var out = '';
+    if (o.halo) out += '<text' + base + ' fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">' + s + '</text>';
+    return out + '<text' + base + ' fill="' + fill + '">' + s + '</text>';
+}
+function circ(cx, cy, r, fill, stroke, sw) {
+    return '<circle cx="' + rr(cx) + '" cy="' + rr(cy) + '" r="' + r + '" fill="' + fill + '"' + (stroke ? ' stroke="' + stroke + '" stroke-width="' + sw + '"' : '') + '/>';
+}
+
+/* ===================== Grafik kurva uji hipotesis ===================== */
+/* Tata letak: label kualitatif (tolak/gagal tolak H0) selalu di baris tetap
+   di atas puncak kurva; label angka (nilai kritis, nilai hitung) selalu di
+   bawah garis dasar pada dua baris terpisah. Ini mencegah keduanya bertumpuk
+   pada posisi nilai hitung berapa pun. */
+function drawTestCurve(el, c) {
+    var W = chartWidth(el), H = 250, ml = 16, mr = 16, mt = 58, mb = 56;
+    var ph = H - mt - mb;
+    var pdf = c.dist === 'z' ? function (x) { return pdfNormal(x); } : function (x) { return pdfT(x, c.df); };
+
+    var cand = [-4, 4, c.stat];
+    if (c.critLeft !== null) cand.push(c.critLeft);
+    if (c.critRight !== null) cand.push(c.critRight);
+    var lo = Math.min.apply(null, cand) - 0.6;
+    var hi = Math.max.apply(null, cand) + 0.6;
+    var yMax = pdf(0);
+
+    var sx = function (x) { return ml + (x - lo) / (hi - lo) * (W - ml - mr); };
+    var sy = function (y) { return mt + (1 - clamp(y, 0, yMax) / yMax) * ph; };
+    var baseY = sy(0);
+    var labelY = 24; /* baris tetap untuk "tolak H0" / "gagal tolak H0", di atas puncak kurva */
+    var critRowY = baseY + 20;  /* baris label nilai kritis */
+    var statRowY = baseY + 38;  /* baris label nilai hitung, di bawah baris nilai kritis */
+
+    var s = svgOpen(W, H, 'Kurva distribusi uji hipotesis');
+
+    function areaPath(xa, xb) {
+        var steps = 60, d = '';
+        for (var i = 0; i <= steps; i++) {
+            var x = xa + (xb - xa) * i / steps;
+            d += (i === 0 ? 'M' : 'L') + rr(sx(x)) + ' ' + rr(sy(pdf(x))) + ' ';
+        }
+        d += 'L' + rr(sx(xb)) + ' ' + rr(baseY) + ' L' + rr(sx(xa)) + ' ' + rr(baseY) + ' Z';
+        return d;
+    }
+
+    var regions = [];
+    if (c.arah === 'kiri') regions.push([lo, c.critLeft]);
+    else if (c.arah === 'kanan') regions.push([c.critRight, hi]);
+    else { regions.push([lo, c.critLeft]); regions.push([c.critRight, hi]); }
+
+    regions.forEach(function (r) {
+        s += '<path d="' + areaPath(r[0], r[1]) + '" fill="#ff3b30" fill-opacity="0.16"/>';
+    });
+
+    /* garis kurva utama */
+    var steps = 140, d = '';
+    for (var i = 0; i <= steps; i++) {
+        var x = lo + (hi - lo) * i / steps;
+        d += (i === 0 ? 'M' : 'L') + rr(sx(x)) + ' ' + rr(sy(pdf(x))) + ' ';
+    }
+    s += '<path d="' + d + '" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linejoin="round"/>';
+
+    /* garis dasar */
+    s += ln(sx(lo), baseY, sx(hi), baseY, '#c7c7cc', 1);
+
+    /* garis putus-putus nilai kritis + label angka (baris 1 di bawah garis dasar) */
+    var crits = [];
+    if (c.critLeft !== null) crits.push(c.critLeft);
+    if (c.critRight !== null) crits.push(c.critRight);
+    crits.forEach(function (cv) {
+        var x = sx(cv);
+        s += ln(x, baseY, x, sy(pdf(cv)), '#ff3b30', 1.4, ' stroke-dasharray="4 3"');
+        s += tx(x, critRowY, fmt(cv, 2), { size: 11.5, weight: 700, fill: '#b3261e', halo: true });
+    });
+
+    /* label kualitatif, baris tetap di atas puncak kurva */
+    regions.forEach(function (r) {
+        var mid = (r[0] + r[1]) / 2;
+        s += tx(clamp(sx(mid), 34, W - 34), labelY, 'tolak H' + SUB0, { size: 12, weight: 700, fill: '#ff3b30', halo: true });
+    });
+    var gagalX = c.arah === 'kiri' ? clamp((sx(c.critLeft) + sx(hi)) / 2, 44, W - 44)
+        : c.arah === 'kanan' ? clamp((sx(lo) + sx(c.critRight)) / 2, 44, W - 44)
+        : sx(0);
+    s += tx(gagalX, labelY, 'gagal tolak H' + SUB0, { size: 12, weight: 700, fill: '#0071e3', halo: true });
+
+    /* penanda nilai hitung: garis + lingkaran di kurva, label angka di baris 2 bawah garis dasar */
+    var xs = sx(c.stat), ys = sy(pdf(c.stat));
+    var markColor = c.reject ? '#ff3b30' : '#0071e3';
+    s += ln(xs, baseY, xs, ys, markColor, 2);
+    s += circ(xs, ys, 5.5, markColor, '#ffffff', 2);
+    var lbl = (c.dist === 'z' ? 'Z' : 't') + ' = ' + fmt(c.stat, 2);
+    s += tx(clamp(xs, 40, W - 40), statRowY, lbl, { size: 12.5, weight: 800, fill: markColor, halo: true });
+
+    s += '</svg>';
+    el.innerHTML = s;
+}
+
+/* ===================== Logika utama ===================== */
+var $ = function (id) { return document.getElementById(id); };
+var lastCfg = null;
+
+function toggleSigma() {
+    var on = $('toggle-sigma').checked;
+    var c = $('sigma-container');
+    if (on) c.classList.add('show'); else c.classList.remove('show');
+    calculate();
+}
+
+function calculate() {
+    var n = parseFloat($('n').value);
+    var xbar = parseFloat($('xbar').value);
+    var s = parseFloat($('s').value);
+    var mu0 = parseFloat($('mu0').value);
+    var alpha = parseFloat($('alpha').value);
+    var jenis = document.querySelector('input[name="jenis"]:checked').value;
+    var arah = document.querySelector('input[name="arah"]:checked').value;
+    var sigmaOn = $('toggle-sigma').checked;
+    var sigma = sigmaOn ? parseFloat($('sigma').value) : NaN;
+
+    var valid = (n >= 2) && isFinite(xbar) && (s > 0) && isFinite(mu0) && isFinite(alpha) && (!sigmaOn || sigma > 0);
+    $('error-box').style.display = valid ? 'none' : 'block';
+    if (!valid) return;
+
+    var df = n - 1;
+    var dist, se, usedSigma = false;
+    if (jenis === 'z') {
+        dist = 'z';
+        if (sigmaOn && sigma > 0) { se = sigma / Math.sqrt(n); usedSigma = true; }
+        else { se = s / Math.sqrt(n); }
+    } else {
+        dist = 't';
+        se = s / Math.sqrt(n);
+    }
+    var stat = (xbar - mu0) / se;
+
+    var critLeft = null, critRight = null, p;
+    if (dist === 'z') {
+        if (arah === 'kiri') { critLeft = -critZOneTail(alpha); p = normTail(-stat); }
+        else if (arah === 'kanan') { critRight = critZOneTail(alpha); p = normTail(stat); }
+        else { var cv = critZTwoTail(alpha); critLeft = -cv; critRight = cv; p = 2 * normTail(Math.abs(stat)); }
+    } else {
+        if (arah === 'kiri') { critLeft = -critTOneTail(alpha, df); p = studentRightTail(-stat, df); }
+        else if (arah === 'kanan') { critRight = critTOneTail(alpha, df); p = studentRightTail(stat, df); }
+        else { var cvt = critTTwoTail(alpha, df); critLeft = -cvt; critRight = cvt; p = 2 * studentRightTail(Math.abs(stat), df); }
+    }
+    var reject = p <= alpha + 1e-9;
+
+    /* petunjuk pemilihan uji */
+    var hint = $('test-hint');
+    if (jenis === 'z' && !usedSigma && n < 30) {
+        hint.textContent = 'Perhatian: n kurang dari 30 dan \u03c3 tidak diketahui. Pada kondisi ini, uji-t umumnya lebih tepat digunakan.';
+        hint.className = 'hint warn';
+    } else if (jenis === 't' && n >= 30 && !sigmaOn) {
+        hint.textContent = 'Catatan: n sudah \u2265 30, sehingga uji-Z dengan s sebagai pendekatan \u03c3 juga bisa dipakai.';
+        hint.className = 'hint';
+    } else if (jenis === 'z' && usedSigma) {
+        hint.textContent = '\u03c3 populasi dipakai langsung pada uji-Z karena sudah diketahui.';
+        hint.className = 'hint';
+    } else if (jenis === 't' && sigmaOn) {
+        hint.textContent = '\u03c3 yang dimasukkan tidak dipakai di sini karena uji-t selalu memakai s sampel.';
+        hint.className = 'hint';
+    } else {
+        hint.textContent = '';
+        hint.className = 'hint';
+    }
+
+    /* hipotesis */
+    var hyp = {
+        kiri: { h0: 'μ ≥ ' + fmtSmart(mu0), h1: 'μ < ' + fmtSmart(mu0), verb: 'lebih kecil daripada' },
+        kanan: { h0: 'μ ≤ ' + fmtSmart(mu0), h1: 'μ > ' + fmtSmart(mu0), verb: 'lebih besar daripada' },
+        dua: { h0: 'μ = ' + fmtSmart(mu0), h1: 'μ ≠ ' + fmtSmart(mu0), verb: 'berbeda dari' }
+    }[arah];
+    $('hyp-h0').textContent = hyp.h0;
+    $('hyp-h1').textContent = hyp.h1;
+
+    /* judul kotak hasil: jenis uji + arah, bukan status */
+    var arahFull = { kiri: 'arah kiri (left-tailed)', kanan: 'arah kanan (right-tailed)', dua: 'dua arah (two-tailed)' }[arah];
+    $('test-title').textContent = (dist === 'z' ? 'uji-Z' : 'uji-t') + ' satu sampel \u00b7 ' + arahFull;
+
+    /* grid statistik */
+    $('stat-hitung-label').textContent = 'Nilai ' + (dist === 'z' ? 'Z' : 't') + ' hitung';
+    $('stat-hitung').textContent = fmt(stat, 2);
+    if (dist === 't') { $('stat-df-row').style.display = 'flex'; $('stat-df').textContent = df; }
+    else { $('stat-df-row').style.display = 'none'; }
+    $('stat-kritis-label').textContent = 'Nilai ' + (dist === 'z' ? 'Z' : 't') + ' tabel (kritis)';
+    var critText = arah === 'dua' ? '\u00b1' + fmt(critRight, 3) : (arah === 'kiri' ? fmt(critLeft, 3) : fmt(critRight, 3));
+    $('stat-kritis').textContent = critText;
+    $('stat-p').textContent = fmtP(p);
+
+    /* teks perbandingan gabungan (selaras langkah 4a/4b lembar kerja) */
+    $('cmp-text').innerHTML = 'Nilai hitung (' + fmt(stat, 2) + ') berada di daerah ' + (reject ? 'penolakan H' + SUB0 : 'gagal menolak H' + SUB0) + '.<br>'
+        + 'Nilai-p (' + fmtP(p) + ') ' + (reject ? 'lebih kecil daripada' : 'sama dengan atau lebih besar daripada') + ' \u03b1 (' + fmt(alpha, 2) + ').';
+
+    /* status tolak/gagal tolak, di bawah kurva */
+    $('verdict-status').innerHTML = reject ? 'Tolak H' + SUB0 : 'Gagal Tolak H' + SUB0;
+    $('verdict-status').className = 'verdict-status ' + (reject ? 'reject' : 'fail');
+
+    /* kalimat kesimpulan otomatis */
+    var concl;
+    if (reject) {
+        concl = 'Bukti cukup kuat untuk menolak H' + SUB0 + '. Nilai ' + (dist === 'z' ? 'Z' : 't') + ' hitung (' + fmt(stat, 2) + ')'
+            + (dist === 't' ? ' dengan df = ' + df : '') + ' berada di daerah penolakan H' + SUB0 + ' dibandingkan nilai kritis (' + critText + '), dan nilai-p (' + fmtP(p) + ') lebih kecil daripada \u03b1 (' + fmt(alpha, 2) + '). '
+            + 'Artinya, rata-rata sampel (' + fmtSmart(xbar) + ') secara statistik ' + hyp.verb + ' nilai acuan populasi (' + fmtSmart(mu0) + ') pada taraf signifikansi ' + fmt(alpha * 100, 0) + '%.';
+    } else {
+        concl = 'Bukti tidak cukup kuat untuk menolak H' + SUB0 + '. Nilai ' + (dist === 'z' ? 'Z' : 't') + ' hitung (' + fmt(stat, 2) + ')'
+            + (dist === 't' ? ' dengan df = ' + df : '') + ' berada di daerah gagal menolak H' + SUB0 + ' dibandingkan nilai kritis (' + critText + '), dan nilai-p (' + fmtP(p) + ') sama dengan atau lebih besar daripada \u03b1 (' + fmt(alpha, 2) + '). '
+            + 'Artinya, belum ada cukup bukti bahwa rata-rata populasi ' + hyp.verb + ' nilai acuan (' + fmtSmart(mu0) + ') pada taraf signifikansi ' + fmt(alpha * 100, 0) + '%.';
+    }
+    $('concl-text').innerHTML = concl;
+
+    lastCfg = { dist: dist, df: df, arah: arah, stat: stat, critLeft: critLeft, critRight: critRight, reject: reject };
+    drawTestCurve($('chart'), lastCfg);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    ['n', 'xbar', 's', 'mu0', 'sigma'].forEach(function (id) {
+        $(id).addEventListener('input', calculate);
+    });
+    $('alpha').addEventListener('change', calculate);
+    document.querySelectorAll('input[name="jenis"]').forEach(function (r) { r.addEventListener('change', calculate); });
+    document.querySelectorAll('input[name="arah"]').forEach(function (r) { r.addEventListener('change', calculate); });
+    $('toggle-sigma').addEventListener('change', toggleSigma);
+    calculate();
+});
+
+var resizeTimer = null;
+window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { if (lastCfg) drawTestCurve($('chart'), lastCfg); }, 120);
+});
+</script>
+
+</body>
+</html>
