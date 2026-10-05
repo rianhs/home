@@ -635,7 +635,7 @@ function welchT(x, y) {
     var se = Math.sqrt(a + b), diff = m1 - m2, t = diff / se;
     var df = (a + b) * (a + b) / (a * a / (n1 - 1) + b * b / (n2 - 1));
     var ci = tCI(diff, se, df);
-    return { stat: t, df: df, p: 2 * studentRightTail(Math.abs(t), df), diff: diff, se: se, lo: ci[0], hi: ci[1], d: diff / Math.sqrt(((n1 - 1) * s1 * s1 + (n2 - 1) * s2 * s2) / (n1 + n2 - 2)) };
+    return { stat: t, df: df, p: 2 * studentRightTail(Math.abs(t), df), diff: diff, se: se, lo: ci[0], hi: ci[1], d: diff / Math.sqrt((s1 * s1 + s2 * s2) / 2) };
 }
 function pairedT(d) {
     var n = d.length, md = mean(d), sd = sdev(d);
@@ -679,13 +679,34 @@ function quantileFromCum(cum, p) { /* nilai terkecil q dengan P(X <= q) >= p */
     return cum.length - 1;
 }
 
-/* pencari akar untuk fungsi menurun terhadap d */
-function rootDecreasing(f, lo, hi) {
-    for (var i = 0; i < 120; i++) {
-        var mid = (lo + hi) / 2;
-        if (f(mid) > 0) lo = mid; else hi = mid;
+/* pencari akar Brent (zeroin), port dari R_zeroin2 yang dipakai uniroot() di R.
+   Dipakai agar estimasi dan CI sama dengan wilcox.test() di R (dan Jamovi). */
+function zeroin(f, ax, bx, fa, fb, tol) {
+    var EPS = 2.220446049250313e-16, a = ax, b = bx, c = a, fc = fa, maxit = 1001;
+    if (fa === 0) return a;
+    if (fb === 0) return b;
+    while (maxit--) {
+        var prevStep = b - a, tolAct, p, q, newStep;
+        if (Math.abs(fc) < Math.abs(fb)) { a = b; b = c; c = a; fa = fb; fb = fc; fc = fa; }
+        tolAct = 2 * EPS * Math.abs(b) + tol / 2;
+        newStep = (c - b) / 2;
+        if (Math.abs(newStep) <= tolAct || fb === 0) return b;
+        if (Math.abs(prevStep) >= tolAct && Math.abs(fa) > Math.abs(fb)) {
+            var t1, t2, cb = c - b;
+            if (a === c) { t1 = fb / fa; p = cb * t1; q = 1 - t1; }
+            else { q = fa / fc; t1 = fb / fc; t2 = fb / fa; p = t2 * (cb * q * (q - t1) - (b - a) * (t1 - 1)); q = (q - 1) * (t1 - 1) * (t2 - 1); }
+            if (p > 0) q = -q; else p = -p;
+            if (p < (0.75 * cb * q - Math.abs(tolAct * q) / 2) && p < Math.abs(prevStep * q / 2)) newStep = p / q;
+        }
+        if (Math.abs(newStep) < tolAct) newStep = newStep > 0 ? tolAct : -tolAct;
+        a = b; fa = fb; b += newStep; fb = f(b);
+        if ((fb > 0 && fc > 0) || (fb < 0 && fc < 0)) { c = a; fc = fa; }
     }
-    return (lo + hi) / 2;
+    return b;
+}
+/* akar W(d) - zq pada [lo, hi] dengan toleransi 1e-4 seperti R */
+function rootR(W, zq, lo, hi, fLo, fHi) {
+    return zeroin(function (d) { return W(d) - zq; }, lo, hi, fLo - zq, fHi - zq, 1e-4);
 }
 
 /* ---------- Mann-Whitney U ---------- */
@@ -714,7 +735,7 @@ function mannWhitney(x, y) {
         var ql = n1 * n2 - qu;
         est = medianSorted(diffs); lo = diffs[qu - 1]; hi = diffs[ql];
     } else {
-        var Wf = function (d) {
+        var Wf = function (d, corr) {
             var v = new Array(n1 + n2);
             for (var a = 0; a < n1; a++) v[a] = x[a] - d;
             for (var b = 0; b < n2; b++) v[n1 + b] = y[b];
@@ -722,13 +743,17 @@ function mannWhitney(x, y) {
             for (var a2 = 0; a2 < n1; a2++) s += r.r[a2];
             var dz = s - n1 * (n1 + 1) / 2 - n1 * n2 / 2;
             var sg = Math.sqrt(n1 * n2 / 12 * ((N + 1) - tieSum(r.ties) / (N * (N - 1))));
-            return (dz - sign(dz) * 0.5) / sg;
+            return (dz - (corr ? sign(dz) * 0.5 : 0)) / sg;
         };
         var mumin = Math.min.apply(null, x) - Math.max.apply(null, y), mumax = Math.max.apply(null, x) - Math.min.apply(null, y);
-        if (Wf(mumin) - Z975 >= 0 && Wf(mumax) + Z975 <= 0) {
-            est = rootDecreasing(function (d) { return Wf(d); }, mumin, mumax);
-            lo = rootDecreasing(function (d) { return Wf(d) - Z975; }, mumin, mumax);
-            hi = rootDecreasing(function (d) { return Wf(d) + Z975; }, mumin, mumax);
+        var WfC = function (d) { return Wf(d, true); }, WfN = function (d) { return Wf(d, false); };
+        var wLo = WfC(mumin), wHi = WfC(mumax);
+        if (wLo - Z975 >= 0 && wHi + Z975 <= 0) {
+            lo = rootR(WfC, Z975, mumin, mumax, wLo, wHi);
+            hi = rootR(WfC, -Z975, mumin, mumax, wLo, wHi);
+            /* estimasi dihitung tanpa koreksi kontinuitas, sama dengan wilcox.test() di R */
+            var eLo = WfN(mumin), eHi = WfN(mumax);
+            if (isFinite(eLo) && isFinite(eHi) && eLo * eHi <= 0) est = zeroin(WfN, mumin, mumax, eLo, eHi, 1e-4);
         }
     }
     return {
@@ -764,7 +789,7 @@ function wilcoxonSR(dAll) {
         var ql = tot - qu;
         est = medianSorted(w); lo = w[qu - 1]; hi = w[ql];
     } else {
-        var Wf = function (d) {
+        var Wf = function (d, corr) {
             var xd = [], a;
             for (a = 0; a < n; a++) { var v = nz[a] - d; if (v !== 0) xd.push(v); }
             var nx = xd.length;
@@ -772,13 +797,17 @@ function wilcoxonSR(dAll) {
             for (a = 0; a < nx; a++) if (xd[a] > 0) s += r.r[a];
             var zd = s - nx * (nx + 1) / 4;
             var sg = Math.sqrt(nx * (nx + 1) * (2 * nx + 1) / 24 - tieSum(r.ties) / 48);
-            return (zd - sign(zd) * 0.5) / sg;
+            return (zd - (corr ? sign(zd) * 0.5 : 0)) / sg;
         };
         var mumin = Math.min.apply(null, nz), mumax = Math.max.apply(null, nz);
-        if (Wf(mumin) - Z975 >= 0 && Wf(mumax) + Z975 <= 0) {
-            est = rootDecreasing(function (d) { return Wf(d); }, mumin, mumax);
-            lo = rootDecreasing(function (d) { return Wf(d) - Z975; }, mumin, mumax);
-            hi = rootDecreasing(function (d) { return Wf(d) + Z975; }, mumin, mumax);
+        var WfC = function (d) { return Wf(d, true); }, WfN = function (d) { return Wf(d, false); };
+        var wLo = WfC(mumin), wHi = WfC(mumax);
+        if (wLo - Z975 >= 0 && wHi + Z975 <= 0) {
+            lo = rootR(WfC, Z975, mumin, mumax, wLo, wHi);
+            hi = rootR(WfC, -Z975, mumin, mumax, wLo, wHi);
+            /* estimasi dihitung tanpa koreksi kontinuitas, sama dengan wilcox.test() di R */
+            var eLo = WfN(mumin), eHi = WfN(mumax);
+            if (isFinite(eLo) && isFinite(eHi) && eLo * eHi <= 0) est = zeroin(WfN, mumin, mumax, eLo, eHi, 1e-4);
         }
     }
     return {
@@ -1326,11 +1355,11 @@ function conclusionText(o) {
     } else if (t === 'mw') {
         var g1 = o.rows[0], g2 = o.rows[1];
         s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perbedaan nilai antara kelompok ' + g1.name + ' (median ' + fmt(g1.median, 2) + ') dan kelompok ' + g2.name + ' (median ' + fmt(g2.median, 2) + '), dengan U = ' + fmt(R.U, 1) + ' dan ' + pTxt(R.p) + '. ';
-        s += 'Estimasi selisih median (' + g1.name + ' \u2212 ' + g2.name + ') = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
+        s += 'Estimasi Hodges-Lehmann untuk selisih lokasi (' + g1.name + ' \u2212 ' + g2.name + ') = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
     } else {
         var m1 = o.rows[0], m2 = o.rows[1];
         s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perubahan nilai dari pengukuran 1 (median ' + fmt(m1.median, 2) + ') ke pengukuran 2 (median ' + fmt(m2.median, 2) + '), dengan W = ' + fmt(R.Wp, 1) + ' dan ' + pTxt(R.p) + '. ';
-        s += 'Estimasi median selisih (pengukuran 2 \u2212 pengukuran 1) = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
+        s += 'Estimasi Hodges-Lehmann (pseudomedian selisih, pengukuran 2 \u2212 pengukuran 1) = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
     }
     if (!rej) s += ' Bukti belum cukup untuk menyatakan ada perbedaan.';
     return s;
@@ -1425,8 +1454,8 @@ function calculate() {
     var dl;
     if (test === 'student' || test === 'welch') dl = 'Selisih rerata (' + esc(o.names[0]) + ' \u2212 ' + esc(o.names[1]) + ')';
     else if (test === 'pt') dl = 'Selisih rerata (pengukuran 2 \u2212 pengukuran 1)';
-    else if (test === 'mw') dl = 'Estimasi selisih median (' + esc(o.names[0]) + ' \u2212 ' + esc(o.names[1]) + ')';
-    else dl = 'Estimasi median selisih (pengukuran 2 \u2212 pengukuran 1)';
+    else if (test === 'mw') dl = 'Estimasi Hodges-Lehmann, selisih lokasi (' + esc(o.names[0]) + ' \u2212 ' + esc(o.names[1]) + ')';
+    else dl = 'Estimasi Hodges-Lehmann, pseudomedian selisih (pengukuran 2 \u2212 pengukuran 1)';
     $('effect-grid').innerHTML = statRow(dl, isFinite(R.diff) ? fmt(R.diff, 2) : 'tidak tersedia') +
         statRow('CI 95%', ciTxt(R.lo, R.hi)) +
         statRow(o.effect.name, fmt(o.effect.value, 3)) + statRow('Kategori ukuran efek', o.effect.category);
