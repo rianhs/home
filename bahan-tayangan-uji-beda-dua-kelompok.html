@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Uji beda dua kelompok kuantitatif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F5F7; --card:#FFFFFF; --ink:#1D1D1F; --ink2:#6E6E73; --ink3:#A1A1A6;
+  --line:#E5E5EA; --fill:#F2F2F7; --bar:rgba(245,245,247,.78);
+  --blue:#007AFF; --a-ink:#0062CC; --b-ink:#B25E00; --d-ink:#1E8E3E; --red-ink:#C62828;
+  --ok-bg:rgba(52,199,89,.14); --warn-bg:rgba(255,149,0,.16); --no-bg:rgba(142,142,147,.16); --bad-bg:rgba(255,59,48,.12);
+  --shadow:0 0 0 .5px rgba(0,0,0,.05),0 2px 14px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#000; --card:#1C1C1E; --ink:#F5F5F7; --ink2:#98989D; --ink3:#636366;
+    --line:#38383A; --fill:#2C2C2E; --bar:rgba(0,0,0,.7);
+    --a-ink:#64A8FF; --b-ink:#FFB340; --d-ink:#30D158; --red-ink:#FF6961;
+    --shadow:0 0 0 .5px rgba(255,255,255,.06);
+  }
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:72px}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;
+}
+button{font-family:inherit}
+:focus-visible{outline:3px solid rgba(0,122,255,.55);outline-offset:2px}
+
+.bar{position:sticky;top:0;z-index:30;background:var(--bar);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar-in{max-width:860px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.seg{display:inline-flex;background:rgba(118,118,128,.14);border-radius:11px;padding:2px}
+.seg button{border:0;background:transparent;color:var(--ink);font-size:14px;font-weight:500;padding:7px 14px;border-radius:9px;cursor:pointer;transition:background .2s,box-shadow .2s}
+.seg button[aria-checked="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.05);font-weight:600}
+.btn{border:0;border-radius:980px;background:var(--blue);color:#fff;font-size:14px;font-weight:600;padding:9px 18px;cursor:pointer;transition:transform .12s,opacity .2s;white-space:nowrap}
+.btn:active{transform:scale(.96)}
+.btn.sec{background:rgba(0,122,255,.12);color:var(--a-ink)}
+.btn.ghost{background:transparent;color:var(--a-ink);padding:6px 4px}
+
+.wrap{max-width:860px;margin:0 auto;padding:0 20px calc(72px + env(safe-area-inset-bottom,0px))}
+header{padding-top:36px}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.025em;font-weight:700;margin:0 0 10px}
+.lead{margin:0;color:var(--ink2);font-size:17px;max-width:62ch}
+h2{font-size:22px;letter-spacing:-.015em;font-weight:650;margin:44px 0 0}
+h2 + .sub{margin:4px 0 0;color:var(--ink2);font-size:15px;max-width:64ch}
+.card{background:var(--card);border-radius:22px;padding:22px;margin-top:14px;box-shadow:var(--shadow)}
+.card.muted{color:var(--ink2);text-align:center;padding:28px}
+@media (max-width:520px){.card{padding:18px;border-radius:20px}}
+
+.settings{display:grid;gap:18px;margin-top:22px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.row label,.row .lbl{font-weight:500;font-size:15px}
+.nval{font-weight:600;color:var(--a-ink)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:6px 0 0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--line)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;margin-top:-11px;box-shadow:0 1px 4px rgba(0,0,0,.3),0 0 0 .5px rgba(0,0,0,.08)}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:0;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.switch{position:relative;width:51px;height:31px;flex:none}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:2}
+.switch i{position:absolute;inset:0;background:rgba(120,120,128,.32);border-radius:16px;transition:background .25s}
+.switch i::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:transform .25s}
+.switch input:checked + i{background:#34C759}
+.switch input:checked + i::after{transform:translateX(20px)}
+.switch input:focus-visible + i{outline:3px solid rgba(0,122,255,.55);outline-offset:2px}
+
+.pops{display:flex;gap:12px;justify-content:center;align-items:flex-start}
+.pop-col{flex:1 1 0;max-width:290px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.pop-title{font-weight:600;font-size:15px;margin-bottom:8px}
+.pop-big{width:min(100%,210px);height:auto}
+.pop-small{width:min(62%,128px);height:auto;animation:pop .35s ease-out}
+.pop-arrow{width:22px;height:34px;margin:6px 0;color:var(--ink3)}
+.pop-sub{font-size:13px;color:var(--ink2)}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+
+.tbl{width:100%;border-collapse:collapse;font-size:15px}
+.tbl th{font-weight:500;color:var(--ink2);font-size:13px;text-align:right;padding:0 0 10px 12px}
+.tbl th:first-child,.tbl td:first-child{text-align:left;padding-left:0}
+.tbl td{text-align:right;padding:10px 0 10px 12px;border-top:.5px solid var(--line)}
+.tbl td:first-child{color:var(--ink2)}
+.tbl .gname{display:inline-flex;align-items:center;gap:6px;color:var(--ink);font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.cap{font-size:13px;color:var(--ink2);margin:12px 0 0}
+.tblwrap{overflow-x:auto}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;font-weight:500;margin-bottom:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.chart{width:100%}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.vsub{font-weight:600;font-size:15px;margin:22px 0 8px}
+
+.chip{display:inline-block;border-radius:980px;padding:3px 11px;font-size:13px;font-weight:600;white-space:nowrap}
+.chip.ok{background:var(--ok-bg);color:var(--d-ink)}
+.chip.warn{background:var(--warn-bg);color:var(--b-ink)}
+.chip.no{background:var(--no-bg);color:var(--ink2)}
+.chip.bad{background:var(--bad-bg);color:var(--red-ink)}
+.asm{display:grid;gap:0}
+.asm-r{display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:center;padding:12px 0;border-top:.5px solid var(--line)}
+.asm-r:first-child{border-top:0;padding-top:0}
+.asm-n{font-weight:600;font-size:15px}
+.asm-s{grid-column:1;font-size:13px;color:var(--ink2)}
+.asm-r .chip{grid-row:1 / span 2;grid-column:2}
+.note{font-size:13px;color:var(--ink2);margin:14px 0 0;max-width:66ch}
+
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+@media (max-width:560px){.choices{grid-template-columns:1fr}}
+.choice{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:14px 16px;text-align:left;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
+.choice small{display:block;font-weight:400;color:var(--ink2);font-size:13px;margin-top:2px}
+.choice:hover{background:var(--fill)}
+.choice:active{transform:scale(.985)}
+.hint{color:var(--ink2);font-size:15px;margin:0}
+.fb{border-radius:16px;padding:14px 16px;font-size:15px;margin:0 0 12px}
+.fb.ok{background:var(--ok-bg)} .fb.warn{background:var(--warn-bg)}
+.rec{background:var(--fill);border-radius:16px;padding:16px 18px}
+.rec .k{font-size:13px;color:var(--ink2)}
+.rec .v{font-size:22px;font-weight:650;letter-spacing:-.01em;margin:2px 0 6px}
+.rec p{margin:0;font-size:15px}
+details{margin-top:14px}
+summary{cursor:pointer;color:var(--a-ink);font-weight:500;font-size:14px}
+details p{font-size:14px;color:var(--ink2);margin:8px 0 0;max-width:66ch}
+
+.res-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.res-name{font-weight:650;font-size:17px}
+.res-stat{color:var(--ink2);font-size:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:640px){.grid3{grid-template-columns:1fr}}
+.tile{background:var(--fill);border-radius:16px;padding:14px 16px}
+.tile .k{font-size:13px;color:var(--ink2);min-height:2.6em}
+.tile .v{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.tile .s{font-size:13px;color:var(--ink2);margin-top:4px}
+.interp{margin-top:16px;border-top:.5px solid var(--line);padding-top:16px}
+.interp .k{font-size:13px;color:var(--ink2);margin-bottom:4px}
+.interp p{margin:0 0 8px;font-size:15.5px;max-width:68ch}
+.cmp td:last-child{font-weight:600}
+.truth-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:.5px solid var(--line);font-size:15px}
+.truth-row:first-of-type{border-top:0}
+.truth-row span:first-child{color:var(--ink2)}
+.truth-row span:last-child{text-align:right;font-weight:600}
+.verdict{margin-top:14px}
+footer{margin-top:40px;font-size:13px;color:var(--ink2);max-width:66ch}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="seg" role="radiogroup" aria-label="Desain penelitian">
+      <button role="radio" aria-checked="true" data-act="design" data-v="ind">Independen</button>
+      <button role="radio" aria-checked="false" data-act="design" data-v="pair">Berpasangan</button>
+    </div>
+    <button class="btn" data-act="resample">Tarik ulang sampel</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <header>
+    <h1>Uji beda dua kelompok kuantitatif</h1>
+    <p class="lead">Tarik sampel dari populasi yang belum kamu ketahui, periksa datanya, pilih ujinya, lalu putuskan apakah bukti dari sampel cukup kuat untuk menolak H0.</p>
+  </header>
+
+  <section class="card settings" aria-label="Pengaturan">
+    <div>
+      <div class="row"><label for="nrange" id="nlabel">Ukuran sampel</label><span class="nval" id="nval">n = 30</span></div>
+      <input type="range" id="nrange" min="5" max="100" step="1" value="30">
+    </div>
+    <div class="row">
+      <span class="lbl">Tebak ujinya dulu</span>
+      <label class="switch"><input type="checkbox" id="guessmode" checked aria-label="Tebak ujinya dulu"><i></i></label>
+    </div>
+    <div class="row">
+      <span class="lbl">Ganti populasi dengan skenario acak yang baru</span>
+      <button class="btn sec" data-act="newpop">Populasi baru</button>
+    </div>
+  </section>
+
+  <h2>Populasi dan sampel</h2>
+  <p class="sub" id="illu-sub"></p>
+  <div class="card" id="illu"></div>
+
+  <h2>Data deskriptif</h2>
+  <div class="card" id="desc"></div>
+
+  <h2>Sebaran data</h2>
+  <div class="card" id="viz"></div>
+
+  <h2>Pemeriksaan asumsi</h2>
+  <div class="card" id="assump"></div>
+
+  <h2>Pilih uji</h2>
+  <div class="card" id="choose"></div>
+
+  <div id="results"></div>
+
+  <footer>Seluruh perhitungan berjalan di peramban. Data sampel dibulatkan seperti hasil pengukuran sungguhan, sehingga nilai kembar (ties) dapat muncul dan ditangani oleh uji berbasis peringkat. Taraf signifikansi tetap 0,05.</footer>
+</main>
+
+<script>
+(function(){
+'use strict';
+
+/*STATS-START*/
+const S=(function(){
+  const sum=a=>{let s=0;for(const x of a)s+=x;return s;};
+  const mean=a=>sum(a)/a.length;
+  const variance=a=>{const m=mean(a);let s=0;for(const x of a)s+=(x-m)*(x-m);return s/(a.length-1);};
+  const sd=a=>Math.sqrt(variance(a));
+  const sorted=a=>a.slice().sort((x,y)=>x-y);
+  const quantileS=(s,p)=>{const h=(s.length-1)*p,lo=Math.floor(h),hi=Math.ceil(h);return s[lo]+(h-lo)*(s[hi]-s[lo]);};
+  const median=a=>quantileS(sorted(a),0.5);
+  const round9=x=>Math.round(x*1e9)/1e9;
+
+  const LC=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+  function lgamma(z){
+    if(z<0.5)return Math.log(Math.PI/Math.abs(Math.sin(Math.PI*z)))-lgamma(1-z);
+    z-=1;let x=LC[0];
+    for(let i=1;i<9;i++)x+=LC[i]/(z+i);
+    const t=z+7.5;
+    return 0.5*Math.log(2*Math.PI)+(z+0.5)*Math.log(t)-t+Math.log(x);
+  }
+  function gammq(a,x){
+    if(x<=0)return 1;
+    const gln=lgamma(a);
+    if(x<a+1){
+      let ap=a,del=1/a,s=del;
+      for(let n=0;n<1000;n++){ap+=1;del*=x/ap;s+=del;if(Math.abs(del)<Math.abs(s)*1e-16)break;}
+      return 1-s*Math.exp(-x+a*Math.log(x)-gln);
+    }
+    let b=x+1-a,c=1/1e-300,d=1/b,h=d;
+    for(let i=1;i<1000;i++){
+      const an=-i*(i-a);b+=2;d=an*d+b;if(Math.abs(d)<1e-300)d=1e-300;
+      c=b+an/c;if(Math.abs(c)<1e-300)c=1e-300;d=1/d;
+      const del=d*c;h*=del;if(Math.abs(del-1)<1e-16)break;
+    }
+    return Math.exp(-x+a*Math.log(x)-gln)*h;
+  }
+  function pnorm(z){const q=0.5*gammq(0.5,z*z/2);return z<0?q:1-q;}
+  function qnorm(p){
+    if(p<=0)return -Infinity;if(p>=1)return Infinity;
+    const a=[-3.969683028665376e+01,2.209460984245205e+02,-2.759285104469687e+02,1.383577518672690e+02,-3.066479806614716e+01,2.506628277459239e+00];
+    const b=[-5.447609879822406e+01,1.615858368580409e+02,-1.556989798598866e+02,6.680131188771972e+01,-1.328068155288572e+01];
+    const c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,-2.549732539343734e+00,4.374664141464968e+00,2.938163982698783e+00];
+    const d=[7.784695709041462e-03,3.224671290700398e-01,2.445134137142996e+00,3.754408661907416e+00];
+    let x;
+    if(p<0.02425){const q=Math.sqrt(-2*Math.log(p));x=(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+    else if(p>1-0.02425){const q=Math.sqrt(-2*Math.log(1-p));x=-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+    else{const q=p-0.5,r=q*q;x=(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);}
+    for(let i=0;i<2;i++){const e=pnorm(x)-p,u=e*Math.sqrt(2*Math.PI)*Math.exp(x*x/2);x=x-u/(1+x*u/2);}
+    return x;
+  }
+  function betacf(a,b,x){
+    const FP=1e-300,qab=a+b,qap=a+1,qam=a-1;
+    let c=1,d=1-qab*x/qap;if(Math.abs(d)<FP)d=FP;d=1/d;let h=d;
+    for(let m=1;m<=500;m++){
+      const m2=2*m;
+      let aa=m*(b-m)*x/((qam+m2)*(a+m2));
+      d=1+aa*d;if(Math.abs(d)<FP)d=FP;c=1+aa/c;if(Math.abs(c)<FP)c=FP;d=1/d;h*=d*c;
+      aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));
+      d=1+aa*d;if(Math.abs(d)<FP)d=FP;c=1+aa/c;if(Math.abs(c)<FP)c=FP;d=1/d;
+      const del=d*c;h*=del;if(Math.abs(del-1)<3e-16)break;
+    }
+    return h;
+  }
+  function ibeta(x,a,b){
+    if(x<=0)return 0;if(x>=1)return 1;
+    const bt=Math.exp(lgamma(a+b)-lgamma(a)-lgamma(b)+a*Math.log(x)+b*Math.log(1-x));
+    return x<(a+1)/(a+b+2)?bt*betacf(a,b,x)/a:1-bt*betacf(b,a,1-x)/b;
+  }
+  const tTwoSided=(t,df)=>ibeta(df/(df+t*t),df/2,0.5);
+  function tQuant(p,df){ // kuantil atas: P(T<=q)=p, p>0.5
+    const target=2*(1-p);let lo=0,hi=1e4;
+    for(let i=0;i<200;i++){const mid=(lo+hi)/2;if(tTwoSided(mid,df)>target)lo=mid;else hi=mid;}
+    return (lo+hi)/2;
+  }
+  const fUpper=(F,d1,d2)=>ibeta(d2/(d2+d1*F),d2/2,d1/2);
+
+  function rankAvg(vals){
+    const idx=vals.map((_,i)=>i).sort((i,j)=>vals[i]-vals[j]);
+    const ranks=new Array(vals.length),ties=[];
+    let i=0;
+    while(i<idx.length){
+      let j=i;while(j+1<idx.length&&vals[idx[j+1]]===vals[idx[i]])j++;
+      const avg=(i+j)/2+1;for(let k=i;k<=j;k++)ranks[idx[k]]=avg;
+      ties.push(j-i+1);i=j+1;
+    }
+    return {ranks,ties};
+  }
+
+  /* Shapiro-Wilk (Royston 1995, algoritma AS R94) */
+  function shapiro(xRaw){
+    const x=sorted(xRaw),n=x.length;
+    if(n<3)return {W:NaN,p:NaN};
+    const range=x[n-1]-x[0];if(range<1e-19)return {W:NaN,p:NaN};
+    const poly=(cc,v)=>{let ret=cc[0];if(cc.length>1){let p=v*cc[cc.length-1];for(let j=cc.length-2;j>0;j--)p=(p+cc[j])*v;ret+=p;}return ret;};
+    const g=[-2.273,0.459],c1=[0,0.221157,-0.147981,-2.07119,4.434685,-2.706056],c2=[0,0.042981,-0.293762,-1.752461,5.682633,-3.582633];
+    const c3=[0.544,-0.39978,0.025054,-6.714e-4],c4=[1.3822,-0.77857,0.062767,-0.0020322],c5=[-1.5861,-0.31082,-0.083751,0.0038915],c6=[-0.4803,-0.082676,0.0030302];
+    const nn2=Math.floor(n/2),a=new Array(nn2+1).fill(0);
+    if(n===3){a[1]=Math.SQRT1_2;}
+    else{
+      const an25=n+0.25;let summ2=0;
+      for(let i=1;i<=nn2;i++){a[i]=qnorm((i-0.375)/an25);summ2+=a[i]*a[i];}
+      summ2*=2;const ssumm2=Math.sqrt(summ2),rsn=1/Math.sqrt(n);
+      const a1=poly(c1,rsn)-a[1]/ssumm2;let i1,fac;
+      if(n>5){i1=3;const a2=-a[2]/ssumm2+poly(c2,rsn);fac=Math.sqrt((summ2-2*a[1]*a[1]-2*a[2]*a[2])/(1-2*a1*a1-2*a2*a2));a[2]=a2;}
+      else{i1=2;fac=Math.sqrt((summ2-2*a[1]*a[1])/(1-2*a1*a1));}
+      a[1]=a1;for(let i=i1;i<=nn2;i++)a[i]/=-fac;
+    }
+    const coef=new Array(n).fill(0);
+    for(let i=0;i<nn2;i++){coef[i]=-a[i+1];coef[n-1-i]=a[i+1];}
+    const xm=mean(x);let ssa=0,ssx=0,sax=0;
+    for(let i=0;i<n;i++){const xs=(x[i]-xm)/range;ssa+=coef[i]*coef[i];ssx+=xs*xs;sax+=coef[i]*xs;}
+    const w1=(ssa*ssx-sax*sax)/(ssa*ssx),W=1-w1;
+    if(n===3){let pw=1.90985931710274*(Math.asin(Math.sqrt(W))-1.04719755119660);return {W,p:Math.max(0,pw)};}
+    let y=Math.log(w1),xx=Math.log(n),m,s;
+    if(n<=11){
+      const gamma=poly(g,n);if(y>=gamma)return {W,p:1e-99};
+      y=-Math.log(gamma-y);m=poly(c3,n);s=Math.exp(poly(c4,n));
+    }else{m=poly(c5,xx);s=Math.exp(poly(c6,xx));}
+    return {W,p:pnorm(-(y-m)/s)};
+  }
+
+  /* Levene berpusat pada median (Brown-Forsythe), sama dengan bawaan scipy dan car */
+  function levene(groups){
+    const z=groups.map(g=>{const m=median(g);return g.map(v=>Math.abs(v-m));});
+    const k=z.length,N=z.reduce((s,g)=>s+g.length,0),gm=mean([].concat(...z));
+    let ssb=0,ssw=0;
+    z.forEach(g=>{const m=mean(g);ssb+=g.length*(m-gm)*(m-gm);g.forEach(v=>{ssw+=(v-m)*(v-m);});});
+    const F=(ssb/(k-1))/(ssw/(N-k));
+    return {F,df1:k-1,df2:N-k,p:ssw===0?0:fUpper(F,k-1,N-k)};
+  }
+
+  const J=df=>1-3/(4*df-1);
+  function tIndep(x,y,welch){
+    const n1=x.length,n2=y.length,m1=mean(x),m2=mean(y),v1=variance(x),v2=variance(y),diff=m1-m2;
+    let se,df,d;
+    if(welch){const a=v1/n1,b=v2/n2;se=Math.sqrt(a+b);df=(a+b)*(a+b)/(a*a/(n1-1)+b*b/(n2-1));d=diff/Math.sqrt((v1+v2)/2);}
+    else{const sp2=((n1-1)*v1+(n2-1)*v2)/(n1+n2-2);se=Math.sqrt(sp2*(1/n1+1/n2));df=n1+n2-2;d=diff/Math.sqrt(sp2);}
+    const t=diff/se,p=tTwoSided(t,df),q=tQuant(0.975,df);
+    return {t,df,p,diff,se,ci:[diff-q*se,diff+q*se],d,g:d*J(df)};
+  }
+  function tPaired(dv){
+    const n=dv.length,m=mean(dv),s=sd(dv),se=s/Math.sqrt(n),df=n-1,t=m/se,p=tTwoSided(t,df),q=tQuant(0.975,df);
+    const dz=m/s;
+    return {t,df,p,diff:m,se,ci:[m-q*se,m+q*se],d:dz,g:dz*J(df)};
+  }
+
+  /* Distribusi eksak */
+  function mwDist(m,n){
+    let prev=[];for(let j=0;j<=n;j++)prev.push([1]);
+    for(let i=1;i<=m;i++){
+      const cur=[[1]];
+      for(let j=1;j<=n;j++){
+        const len=i*j+1,arr=new Array(len).fill(0),A=prev[j],B=cur[j-1],wa=i/(i+j),wb=j/(i+j);
+        for(let u=0;u<len;u++){let v=0;if(u-j>=0&&u-j<A.length)v+=wa*A[u-j];if(u<B.length)v+=wb*B[u];arr[u]=v;}
+        cur.push(arr);
+      }
+      prev=cur;
+    }
+    return prev[n];
+  }
+  function srDist(n){
+    const mx=n*(n+1)/2;let dp=new Array(mx+1).fill(0);dp[0]=1;
+    for(let k=1;k<=n;k++){const nw=new Array(mx+1).fill(0);for(let s=0;s<=mx;s++){let v=0.5*dp[s];if(s-k>=0)v+=0.5*dp[s-k];nw[s]=v;}dp=nw;}
+    return dp;
+  }
+  function qDist(dist,p){let c=0;for(let q=0;q<dist.length;q++){c+=dist[q];if(c>=p*(1-1e-12))return q;}return dist.length-1;}
+  function twoTail(dist,u){let lo=0,up=0;for(let k=0;k<dist.length;k++){if(k<=u)lo+=dist[k];if(k>=u)up+=dist[k];}return Math.min(1,2*Math.min(lo,up));}
+  /* Batas CI dicari dengan memindai interval antar titik patah (nilai selisih/rata-rata Walsh).
+     Antar dua titik patah berurutan, hasil uji tidak berubah, jadi cukup diuji di titik tengahnya.
+     Cara ini tidak bergantung pada kemonotonan W saat ada ties atau nilai nol. */
+  function scanCI(cands,W,zq,fallback){
+    const u=[...new Set(cands)].sort((a,b)=>a-b);
+    let first=-1,last=-1;
+    for(let i=0;i<u.length-1;i++){
+      if(Math.abs(W((u[i]+u[i+1])/2))<=zq){if(first<0)first=i;last=i;}
+    }
+    if(first>=0)return [u[first],u[last+1]];
+    let k=0;while(k<u.length-2&&u[k+1]<=fallback)k++;
+    return [u[k],u[Math.min(k+1,u.length-1)]];
+  }
+  const tieSum=ties=>ties.reduce((s,t)=>s+t*t*t-t,0);
+
+  function mannWhitney(x,y,alpha){
+    alpha=alpha||0.05;
+    const m=x.length,n=y.length,N=m+n,rk=rankAvg(x.concat(y));
+    let R1=0;for(let i=0;i<m;i++)R1+=rk.ranks[i];
+    const U=R1-m*(m+1)/2,mu=m*n/2,hasTies=rk.ties.some(t=>t>1),exact=m<50&&n<50&&!hasTies;
+    let p,dist=null;
+    if(exact){dist=mwDist(m,n);p=twoTail(dist,Math.round(U));}
+    else{
+      const sigma=Math.sqrt((m*n/12)*((N+1)-tieSum(rk.ties)/(N*(N-1))));
+      const z=U-mu,zc=(z-Math.sign(z)*0.5)/sigma;p=Math.min(1,2*pnorm(-Math.abs(zc)));
+    }
+    const diffs=[];for(let i=0;i<m;i++)for(let j=0;j<n;j++)diffs.push(round9(x[i]-y[j]));
+    diffs.sort((a,b)=>a-b);
+    const est=quantileS(diffs,0.5);
+    const computeCI=()=>{
+      if(exact){let qu=qDist(dist,alpha/2);if(qu===0)qu=1;const ql=m*n-qu;return [diffs[qu-1],diffs[ql]];}
+      const W=d=>{
+        const all=x.map(v=>v-d).concat(y),r=rankAvg(all);let R=0;for(let i=0;i<m;i++)R+=r.ranks[i];
+        const dz=R-m*(m+1)/2-mu,sg=Math.sqrt((m*n/12)*((N+1)-tieSum(r.ties)/(N*(N-1))));
+        return (dz-Math.sign(dz)*0.5)/sg;
+      };
+      return scanCI(diffs,W,qnorm(1-alpha/2),est);
+    };
+    let _ci=null;
+    const ps=U/(m*n);
+    return {U,p,exact,est,get ci(){if(!_ci)_ci=computeCI();return _ci;},ps,rrb:2*ps-1,m,n,hasTies};
+  }
+
+  function signedRank(dAll,alpha){
+    alpha=alpha||0.05;
+    const zeros=dAll.filter(v=>v===0).length,d=dAll.filter(v=>v!==0),n=d.length;
+    if(n<1)return null;
+    const rk=rankAvg(d.map(Math.abs));let V=0;
+    for(let i=0;i<n;i++)if(d[i]>0)V+=rk.ranks[i];
+    const tot=n*(n+1)/2,mu=n*(n+1)/4,hasTies=rk.ties.some(t=>t>1),exact=n<50&&!hasTies&&zeros===0;
+    let p,dist=null;
+    if(exact){dist=srDist(n);p=twoTail(dist,Math.round(V));}
+    else{
+      const sigma=Math.sqrt(n*(n+1)*(2*n+1)/24-tieSum(rk.ties)/48);
+      const z=V-mu,zc=(z-Math.sign(z)*0.5)/sigma;p=Math.min(1,2*pnorm(-Math.abs(zc)));
+    }
+    const wal=[];for(let i=0;i<n;i++)for(let j=i;j<n;j++)wal.push(round9((d[i]+d[j])/2));
+    wal.sort((a,b)=>a-b);
+    const est=quantileS(wal,0.5);
+    const computeCI=()=>{
+      if(exact){let qu=qDist(dist,alpha/2);if(qu===0)qu=1;const ql=tot-qu;return [wal[qu-1],wal[ql]];}
+      const W=dd=>{
+        const xd=d.map(v=>v-dd).filter(v=>v!==0),nx=xd.length;if(nx<1)return Infinity;
+        const r=rankAvg(xd.map(Math.abs));let s=0;for(let i=0;i<nx;i++)if(xd[i]>0)s+=r.ranks[i];
+        const zd=s-nx*(nx+1)/4,sg=Math.sqrt(nx*(nx+1)*(2*nx+1)/24-tieSum(r.ties)/48);
+        return (zd-Math.sign(zd)*0.5)/sg;
+      };
+      return scanCI(wal,W,qnorm(1-alpha/2),est);
+    };
+    let _ci=null;
+    return {V,p,exact,est,get ci(){if(!_ci)_ci=computeCI();return _ci;},rrb:(V-(tot-V))/tot,n,zeros,hasTies};
+  }
+
+  return {mean,sd,variance,median,sorted,quantileS,round9,pnorm,qnorm,tQuant,shapiro,levene,tIndep,tPaired,mannWhitney,signedRank};
+})();
+/*STATS-END*/
+
+/* ===== Aplikasi ===== */
+const ALPHA=0.05,NPOP=1000,KDOT=240;
+const COL={a:'#007AFF',b:'#FF9500',d:'#34C759',grey:'#8E8E93'};
+const CTX_IND=[
+  {A:'Pakan A',B:'Pakan B',v:'Pertambahan bobot badan harian (g/hari)',mu:800,rel:0.15,dec:0},
+  {A:'Vaksin X',B:'Vaksin Y',v:'Titer antibodi (log2)',mu:7,rel:0.15,dec:1},
+  {A:'Kandang terbuka',B:'Kandang tertutup',v:'Produksi telur (butir/ayam/bulan)',mu:22,rel:0.15,dec:0},
+  {A:'Sapi Bali',B:'Sapi PO',v:'Kadar glukosa darah (mg/dL)',mu:60,rel:0.15,dec:1}
+];
+const CTX_PAIR=[
+  {A:'Sebelum transportasi',B:'Sesudah transportasi',v:'Kadar kortisol (ng/mL)',mu:20,rel:0.2,dec:1},
+  {A:'Sebelum terapi',B:'Sesudah terapi',v:'Jumlah telur cacing (EPG)',mu:800,rel:0.2,dec:0},
+  {A:'Sebelum vaksinasi',B:'Sesudah vaksinasi',v:'Titer antibodi (log2)',mu:5,rel:0.2,dec:1},
+  {A:'Awal penggemukan',B:'Akhir penggemukan',v:'Bobot badan (kg)',mu:300,rel:0.15,dec:1}
+];
+const SHAPE_TXT={normal:'mendekati normal',skew:'menceng ke kanan',outlier:'berekor berat (banyak pencilan)'};
+const TESTS=[
+  {id:'student',name:'Uji t independen (Student)',des:'ind',sub:'Rerata, varians dianggap sama'},
+  {id:'welch',name:'Uji t Welch',des:'ind',sub:'Rerata, varians boleh berbeda'},
+  {id:'mw',name:'Uji Mann-Whitney U',des:'ind',sub:'Berbasis peringkat'},
+  {id:'paired',name:'Uji t berpasangan',des:'pair',sub:'Rerata selisih'},
+  {id:'wilcoxon',name:'Uji Wilcoxon signed-rank',des:'pair',sub:'Peringkat selisih'}
+];
+const tname=id=>TESTS.find(t=>t.id===id).name;
+
+const state={design:'ind',n:30,guessMode:true,pop:null,sample:null,an:null,guess:null,revealed:false,history:[]};
+
+const $=s=>document.querySelector(s);
+const fmt=(x,d)=>{
+  if(d===undefined)d=2;
+  if(x===null||x===undefined||!isFinite(x))return '-';
+  let s=x.toFixed(d);if(parseFloat(s)===0)s=(0).toFixed(d);
+  return s.replace('-','\u2212').replace('.',',');
+};
+const fmtP=p=>p<0.001?'< 0,001':fmt(p,3);
+const fmtPeq=p=>p<0.001?'< 0,001':'= '+fmt(p,3);
+const fmtInt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function wpick(items){let t=0;items.forEach(i=>t+=i[1]);let r=Math.random()*t;for(const i of items){r-=i[1];if(r<=0)return i[0];}return items[0][0];}
+function randn(){let u=0;while(u===0)u=Math.random();const v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+const mean=S.mean;
+
+/* ----- Populasi dan sampel ----- */
+function genZ(shape,N){
+  const z=new Array(N);
+  for(let i=0;i<N;i++){
+    if(shape==='normal')z[i]=randn();
+    else if(shape==='skew')z[i]=Math.exp(0.55*randn());
+    else z[i]=Math.random()<0.07?3*randn():randn();
+  }
+  const m=mean(z),s=S.sd(z);
+  return z.map(v=>(v-m)/s);
+}
+function sunflower(K,R){const pts=[];for(let i=0;i<K;i++){const r=R*Math.sqrt((i+0.5)/K),t=i*2.399963229728653;pts.push([r*Math.cos(t),r*Math.sin(t)]);}return pts;}
+function makePop(design){
+  const ctx=pick(design==='ind'?CTX_IND:CTX_PAIR);
+  const shape=wpick([['normal',4],['skew',3],['outlier',3]]);
+  const deltaAbs=wpick([[0,3],[0.3,2],[0.6,2],[1.0,2]]);
+  const sign=Math.random()<0.5?-1:1,sdBase=ctx.mu*ctx.rel,floor=ctx.mu*0.02;
+  const layout=sunflower(KDOT,92);
+  if(design==='ind'){
+    const ratio=wpick([[1,5],[2,3],[2.5,2]]),flip=Math.random()<0.5;
+    const sdA=flip?sdBase*ratio:sdBase,sdB=flip?sdBase:sdBase*ratio;
+    const sdP=Math.sqrt((sdA*sdA+sdB*sdB)/2),diff=sign*deltaAbs*sdP;
+    const zA=genZ(shape,NPOP),zB=genZ(shape,NPOP);
+    const A=zA.map(z=>Math.max(floor,ctx.mu+diff/2+sdA*z)),B=zB.map(z=>Math.max(floor,ctx.mu-diff/2+sdB*z));
+    return {design,ctx,shape,ratio,deltaAbs,A,B,trueDiff:mean(A)-mean(B),layout};
+  }
+  const dsd=sdBase*pick([0.4,0.8,1.2]),dm=sign*deltaAbs*dsd,zd=genZ(shape,NPOP),A=[],B=[];
+  for(let i=0;i<NPOP;i++){
+    const b0=Math.max(floor,ctx.mu+sdBase*randn());
+    A.push(b0);B.push(Math.max(floor,b0+dm+dsd*zd[i]));
+  }
+  const D=A.map((v,i)=>B[i]-v);
+  return {design,ctx,shape,ratio:null,deltaAbs,A,B,trueDiff:mean(D),layout};
+}
+function sampleIdx(N,n){
+  const idx=Array.from({length:N},(_,i)=>i);
+  for(let i=0;i<n;i++){const j=i+Math.floor(Math.random()*(N-i));const t=idx[i];idx[i]=idx[j];idx[j]=t;}
+  return idx.slice(0,n);
+}
+function drawSample(){
+  const p=state.pop,n=state.n,r=v=>Number(v.toFixed(p.ctx.dec));
+  if(state.design==='ind'){
+    const ia=sampleIdx(NPOP,n),ib=sampleIdx(NPOP,n);
+    state.sample={a:ia.map(i=>r(p.A[i])),b:ib.map(i=>r(p.B[i])),hlA:sampleIdx(KDOT,n),hlB:sampleIdx(KDOT,n)};
+  }else{
+    const ii=sampleIdx(NPOP,n),a=ii.map(i=>r(p.A[i])),b=ii.map(i=>r(p.B[i]));
+    state.sample={a,b,d:a.map((v,i)=>S.round9(b[i]-v)),hlA:sampleIdx(KDOT,n)};
+  }
+  state.an=analyze();
+  state.guess=null;
+  state.history.push({p:getResult(state.an.rec).p,n});
+  if(state.history.length>30)state.history.shift();
+}
+
+/* ----- Analisis ----- */
+function desc(a){const s=S.sorted(a);return {n:a.length,mean:mean(a),median:S.quantileS(s,0.5),sd:S.sd(a),min:s[0],max:s[s.length-1]};}
+function analyze(){
+  const s=state.sample;
+  if(state.design==='ind'){
+    const shA=S.shapiro(s.a),shB=S.shapiro(s.b),lev=S.levene([s.a,s.b]);
+    const normal=shA.p>=ALPHA&&shB.p>=ALPHA;
+    const rec=!normal?'mw':(lev.p>=ALPHA?'student':'welch');
+    return {design:'ind',A:desc(s.a),B:desc(s.b),shA,shB,lev,rec,
+      tests:{student:S.tIndep(s.a,s.b,false),welch:S.tIndep(s.a,s.b,true),mw:S.mannWhitney(s.a,s.b)}};
+  }
+  const shD=S.shapiro(s.d),rec=shD.p>=ALPHA?'paired':'wilcoxon';
+  return {design:'pair',A:desc(s.a),B:desc(s.b),D:desc(s.d),shD,rec,
+    tests:{paired:S.tPaired(s.d),wilcoxon:S.signedRank(s.d)}};
+}
+function effLabel(kind,v){
+  const a=Math.abs(v);
+  if(kind==='g')return a<0.2?'sangat kecil':a<0.5?'kecil':a<0.8?'sedang':'besar';
+  return a<0.1?'sangat kecil':a<0.3?'kecil':a<0.5?'sedang':'besar';
+}
+function decision(p,h0,withCI){
+  const sig=p<ALPHA;
+  if(sig)return 'Nilai p '+fmtPeq(p)+' berada di bawah 0,05'+(withCI?' dan CI 95% tidak mencakup 0':'')+', sehingga bukti dari sampel cukup kuat untuk menolak H0 ('+h0+').';
+  return 'Nilai p '+fmtPeq(p)+' tidak lebih kecil dari 0,05'+(withCI?' dan CI 95% mencakup 0':'')+', sehingga bukti dari sampel belum cukup kuat untuk menolak H0 ('+h0+'). Ini tidak membuktikan bahwa H0 benar.';
+}
+function getResult(id){
+  const an=state.an,ctx=state.pop.ctx,dd=ctx.dec+1;
+  const A=ctx.A,B=ctx.B;
+  if(id==='student'||id==='welch'){
+    const t=an.tests[id],tl=id==='student'?'Uji t independen (Student)':'Uji t Welch';
+    const dir=t.diff>=0?'lebih tinggi':'lebih rendah';
+    return {id,title:tl,stat:'t = '+fmt(t.t,2)+'; db = '+fmt(t.df,id==='student'?0:1),p:t.p,
+      estName:'Selisih rerata ('+A+' \u2212 '+B+')',est:t.diff,ci:t.ci,dec:dd,
+      effName:id==='student'?'Hedges\u2019 g':'Hedges\u2019 g (SD rerata kedua kelompok)',eff:t.g,effTxt:fmt(t.g,2),effLab:effLabel('g',t.g),
+      note:id==='welch'?'Untuk Welch, definisi ukuran efek berbeda-beda antarsumber. Di sini selisih rerata dibagi akar rerata kedua varians, lalu dikoreksi seperti Hedges.':'',
+      sentence:'Rerata '+A+' ('+fmt(an.A.mean,dd)+') '+dir+' daripada '+B+' ('+fmt(an.B.mean,dd)+'). Selisih rerata '+A+' \u2212 '+B+' adalah '+fmt(t.diff,dd)+' (CI 95% '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). '+decision(t.p,'rerata kedua populasi sama',true)+' Ukuran efek Hedges\u2019 g = '+fmt(t.g,2)+' ('+effLabel('g',t.g)+').'};
+  }
+  if(id==='mw'){
+    const t=an.tests.mw;
+    return {id,title:'Uji Mann-Whitney U',stat:'U = '+fmt(t.U,1)+(t.exact?'; p eksak':'; p aproksimasi normal'+(t.hasTies?' dengan koreksi ties':'')),p:t.p,
+      estName:'Pergeseran lokasi Hodges-Lehmann ('+A+' \u2212 '+B+')',est:t.est,ci:t.ci,dec:dd,
+      effName:'Rank-biserial r',eff:t.rrb,effTxt:fmt(t.rrb,2),effLab:effLabel('r',t.rrb),
+      extra:'Peluang unggul: '+fmt(t.ps*100,0)+'%',
+      note:'Estimasi Hodges-Lehmann adalah median seluruh selisih antar pasangan nilai, bukan selisih dua median. CI-nya berbasis peringkat dan tingkat kepercayaannya mendekati 95%. Menyebut Mann-Whitney sebagai uji beda median sahih bila bentuk sebaran kedua kelompok serupa.'+(t.exact?'':' Karena ada nilai kembar atau sampel besar, p dan CI memakai aproksimasi normal, sehingga batas CI bisa kasar.'),
+      sentence:'Median '+A+' = '+fmt(an.A.median,dd)+' dan median '+B+' = '+fmt(an.B.median,dd)+'. Pergeseran lokasi Hodges-Lehmann ('+A+' \u2212 '+B+') adalah '+fmt(t.est,dd)+' (CI 95% sekitar '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). Peluang sebuah nilai acak dari '+A+' lebih besar daripada nilai acak dari '+B+' adalah '+fmt(t.ps*100,0)+'%. '+decision(t.p,'kedua populasi memiliki sebaran yang sama',false)+' Ukuran efek rank-biserial r = '+fmt(t.rrb,2)+' ('+effLabel('r',t.rrb)+').'};
+  }
+  if(id==='paired'){
+    const t=an.tests.paired,dir=t.diff>=0?'meningkat':'menurun';
+    return {id,title:'Uji t berpasangan',stat:'t = '+fmt(t.t,2)+'; db = '+fmt(t.df,0),p:t.p,
+      estName:'Rerata selisih ('+B+' \u2212 '+A+')',est:t.diff,ci:t.ci,dec:dd,
+      effName:'Hedges\u2019 g_z (d_z terkoreksi)',eff:t.g,effTxt:fmt(t.g,2),effLab:effLabel('g',t.g),
+      note:'g_z memakai SD selisih sebagai pembagi, sehingga nilainya bergantung pada korelasi antar pasangan.',
+      sentence:'Rerata '+A+' = '+fmt(an.A.mean,dd)+' dan rerata '+B+' = '+fmt(an.B.mean,dd)+'. Nilai rata-rata '+dir+' sebesar '+fmt(Math.abs(t.diff),dd)+' (rerata selisih '+B+' \u2212 '+A+' = '+fmt(t.diff,dd)+'; CI 95% '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). '+decision(t.p,'rerata selisih di populasi sama dengan 0',true)+' Ukuran efek Hedges\u2019 g_z = '+fmt(t.g,2)+' ('+effLabel('g',t.g)+').'};
+  }
+  const t=an.tests.wilcoxon;
+  return {id:'wilcoxon',title:'Uji Wilcoxon signed-rank',stat:'V = '+fmt(t.V,1)+(t.exact?'; p eksak':'; p aproksimasi normal'+(t.hasTies?' dengan koreksi ties':''))+(t.zeros?'; '+t.zeros+' selisih nol dibuang':''),p:t.p,
+    estName:'Pergeseran lokasi Hodges-Lehmann selisih ('+B+' \u2212 '+A+')',est:t.est,ci:t.ci,dec:dd,
+    effName:'Rank-biserial r (berpasangan)',eff:t.rrb,effTxt:fmt(t.rrb,2),effLab:effLabel('r',t.rrb),
+    note:'Estimasi Hodges-Lehmann adalah median rata-rata Walsh dari selisih. CI-nya berbasis peringkat dan tingkat kepercayaannya mendekati 95%. Wilcoxon mengasumsikan sebaran selisih simetris, jadi periksa histogram selisih.'+(t.exact?'':' Karena ada nilai kembar, selisih nol, atau sampel besar, p dan CI memakai aproksimasi normal, sehingga batas CI bisa kasar. Selisih nol tidak ikut dalam perhitungan CI.'),
+    sentence:'Median selisih ('+B+' \u2212 '+A+') = '+fmt(an.D.median,dd)+'. Pergeseran lokasi Hodges-Lehmann selisih adalah '+fmt(t.est,dd)+' (CI 95% sekitar '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). '+decision(t.p,'selisih berpusat di 0 pada populasi',false)+' Ukuran efek rank-biserial r = '+fmt(t.rrb,2)+' ('+effLabel('r',t.rrb)+').'};
+}
+function recReason(){
+  const an=state.an,ctx=state.pop.ctx;
+  if(an.design==='ind'){
+    const nA=an.shA.p<ALPHA,nB=an.shB.p<ALPHA;
+    if(an.rec==='mw'){
+      const who=[];if(nA||isNaN(an.shA.p))who.push(ctx.A+' (p '+fmtPeq(an.shA.p)+')');if(nB||isNaN(an.shB.p))who.push(ctx.B+' (p '+fmtPeq(an.shB.p)+')');
+      return 'Shapiro-Wilk menunjukkan penyimpangan dari normal pada '+who.join(' dan ')+'. Karena asumsi normalitas tidak terpenuhi, dipakai uji berbasis peringkat.';
+    }
+    if(an.rec==='student')return 'Kedua kelompok konsisten dengan sebaran normal (p '+fmtPeq(an.shA.p)+' dan p '+fmtPeq(an.shB.p)+') dan Levene tidak menunjukkan perbedaan varians (p '+fmtPeq(an.lev.p)+'), sehingga varians dianggap sama.';
+    return 'Kedua kelompok konsisten dengan sebaran normal (p '+fmtPeq(an.shA.p)+' dan p '+fmtPeq(an.shB.p)+') tetapi Levene menunjukkan varians berbeda (p '+fmtPeq(an.lev.p)+'), sehingga koreksi Welch dipakai.';
+  }
+  if(an.rec==='paired')return 'Selisih konsisten dengan sebaran normal (Shapiro-Wilk p '+fmtPeq(an.shD.p)+'), sehingga rerata selisih diuji dengan t berpasangan.';
+  return 'Selisih menyimpang dari normal (Shapiro-Wilk p '+fmtPeq(an.shD.p)+'), sehingga dipakai uji berbasis peringkat.';
+}
+
+/* ----- Render teks ----- */
+function legend(items){return '<div class="legend">'+items.map(i=>'<span><i style="background:'+i[1]+'"></i>'+i[0]+'</span>').join('')+'</div>';}
+
+function renderBar(){
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-checked',b.dataset.v===state.design?'true':'false'));
+  $('#nlabel').textContent=state.design==='ind'?'Ukuran sampel per kelompok':'Jumlah pasangan';
+  $('#nval').textContent='n = '+state.n;
+}
+function bigCircle(color,layout,hl,paired){
+  const set=new Set(hl);let s='<svg class="pop-big" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="97" fill="'+color+'" fill-opacity=".08" stroke="'+color+'" stroke-opacity=".55" stroke-width="1.5"/>';
+  layout.forEach((p,i)=>{
+    const x=(100+p[0]).toFixed(1),y=(100+p[1]).toFixed(1);
+    s+=set.has(i)?'<circle cx="'+x+'" cy="'+y+'" r="4.3" fill="'+color+'"/>':'<circle cx="'+x+'" cy="'+y+'" r="2.4" fill="'+color+'" fill-opacity=".32"/>';
+  });
+  return s+'</svg>';
+}
+function smallCircle(color,n,pair){
+  const R=54,rd=Math.max(1.5,Math.min(6,0.62*R/Math.sqrt(n))),pts=sunflower(n,R-rd-(pair?rd:0)-2);
+  let s='<svg class="pop-small" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="57" fill="'+color+'" fill-opacity=".1" stroke="'+color+'" stroke-width="1.5"/>';
+  if(pair){
+    const r2=Math.max(1.2,rd*0.62);
+    pts.forEach(p=>{const x=60+p[0],y=60+p[1];s+='<circle cx="'+(x-r2).toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r2.toFixed(1)+'" fill="'+COL.a+'"/><circle cx="'+(x+r2).toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r2.toFixed(1)+'" fill="'+COL.b+'"/>';});
+  }else pts.forEach(p=>{s+='<circle cx="'+(60+p[0]).toFixed(1)+'" cy="'+(60+p[1]).toFixed(1)+'" r="'+rd.toFixed(1)+'" fill="'+color+'"/>';});
+  return s+'</svg>';
+}
+const ARROW='<svg class="pop-arrow" viewBox="0 0 22 34" aria-hidden="true"><path d="M11 2v26M4 21l7 8 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function renderIllu(){
+  const p=state.pop,s=state.sample,n=state.n,c=p.ctx;
+  if(state.design==='ind'){
+    $('#illu-sub').textContent='Dua populasi dengan sebaran yang belum kamu ketahui. Titik terang di lingkaran besar adalah subjek yang terpilih menjadi sampel.';
+    const col=(name,color,hl)=>'<div class="pop-col"><div class="pop-title" style="color:'+color+'">'+name+'</div>'+bigCircle(color,p.layout,hl)+'<div class="pop-sub">Populasi, N = '+fmtInt(NPOP)+'</div>'+ARROW+smallCircle(color,n)+'<div class="pop-sub">Sampel, n = '+n+'</div></div>';
+    $('#illu').innerHTML='<div class="pops">'+col(c.A,COL.a,s.hlA)+col(c.B,COL.b,s.hlB)+'</div><p class="cap" style="text-align:center">Variabel yang diukur: '+c.v+'</p>';
+  }else{
+    $('#illu-sub').textContent='Satu populasi subjek, tiap subjek diukur dua kali. Setiap titik sampel membawa sepasang nilai: biru untuk pengukuran pertama dan oranye untuk pengukuran kedua.';
+    $('#illu').innerHTML='<div class="pops"><div class="pop-col"><div class="pop-title">Populasi subjek</div>'+bigCircle('#8E8E93',p.layout,s.hlA)+'<div class="pop-sub">Populasi, N = '+fmtInt(NPOP)+' subjek</div>'+ARROW+smallCircle('#8E8E93',n,true)+'<div class="pop-sub">Sampel, n = '+n+' pasang</div></div></div><p class="cap" style="text-align:center">Pengukuran: '+c.A+' dan '+c.B+'. Variabel: '+c.v+'</p>';
+  }
+}
+function renderDesc(){
+  const an=state.an,c=state.pop.ctx,dd=c.dec+1;
+  const cols=[{n:c.A,c:COL.a,s:an.A},{n:c.B,c:COL.b,s:an.B}];
+  if(an.design==='pair')cols.push({n:'Selisih',c:COL.d,s:an.D});
+  const rows=[['n','n',0],['Rerata','mean',dd],['Median','median',dd],['SD','sd',dd],['Minimum','min',c.dec],['Maksimum','max',c.dec]];
+  let h='<div class="tblwrap"><table class="tbl"><thead><tr><th></th>'+cols.map(x=>'<th><span class="gname"><i class="dot" style="background:'+x.c+'"></i>'+x.n+'</span></th>').join('')+'</tr></thead><tbody>';
+  rows.forEach(r=>{h+='<tr><td>'+r[0]+'</td>'+cols.map(x=>'<td>'+fmt(x.s[r[1]],r[2])+'</td>').join('')+'</tr>';});
+  h+='</tbody></table></div>';
+  if(an.design==='pair')h+='<p class="cap">Selisih = '+c.B+' \u2212 '+c.A+', dihitung per subjek.</p>';
+  $('#desc').innerHTML=h;
+}
+function renderViz(){
+  const c=state.pop.ctx;
+  let h=legend([[c.A,COL.a],[c.B,COL.b]])+'<div class="chart" data-chart="dist"></div>';
+  if(state.design==='pair')h+='<div class="vsub">Selisih per subjek ('+c.B+' \u2212 '+c.A+')</div>'+legend([['Selisih',COL.d]])+'<div class="chart" data-chart="diff"></div>';
+  h+='<p class="cap">Batang adalah histogram dan garis lengkung adalah kurva densitas. Pada boxplot, lingkaran putih menandai rerata dan titik kecil menandai pencilan (di luar 1,5 \u00d7 IQR).'+(state.design==='pair'?' Garis putus-putus menandai selisih 0.':'')+'</p>';
+  $('#viz').innerHTML=h;
+}
+function chipFor(ok,okTxt,badTxt){return ok?'<span class="chip ok">'+okTxt+'</span>':'<span class="chip warn">'+badTxt+'</span>';}
+function renderAssump(){
+  const an=state.an,c=state.pop.ctx;let h='<div class="asm">';
+  const sh=(name,r)=>'<div class="asm-r"><div class="asm-n">Shapiro-Wilk, '+name+'</div>'+chipFor(r.p>=ALPHA,'Konsisten dengan normal','Menyimpang dari normal')+'<div class="asm-s">W = '+fmt(r.W,3)+'; p '+fmtPeq(r.p)+'</div></div>';
+  if(an.design==='ind'){
+    h+=sh(c.A,an.shA)+sh(c.B,an.shB)+'<div class="asm-r"><div class="asm-n">Levene, kesamaan varians</div>'+chipFor(an.lev.p>=ALPHA,'Varians setara','Varians berbeda')+'<div class="asm-s">F = '+fmt(an.lev.F,2)+'; db = '+an.lev.df1+' dan '+an.lev.df2+'; p '+fmtPeq(an.lev.p)+'</div></div>';
+  }else h+=sh('selisih',an.shD);
+  h+='</div><p class="note">Hasil uji asumsi perlu dibaca bersama histogram dan boxplot. Pada n kecil, uji normalitas sulit mendeteksi penyimpangan. Pada n besar, penyimpangan sekecil apa pun bisa menghasilkan p kecil. Levene di sini berpusat pada median, sama dengan bawaan scipy dan paket car di R.</p>';
+  $('#assump').innerHTML=h;
+}
+function renderChoose(){
+  const an=state.an,el=$('#choose'),des=state.design;
+  const intro=des==='ind'?'Kedua kelompok berisi subjek yang berbeda, jadi desainnya independen.':'Setiap subjek diukur dua kali, jadi desainnya berpasangan.';
+  if(state.guessMode&&state.guess===null){
+    el.innerHTML='<p class="hint">'+intro+' Berdasarkan data dan hasil asumsi di atas, uji mana yang kamu pilih dari kelima uji berikut?</p><div class="choices">'+TESTS.map(t=>'<button class="choice" data-act="guess" data-id="'+t.id+'">'+t.name+'<small>'+t.sub+'</small></button>').join('')+'</div><p style="margin:14px 0 0"><button class="btn ghost" data-act="skip">Tampilkan jawaban tanpa menebak</button></p>';
+    return;
+  }
+  let h='';
+  if(state.guessMode&&state.guess!=='skip'){
+    const g=TESTS.find(t=>t.id===state.guess),gd=g.des;
+    if(g.id===an.rec)h+='<div class="fb ok"><b>Tepat.</b> Kamu memilih '+g.name+'.</div>';
+    else if(gd!==des)h+='<div class="fb warn"><b>Belum tepat.</b> '+g.name+' dipakai untuk desain '+(gd==='ind'?'independen':'berpasangan')+', padahal data ini berdesain '+(des==='ind'?'independen':'berpasangan')+'. '+intro+'</div>';
+    else h+='<div class="fb warn"><b>Belum tepat.</b> Kamu memilih '+g.name+'. Berdasarkan hasil asumsi, uji yang dianjurkan berbeda.</div>';
+  }
+  h+='<div class="rec"><div class="k">Uji yang dianjurkan</div><div class="v">'+tname(an.rec)+'</div><p>'+recReason()+'</p></div>';
+  h+='<details><summary>Catatan tentang aturan pemilihan uji</summary><p>Aturan di sini dipakai untuk latihan: normalitas kelompok (atau selisih) diperiksa dahulu, lalu Levene menentukan Student atau Welch. Uji normalitas kurang peka pada n kecil dan terlalu peka pada n besar, sehingga banyak ahli menyarankan Welch sebagai pilihan bawaan untuk dua kelompok independen yang kira-kira normal. Bentuk sebaran, ukuran sampel, dan pencilan tetap perlu dinilai secara visual.</p></details>';
+  el.innerHTML=h;
+}
+function renderResults(){
+  const el=$('#results');
+  if(state.guessMode&&state.guess===null){el.innerHTML='<h2>Hasil uji</h2><div class="card muted">Pilih satu uji di atas untuk membuka hasilnya.</div>';return;}
+  const an=state.an,r=getResult(an.rec),sig=r.p<ALPHA,d=r.dec;
+  let h='<h2>Hasil uji</h2><div class="card"><div class="res-head"><span class="res-name">'+r.title+'</span><span class="res-stat">'+r.stat+'</span></div>';
+  h+='<div class="grid3">';
+  h+='<div class="tile"><div class="k">Nilai p</div><div class="v">'+fmtP(r.p)+'</div><div class="s">'+(sig?'<span class="chip ok">Tolak H0</span>':'<span class="chip no">Gagal menolak H0</span>')+'</div></div>';
+  h+='<div class="tile"><div class="k">'+r.estName+'</div><div class="v">'+fmt(r.est,d)+'</div><div class="s">CI 95%: '+fmt(r.ci[0],d)+' sampai '+fmt(r.ci[1],d)+'</div></div>';
+  h+='<div class="tile"><div class="k">'+r.effName+'</div><div class="v">'+r.effTxt+'</div><div class="s">Efek '+r.effLab+(r.extra?'. '+r.extra:'')+'</div></div></div>';
+  h+='<div class="chart" data-chart="ci" style="margin-top:14px"></div>';
+  h+='<p class="note" style="margin-top:4px">Garis putus-putus menandai 0, yaitu keadaan tanpa perbedaan menurut H0. Batas efek (kecil, sedang, besar) berfungsi sebagai patokan kasar dan perlu dibaca sesuai konteks biologisnya.'+(r.note?' '+r.note:'')+'</p>';
+  h+='<div class="interp"><div class="k">Interpretasi</div><p id="interp-text">'+r.sentence+'</p><button class="btn sec" data-act="copy">Salin interpretasi</button></div>';
+  const ids=TESTS.filter(t=>t.des===state.design).map(t=>t.id);
+  h+='<details><summary>Bandingkan semua uji pada data yang sama</summary><div class="tblwrap" style="margin-top:10px"><table class="tbl cmp"><thead><tr><th>Uji</th><th>Nilai p</th></tr></thead><tbody>'+ids.map(id=>{const p=an.tests[id].p;return '<tr><td>'+tname(id)+(id===an.rec?' (dianjurkan)':'')+'</td><td>'+fmtP(p)+'</td></tr>';}).join('')+'</tbody></table></div></details>';
+  h+='</div>';
+  // riwayat
+  const hs=state.history,nsig=hs.filter(x=>x.p<ALPHA).length;
+  h+='<h2>Nilai p lintas penarikan sampel</h2><p class="sub">Tiap kali sampel ditarik ulang dari populasi yang sama, nilai p ikut berubah dan keputusannya kadang berbalik.</p><div class="card"><div class="chart" data-chart="hist"></div><p class="cap">'+nsig+' dari '+hs.length+' penarikan menghasilkan p < 0,05 (titik biru), diukur dengan uji yang dianjurkan pada setiap penarikan. Titik dengan cincin adalah penarikan terbaru.</p></div>';
+  // kebenaran
+  const p=state.pop;
+  if(!state.revealed){
+    h+='<div class="card muted" style="margin-top:26px">Sudah menentukan kesimpulan? Bandingkan dengan keadaan populasi yang sebenarnya.<div style="margin-top:14px"><button class="btn" data-act="reveal">Buka kebenaran populasi</button></div></div>';
+  }else{
+    const h0true=p.deltaAbs===0,dn=state.pop.ctx.dec+1,c=p.ctx;
+    let v,cls;
+    if(sig&&!h0true){v='Keputusan benar. Efek memang ada di populasi dan berhasil terdeteksi oleh sampel ini.';cls='ok';}
+    else if(sig&&h0true){v='Positif palsu (galat tipe I). H0 sebenarnya benar, tetapi sampel ini kebetulan menghasilkan p < 0,05.';cls='warn';}
+    else if(!sig&&!h0true){v='Negatif palsu (galat tipe II). Efek ada di populasi, tetapi sampel ini belum cukup kuat untuk mendeteksinya. Coba naikkan n atau tarik ulang sampel.';cls='warn';}
+    else{v='Keputusan benar. H0 benar dan tidak ditolak.';cls='ok';}
+    h+='<h2>Kebenaran populasi</h2><div class="card">';
+    h+=state.design==='ind'
+      ?'<div class="truth-row"><span>Selisih rerata populasi ('+c.A+' \u2212 '+c.B+')</span><span>'+fmt(p.trueDiff,dn)+'</span></div><div class="truth-row"><span>Rasio SD kedua populasi</span><span>'+fmt(p.ratio,1)+' kali</span></div>'
+      :'<div class="truth-row"><span>Rerata selisih populasi ('+c.B+' \u2212 '+c.A+')</span><span>'+fmt(p.trueDiff,dn)+'</span></div>';
+    h+='<div class="truth-row"><span>Bentuk sebaran '+(state.design==='ind'?'kedua populasi':'selisih di populasi')+'</span><span>'+SHAPE_TXT[p.shape]+'</span></div><div class="truth-row"><span>H0 (tidak ada perbedaan rerata)</span><span>'+(h0true?'benar':'salah')+'</span></div>';
+    h+='<div class="fb '+cls+' verdict">'+v+'</div><p class="note">Pada populasi menceng atau berpencilan, selisih rerata populasi tetap dipakai sebagai acuan. Uji berbasis peringkat membandingkan sebaran secara keseluruhan, jadi keputusannya bisa berbeda dari uji rerata.</p></div>';
+  }
+  el.innerHTML=h;
+}
+
+/* ----- Grafik ----- */
+const r1=v=>Math.round(v*10)/10;
+function niceTicks(lo,hi,cnt){
+  const raw=(hi-lo)/cnt,mag=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/mag,step=(f<1.5?1:f<3?2:f<7?5:10)*mag,t=[];
+  for(let v=Math.ceil(lo/step)*step;v<=hi+1e-9;v+=step)t.push(Math.round(v/step)*step);
+  return {t,dec:step<1?Math.ceil(-Math.log10(step)-1e-9):0};
+}
+function axis(x,lo,hi,yBase,W,m){
+  const nt=niceTicks(lo,hi,W<420?4:6);
+  let s='<line x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+yBase+'" y2="'+yBase+'" stroke="var(--line)"/>';
+  nt.t.forEach(v=>{s+='<line x1="'+r1(x(v))+'" x2="'+r1(x(v))+'" y1="'+yBase+'" y2="'+(yBase+4)+'" stroke="var(--ink3)"/><text x="'+r1(x(v))+'" y="'+(yBase+17)+'" text-anchor="middle" font-size="11" fill="var(--ink2)">'+fmt(v,nt.dec)+'</text>';});
+  return s;
+}
+function distChart(W,series,o){
+  o=o||{};
+  const m={l:14,r:14,t:10},hH=o.hH||180,rowH=34,axH=26,gap=14,H=m.t+hH+gap+series.length*rowH+axH;
+  const all=[].concat(...series.map(s=>s.values));
+  let lo=Math.min(...all),hi=Math.max(...all);
+  const dl=lo,dh=hi;
+  if(o.zero){lo=Math.min(lo,0);hi=Math.max(hi,0);}
+  const pad=(hi-lo)*0.09||1;lo-=pad;hi+=pad;
+  const x=v=>m.l+(v-lo)/(hi-lo)*(W-m.l-m.r),base=m.t+hH;
+  const nmax=Math.max(...series.map(s=>s.values.length)),nb=Math.max(6,Math.min(14,Math.round(Math.sqrt(nmax)*1.4))),bw=(dh-dl)/nb||1;
+  const info=series.map(s=>{
+    const n=s.values.length,bins=new Array(nb).fill(0);
+    s.values.forEach(v=>{bins[Math.min(nb-1,Math.floor((v-dl)/bw))]++;});
+    const dens=bins.map(c=>c/(n*bw)),sv=S.sorted(s.values),q1=S.quantileS(sv,0.25),q3=S.quantileS(sv,0.75),sdv=S.sd(s.values);
+    let h=0.9*Math.min(sdv,(q3-q1)/1.34||sdv)*Math.pow(n,-0.2);if(!(h>0))h=bw/2;
+    const kde=[];for(let i=0;i<=120;i++){const gx=lo+(hi-lo)*i/120;let d=0;for(const v of s.values){const u=(gx-v)/h;d+=Math.exp(-0.5*u*u);}kde.push([gx,d/(n*h*Math.sqrt(2*Math.PI))]);}
+    return {dens,kde,sv,q1,q3,med:S.quantileS(sv,0.5),mean:mean(s.values)};
+  });
+  let ymax=0;info.forEach(i=>{i.dens.forEach(d=>ymax=Math.max(ymax,d));i.kde.forEach(k=>ymax=Math.max(ymax,k[1]));});ymax*=1.08;
+  const y=d=>base-d/ymax*hH;
+  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Histogram, kurva densitas, dan boxplot">';
+  info.forEach((inf,k)=>{
+    const col=series[k].color;
+    inf.dens.forEach((d,i)=>{const x0=x(dl+i*bw),x1=x(dl+(i+1)*bw),hh=d/ymax*hH;s+='<rect x="'+r1(x0+0.5)+'" y="'+r1(base-hh)+'" width="'+r1(Math.max(1,x1-x0-1))+'" height="'+r1(hh)+'" rx="3" fill="'+col+'" fill-opacity="'+(series.length>1?0.3:0.38)+'"/>';});
+  });
+  info.forEach((inf,k)=>{s+='<path d="M'+inf.kde.map(p=>r1(x(p[0]))+' '+r1(y(p[1]))).join(' L')+'" fill="none" stroke="'+series[k].color+'" stroke-width="2.2" stroke-linejoin="round"/>';});
+  const yb=base+gap+series.length*rowH;
+  if(o.zero){const zx=r1(x(0));s+='<line x1="'+zx+'" x2="'+zx+'" y1="'+m.t+'" y2="'+yb+'" stroke="var(--ink2)" stroke-dasharray="4 4"/>';}
+  info.forEach((inf,k)=>{
+    const col=series[k].color,cy=base+gap+k*rowH+rowH/2,iqr=inf.q3-inf.q1;
+    const wl=inf.sv.filter(v=>v>=inf.q1-1.5*iqr)[0],wh=inf.sv.filter(v=>v<=inf.q3+1.5*iqr).pop();
+    s+='<line x1="'+r1(x(wl))+'" x2="'+r1(x(wh))+'" y1="'+cy+'" y2="'+cy+'" stroke="'+col+'" stroke-width="1.6"/>';
+    s+='<line x1="'+r1(x(wl))+'" x2="'+r1(x(wl))+'" y1="'+(cy-5)+'" y2="'+(cy+5)+'" stroke="'+col+'" stroke-width="1.6"/><line x1="'+r1(x(wh))+'" x2="'+r1(x(wh))+'" y1="'+(cy-5)+'" y2="'+(cy+5)+'" stroke="'+col+'" stroke-width="1.6"/>';
+    s+='<rect x="'+r1(x(inf.q1))+'" y="'+(cy-10)+'" width="'+r1(Math.max(2,x(inf.q3)-x(inf.q1)))+'" height="20" rx="6" fill="'+col+'" fill-opacity=".22" stroke="'+col+'" stroke-width="1.6"/>';
+    s+='<line x1="'+r1(x(inf.med))+'" x2="'+r1(x(inf.med))+'" y1="'+(cy-10)+'" y2="'+(cy+10)+'" stroke="'+col+'" stroke-width="3" stroke-linecap="round"/>';
+    inf.sv.filter(v=>v<inf.q1-1.5*iqr||v>inf.q3+1.5*iqr).forEach(v=>{s+='<circle cx="'+r1(x(v))+'" cy="'+cy+'" r="2.8" fill="'+col+'"/>';});
+    s+='<circle cx="'+r1(x(inf.mean))+'" cy="'+cy+'" r="4.2" fill="#fff" stroke="'+col+'" stroke-width="1.8"/>';
+  });
+  s+=axis(x,lo,hi,yb,W,m);
+  return s+'</svg>';
+}
+function ciChart(W,est,lo,hi,sig){
+  const m={l:16,r:16},H=100;let a=Math.min(lo,0,est),b=Math.max(hi,0,est);const pad=(b-a)*0.2||1;a-=pad;b+=pad;
+  const x=v=>m.l+(v-a)/(b-a)*(W-m.l-m.r),col=sig?COL.a:COL.grey,zx=r1(x(0));
+  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Estimasi dan CI 95% terhadap nol">';
+  s+='<line x1="'+zx+'" x2="'+zx+'" y1="14" y2="68" stroke="var(--ink2)" stroke-dasharray="4 4"/><text x="'+zx+'" y="9" text-anchor="middle" font-size="11" fill="var(--ink2)">H0: 0</text>';
+  s+='<line x1="'+r1(x(lo))+'" x2="'+r1(x(hi))+'" y1="42" y2="42" stroke="'+col+'" stroke-width="10" stroke-linecap="round" stroke-opacity=".45"/>';
+  s+='<circle cx="'+r1(x(est))+'" cy="42" r="8" fill="#fff" stroke="'+col+'" stroke-width="3"/>';
+  s+=axis(x,a,b,68,W,m);
+  return s+'</svg>';
+}
+function histChart(W,hs){
+  const m={l:34,r:10,t:10,b:22},H=140,n=hs.length,x=i=>m.l+(n===1?(W-m.l-m.r)/2:i/(n-1)*(W-m.l-m.r)),y=p=>m.t+(1-p)*(H-m.t-m.b);
+  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Riwayat nilai p">';
+  [0,0.5,1].forEach(v=>{s+='<line x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+r1(y(v))+'" y2="'+r1(y(v))+'" stroke="var(--line)"/><text x="'+(m.l-6)+'" y="'+r1(y(v)+4)+'" text-anchor="end" font-size="11" fill="var(--ink2)">'+fmt(v,1)+'</text>';});
+  s+='<line x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+r1(y(0.05))+'" y2="'+r1(y(0.05))+'" stroke="'+COL.b+'" stroke-dasharray="4 3"/><text x="'+(W-m.r)+'" y="'+r1(y(0.05)-4)+'" text-anchor="end" font-size="11" fill="var(--b-ink)">0,05</text>';
+  hs.forEach((h,i)=>{const sig=h.p<ALPHA,col=sig?COL.a:COL.grey;if(i===n-1)s+='<circle cx="'+r1(x(i))+'" cy="'+r1(y(h.p))+'" r="8" fill="none" stroke="'+col+'" stroke-width="1.6"/>';s+='<circle cx="'+r1(x(i))+'" cy="'+r1(y(h.p))+'" r="4.5" fill="'+col+'"/>';});
+  s+='<text x="'+m.l+'" y="'+(H-4)+'" font-size="11" fill="var(--ink2)">penarikan pertama</text><text x="'+(W-m.r)+'" y="'+(H-4)+'" text-anchor="end" font-size="11" fill="var(--ink2)">terbaru</text>';
+  return s+'</svg>';
+}
+function drawCharts(){
+  const an=state.an,s=state.sample,c=state.pop.ctx;
+  document.querySelectorAll('[data-chart]').forEach(el=>{
+    const W=Math.max(260,Math.floor(el.clientWidth||el.parentElement.clientWidth||640)),k=el.dataset.chart;
+    if(k==='dist')el.innerHTML=distChart(W,[{values:s.a,color:COL.a},{values:s.b,color:COL.b}],{zero:false});
+    else if(k==='diff')el.innerHTML=distChart(W,[{values:s.d,color:COL.d}],{zero:true,hH:150});
+    else if(k==='ci'){const r=getResult(an.rec);el.innerHTML=ciChart(W,r.est,r.ci[0],r.ci[1],r.p<ALPHA);}
+    else if(k==='hist')el.innerHTML=histChart(W,state.history);
+  });
+}
+
+/* ----- Alur ----- */
+function renderAll(){renderBar();renderIllu();renderDesc();renderViz();renderAssump();renderChoose();renderResults();drawCharts();}
+function renderGuess(){renderChoose();renderResults();drawCharts();}
+function newPop(){state.pop=makePop(state.design);state.history=[];state.revealed=false;drawSample();renderAll();}
+function resample(){drawSample();renderAll();}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;
+  const a=t.dataset.act;
+  if(a==='design'){if(state.design!==t.dataset.v){state.design=t.dataset.v;newPop();}}
+  else if(a==='resample')resample();
+  else if(a==='newpop')newPop();
+  else if(a==='guess'){state.guess=t.dataset.id;renderGuess();}
+  else if(a==='skip'){state.guess='skip';renderGuess();}
+  else if(a==='reveal'){state.revealed=true;renderGuess();}
+  else if(a==='copy'){
+    const txt=$('#interp-text').textContent;
+    const done=()=>{t.textContent='Tersalin';setTimeout(()=>{t.textContent='Salin interpretasi';},1600);};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,done);
+    else{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(_){}document.body.removeChild(ta);done();}
+  }
+});
+const nr=$('#nrange');
+nr.addEventListener('input',()=>{state.n=+nr.value;$('#nval').textContent='n = '+state.n;});
+nr.addEventListener('change',()=>{state.n=+nr.value;resample();});
+$('#guessmode').addEventListener('change',e=>{state.guessMode=e.target.checked;if(!state.guessMode)state.guess=null;renderGuess();});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(drawCharts,120);});
+
+newPop();
+})();
+</script>
+</body>
+</html>
