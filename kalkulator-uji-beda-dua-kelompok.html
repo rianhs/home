@@ -380,7 +380,7 @@ input.txt:focus { outline: none; border-color: var(--accent-blue); background: #
             <li>Uji-t Welch memakai derajat bebas Welch-Satterthwaite. Cohen's d pada uji-t Student memakai SD gabungan, pada uji-t Welch memakai akar dari rata-rata kedua varians, dan pada uji-t berpasangan adalah rerata selisih dibagi SD selisih. Ketiganya sama dengan Jamovi.</li>
             <li>Mann-Whitney U dan Wilcoxon signed-rank memakai nilai-p eksak jika kedua kelompok (atau jumlah pasangan) kurang dari 50 dan tidak ada nilai kembar. Pada Wilcoxon, selisih nol juga membuat perhitungan beralih ke pendekatan normal. Pada kondisi lain dipakai pendekatan normal dengan koreksi nilai kembar dan koreksi kontinuitas. Aturan ini mengikuti fungsi wilcox.test di R. CI Hodges-Lehmann mengikuti metode yang sama, jadi CI eksak dan CI pendekatan normal bisa berbeda satu langkah pada data dengan selisih nol atau nilai kembar.</li>
             <li>Estimasi selisih median dan CI 95% memakai estimator Hodges-Lehmann (selisih seluruh pasangan untuk Mann-Whitney U, rata-rata Walsh untuk Wilcoxon).</li>
-            <li>Statistik U yang ditampilkan adalah U<sub>1</sub> (kelompok 1), dan U<sub>2</sub> ditampilkan juga. Pada Wilcoxon, W adalah jumlah peringkat selisih positif (pengukuran 1 dikurangi pengukuran 2) dan W&prime; adalah pasangannya. Definisi W ini sama dengan Jamovi.</li>
+            <li>Statistik U yang ditampilkan adalah nilai terkecil dari U<sub>1</sub> dan U<sub>2</sub>, dan keduanya ditampilkan. Pada Wilcoxon, W adalah jumlah peringkat selisih positif (pengukuran 1 dikurangi pengukuran 2) dan W&prime; adalah pasangannya. Definisi W ini sama dengan Jamovi.</li>
             <li>Tanda rank-biserial mengikuti Jamovi. Pada Mann-Whitney U, nilainya (U<sub>2</sub> &minus; U<sub>1</sub>) / (n<sub>1</sub> &times; n<sub>2</sub>), positif jika kelompok 1 cenderung bernilai lebih rendah. Pada Wilcoxon, nilainya (W &minus; W&prime;) / jumlah peringkat, positif jika pengukuran 1 cenderung lebih tinggi.</li>
             <li><b>Arah selisih.</b> Selisih mengikuti Jamovi: kelompok 1 dikurangi kelompok 2 pada sampel independen, dan pengukuran 1 dikurangi pengukuran 2 pada sampel berpasangan. Urutan kelompok mengikuti kemunculan pertama di kolom 1. Tombol tukar urutan membalik arah dan tanda hasilnya.</li>
             <li><b>Saran uji.</b> Saran mengikuti pohon keputusan sederhana pada &alpha; = 0,05. Sampel independen: jika Shapiro-Wilk menolak normalitas pada salah satu kelompok disarankan Mann-Whitney U, jika tidak maka Levene menentukan Student (varians setara) atau Welch. Sampel berpasangan: jika normalitas selisih tidak ditolak disarankan uji-t berpasangan, jika ditolak disarankan Wilcoxon signed-rank. Saran ini bantuan awal dan tidak menggantikan pembacaan histogram, Q-Q plot, dan pencilan.</li>
@@ -787,7 +787,7 @@ function mannWhitney(x, y) {
         }
     }
     return {
-        U1: U1, U2: U2, U: U1, p: p, method: exact ? 'eksak' : 'pendekatan normal dengan koreksi kontinuitas',
+        U1: U1, U2: U2, U: Math.min(U1, U2), p: p, method: exact ? 'eksak' : 'pendekatan normal dengan koreksi kontinuitas',
         z: zc, rb: (U2 - U1) / (n1 * n2), diff: est, lo: lo, hi: hi, ties: hasTies, minP: exact ? Math.min(1, 2 * cum[0]) : null
     };
 }
@@ -1574,7 +1574,7 @@ function calculate() {
     if (o.dist === 't') {
         g += statRow('Nilai t', fmt(R.stat, 2)) + statRow('Derajat bebas (df)', dfTxt(R.df)) + statRow('Nilai-p', fmtP(R.p));
     } else if (test === 'mw') {
-        g += statRow('Statistik U (kelompok 1, sama dengan Jamovi)', fmt(R.U, 1)) +
+        g += statRow('Statistik U (nilai terkecil dari U<sub>1</sub> dan U<sub>2</sub>, sama dengan Jamovi)', fmt(R.U, 1)) +
             statRow('U<sub>1</sub> (kelompok 1) dan U<sub>2</sub> (kelompok 2)', fmt(R.U1, 1) + ' dan ' + fmt(R.U2, 1)) +
             statRow('Nilai Z (pendekatan normal)', fmt(R.z, 2)) +
             statRow('Nilai-p (' + R.method + ')', fmtP(R.p));
