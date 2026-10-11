@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kalkulator Uji Asosiasi Dua Variabel Kategoris</title>
+<script>try{if(localStorage.getItem('tema-kalkulator')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +25,25 @@
     --accent-orange: #ff9500;
     --border-color: #d2d2d7;
     --shadow: 0 8px 24px rgba(0,0,0,0.06);
+    --fill1: #f0f0f2; --fill2: #e3e3e8; --soft-bg: #f5f5f7; --input-bg: #fbfbfd; --input-focus: #ffffff;
+    --btn-bg: #ffffff; --seg-active: #ffffff; --ink3: #c7c7cc; --grid-line: #f0f0f2;
+    --err-bg: #fff2f1; --err-bd: #ffd4d1; --err-tx: #b3261e;
+    --warn-bg: #fff8ec; --warn-bd: #ffe1b3; --warn-tx: #8a5a00;
+    --lowE-bg: #fff4e0; --lowE-tx: #8a5a00; --vlowE-bg: #ffe3e0; --vlowE-tx: #b3261e;
+    --ok-bg: #e9f8ee; --ok-tx: #1e7a3a;
+    color-scheme: light;
+}
+:root[data-theme="dark"] {
+    --bg-color: #000000; --card-bg: #1c1c1e; --text-main: #f5f5f7; --text-muted: #98989d; --text-soft: #d1d1d6;
+    --accent-blue: #3b9bff; --green-dark: #30d158; --accent-red: #ff6961; --border-color: #38383a;
+    --shadow: 0 0 0 0.5px rgba(255,255,255,0.06);
+    --fill1: #2c2c2e; --fill2: #3a3a3c; --soft-bg: #2c2c2e; --input-bg: #2c2c2e; --input-focus: #3a3a3c;
+    --btn-bg: #2c2c2e; --seg-active: #48484a; --ink3: #636366; --grid-line: #38383a;
+    --err-bg: #3b1f1d; --err-bd: #5c2b28; --err-tx: #ff9a93;
+    --warn-bg: #3a2f15; --warn-bd: #5a4719; --warn-tx: #ffcc66;
+    --lowE-bg: #3d2f12; --lowE-tx: #ffcc66; --vlowE-bg: #432320; --vlowE-tx: #ff9a93;
+    --ok-bg: #12301c; --ok-tx: #5ee08a;
+    color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -99,7 +119,7 @@ p.subtitle {
 .hint { font-size: 12.5px; color: var(--text-muted); margin: 8px 0 0; line-height: 1.5; }
 
 /* Saklar segmented */
-.seg { display: flex; background-color: #e3e3e8; border-radius: 11px; padding: 3px; margin-bottom: 6px; }
+.seg { display: flex; background-color: var(--fill2); border-radius: 11px; padding: 3px; margin-bottom: 6px; }
 .seg input[type="radio"] { display: none; }
 .seg label {
     flex: 1;
@@ -113,21 +133,21 @@ p.subtitle {
     color: var(--text-main);
     line-height: 1.35;
 }
-.seg input:checked + label { background-color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.1); color: var(--accent-blue); }
+.seg input:checked + label { background-color: var(--seg-active); box-shadow: 0 2px 6px rgba(0,0,0,.1); color: var(--accent-blue); }
 .seg-sub { display: block; font-size: 10px; font-weight: 500; color: var(--text-muted); margin-top: 1px; }
 
 /* Input */
 textarea.col-input {
     width: 100%; min-height: 130px; resize: vertical; padding: 11px 14px; font-size: 13.5px; line-height: 1.5;
-    border: 1px solid var(--border-color); border-radius: 12px; background: #fbfbfd; box-sizing: border-box;
+    border: 1px solid var(--border-color); border-radius: 12px; background: var(--input-bg); color: var(--text-main); box-sizing: border-box;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; transition: all 0.2s ease;
 }
 textarea.col-input:focus, input.txt:focus, select.sel:focus, .grid input:focus {
-    outline: none; border-color: var(--accent-blue); background: #fff; box-shadow: 0 0 0 4px rgba(0,113,227,.15);
+    outline: none; border-color: var(--accent-blue); background: var(--input-focus); box-shadow: 0 0 0 4px rgba(0,113,227,.15);
 }
 input.txt, select.sel {
     width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid var(--border-color); border-radius: 10px;
-    background: #fbfbfd; font-family: 'Inter', sans-serif; box-sizing: border-box;
+    background: var(--input-bg); color: var(--text-main); font-family: 'Inter', sans-serif; box-sizing: border-box;
 }
 .two-col { display: flex; gap: 10px; }
 .two-col > div { flex: 1; min-width: 0; }
@@ -135,7 +155,7 @@ input.txt, select.sel {
 
 .btn {
     font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; padding: 9px 14px; border-radius: 10px; cursor: pointer;
-    border: 1px solid var(--border-color); background: #fff; color: var(--text-main); transition: all .2s ease;
+    border: 1px solid var(--border-color); background: var(--btn-bg); color: var(--text-main); transition: all .2s ease;
 }
 .btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
 .btn:focus-visible, .seg input:focus-visible + label, select:focus-visible { outline: 3px solid rgba(0,113,227,.35); outline-offset: 2px; }
@@ -144,32 +164,32 @@ input.txt, select.sel {
 /* Grid isian tabel */
 .grid-wrap { overflow-x: auto; margin: 6px 0 4px; }
 table.grid { border-collapse: separate; border-spacing: 4px; }
-.grid input { width: 62px; padding: 8px 6px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; background: #fbfbfd; font-family: 'Inter', sans-serif; text-align: right; }
-.grid input.lab { width: 92px; text-align: left; font-weight: 600; background: #f5f5f7; }
+.grid input { width: 62px; padding: 8px 6px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-family: 'Inter', sans-serif; text-align: right; }
+.grid input.lab { width: 92px; text-align: left; font-weight: 600; background: var(--soft-bg); }
 .grid th { font-weight: 400; }
 
 /* Urutan kategori */
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }
-.chip { display: inline-flex; align-items: center; background: #f0f0f2; border-radius: 9px; font-size: 12.5px; font-weight: 600; overflow: hidden; }
+.chip { display: inline-flex; align-items: center; background: var(--fill1); border-radius: 9px; font-size: 12.5px; font-weight: 600; overflow: hidden; }
 .chip span { padding: 5px 8px; }
 .chip button { border: none; background: transparent; cursor: pointer; padding: 5px 7px; font-size: 13px; color: var(--accent-blue); font-weight: 700; }
-.chip button:hover { background: #e3e3e8; }
-.chip button:disabled { color: #c7c7cc; cursor: default; background: transparent; }
+.chip button:hover { background: var(--fill2); }
+.chip button:disabled { color: var(--ink3); cursor: default; background: transparent; }
 .order-label { font-size: 12.5px; font-weight: 600; color: var(--text-soft); margin-top: 6px; }
 
 /* Sisi hasil */
 .test-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 18px; }
-.muted-box { background-color: #f5f5f7; border-radius: 12px; padding: 16px 18px; font-size: 14.5px; line-height: 1.8; }
+.muted-box { background-color: var(--soft-bg); border-radius: 12px; padding: 16px 18px; font-size: 14.5px; line-height: 1.8; }
 .muted-box b { font-weight: 700; }
 .hyp-box { margin-bottom: 22px; }
-.hyp-box .nota { margin-top: 8px; padding-top: 8px; border-top: 1px solid #e3e3e8; }
+.hyp-box .nota { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--fill2); }
 
 .result-block { margin-bottom: 28px; }
 .result-block .section-title { margin-top: 0; }
 .sub-title { font-size: 13.5px; font-weight: 700; margin: 18px 0 8px; }
 
 .stat-grid { margin-bottom: 6px; }
-.stat-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 9px 0; border-bottom: 1px solid #f0f0f2; font-size: 14px; }
+.stat-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--grid-line); font-size: 14px; }
 .stat-row:last-child { border-bottom: none; }
 .stat-label { color: var(--text-muted); }
 .stat-value { font-weight: 700; font-size: 15px; text-align: right; }
@@ -189,25 +209,25 @@ table.grid { border-collapse: separate; border-spacing: 4px; }
 
 .concl-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; }
 
-.error-box { background: #fff2f1; border: 1px solid #ffd4d1; color: #b3261e; border-radius: 12px; padding: 14px 16px; font-size: 13.5px; display: none; margin-bottom: 16px; }
-.warn-box { background: #fff8ec; border: 1px solid #ffe1b3; color: #8a5a00; border-radius: 12px; padding: 14px 16px; font-size: 13.5px; display: none; margin-bottom: 16px; }
+.error-box { background: var(--err-bg); border: 1px solid var(--err-bd); color: var(--err-tx); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; display: none; margin-bottom: 16px; }
+.warn-box { background: var(--warn-bg); border: 1px solid var(--warn-bd); color: var(--warn-tx); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; display: none; margin-bottom: 16px; }
 .warn-box div + div, .error-box div + div { margin-top: 6px; }
 
 .tbl-wrap { overflow-x: auto; }
 table.dt { border-collapse: collapse; width: 100%; font-size: 13.5px; }
-table.dt th, table.dt td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #f0f0f2; white-space: nowrap; }
+table.dt th, table.dt td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--grid-line); white-space: nowrap; }
 table.dt thead th { color: var(--text-muted); font-weight: 600; font-size: 12.5px; }
 table.dt tbody th { text-align: left; font-weight: 600; white-space: normal; }
-table.dt tr.tot td, table.dt tr.tot th { border-top: 1px solid #d2d2d7; font-weight: 700; }
+table.dt tr.tot td, table.dt tr.tot th { border-top: 1px solid var(--border-color); font-weight: 700; }
 table.dt td.cellsub { line-height: 1.25; }
 table.dt .sub { display: block; font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
-table.dt td.lowE { background: #fff4e0; color: #8a5a00; font-weight: 700; }
-table.dt td.vlowE { background: #ffe3e0; color: #b3261e; font-weight: 700; }
-table.dt td.flag { background: #ffe3e0; color: #b3261e; font-weight: 800; }
+table.dt td.lowE { background: var(--lowE-bg); color: var(--lowE-tx); font-weight: 700; }
+table.dt td.vlowE { background: var(--vlowE-bg); color: var(--vlowE-tx); font-weight: 700; }
+table.dt td.flag { background: var(--vlowE-bg); color: var(--vlowE-tx); font-weight: 800; }
 
 .verdict-box { border-radius: 12px; padding: 12px 16px; font-size: 14px; font-weight: 600; margin-top: 12px; }
-.verdict-box.ok { background: #e9f8ee; color: #1e7a3a; }
-.verdict-box.no { background: #fff4e0; color: #8a5a00; }
+.verdict-box.ok { background: var(--ok-bg); color: var(--ok-tx); }
+.verdict-box.no { background: var(--lowE-bg); color: var(--lowE-tx); }
 
 .empty-state { text-align: center; color: var(--text-muted); padding: 50px 10px; font-size: 15px; line-height: 1.7; }
 
@@ -223,6 +243,20 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
     .verdict-status { font-size: 28px; }
     .seg label { font-size: 11.5px; }
 }
+
+.container { position: relative; }
+.theme-btn { position: absolute; top: -22px; right: -6px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--btn-bg); color: var(--text-main); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s ease; padding: 0; }
+.theme-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+.theme-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+:root[data-theme="dark"] .ic-moon { display: none; }
+:root:not([data-theme="dark"]) .ic-sun { display: none; }
+.suggest-box { background: var(--soft-bg); border-radius: 12px; padding: 14px 16px; margin-top: 14px; font-size: 13.5px; line-height: 1.6; }
+.suggest-box .sg-name { font-size: 15px; font-weight: 700; margin: 2px 0 6px; }
+.suggest-box .sg-diff { margin-top: 8px; font-weight: 600; }
+.suggest-box .sg-diff.warn { color: var(--warn-tx); }
+.suggest-box .sg-diff.ok { color: var(--green-dark); }
+ul.odds { margin: 4px 0 14px; padding-left: 20px; font-size: 14px; line-height: 1.7; }
+input.txt.vn { margin-bottom: 8px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
 </style>
@@ -230,6 +264,10 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
 <body>
 
 <div class="container">
+    <button type="button" class="theme-btn" id="themebtn" role="switch" aria-checked="false" aria-label="Mode gelap" title="Ganti mode terang atau gelap">
+        <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>
+        <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
     <h1>Kalkulator Uji Asosiasi Dua Variabel Kategoris</h1>
     <p class="subtitle">Uji chi-square dan uji Fisher exact dari data mentah atau tabel frekuensi</p>
 
@@ -248,17 +286,19 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
                 <div class="section-title spaced">Data (maksimum 250 baris)</div>
                 <div class="form-group">
                     <div class="btn-row" style="justify-content: space-between;">
-                        <span class="help-text" style="margin: 0; flex: 1; min-width: 200px;">Salin-tempel dua kolom kategoris. Satu baris adalah satu sapi.</span>
+                        <span class="help-text" style="margin: 0; flex: 1; min-width: 200px;">Salin-tempel dua kolom kategoris. Satu baris adalah satu subjek pengamatan.</span>
                         <button type="button" class="btn" id="btn-clear">Kosongkan</button>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="c1" id="lbl-c1">Kolom 1: variabel baris</label>
-                    <textarea id="c1" class="col-input" spellcheck="false" autocomplete="off" placeholder="Contoh:&#10;Primipara&#10;Multipara&#10;Primipara&#10;..."></textarea>
+                    <label for="c1" id="lbl-c1">Variabel baris</label>
+                    <input type="text" id="vn-row" class="txt vn" placeholder="Nama variabel" autocomplete="off" aria-label="Nama variabel baris">
+                    <textarea id="c1" class="col-input" spellcheck="false" autocomplete="off" placeholder="Contoh:&#10;Kelompok A&#10;Kelompok B&#10;Kelompok A&#10;..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="c2" id="lbl-c2">Kolom 2: variabel kolom</label>
-                    <textarea id="c2" class="col-input" spellcheck="false" autocomplete="off" placeholder="Contoh:&#10;Terindikasi&#10;Tidak Terindikasi&#10;Terindikasi&#10;..."></textarea>
+                    <label for="c2" id="lbl-c2">Variabel kolom</label>
+                    <input type="text" id="vn-col" class="txt vn" placeholder="Nama variabel" autocomplete="off" aria-label="Nama variabel kolom">
+                    <textarea id="c2" class="col-input" spellcheck="false" autocomplete="off" placeholder="Contoh:&#10;Kelompok X&#10;Kelompok Y&#10;Kelompok X&#10;..."></textarea>
                 </div>
                 <div class="hint" id="row-count" aria-live="polite" style="min-height:18px;"></div>
                 <div class="hint">Tempel tanpa judul kolom. Setiap kolom berisi 2 sampai 6 kategori. Penulisan kategori harus konsisten, karena huruf besar dan kecil dibedakan.</div>
@@ -276,26 +316,22 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
                         <select id="sel-c" class="sel"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
                     </div>
                 </div>
+                <div class="two-col" style="margin-top:14px;">
+                    <div>
+                        <label for="vn-row-g">Variabel baris</label>
+                        <input type="text" id="vn-row-g" class="txt" placeholder="Nama variabel" autocomplete="off">
+                    </div>
+                    <div>
+                        <label for="vn-col-g">Variabel kolom</label>
+                        <input type="text" id="vn-col-g" class="txt" placeholder="Nama variabel" autocomplete="off">
+                    </div>
+                </div>
                 <div class="grid-wrap" id="grid-box"></div>
                 <div class="btn-row">
-                    <button type="button" class="btn" id="btn-example">Isi contoh</button>
                     <button type="button" class="btn" id="btn-clear-grid">Kosongkan</button>
                 </div>
-                <div class="hint">Nama kategori boleh diubah. Sel yang dikosongkan dibaca sebagai 0. Isi dengan bilangan bulat tidak negatif.</div>
+                <div class="hint">Isi nama kategori dan jumlah tiap sel. Sel yang dikosongkan dibaca sebagai 0. Isi dengan bilangan bulat tidak negatif.</div>
             </div>
-
-            <div class="section-title spaced">Nama variabel</div>
-            <div class="two-col">
-                <div>
-                    <label for="vn-row">Variabel baris</label>
-                    <input type="text" id="vn-row" class="txt" placeholder="mis. Paritas" autocomplete="off">
-                </div>
-                <div>
-                    <label for="vn-col">Variabel kolom</label>
-                    <input type="text" id="vn-col" class="txt" placeholder="mis. Status mastitis" autocomplete="off">
-                </div>
-            </div>
-            <div class="hint">Dipakai untuk kalimat hipotesis dan kesimpulan.</div>
 
             <div class="section-title spaced">Urutan kategori</div>
             <div id="order-box"><div class="hint">Urutan muncul setelah data terbaca.</div></div>
@@ -311,6 +347,7 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
                 <input type="radio" name="test" id="test-fisher" value="fisher">
                 <label for="test-fisher">Fisher exact<span class="seg-sub">tabel 2×2</span></label>
             </div>
+            <div id="suggest-box" class="suggest-box" style="display:none;"></div>
             <div class="hint">Semua uji dua arah dengan &alpha; = 0,05. Pemilihan uji tetap ditentukan oleh pengguna berdasarkan pohon keputusan dan pemeriksaan frekuensi harapan.</div>
         </div>
 
@@ -361,7 +398,7 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
                         <div class="legend" id="legend-fisher" style="display:none;">
                             <span><span class="sw" style="background:#ff3b30;opacity:.6;"></span>Tabel yang sama jarangnya atau lebih jarang daripada tabel teramati (jumlah peluangnya adalah nilai-p)</span>
                             <span><span class="sw" style="background:#0071e3;opacity:.45;"></span>Tabel yang lebih sering</span>
-                            <span><span class="sw" style="background:#1d1d1f;"></span>Tabel teramati</span>
+                            <span><span class="sw" style="background:var(--text-main);"></span>Tabel teramati</span>
                         </div>
                         <p class="hint" id="chart-note" style="display:none;"></p>
                         <div id="verdict-status" class="verdict-status">&nbsp;</div>
@@ -384,6 +421,7 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
 
                     <div class="result-block" id="or-wrap">
                         <div class="section-title">Odds ratio dan CI 95%</div>
+                        <div id="odds-lines"></div>
                         <div class="stat-grid" id="or-grid"></div>
                         <div class="chart-wrap"><div id="or-chart"></div></div>
                         <p class="hint" id="or-note"></p>
@@ -403,6 +441,7 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
                     <div class="muted-box">
                         <div class="concl-title">Draf kalimat kesimpulan statistika</div>
                         <div id="concl-text">&nbsp;</div>
+                        <div class="btn-row" style="margin-top:12px;"><button type="button" class="btn" id="btn-copy">Salin kesimpulan</button></div>
                     </div>
                 </div>
             </div>
@@ -423,7 +462,7 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
             <li><b>Klasifikasi ukuran efek.</b> Batas bergantung pada k. Untuk k = 1: kurang dari 0,10 sangat kecil; 0,10 sampai kurang dari 0,30 kecil; 0,30 sampai kurang dari 0,50 sedang; 0,50 atau lebih besar. Untuk k &ge; 2, batas k = 1 dibagi &radic;k lalu dibulatkan dua desimal (k = 2: 0,07; 0,21; 0,35. k = 3: 0,06; 0,17; 0,29. k = 4: 0,05; 0,15; 0,25). Batas k = 1 berasal dari konvensi korelasi dan penyesuaian untuk k &ge; 2 mengikuti konversi Cohen. Sumber lain memakai batas yang berbeda, jadi kategori sebaiknya dibaca sebagai panduan kasar.</li>
             <li>Standardized residuals (adjusted Pearson) adalah (O &minus; E) / &radic;(E &times; (1 &minus; total baris/N) &times; (1 &minus; total kolom/N)). Nilai mutlak di atas 2 disorot. Residual membandingkan tiap sel dengan frekuensi harapan keseluruhan, bukan antarkategori. Karena banyak sel diperiksa sekaligus, sorotan dibaca sebagai petunjuk, bukan bukti pasti. Residual dibaca bila uji chi-square bernilai-p &lt; 0,05.</li>
             <li>Pada variabel ordinal, chi-square dan Fisher exact memeriksa ada tidaknya asosiasi dan tidak memakai urutan kategori. Uji yang memanfaatkan urutan tidak dibahas pada kalkulator ini. Penggabungan kategori pada variabel ordinal hanya antarkategori yang bersebelahan.</li>
-            <li>Kalkulator memeriksa asosiasi pada sapi yang berbeda (desain independen). Pengukuran berulang pada sapi yang sama tidak tercakup. Sapi dalam satu peternak berbagi manajemen sehingga asumsi independensi tidak selalu terpenuhi.</li>
+            <li>Kalkulator memeriksa asosiasi pada subjek yang berbeda (desain independen). Pengukuran berulang pada subjek yang sama tidak tercakup. Subjek dalam satu peternakan atau satu kandang berbagi manajemen sehingga asumsi independensi tidak selalu terpenuhi.</li>
             <li>Asosiasi tidak membuktikan hubungan sebab-akibat.</li>
             <li>Hasil dapat berbeda tipis dengan Jamovi pada desimal ketiga atau pada pembulatan.</li>
         </ul>
@@ -705,10 +744,10 @@ function ln(x1, y1, x2, y2, stroke, w, extra) {
 }
 function tx(x, y, s, o) {
     o = o || {};
-    var size = o.size || 12, weight = o.weight || 400, fill = o.fill || '#1d1d1f', anchor = o.anchor || 'middle';
+    var size = o.size || 12, weight = o.weight || 400, fill = o.fill || 'var(--text-main)', anchor = o.anchor || 'middle';
     var base = ' x="' + rr(x) + '" y="' + rr(y) + '" font-family="' + FONT + '" font-size="' + size + '" font-weight="' + weight + '" text-anchor="' + anchor + '"';
     var out = '';
-    if (o.halo) out += '<text' + base + ' fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">' + s + '</text>';
+    if (o.halo) out += '<text' + base + ' fill="var(--card-bg)" stroke="var(--card-bg)" stroke-width="4" stroke-linejoin="round">' + s + '</text>';
     return out + '<text' + base + ' fill="' + fill + '">' + s + '</text>';
 }
 function circ(cx, cy, r, fill, stroke, sw) {
@@ -752,14 +791,14 @@ function drawChiCurve(el, cfg) {
         d += (i === 0 ? 'M' : 'L') + rr(sx(x)) + ' ' + rr(sy(pdf(x))) + ' ';
     }
     s += '<path d="' + d + '" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linejoin="round"/>';
-    s += ln(sx(lo), baseY, sx(hi), baseY, '#c7c7cc', 1);
+    s += ln(sx(lo), baseY, sx(hi), baseY, 'var(--border-color)', 1);
     s += ln(sx(crit), baseY, sx(crit), sy(pdf(crit)), '#ff3b30', 1.4, ' stroke-dasharray="4 3"');
-    s += tx(sx(crit), critRowY, fmt(crit, 2), { size: 11.5, weight: 700, fill: '#b3261e', halo: true });
+    s += tx(sx(crit), critRowY, fmt(crit, 2), { size: 11.5, weight: 700, fill: 'var(--err-tx)', halo: true });
     s += tx(clamp(sx((crit + hi) / 2), 34, W - 34), labelY, 'tolak H' + SUB0, { size: 12, weight: 700, fill: '#ff3b30', halo: true });
     s += tx(clamp(sx(crit / 2), 44, W - 44), labelY, 'gagal tolak H' + SUB0, { size: 12, weight: 700, fill: '#0071e3', halo: true });
     var xs = sx(stat), ys = sy(pdf(stat)), col = cfg.reject ? '#ff3b30' : '#0071e3';
     s += ln(xs, baseY, xs, ys, col, 2);
-    s += circ(xs, ys, 5.5, col, '#ffffff', 2);
+    s += circ(xs, ys, 5.5, col, 'var(--card-bg)', 2);
     s += tx(clamp(xs, 40, W - 40), statRowY, '\u03c7\u00b2 = ' + fmt(stat, 2), { size: 12.5, weight: 800, fill: col, halo: true });
     el.innerHTML = s + '</svg>';
 }
@@ -777,22 +816,22 @@ function drawFisherDist(el, f) {
     var sx0 = ml, sw = (W - ml - mr) / cnt;
     var sy = function (v) { return mt + (1 - v / yTop) * (H - mt - mb); };
     var s = svgOpen(W, H, 'Distribusi hipergeometrik di bawah H0');
-    s += ln(ml, mt, ml, H - mb, '#d2d2d7', 1) + ln(ml, H - mb, W - mr, H - mb, '#d2d2d7', 1);
+    s += ln(ml, mt, ml, H - mb, 'var(--border-color)', 1) + ln(ml, H - mb, W - mr, H - mb, 'var(--border-color)', 1);
     for (var t = 0; t <= yTop + 1e-12; t += ystep) {
-        s += ln(ml, sy(t), W - mr, sy(t), '#f0f0f2', 1) + tx(ml - 6, sy(t) + 3.5, fmtSmart(t, 3), { size: 10, fill: '#86868b', anchor: 'end' });
+        s += ln(ml, sy(t), W - mr, sy(t), 'var(--grid-line)', 1) + tx(ml - 6, sy(t) + 3.5, fmtSmart(t, 3), { size: 10, fill: 'var(--text-muted)', anchor: 'end' });
     }
     for (i = first; i <= last; i++) {
         var x0 = sx0 + (i - first) * sw, h = (H - mb) - sy(dens[i]), red = dens[i] <= f.thr;
         s += '<rect x="' + rr(x0 + 0.5) + '" y="' + rr(sy(dens[i])) + '" width="' + rr(Math.max(1, sw - 1)) + '" height="' + rr(Math.max(0, h)) + '" fill="' + (red ? '#ff3b30' : '#0071e3') + '" fill-opacity="' + (red ? 0.6 : 0.45) + '"/>';
     }
     var stride = Math.max(1, Math.ceil(cnt / 12));
-    for (i = first; i <= last; i += stride) s += tx(sx0 + (i - first + 0.5) * sw, H - mb + 14, String(lo + i), { size: 10, fill: '#86868b' });
+    for (i = first; i <= last; i += stride) s += tx(sx0 + (i - first + 0.5) * sw, H - mb + 14, String(lo + i), { size: 10, fill: 'var(--text-muted)' });
     var oi = f.obs - lo, ox = sx0 + (oi - first + 0.5) * sw;
-    s += ln(ox, sy(dens[oi]) - 4, ox, mt - 6, '#1d1d1f', 1.6);
-    s += circ(ox, sy(dens[oi]) - 4, 4, '#1d1d1f', '#ffffff', 1.5);
+    s += ln(ox, sy(dens[oi]) - 4, ox, mt - 6, 'var(--text-main)', 1.6);
+    s += circ(ox, sy(dens[oi]) - 4, 4, 'var(--text-main)', 'var(--card-bg)', 1.5);
     s += tx(clamp(ox, 50, W - 50), mt - 10, 'teramati = ' + f.obs, { size: 12, weight: 800, halo: true });
-    s += tx((ml + W - mr) / 2, H - 6, 'Jumlah pada sel baris 1, kolom 1 jika H0 benar', { size: 10.5, fill: '#86868b' });
-    s += tx(10, (mt + H - mb) / 2, 'Peluang', { size: 10.5, fill: '#86868b' }).replace('<text', '<text transform="rotate(-90 10 ' + rr((mt + H - mb) / 2) + ')"').replace('<text transform="rotate(-90 10 ' + rr((mt + H - mb) / 2) + ')" fill="#ffffff"', '<text fill="#ffffff"');
+    s += tx((ml + W - mr) / 2, H - 6, 'Jumlah pada sel baris 1, kolom 1 jika H0 benar', { size: 10.5, fill: 'var(--text-muted)' });
+    s += tx(10, (mt + H - mb) / 2, 'Peluang', { size: 10.5, fill: 'var(--text-muted)' }).replace('<text', '<text transform="rotate(-90 10 ' + rr((mt + H - mb) / 2) + ')"').replace('<text transform="rotate(-90 10 ' + rr((mt + H - mb) / 2) + ')" fill="#ffffff"', '<text fill="#ffffff"');
     el.innerHTML = s + '</svg>';
 }
 
@@ -804,7 +843,7 @@ function drawStacked(el, o) {
     for (i = 0; i < r; i++) {
         var y = mt + i * (bh + gap), x = ml;
         s += tx(ml - 8, y + bh / 2 - 2, esc(shortName(o.rl[i], 18)), { size: 12, weight: 600, anchor: 'end' });
-        s += tx(ml - 8, y + bh / 2 + 12, 'n = ' + o.rowTot[i], { size: 10.5, fill: '#86868b', anchor: 'end' });
+        s += tx(ml - 8, y + bh / 2 + 12, 'n = ' + o.rowTot[i], { size: 10.5, fill: 'var(--text-muted)', anchor: 'end' });
         for (j = 0; j < c; j++) {
             var w = o.rowPct[i][j] / 100 * pw;
             if (w > 0) {
@@ -815,10 +854,10 @@ function drawStacked(el, o) {
         }
     }
     var ay = H - mb + 4;
-    s += ln(ml, ay, ml + pw, ay, '#d2d2d7', 1);
+    s += ln(ml, ay, ml + pw, ay, 'var(--border-color)', 1);
     [0, 25, 50, 75, 100].forEach(function (t) {
         var xx = ml + t / 100 * pw;
-        s += ln(xx, ay, xx, ay + 4, '#d2d2d7', 1) + tx(xx, ay + 16, t + '%', { size: 10.5, fill: '#86868b' });
+        s += ln(xx, ay, xx, ay + 4, 'var(--border-color)', 1) + tx(xx, ay + 16, t + '%', { size: 10.5, fill: 'var(--text-muted)' });
     });
     el.innerHTML = s + '</svg>';
 }
@@ -846,7 +885,7 @@ function drawForest(el, p) {
     var excl = (!loOpen && !hiOpen) ? (lo > ref || hi < ref) : (loOpen && !hiOpen ? hi < ref : (!loOpen && hiOpen ? lo > ref : false));
     var col = excl ? '#ff3b30' : '#0071e3', i;
     var s = svgOpen(W, H, 'Estimasi dan CI 95%');
-    s += ln(ml, axY, W - mr, axY, '#d2d2d7', 1);
+    s += ln(ml, axY, W - mr, axY, 'var(--border-color)', 1);
     var ticks = [];
     if (log) {
         var e0 = Math.floor(Math.log(amin) / Math.LN10), e1 = Math.ceil(Math.log(amax) / Math.LN10);
@@ -857,18 +896,18 @@ function drawForest(el, p) {
         for (var t = Math.ceil(amin / step - 1e-9) * step; t <= amax + 1e-9; t += step) ticks.push(Math.abs(t) < 1e-9 ? 0 : t);
     }
     ticks.forEach(function (v) {
-        s += ln(sx(v), axY, sx(v), axY + 4, '#d2d2d7', 1) + tx(sx(v), axY + 17, fmtSmart(v, log ? 3 : 1), { size: 10.5, fill: '#86868b' });
+        s += ln(sx(v), axY, sx(v), axY + 4, 'var(--border-color)', 1) + tx(sx(v), axY + 17, fmtSmart(v, log ? 3 : 1), { size: 10.5, fill: 'var(--text-muted)' });
     });
     /* garis acuan putus-putus */
-    s += ln(sx(ref), mt - 8, sx(ref), axY, '#6e6e73', 1.5, ' stroke-dasharray="5 4"');
-    s += tx(clamp(sx(ref), 70, W - 70), mt - 14, p.refText, { size: 11.5, weight: 700, fill: '#6e6e73', halo: true });
+    s += ln(sx(ref), mt - 8, sx(ref), axY, 'var(--text-muted)', 1.5, ' stroke-dasharray="5 4"');
+    s += tx(clamp(sx(ref), 70, W - 70), mt - 14, p.refText, { size: 11.5, weight: 700, fill: 'var(--text-muted)', halo: true });
     /* CI */
     var xl = loOpen ? ml : sx(lo), xh = hiOpen ? W - mr : sx(hi);
     s += ln(xl, cy, xh, cy, col, 3);
     if (!loOpen) s += ln(xl, cy - 7, xl, cy + 7, col, 3); else s += '<path d="M' + rr(ml + 8) + ' ' + rr(cy - 6) + ' L' + rr(ml) + ' ' + rr(cy) + ' L' + rr(ml + 8) + ' ' + rr(cy + 6) + '" fill="none" stroke="' + col + '" stroke-width="3"/>';
     if (!hiOpen) s += ln(xh, cy - 7, xh, cy + 7, col, 3); else s += '<path d="M' + rr(W - mr - 8) + ' ' + rr(cy - 6) + ' L' + rr(W - mr) + ' ' + rr(cy) + ' L' + rr(W - mr - 8) + ' ' + rr(cy + 6) + '" fill="none" stroke="' + col + '" stroke-width="3"/>';
     if (isFinite(est) && (!log || est > 0)) {
-        s += circ(sx(est), cy, 6.5, col, '#ffffff', 2);
+        s += circ(sx(est), cy, 6.5, col, 'var(--card-bg)', 2);
         s += tx(clamp(sx(est), 30, W - 30), cy - 14, fmt(est, log ? 2 : 1), { size: 12.5, weight: 800, fill: col, halo: true });
     }
     if (!loOpen) s += tx(clamp(xl, 24, W - 24), cy + 24, fmt(lo, log ? 2 : 1), { size: 11, weight: 600, fill: col, halo: true });
@@ -894,6 +933,8 @@ function ciTxt(lo, hi, d) {
 }
 
 /* ---------- Isian tabel frekuensi ---------- */
+var ROWPH = ['Kelompok A', 'Kelompok B', 'Kelompok C', 'Kelompok D', 'Kelompok E', 'Kelompok F'];
+var COLPH = ['Kelompok X', 'Kelompok Y', 'Kelompok Z', 'Kelompok W', 'Kelompok V', 'Kelompok U'];
 function readGrid() {
     var r = +$('sel-r').value, c = +$('sel-c').value, i, j, rl = [], cl = [], vals = [];
     for (j = 0; j < c; j++) { var el = document.querySelector('.grid input[data-cl="' + j + '"]'); cl.push(el ? el.value : ''); }
@@ -908,10 +949,10 @@ function buildGrid(prev) {
     var r = +$('sel-r').value, c = +$('sel-c').value, i, j;
     prev = prev || { rl: [], cl: [], vals: [] };
     var h = '<table class="grid"><thead><tr><th></th>';
-    for (j = 0; j < c; j++) h += '<th><input class="lab" data-cl="' + j + '" value="' + esc(prev.cl && prev.cl[j] !== undefined && prev.cl[j] !== '' ? prev.cl[j] : 'Kolom ' + (j + 1)) + '" aria-label="Nama kolom ' + (j + 1) + '"></th>';
+    for (j = 0; j < c; j++) h += '<th><input class="lab" data-cl="' + j + '" value="' + esc(prev.cl && prev.cl[j] !== undefined ? prev.cl[j] : '') + '" placeholder="' + COLPH[j] + '" aria-label="Nama kolom ' + (j + 1) + '"></th>';
     h += '</tr></thead><tbody>';
     for (i = 0; i < r; i++) {
-        h += '<tr><th><input class="lab" data-rl="' + i + '" value="' + esc(prev.rl && prev.rl[i] !== undefined && prev.rl[i] !== '' ? prev.rl[i] : 'Baris ' + (i + 1)) + '" aria-label="Nama baris ' + (i + 1) + '"></th>';
+        h += '<tr><th><input class="lab" data-rl="' + i + '" value="' + esc(prev.rl && prev.rl[i] !== undefined ? prev.rl[i] : '') + '" placeholder="' + ROWPH[i] + '" aria-label="Nama baris ' + (i + 1) + '"></th>';
         for (j = 0; j < c; j++) {
             var v = prev.vals && prev.vals[i] && prev.vals[i][j] !== undefined ? prev.vals[i][j] : '';
             h += '<td><input type="number" min="0" step="1" inputmode="numeric" data-i="' + i + '" data-j="' + j + '" value="' + esc(v) + '" aria-label="Jumlah baris ' + (i + 1) + ', kolom ' + (j + 1) + '"></td>';
@@ -923,8 +964,8 @@ function buildGrid(prev) {
 }
 function parseGrid() {
     var g = readGrid(), res = { errors: [], warnings: [], empty: false, tab: null, rows: 0, skipped: 0 }, i, j, n = [], any = false;
-    var rl = g.rl.map(function (s, k) { s = s.trim(); return s === '' ? 'Baris ' + (k + 1) : s; });
-    var cl = g.cl.map(function (s, k) { s = s.trim(); return s === '' ? 'Kolom ' + (k + 1) : s; });
+    var rl = g.rl.map(function (s, k) { s = s.trim(); return s === '' ? ROWPH[k] : s; });
+    var cl = g.cl.map(function (s, k) { s = s.trim(); return s === '' ? COLPH[k] : s; });
     for (i = 0; i < g.r; i++) {
         n.push([]);
         for (j = 0; j < g.c; j++) {
@@ -951,7 +992,8 @@ function reconcile(ord, labels) {
 }
 function viewTable(base) {
     var t = { rl: base.rl, cl: base.cl, n: base.n }, i, j;
-    var rowName = ($('vn-row').value || '').trim(), colName = ($('vn-col').value || '').trim();
+    var raw = getSrc() === 'raw';
+    var rowName = (($(raw ? 'vn-row' : 'vn-row-g').value) || '').trim(), colName = (($(raw ? 'vn-col' : 'vn-col-g').value) || '').trim();
     if (st.transposed) {
         var tn = [];
         for (j = 0; j < t.cl.length; j++) { tn.push([]); for (i = 0; i < t.rl.length; i++) tn[j].push(t.n[i][j]); }
@@ -1049,14 +1091,34 @@ function propList(o) {
     return 'Persentase baris: ' + parts.join('; ') + '.';
 }
 
+function residSentence(o, ef) {
+    ef = ef || function (x) { return x; };
+    var rows = [], i, j;
+    for (i = 0; i < o.r; i++) {
+        var more = [], less = [];
+        o.flagged.forEach(function (x) { if (x.i === i) (x.z > 0 ? more : less).push('kategori ' + ef(o.cl[x.j]) + ' (z = ' + fmt(x.z, 2) + ')'); });
+        if (more.length || less.length) rows.push({ i: i, more: more, less: less });
+    }
+    if (!rows.length) return '';
+    function ph(r) { var t = []; if (r.more.length) t.push('lebih banyak subjek pada ' + r.more.join(' dan ')); if (r.less.length) t.push((r.more.length ? 'dan ' : '') + 'lebih sedikit pada ' + r.less.join(' dan ')); return t.join(' '); }
+    function sign(r, jj) { var f = o.flagged.filter(function (x) { return x.i === r.i && x.j === jj; })[0]; return f ? (f.z > 0 ? 1 : -1) : 0; }
+    var s = 'Penelusuran dengan standardized residuals menunjukkan bahwa kelompok ' + ef(o.rl[rows[0].i]) + ' memiliki ' + ph(rows[0]) + ' daripada yang diharapkan bila tidak ada asosiasi.';
+    for (var k = 1; k < rows.length; k++) {
+        var opp = false;
+        for (j = 0; j < o.c; j++) if (sign(rows[0], j) * sign(rows[k], j) < 0) opp = true;
+        s += (opp ? ' Hal ini berbeda dengan kelompok ' : ' Selain itu, kelompok ') + ef(o.rl[rows[k].i]) + (opp ? ' yang memiliki ' : ' memiliki ') + ph(rows[k]) + '.';
+    }
+    return s;
+}
+
 function conclusionText(o) {
     var rej = o.reject, s, isF = o.test === 'fisher';
     var A = o.rowName, B = o.colName;
     var effTxt = 'ukuran efek ' + o.effCat + ' (' + (o.size2 ? '\u03c6' : 'V') + ' = ' + fmt(o.V, 2) + ')';
     if (isF) s = 'Uji Fisher exact ' + (rej ? 'menunjukkan' : 'tidak menunjukkan') + ' asosiasi antara ' + A + ' dan ' + B + ', dengan ' + pTxt(o.p) + '. ';
     else s = 'Uji chi-square ' + (rej ? 'menunjukkan' : 'tidak menunjukkan') + ' asosiasi antara ' + A + ' dan ' + B + ', dengan \u03c7\u00b2(' + o.df + ') = ' + fmt(o.chi2, 2) + ' dan ' + pTxt(o.p) + '. ';
-    s += propList(o) + ' ';
     if (o.size2) {
+        s += propList(o) + ' ';
         var d = o.diff, orv = isF ? o.orFisher : o.orWald;
         s += 'Selisih proporsi (' + o.rl[0] + ' \u2212 ' + o.rl[1] + ') = ' + fmt(d.diff, 1) + ' poin persentase (CI 95% ' + ciTxt(d.lo, d.hi, 1) + '). ';
         s += 'Odds ratio (' + o.rl[0] + ' dibanding ' + o.rl[1] + ') = ' + fmt(orv.est, 2) + ' (CI 95% ' + ciTxt(orv.lo, orv.hi, 2) + ')';
@@ -1064,8 +1126,7 @@ function conclusionText(o) {
         if (isFinite(orv.lo) && isFinite(orv.hi) && orv.lo <= 1 && orv.hi >= 1) s += ', tetapi CI mencakup 1';
         s += '. ';
     } else if (rej && o.flagged.length) {
-        var f = o.flagged.map(function (x) { return o.rl[x.i] + ' dengan ' + o.cl[x.j] + ' (' + fmt(x.z, 2) + ', ' + (x.z > 0 ? 'lebih banyak' : 'lebih sedikit') + ' dari harapan)'; });
-        s += 'Penelusuran dengan standardized residuals menunjukkan sel yang melewati batas 2: ' + f.join('; ') + '. ';
+        s += residSentence(o) + ' ';
     } else if (rej) {
         s += 'Tidak ada sel dengan standardized residual yang melewati batas 2. ';
     }
@@ -1075,6 +1136,30 @@ function conclusionText(o) {
 }
 
 /* ---------- Pesan ---------- */
+function suggestHtml(o, selected) {
+    var id, name, why;
+    if (o.size2) {
+        if (o.minE >= 5) { id = 'chi'; name = 'Uji chi-square'; why = 'Semua frekuensi harapan bernilai 5 atau lebih (terkecil ' + fmt(o.minE, 2) + '), sehingga syarat uji chi-square terpenuhi. Uji Fisher exact tetap sah dipakai.'; }
+        else { id = 'fisher'; name = 'Uji Fisher exact'; why = 'Frekuensi harapan terkecil ' + fmt(o.minE, 2) + ' kurang dari 5, sehingga aproksimasi chi-square kurang andal. Pada tabel 2\u00d72 dipakai uji Fisher exact.'; }
+    } else if (o.okChi) {
+        id = 'chi'; name = 'Uji chi-square';
+        why = 'Tidak ada sel dengan frekuensi harapan di bawah 1, dan sel dengan frekuensi harapan di bawah 5 berjumlah ' + o.lt5 + ' dari ' + (o.r * o.c) + ' sel (' + fmt(o.pctLt5, 1) + '%), tidak melebihi 20%. Syarat uji chi-square terpenuhi.';
+    } else {
+        id = 'merge'; name = 'Gabungkan kategori dahulu';
+        var w = [];
+        if (o.lt1 > 0) w.push('ada ' + o.lt1 + ' sel dengan frekuensi harapan di bawah 1');
+        if (o.pctLt5 > 20) w.push(fmt(o.pctLt5, 1) + '% sel memiliki frekuensi harapan di bawah 5, melebihi batas 20%');
+        why = 'Syarat chi-square tidak terpenuhi: ' + w.join(' dan ') + '. Gabungkan kategori yang bermakna secara biologis (pada variabel ordinal, yang digabung adalah kategori yang bersebelahan), lalu tempel ulang data.';
+    }
+    var selName = selected === 'fisher' ? 'Fisher exact' : 'Chi-square';
+    var h = '<div class="concl-title">Saran uji berdasarkan frekuensi harapan</div><div class="sg-name">' + esc(name) + '</div><div>' + esc(why) + '</div>';
+    if (selected === id) h += '<div class="sg-diff ok">Uji yang sedang dipilih sesuai dengan saran.</div>';
+    else if (id === 'merge') h += '<div class="sg-diff warn">Uji yang sedang dipilih (' + selName + ') belum layak dipakai sebelum kategori digabung.</div>';
+    else h += '<div class="sg-diff warn">Uji yang sedang dipilih (' + selName + ') berbeda dari saran ini.</div>';
+    h += '<div class="hint">Aturan ini patokan umum, bukan batas baku. Baca bersama pertimbangan biologis dan ukuran sampel.</div>';
+    return h;
+}
+
 function showErrors(list, warns) {
     var box = $('error-box');
     if (list.length) { box.innerHTML = list.map(function (m) { return '<div>' + esc(m) + '</div>'; }).join(''); box.style.display = 'block'; }
@@ -1096,6 +1181,7 @@ function getBase() {
 }
 
 function calculate() {
+    $('suggest-box').style.display = 'none';
     var parsed = getBase(), test = getTest();
     if (parsed.empty) { showErrors([], []); showResults(false); lastO = null; st.ord = { row: null, col: null }; renderOrder(); return; }
     if (parsed.errors.length || !parsed.tab) { showErrors(parsed.errors, []); showResults(false); lastO = null; return; }
@@ -1105,6 +1191,7 @@ function calculate() {
     if (o.error) { showErrors([o.error], []); showResults(false); lastO = null; return; }
     lastO = o;
     showResults(true);
+    $('suggest-box').innerHTML = suggestHtml(o, test); $('suggest-box').style.display = 'block';
     showErrors([], (parsed.warnings || []).concat(o.warnings));
 
     $('test-title').textContent = (test === 'fisher' ? 'Uji Fisher exact' : 'Uji chi-square') + ' \u00b7 dua arah (\u03b1 = 0,05)';
@@ -1169,6 +1256,11 @@ function calculate() {
         $('diff-note').textContent = (d.lo <= 0 && d.hi >= 0)
             ? 'Rentang CI melewati garis 0, sehingga arah selisih tidak jelas: kelompok 1 bisa lebih tinggi, sama, atau lebih rendah daripada kelompok 2.'
             : 'Rentang CI berada seluruhnya di satu sisi garis 0, sehingga arah selisih jelas (' + (d.diff > 0 ? esc(o.rl[0]) + ' lebih tinggi' : esc(o.rl[1]) + ' lebih tinggi') + ').';
+        var od = function (i) { return o.n[i][1] === 0 ? (o.n[i][0] === 0 ? NaN : Infinity) : o.n[i][0] / o.n[i][1]; };
+        $('odds-lines').innerHTML = '<p class="hint" style="margin-top:0;">Odds adalah jumlah subjek dengan ' + esc(o.cl[0]) + ' dibagi jumlah subjek dengan ' + esc(o.cl[1]) + ' dalam satu kelompok.</p>' +
+            '<ul class="odds"><li>Odds untuk ' + esc(o.rl[0]) + ' = ' + o.n[0][0] + '/' + o.n[0][1] + ' = ' + fmt(od(0), 2) + '</li>' +
+            '<li>Odds untuk ' + esc(o.rl[1]) + ' = ' + o.n[1][0] + '/' + o.n[1][1] + ' = ' + fmt(od(1), 2) + '</li>' +
+            '<li>Odds ratio = ' + fmt(od(0), 2) + '/' + fmt(od(1), 2) + ' = ' + fmt(o.orWald.est, 2) + '</li></ul>';
         var ow = o.orWald, of = o.orFisher, om = '';
         om += statRow('Odds ratio sampel (' + esc(o.rl[0]) + ' dibanding ' + esc(o.rl[1]) + ')', fmt(ow.est, 2));
         om += statRow('CI 95% (Wald)', ow.anyZero ? 'tidak tersedia (ada sel bernilai 0)' : ciTxt(ow.lo, ow.hi, 2));
@@ -1190,10 +1282,9 @@ function calculate() {
     $('res-wrap').style.display = o.size2 ? 'none' : 'block';
     if (!o.size2) {
         $('res-box').innerHTML = resTable(o);
-        var f = o.flagged.map(function (x) { return esc(o.rl[x.i]) + ' dengan ' + esc(o.cl[x.j]) + ' (' + fmt(x.z, 2) + ', ' + (x.z > 0 ? 'lebih banyak' : 'lebih sedikit') + ' dari harapan)'; });
         $('res-note').innerHTML = (o.reject ? '' : 'Residual dibaca bila hasil uji chi-square bernilai-p < 0,05. Pada tabel ini hasil uji tidak menolak H<sub>0</sub>, jadi tabel ditampilkan sebagai informasi. ') +
-            (f.length ? 'Sel dengan nilai mutlak residual > 2: ' + f.join('; ') + '. ' : 'Tidak ada sel dengan nilai mutlak residual > 2. ') +
-            'Residual membandingkan tiap sel dengan frekuensi harapan keseluruhan, bukan antarkategori. Dengan banyak sel, sorotan dibaca sebagai petunjuk. Pada tabel x\u00d72, residual kolom pertama dan kedua bernilai sama dengan tanda berlawanan, sehingga cukup dibaca satu kolom.';
+            'Residual positif berarti sel berisi lebih banyak subjek daripada yang diharapkan bila tidak ada asosiasi, dan residual negatif berarti lebih sedikit. Nilai mutlak di atas 2 dianggap menonjol (sel berlatar merah muda). Dengan banyak sel, sorotan dibaca sebagai petunjuk.' +
+            (o.reject && o.flagged.length ? ' <span style="color: var(--text-main);">' + residSentence(o, esc) + '</span>' : (o.reject ? ' Tidak ada sel dengan nilai mutlak residual > 2.' : ''));
     }
 
     var eg = statRow('Nama ukuran efek', o.effName) + statRow('Nilai', fmt(o.V, 3));
@@ -1226,20 +1317,28 @@ function setSrc() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    (function () {
+        var th = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        function ap(t) { document.documentElement.setAttribute('data-theme', t); $('themebtn').setAttribute('aria-checked', t === 'dark' ? 'true' : 'false'); }
+        ap(th);
+        $('themebtn').addEventListener('click', function () {
+            th = th === 'dark' ? 'light' : 'dark'; ap(th);
+            try { localStorage.setItem('tema-kalkulator', th); } catch (e) {}
+        });
+    })();
     buildGrid(null);
     document.querySelectorAll('input[name="src"]').forEach(function (r) { r.addEventListener('change', function () { setSrc(); calculate(); }); });
     document.querySelectorAll('input[name="test"]').forEach(function (r) { r.addEventListener('change', calculate); });
-    ['c1', 'c2', 'vn-row', 'vn-col'].forEach(function (id) { $(id).addEventListener('input', scheduleCalc); });
+    ['c1', 'c2', 'vn-row', 'vn-col', 'vn-row-g', 'vn-col-g'].forEach(function (id) { $(id).addEventListener('input', scheduleCalc); });
     $('sel-r').addEventListener('change', function () { buildGrid(readGridPrev()); calculate(); });
     $('sel-c').addEventListener('change', function () { buildGrid(readGridPrev()); calculate(); });
-    $('btn-clear').addEventListener('click', function () { $('c1').value = ''; $('c2').value = ''; st.transposed = false; st.ord = { row: null, col: null }; calculate(); });
-    $('btn-clear-grid').addEventListener('click', function () { buildGrid(null); st.transposed = false; st.ord = { row: null, col: null }; calculate(); });
-    $('btn-example').addEventListener('click', function () {
-        $('sel-r').value = '2'; $('sel-c').value = '2';
-        buildGrid({ rl: ['Multipara', 'Primipara'], cl: ['Terindikasi', 'Tidak Terindikasi'], vals: [['115', '41'], ['54', '40']] });
-        $('vn-row').value = 'Paritas'; $('vn-col').value = 'Status mastitis subklinis';
-        st.transposed = false; st.ord = { row: null, col: null };
-        calculate();
+    $('btn-clear').addEventListener('click', function () { $('c1').value = ''; $('c2').value = ''; $('vn-row').value = ''; $('vn-col').value = ''; st.transposed = false; st.ord = { row: null, col: null }; calculate(); });
+    $('btn-clear-grid').addEventListener('click', function () { $('vn-row-g').value = ''; $('vn-col-g').value = ''; buildGrid(null); st.transposed = false; st.ord = { row: null, col: null }; calculate(); });
+    $('btn-copy').addEventListener('click', function () {
+        var b = this, txt = $('concl-text').textContent;
+        function done() { b.textContent = 'Tersalin'; setTimeout(function () { b.textContent = 'Salin kesimpulan'; }, 1600); }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
+        else { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); done(); }
     });
     $('btn-transpose').addEventListener('click', function () {
         if (!st.ord.row) return;
