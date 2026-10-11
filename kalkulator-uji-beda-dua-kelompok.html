@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalkulator Uji Beda Dua Kelompok</title>
+<title>Kalkulator Uji Perbedaan Dua Kelompok Numeris</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -231,12 +231,25 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
 
 .sub-title { font-size: 13.5px; font-weight: 700; margin: 22px 0 8px; }
 
+
+input.txt {
+    width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid var(--border-color); border-radius: 10px;
+    background: #fbfbfd; font-family: 'Inter', sans-serif; box-sizing: border-box; margin-bottom: 8px; transition: all 0.2s ease;
+}
+input.txt:focus { outline: none; border-color: var(--accent-blue); background: #fff; box-shadow: 0 0 0 4px rgba(0,113,227,.15); }
+.suggest-box { background: #f5f5f7; border-radius: 12px; padding: 14px 16px; margin-top: 14px; font-size: 13.5px; line-height: 1.6; }
+.suggest-box .sg-name { font-size: 15px; font-weight: 700; margin: 2px 0 6px; }
+.suggest-box .sg-diff { margin-top: 8px; font-weight: 600; }
+.suggest-box .sg-diff.warn { color: #b8720a; }
+.suggest-box .sg-diff.ok { color: var(--green-dark); }
+.verdict-sub { text-align: center; font-size: 13.5px; color: var(--text-soft); margin: 0 0 4px; }
+.copy-row { margin-top: 12px; }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Kalkulator Uji Beda Dua Kelompok</h1>
+    <h1>Kalkulator Uji Perbedaan Dua Kelompok Numeris</h1>
     <p class="subtitle">Uji-t Student, uji-t Welch, uji-t berpasangan, Mann-Whitney U, dan Wilcoxon signed-rank dari data mentah</p>
 
     <div class="calc-row">
@@ -259,19 +272,22 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
             </div>
             <div class="form-group">
                 <label for="c1" id="lbl-c1">Kolom 1</label>
+                <input type="text" id="vn1" class="txt" placeholder="Nama variabel" autocomplete="off">
                 <textarea id="c1" class="col-input" spellcheck="false" autocomplete="off"></textarea>
             </div>
             <div class="form-group">
                 <label for="c2" id="lbl-c2">Kolom 2</label>
+                <input type="text" id="vn2" class="txt" placeholder="Nama variabel" autocomplete="off">
                 <textarea id="c2" class="col-input" spellcheck="false" autocomplete="off"></textarea>
             </div>
             <div class="row-count" id="row-count" aria-live="polite"></div>
             <div class="hint" id="mode-hint"></div>
-            <div class="hint">Tempel tanpa judul kolom. Desimal memakai titik dan tanpa pemisah ribuan (1107, bukan 1.107).</div>
+            <div class="hint">Tempel tanpa judul kolom. Desimal memakai titik dan tanpa pemisah ribuan (1107, bukan 1.107). Nama variabel bersifat opsional dan dipakai pada tabel serta kalimat kesimpulan.</div>
 
             <div class="section-title spaced">Uji Statistika</div>
             <div class="seg" id="test-seg"></div>
             <div class="hint">Semua uji dua arah dengan &alpha; = 0,05. Pemilihan uji tetap ditentukan oleh pengguna berdasarkan pohon keputusan dan hasil pengecekan asumsi.</div>
+            <div id="suggest-box" class="suggest-box" style="display:none;"></div>
         </div>
 
         <div class="result-side">
@@ -291,6 +307,7 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
                 <div class="muted-box hyp-box">
                     <span id="hyp-h0"></span><br>
                     <span id="hyp-h1"></span>
+                    <div id="hyp-var" style="margin-top:8px;font-size:13px;color:var(--text-muted);"></div>
                 </div>
 
                 <div class="result-block">
@@ -298,10 +315,11 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
                     <div id="summary-box"></div>
                     <div class="sub-title">Boxplot</div>
                     <div class="chart-wrap"><div id="box-box"></div></div>
-                    <p class="hint">Kotak membentang dari kuartil 1 sampai kuartil 3. Garis tebal adalah median, titik putih adalah mean, dan whisker menjangkau nilai terjauh yang masih dalam 1,5 &times; IQR dari kotak. Lingkaran kosong adalah nilai pencilan.</p>
+                    <p class="hint">Kotak membentang dari kuartil 1 sampai kuartil 3. Garis tebal adalah median, titik putih adalah mean, dan whisker menjangkau nilai terjauh yang masih dalam 1,5 &times; IQR dari kotak. Titik kecil adalah data individual dan lingkaran kosong adalah nilai pencilan.</p>
+                    <div id="pair-wrap" style="display:none;"><div class="sub-title">Garis penghubung per subjek</div><div class="chart-wrap"><div id="pair-box"></div></div><p class="hint" id="pair-hint"></p></div>
                     <div class="sub-title">Histogram dan kurva kepadatan</div>
                     <div class="qq-wrap" id="hist-box"></div>
-                    <p class="hint">Batang menunjukkan frekuensi per kelas, kurva menunjukkan kepadatan kernel yang diskalakan ke frekuensi. Pada sampel berpasangan, panel ketiga adalah histogram selisih (pengukuran 2 dikurangi pengukuran 1).</p>
+                    <p class="hint">Batang menunjukkan frekuensi per kelas, kurva menunjukkan kepadatan kernel yang diskalakan ke frekuensi. Pada sampel berpasangan, panel ketiga adalah histogram selisih (pengukuran 1 dikurangi pengukuran 2).</p>
                 </div>
 
                 <div class="result-block">
@@ -328,16 +346,26 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
                     </div>
                     <p class="curve-note" id="curve-note"></p>
                     <div id="verdict-status" class="verdict-status">&nbsp;</div>
+                    <p class="verdict-sub" id="verdict-sub"></p>
                 </div>
 
                 <div class="result-block">
-                    <div class="section-title">Selisih, CI 95%, dan ukuran efek</div>
-                    <div class="stat-grid" id="effect-grid"></div>
+                    <div class="section-title">Selisih dan CI 95%</div>
+                    <div class="stat-grid" id="diff-grid"></div>
+                    <div class="chart-wrap"><div id="ci-chart"></div></div>
+                    <p class="hint" id="ci-note"></p>
+                </div>
+
+                <div class="result-block">
+                    <div class="section-title">Ukuran efek</div>
+                    <div class="stat-grid" id="eff-grid"></div>
+                    <p class="hint" id="eff-note"></p>
                 </div>
 
                 <div class="muted-box">
                     <div class="concl-title">Draf kalimat kesimpulan statistika</div>
                     <div id="concl-text">&nbsp;</div>
+                    <div class="copy-row"><button type="button" class="btn" id="btn-copy">Salin kesimpulan</button></div>
                 </div>
             </div>
         </div>
@@ -348,12 +376,14 @@ details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
         <ul>
             <li>Kapasitas data 250 baris (satu baris adalah satu unit pengamatan). Nilai kosong pada salah satu kolom membuat baris itu dilewati.</li>
             <li>Boxplot memakai kuartil metode 7 (bawaan R), dengan whisker 1,5 &times; IQR. Kurva kepadatan memakai kernel Gaussian dengan bandwidth Silverman, dan lebar kelas histogram mengikuti aturan Sturges yang dibulatkan.</li>
-            <li>Shapiro-Wilk memakai algoritma Royston (n = 3 sampai 5000). Uji Levene memakai pusat rata-rata.</li>
-            <li>Uji-t Welch memakai derajat bebas Welch-Satterthwaite. Cohen's d pada uji-t independen memakai SD gabungan. Pada uji-t berpasangan, d adalah rerata selisih dibagi SD selisih.</li>
-            <li>Mann-Whitney U dan Wilcoxon signed-rank memakai nilai-p eksak jika kedua kelompok (atau jumlah pasangan) kurang dari 50 dan tidak ada nilai kembar. Pada kondisi lain dipakai pendekatan normal dengan koreksi nilai kembar dan koreksi kontinuitas. Aturan ini mengikuti fungsi wilcox.test di R.</li>
+            <li>Shapiro-Wilk memakai algoritma Royston (n = 3 sampai 5000). Uji Levene memakai pusat rata-rata, sama dengan Jamovi.</li>
+            <li>Uji-t Welch memakai derajat bebas Welch-Satterthwaite. Cohen's d pada uji-t Student memakai SD gabungan, pada uji-t Welch memakai akar dari rata-rata kedua varians, dan pada uji-t berpasangan adalah rerata selisih dibagi SD selisih. Ketiganya sama dengan Jamovi.</li>
+            <li>Mann-Whitney U dan Wilcoxon signed-rank memakai nilai-p eksak jika kedua kelompok (atau jumlah pasangan) kurang dari 50 dan tidak ada nilai kembar. Pada Wilcoxon, selisih nol juga membuat perhitungan beralih ke pendekatan normal. Pada kondisi lain dipakai pendekatan normal dengan koreksi nilai kembar dan koreksi kontinuitas. Aturan ini mengikuti fungsi wilcox.test di R. CI Hodges-Lehmann mengikuti metode yang sama, jadi CI eksak dan CI pendekatan normal bisa berbeda satu langkah pada data dengan selisih nol atau nilai kembar.</li>
             <li>Estimasi selisih median dan CI 95% memakai estimator Hodges-Lehmann (selisih seluruh pasangan untuk Mann-Whitney U, rata-rata Walsh untuk Wilcoxon).</li>
-            <li>Statistik U yang ditampilkan adalah nilai terkecil dari U<sub>1</sub> dan U<sub>2</sub>. Pada Wilcoxon, W adalah jumlah peringkat selisih positif (pengukuran 2 dikurangi pengukuran 1). Perangkat lunak lain bisa melaporkan nilai pasangannya, dan keduanya ditampilkan.</li>
-            <li>Rank-biserial bertanda positif jika kelompok 1 cenderung bernilai lebih tinggi (Mann-Whitney U), atau jika pengukuran 2 cenderung lebih tinggi (Wilcoxon).</li>
+            <li>Statistik U yang ditampilkan adalah U<sub>1</sub> (kelompok 1), dan U<sub>2</sub> ditampilkan juga. Pada Wilcoxon, W adalah jumlah peringkat selisih positif (pengukuran 1 dikurangi pengukuran 2) dan W&prime; adalah pasangannya. Definisi W ini sama dengan Jamovi.</li>
+            <li>Tanda rank-biserial mengikuti Jamovi. Pada Mann-Whitney U, nilainya (U<sub>2</sub> &minus; U<sub>1</sub>) / (n<sub>1</sub> &times; n<sub>2</sub>), positif jika kelompok 1 cenderung bernilai lebih rendah. Pada Wilcoxon, nilainya (W &minus; W&prime;) / jumlah peringkat, positif jika pengukuran 1 cenderung lebih tinggi.</li>
+            <li><b>Arah selisih.</b> Selisih mengikuti Jamovi: kelompok 1 dikurangi kelompok 2 pada sampel independen, dan pengukuran 1 dikurangi pengukuran 2 pada sampel berpasangan. Urutan kelompok mengikuti kemunculan pertama di kolom 1. Tombol tukar urutan membalik arah dan tanda hasilnya.</li>
+            <li><b>Saran uji.</b> Saran mengikuti pohon keputusan sederhana pada &alpha; = 0,05. Sampel independen: jika Shapiro-Wilk menolak normalitas pada salah satu kelompok disarankan Mann-Whitney U, jika tidak maka Levene menentukan Student (varians setara) atau Welch. Sampel berpasangan: jika normalitas selisih tidak ditolak disarankan uji-t berpasangan, jika ditolak disarankan Wilcoxon signed-rank. Saran ini bantuan awal dan tidak menggantikan pembacaan histogram, Q-Q plot, dan pencilan.</li>
             <li><b>Klasifikasi ukuran efek.</b> Cohen's d (nilai mutlak): kurang dari 0,2 sangat kecil; 0,2 sampai kurang dari 0,5 kecil; 0,5 sampai kurang dari 0,8 sedang; 0,8 atau lebih besar. Rank-biserial correlation (nilai mutlak): kurang dari 0,1 sangat kecil; 0,1 sampai kurang dari 0,3 kecil; 0,3 sampai kurang dari 0,5 sedang; 0,5 atau lebih besar. Batas 0,2, 0,5, dan 0,8 berasal dari konvensi Cohen. Kategori "sangat kecil" (di bawah batas terendah) dan batas rank-biserial (0,1, 0,3, 0,5, setara konvensi korelasi) adalah penyesuaian yang dipakai kalkulator ini. Sumber lain memakai batas yang berbeda, jadi kategori sebaiknya dibaca sebagai panduan kasar.</li>
             <li><b>Jumlah data minimum.</b> Kalkulator memerlukan minimal 3 data per kelompok (sampel independen) atau 3 pasang (sampel berpasangan), karena Shapiro-Wilk tidak dapat dihitung pada n kurang dari 3. Tidak ada batas baku untuk jumlah data yang memadai. Pada sampel yang sangat kecil, uji normalitas hampir tidak bisa mendeteksi penyimpangan, sehingga lolos uji normalitas belum berarti data normal. Kalkulator menampilkan peringatan jika ada kelompok (atau jumlah pasangan) kurang dari 10. Angka 10 adalah ambang peringatan pilihan kalkulator ini, bukan batas baku.</li>
             <li><b>Sampel sangat kecil pada uji nonparametrik.</b> Pada Mann-Whitney U dan Wilcoxon dengan nilai-p eksak, jumlah data yang sangat kecil membatasi nilai-p terkecil yang mungkin dicapai. Contohnya, dua kelompok dengan 3 data masing-masing tidak dapat menghasilkan nilai-p di bawah 0,10, dan Wilcoxon tanpa nilai kembar dengan 5 pasang tidak dapat menghasilkan nilai-p di bawah 0,0625. Kalkulator memberi peringatan pada kondisi ini.</li>
@@ -757,8 +787,8 @@ function mannWhitney(x, y) {
         }
     }
     return {
-        U1: U1, U2: U2, U: Math.min(U1, U2), p: p, method: exact ? 'eksak' : 'pendekatan normal dengan koreksi kontinuitas',
-        z: zc, rb: (U1 - U2) / (n1 * n2), diff: est, lo: lo, hi: hi, ties: hasTies, minP: exact ? Math.min(1, 2 * cum[0]) : null
+        U1: U1, U2: U2, U: U1, p: p, method: exact ? 'eksak' : 'pendekatan normal dengan koreksi kontinuitas',
+        z: zc, rb: (U2 - U1) / (n1 * n2), diff: est, lo: lo, hi: hi, ties: hasTies, minP: exact ? Math.min(1, 2 * cum[0]) : null
     };
 }
 
@@ -771,7 +801,7 @@ function wilcoxonSR(dAll) {
     var abs = nz.map(Math.abs), rk = rankAvg(abs), Wp = 0;
     for (i = 0; i < n; i++) if (nz[i] > 0) Wp += rk.r[i];
     var tot = n * (n + 1) / 2, Wm = tot - Wp;
-    var hasTies = rk.ties.length > 0, exact = n < 50 && !hasTies;
+    var hasTies = rk.ties.length > 0, exact = n < 50 && !hasTies && zeros === 0;
     var z0 = Wp - n * (n + 1) / 4, sigma = Math.sqrt(n * (n + 1) * (2 * n + 1) / 24 - tieSum(rk.ties) / 48);
     if (!(sigma > 0)) return { error: 'Uji Wilcoxon signed-rank tidak dapat dihitung untuk data ini.' };
     var zc = (z0 - sign(z0) * 0.5) / sigma, pNorm = Math.min(1, 2 * normTail(Math.abs(zc)));
@@ -964,9 +994,11 @@ function parseInput(mode, t1, t2, maxRows) {
 }
 
 /* ---------- Analisis lengkap ---------- */
-/* mode: 'ind' | 'pair'; test: 'student' | 'welch' | 'mw' | 'pt' | 'wil'; swap: tukar urutan kelompok */
-function analyze(data, mode, test, swap) {
-    var out = { mode: mode, test: test, error: null, warnings: [] };
+/* mode: 'ind' | 'pair'; test: 'student' | 'welch' | 'mw' | 'pt' | 'wil'; swap: tukar urutan; vn: {n1, n2} nama variabel.
+   Arah selisih mengikuti Jamovi: kelompok 1 - kelompok 2 (independen), pengukuran 1 - pengukuran 2 (berpasangan). */
+function analyze(data, mode, test, swap, vn) {
+    vn = vn || {};
+    var out = { mode: mode, test: test, error: null, warnings: [], V: mode === 'ind' ? (vn.n2 || '') : '', G: mode === 'ind' ? (vn.n1 || '') : '' };
     var i;
     if (mode === 'ind') {
         var n1 = data.names[0], n2 = data.names[1], g1 = data.g1, g2 = data.g2;
@@ -989,21 +1021,25 @@ function analyze(data, mode, test, swap) {
         if (r.error) { out.error = r.error; return out; }
         out.res = r;
     } else {
-        var x = data.x, y = data.y, d = [];
-        for (i = 0; i < x.length; i++) d.push(y[i] - x[i]);
-        out.rows = [summary('Pengukuran 1', x), summary('Pengukuran 2', y), summary('Selisih (pengukuran 2 \u2212 pengukuran 1)', d)];
+        var x = data.x, y = data.y, l1 = vn.n1 || '', l2 = vn.n2 || '', d = [];
+        if (swap) { var tv = x; x = y; y = tv; var tl = l1; l1 = l2; l2 = tl; }
+        out.lab = [l1 || 'pengukuran 1', l2 || 'pengukuran 2'];
+        out.labT = [l1 || 'Pengukuran 1', l2 || 'Pengukuran 2'];
+        for (i = 0; i < x.length; i++) d.push(x[i] - y[i]);
+        var dName = 'Selisih (' + out.lab[0] + ' − ' + out.lab[1] + ')';
+        out.rows = [summary(out.labT[0], x), summary(out.labT[1], y), summary(dName, d)];
         var sw2 = shapiroWilk(d);
         out.normality = [{ label: 'Selisih', n: d.length, W: sw2.W, p: sw2.p, error: sw2.error, qq: sw2.error ? [] : qqPoints(d) }];
         var r2 = test === 'pt' ? pairedT(d) : wilcoxonSR(d);
         if (r2.error) { out.error = r2.error; return out; }
         out.res = r2;
         out.diffs = d;
-        out.boxSeries = [{ name: 'Pengukuran 1', vals: x }, { name: 'Pengukuran 2', vals: y }];
-        out.histPanels = [{ name: 'Pengukuran 1', vals: x, shared: 'a' }, { name: 'Pengukuran 2', vals: y, shared: 'a' }, { name: 'Selisih (2 \u2212 1)', vals: d, shared: 'b' }];
+        out.pairX = x; out.pairY = y;
+        out.boxSeries = [{ name: out.labT[0], vals: x }, { name: out.labT[1], vals: y }];
+        out.histPanels = [{ name: out.labT[0], vals: x, shared: 'a' }, { name: out.labT[1], vals: y, shared: 'a' }, { name: dName, vals: d, shared: 'b' }];
         out.nSizes = [d.length];
     }
     var R = out.res;
-    /* peringatan ukuran sampel */
     var smallN = out.nSizes.slice();
     if (R.nEff !== undefined) smallN = [R.nEff];
     var minN = Math.min.apply(null, smallN);
@@ -1011,7 +1047,7 @@ function analyze(data, mode, test, swap) {
         out.warnings.push('Ukuran sampel kecil (' + (mode === 'ind' ? 'n = ' + out.nSizes.join(' dan ') : 'n = ' + minN + ' pasang') + '). Uji normalitas sangat lemah pada sampel sekecil ini, dan hasil uji kurang stabil. Interpretasikan dengan hati-hati.');
     }
     if (R.minP !== null && R.minP !== undefined && R.minP > 0.05) {
-        out.warnings.push('Dengan ukuran sampel ini, nilai-p eksak terkecil yang mungkin dicapai adalah ' + String(Math.round(R.minP * 10000) / 10000).replace('.', ',') + ' (lebih besar dari 0,05), sehingga uji ini tidak mungkin menolak H0 pada \u03b1 = 0,05.');
+        out.warnings.push('Dengan ukuran sampel ini, nilai-p eksak terkecil yang mungkin dicapai adalah ' + String(Math.round(R.minP * 10000) / 10000).replace('.', ',') + ' (lebih besar dari 0,05), sehingga uji ini tidak mungkin menolak H0 pada α = 0,05.');
     }
     out.alpha = 0.05;
     out.reject = R.p < 0.05;
@@ -1022,6 +1058,14 @@ function analyze(data, mode, test, swap) {
     } else {
         out.dist = 'z'; out.stat = R.z; out.df = null;
         out.effect = { name: 'Rank-biserial correlation', value: R.rb, category: categoryRB(R.rb) };
+    }
+    /* saran uji berdasarkan asumsi */
+    out.suggestId = null;
+    var anyErr = out.normality.some(function (e) { return !!e.error; });
+    if (!anyErr) {
+        var nonNorm = out.normality.some(function (e) { return e.p < 0.05; });
+        if (mode === 'ind') out.suggestId = nonNorm ? 'mw' : ((out.levene && !out.levene.error && out.levene.p >= 0.05) ? 'student' : 'welch');
+        else out.suggestId = nonNorm ? 'wil' : 'pt';
     }
     return out;
 }
@@ -1169,6 +1213,58 @@ function drawTestCurve(el, c) {
 
 
 
+/* ===================== Grafik forest: estimasi selisih dan CI 95% ===================== */
+function drawForest(el, p) {
+    var W = Math.min(660, chartWidth(el)), H = 150, ml = 26, mr = 26, mt = 38, mb = 44;
+    var est = p.est, lo = p.lo, hi = p.hi, dec = p.dec;
+    var vals = [0, lo, hi];
+    if (isFinite(est)) vals.push(est);
+    var vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals);
+    var pad = (vmax - vmin) * 0.12 || 1, amin = vmin - pad, amax = vmax + pad;
+    var sx = function (v) { return ml + (v - amin) / (amax - amin) * (W - ml - mr); };
+    var axY = H - mb, cy = (mt + axY) / 2 + 2;
+    var excl = lo > 0 || hi < 0, col = excl ? '#ff3b30' : '#0071e3';
+    var s = svgOpen(W, H, 'Estimasi selisih dan CI 95%');
+    s += ln(ml, axY, W - mr, axY, '#d2d2d7', 1);
+    var step = niceStep((amax - amin) / 6);
+    for (var t = Math.ceil(amin / step - 1e-9) * step; t <= amax + 1e-9; t += step) {
+        var tv = Math.abs(t) < 1e-9 ? 0 : t;
+        s += ln(sx(tv), axY, sx(tv), axY + 4, '#d2d2d7', 1) + tx(sx(tv), axY + 17, fmtSmart(tv, 2), { size: 10.5, fill: '#86868b' });
+    }
+    s += ln(sx(0), mt - 8, sx(0), axY, '#6e6e73', 1.5, ' stroke-dasharray="5 4"');
+    s += tx(clamp(sx(0), 70, W - 70), mt - 14, '0 (tidak ada selisih)', { size: 11.5, weight: 700, fill: '#6e6e73', halo: true });
+    s += ln(sx(lo), cy, sx(hi), cy, col, 3) + ln(sx(lo), cy - 7, sx(lo), cy + 7, col, 3) + ln(sx(hi), cy - 7, sx(hi), cy + 7, col, 3);
+    if (isFinite(est)) {
+        s += circ(sx(est), cy, 6.5, col, '#ffffff', 2);
+        s += tx(clamp(sx(est), 30, W - 30), cy - 14, fmt(est, dec), { size: 12.5, weight: 800, fill: col, halo: true });
+    }
+    s += tx(clamp(sx(lo), 24, W - 24), cy + 24, fmt(lo, dec), { size: 11, weight: 600, fill: col, halo: true });
+    s += tx(clamp(sx(hi), 24, W - 24), cy + 24, fmt(hi, dec), { size: 11, weight: 600, fill: col, halo: true });
+    el.innerHTML = s + '</svg>';
+}
+
+/* ===================== Garis penghubung per subjek (sampel berpasangan) ===================== */
+function drawPairLines(el, x, y, labs) {
+    var W = Math.min(520, chartWidth(el)), H = 300, ml = 52, mr = 16, mt = 20, mb = 44, i, lo = Infinity, hi = -Infinity;
+    for (i = 0; i < x.length; i++) { lo = Math.min(lo, x[i], y[i]); hi = Math.max(hi, x[i], y[i]); }
+    var pad = (hi - lo) * 0.06 || 1; lo -= pad; hi += pad;
+    var step = niceStep((hi - lo) / 5), t0 = Math.ceil(lo / step - 1e-9) * step;
+    var sy = function (v) { return mt + (1 - (v - lo) / (hi - lo)) * (H - mt - mb); };
+    var lx = ml + (W - ml - mr) * 0.2, rx = ml + (W - ml - mr) * 0.8, g = svgOpen(W, H, 'Garis penghubung per subjek'), t;
+    g += ln(ml, mt, ml, H - mb, '#d2d2d7', 1) + ln(ml, H - mb, W - mr, H - mb, '#d2d2d7', 1);
+    for (t = t0; t <= hi + 1e-9; t += step) {
+        g += ln(ml, sy(t), W - mr, sy(t), '#f0f0f2', 1) + tx(ml - 7, sy(t) + 3.5, fmtSmart(t, 2), { size: 10.5, fill: '#86868b', anchor: 'end' });
+    }
+    for (i = 0; i < x.length; i++) {
+        var c = y[i] < x[i] ? '#0071e3' : (y[i] > x[i] ? '#ff9500' : '#8e8e93');
+        g += ln(lx, sy(x[i]), rx, sy(y[i]), c, 1.2, ' stroke-opacity="0.55"');
+        g += circ(lx, sy(x[i]), 2.6, c, null, 0) + circ(rx, sy(y[i]), 2.6, c, null, 0);
+    }
+    g += tx(lx, H - mb + 18, esc(shortName(labs[0], 18)), { size: 12, weight: 600 });
+    g += tx(rx, H - mb + 18, esc(shortName(labs[1], 18)), { size: 12, weight: 600 });
+    el.innerHTML = g + '</svg>';
+}
+
 /* ===================== Antarmuka ===================== */
 var $ = function (id) { return document.getElementById(id); };
 var TEST_NAMES = {
@@ -1204,16 +1300,18 @@ function updateLabels() {
     var ind = getMode() === 'ind';
     $('lbl-c1').textContent = ind ? 'Kolom 1: nama kelompok' : 'Kolom 1: pengukuran 1';
     $('lbl-c2').textContent = ind ? 'Kolom 2: nilai yang diukur' : 'Kolom 2: pengukuran 2';
-    $('c1').placeholder = ind ? 'Contoh:\nPrimipara\nMultipara\nPrimipara\n...' : 'Contoh:\n4.7\n5.6\n8.4\n...';
+    $('vn1').setAttribute('aria-label', ind ? 'Nama variabel kolom 1 (pengelompokan)' : 'Nama variabel pengukuran 1');
+    $('vn2').setAttribute('aria-label', ind ? 'Nama variabel kolom 2 (nilai yang diukur)' : 'Nama variabel pengukuran 2');
+    $('c1').placeholder = ind ? 'Contoh:\nKelompok A\nKelompok B\nKelompok A\n...' : 'Contoh:\n4.7\n5.6\n8.4\n...';
     $('c2').placeholder = ind ? 'Contoh:\n395.5\n425\n424.9\n...' : 'Contoh:\n6.0\n7.0\n7.8\n...';
     $('mode-hint').textContent = ind
-        ? 'Setiap baris adalah satu unit pengamatan. Kolom 1 harus berisi tepat dua nama kelompok yang berbeda.'
+        ? 'Setiap baris adalah satu unit pengamatan. Kolom 1 harus berisi tepat dua nama kelompok yang berbeda. Urutan kelompok mengikuti kemunculan pertama di kolom 1, sama dengan Jamovi.'
         : 'Satu baris adalah satu unit pengamatan dengan dua pengukuran. Jangan mengurutkan satu kolom saja, karena pasangan akan rusak.';
 }
 
 /* ---------- tabel dan teks ---------- */
-function summaryTable(rows) {
-    var h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th></th><th>n</th><th>Mean</th><th>Median</th><th>SD</th></tr></thead><tbody>';
+function summaryTable(rows, head) {
+    var h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">' + esc(head || '') + '</th><th>n</th><th>Mean</th><th>Median</th><th>SD</th></tr></thead><tbody>';
     rows.forEach(function (r) {
         h += '<tr><th scope="row">' + esc(r.name) + '</th><td>' + r.n + '</td><td>' + fmt(r.mean, 2) + '</td><td>' + fmt(r.median, 2) + '</td><td>' + fmt(r.sd, 2) + '</td></tr>';
     });
@@ -1279,8 +1377,12 @@ function drawBoxplot(el, series) {
         g += ln(cx, sy(b.wu), cx, sy(b.q3), '#0071e3', 1.6) + ln(cx, sy(b.q1), cx, sy(b.wl), '#0071e3', 1.6);
         g += ln(cx - bw / 4, sy(b.wu), cx + bw / 4, sy(b.wu), '#0071e3', 1.6) + ln(cx - bw / 4, sy(b.wl), cx + bw / 4, sy(b.wl), '#0071e3', 1.6);
         g += '<rect x="' + rr(x0) + '" y="' + rr(sy(b.q3)) + '" width="' + rr(bw) + '" height="' + rr(Math.max(1, sy(b.q1) - sy(b.q3))) + '" fill="#0071e3" fill-opacity="0.14" stroke="#0071e3" stroke-width="1.6" rx="3"/>';
+        s.vals.forEach(function (v, idx) {
+            var jx = ((idx * 0.6180339887) % 1 - 0.5) * bw * 0.8;
+            g += '<circle cx="' + rr(cx + jx) + '" cy="' + rr(sy(v)) + '" r="2.3" fill="#0071e3" fill-opacity="0.38"/>';
+        });
         g += ln(x0, sy(b.med), x0 + bw, sy(b.med), '#1d1d1f', 2.8);
-        b.out.forEach(function (v) { g += circ(cx, sy(v), 3, 'none', '#0071e3', 1.4); });
+        b.out.forEach(function (v) { g += circ(cx, sy(v), 3.6, 'none', '#0071e3', 1.4); });
         g += circ(cx, sy(b.mean), 4.2, '#ffffff', '#1d1d1f', 1.6);
         g += tx(cx, H - mb + 18, esc(shortName(s.name, 20)), { size: 12, weight: 600 });
     });
@@ -1341,28 +1443,59 @@ function hypothesisHtml(o) {
     return [H0() + ': median<sub>selisih</sub> = 0', 'H<sub>1</sub>: median<sub>selisih</sub> \u2260 0'];
 }
 
+function grp(n) { return /^kelompok\b/i.test(n) ? n : 'kelompok ' + n; }
+
 function conclusionText(o) {
     var t = o.test, R = o.res, rej = o.reject, e = o.effect, nm = TEST_NAMES[t], s;
     var effTxt = 'ukuran efek ' + e.category + ' (' + e.name + ' = ' + fmt(e.value, e.name === "Cohen's d" ? 2 : 3) + ')';
+    var V = o.V ? o.V + ' ' : '';
     if (t === 'student' || t === 'welch') {
         var a = o.rows[0], b = o.rows[1];
-        s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perbedaan rerata antara kelompok ' + a.name + ' (' + fmt(a.mean, 2) + ' \u00b1 ' + fmt(a.sd, 2) + ') dan kelompok ' + b.name + ' (' + fmt(b.mean, 2) + ' \u00b1 ' + fmt(b.sd, 2) + '), dengan t(' + dfTxt(R.df) + ') = ' + fmt(R.stat, 2) + ' dan ' + pTxt(R.p) + '. ';
-        s += 'Selisih rerata (' + a.name + ' \u2212 ' + b.name + ') = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
+        s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perbedaan rerata ' + V + 'antara ' + grp(a.name) + ' (' + fmt(a.mean, 2) + ' ± ' + fmt(a.sd, 2) + ') dan ' + grp(b.name) + ' (' + fmt(b.mean, 2) + ' ± ' + fmt(b.sd, 2) + '), dengan t(' + dfTxt(R.df) + ') = ' + fmt(R.stat, 2) + ' dan ' + pTxt(R.p) + '. ';
+        s += 'Selisih rerata (' + a.name + ' − ' + b.name + ') = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
     } else if (t === 'pt') {
         var p1 = o.rows[0], p2 = o.rows[1];
-        s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perubahan rerata dari pengukuran 1 (' + fmt(p1.mean, 2) + ' \u00b1 ' + fmt(p1.sd, 2) + ') ke pengukuran 2 (' + fmt(p2.mean, 2) + ' \u00b1 ' + fmt(p2.sd, 2) + '), dengan t(' + dfTxt(R.df) + ') = ' + fmt(R.stat, 2) + ' dan ' + pTxt(R.p) + '. ';
-        s += 'Selisih rerata (pengukuran 2 \u2212 pengukuran 1) = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
+        s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perubahan rerata dari ' + o.lab[0] + ' (' + fmt(p1.mean, 2) + ' ± ' + fmt(p1.sd, 2) + ') ke ' + o.lab[1] + ' (' + fmt(p2.mean, 2) + ' ± ' + fmt(p2.sd, 2) + '), dengan t(' + dfTxt(R.df) + ') = ' + fmt(R.stat, 2) + ' dan ' + pTxt(R.p) + '. ';
+        s += 'Selisih rerata (' + o.lab[0] + ' − ' + o.lab[1] + ') = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
     } else if (t === 'mw') {
         var g1 = o.rows[0], g2 = o.rows[1];
-        s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perbedaan nilai antara kelompok ' + g1.name + ' (median ' + fmt(g1.median, 2) + ') dan kelompok ' + g2.name + ' (median ' + fmt(g2.median, 2) + '), dengan U = ' + fmt(R.U, 1) + ' dan ' + pTxt(R.p) + '. ';
-        s += 'Estimasi Hodges-Lehmann untuk selisih lokasi (' + g1.name + ' \u2212 ' + g2.name + ') = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
+        s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perbedaan ' + (o.V ? o.V : 'nilai') + ' antara ' + grp(g1.name) + ' (median ' + fmt(g1.median, 2) + ') dan ' + grp(g2.name) + ' (median ' + fmt(g2.median, 2) + '), dengan U = ' + fmt(R.U, 1) + ' dan ' + pTxt(R.p) + '. ';
+        s += 'Estimasi Hodges-Lehmann untuk selisih lokasi (' + g1.name + ' − ' + g2.name + ') = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
     } else {
         var m1 = o.rows[0], m2 = o.rows[1];
-        s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perubahan nilai dari pengukuran 1 (median ' + fmt(m1.median, 2) + ') ke pengukuran 2 (median ' + fmt(m2.median, 2) + '), dengan W = ' + fmt(R.Wp, 1) + ' dan ' + pTxt(R.p) + '. ';
-        s += 'Estimasi Hodges-Lehmann (pseudomedian selisih, pengukuran 2 \u2212 pengukuran 1) = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
+        s = nm + (rej ? ' menunjukkan' : ' tidak menunjukkan') + ' perubahan nilai dari ' + o.lab[0] + ' (median ' + fmt(m1.median, 2) + ') ke ' + o.lab[1] + ' (median ' + fmt(m2.median, 2) + '), dengan W = ' + fmt(R.Wp, 1) + ' dan ' + pTxt(R.p) + '. ';
+        s += 'Estimasi Hodges-Lehmann (pseudomedian selisih, ' + o.lab[0] + ' − ' + o.lab[1] + ') = ' + fmt(R.diff, 2) + ' (CI 95% ' + ciTxt(R.lo, R.hi) + '), dengan ' + effTxt + '.';
     }
     if (!rej) s += ' Bukti belum cukup untuk menyatakan ada perbedaan.';
     return s;
+}
+
+function verdictSub(o) {
+    var what;
+    if (o.mode === 'ind') what = (o.test === 'mw' ? 'perbedaan nilai' : 'perbedaan rerata') + (o.V ? ' ' + o.V : '') + ' antara ' + grp(o.names[0]) + ' dan ' + grp(o.names[1]);
+    else what = (o.test === 'wil' ? 'perubahan nilai' : 'perubahan rerata') + ' dari ' + o.lab[0] + ' ke ' + o.lab[1];
+    return o.reject ? 'Ada bukti ' + what + '.' : 'Bukti belum cukup untuk menyatakan ada ' + what + '.';
+}
+
+function suggestHtml(o, selected) {
+    var id = o.suggestId;
+    if (!id) return '';
+    var N = o.normality, why;
+    function nList(arr) { return arr.map(function (x) { return (o.mode === 'ind' ? esc(grp(x.label)) : esc(x.label)) + ' (' + pTxt(x.p) + ')'; }).join(' dan '); }
+    if (o.mode === 'ind') {
+        if (id === 'mw') why = 'Shapiro-Wilk menunjukkan penyimpangan dari normal pada ' + nList(N.filter(function (x) { return x.p < 0.05; })) + '. Karena asumsi normalitas tidak terpenuhi, uji berbasis peringkat lebih sesuai.';
+        else if (id === 'student') why = 'Kedua kelompok konsisten dengan sebaran normal (' + nList(N) + ') dan uji Levene tidak menunjukkan perbedaan varians (' + pTxt(o.levene.p) + '), sehingga varians dianggap setara.';
+        else why = 'Kedua kelompok konsisten dengan sebaran normal (' + nList(N) + ')' + (o.levene.error ? ', tetapi uji Levene tidak dapat dihitung. Welch dipilih karena tidak mengandaikan varians setara.' : ' tetapi uji Levene menunjukkan varians berbeda (' + pTxt(o.levene.p) + '). Welch dipilih karena tidak mengandaikan varians setara.');
+    } else {
+        if (id === 'pt') why = 'Selisih konsisten dengan sebaran normal (Shapiro-Wilk, ' + pTxt(N[0].p) + '), sehingga rerata selisih dapat diuji dengan uji-t berpasangan.';
+        else why = 'Selisih menyimpang dari sebaran normal (Shapiro-Wilk, ' + pTxt(N[0].p) + '), sehingga uji berbasis peringkat lebih sesuai.';
+    }
+    var h = '<div class="concl-title">Saran uji berdasarkan asumsi</div><div class="sg-name">' + esc(TEST_NAMES[id]) + '</div><div>' + why + '</div>';
+    h += selected === id
+        ? '<div class="sg-diff ok">Uji yang sedang dipilih sesuai dengan saran.</div>'
+        : '<div class="sg-diff warn">Uji yang sedang dipilih (' + esc(TEST_NAMES[selected]) + ') berbeda dari saran ini.</div>';
+    h += '<div class="hint">Uji normalitas lemah pada n kecil dan terlalu peka pada n besar. Baca saran ini bersama histogram, Q-Q plot, dan pencilan.</div>';
+    return h;
 }
 
 function showErrors(list, warns) {
@@ -1382,35 +1515,44 @@ function showResults(on) {
 }
 
 /* ---------- perhitungan dan tampilan ---------- */
+function nameVals() { return { n1: $('vn1').value.trim(), n2: $('vn2').value.trim() }; }
+
 function calculate() {
-    var mode = getMode(), test = getTest();
+    var mode = getMode(), test = getTest(), names = nameVals();
     var parsed = parseInput(mode, $('c1').value, $('c2').value, MAX_ROWS);
     $('row-count').textContent = parsed.empty ? '' : (parsed.rows + ' baris dibaca' + (parsed.skipped ? ', ' + parsed.skipped + ' baris dilewati karena ada nilai kosong' : ''));
     $('swap-row').style.display = 'none';
-    if (parsed.empty) { showErrors([], []); showResults(false); lastCfg = null; return; }
+    $('suggest-box').style.display = 'none';
+    if (parsed.empty) { showErrors([], []); showResults(false); lastCfg = null; lastO = null; return; }
     showErrors(parsed.errors, parsed.warnings);
-    if (parsed.errors.length || !parsed.data) { showResults(false); lastCfg = null; return; }
+    if (parsed.errors.length || !parsed.data) { showResults(false); lastCfg = null; lastO = null; return; }
 
-    if (mode === 'ind') {
-        var key = parsed.data.names.join('|');
-        if (swapState.key !== key) { swapState.key = key; swapState.swap = false; }
-    }
-    var o = analyze(parsed.data, mode, test, mode === 'ind' && swapState.swap);
-    if (o.error) { showErrors([o.error], parsed.warnings); showResults(false); lastCfg = null; return; }
+    var key = mode === 'ind' ? parsed.data.names.join('|') : 'pair';
+    if (swapState.key !== key) { swapState.key = key; swapState.swap = false; }
+    var o = analyze(parsed.data, mode, test, swapState.swap, names);
+    if (o.error) { showErrors([o.error], parsed.warnings); showResults(false); lastCfg = null; lastO = null; return; }
     showResults(true);
     showErrors([], parsed.warnings.concat(o.warnings || []));
     lastO = o;
 
+    $('swap-row').style.display = 'flex';
     if (mode === 'ind') {
-        $('swap-row').style.display = 'flex';
-        $('swap-text').innerHTML = 'Kelompok 1: <b>' + esc(o.names[0]) + '</b> &middot; Kelompok 2: <b>' + esc(o.names[1]) + '</b>';
+        $('swap-text').innerHTML = 'Kelompok 1: <b>' + esc(o.names[0]) + '</b> &middot; Kelompok 2: <b>' + esc(o.names[1]) + '</b>. Selisih dihitung sebagai kelompok 1 dikurangi kelompok 2.';
+        $('btn-swap').textContent = 'Tukar urutan kelompok';
+    } else {
+        $('swap-text').innerHTML = 'Selisih dihitung sebagai <b>' + esc(o.lab[0]) + '</b> dikurangi <b>' + esc(o.lab[1]) + '</b>.';
+        $('btn-swap').textContent = 'Tukar urutan pengukuran';
     }
 
-    $('test-title').textContent = TEST_NAMES[test] + ' \u00b7 dua arah (\u03b1 = 0,05)';
+    var sg = suggestHtml(o, test);
+    if (sg) { $('suggest-box').innerHTML = sg; $('suggest-box').style.display = 'block'; }
+
+    $('test-title').textContent = TEST_NAMES[test] + ' · dua arah (α = 0,05)';
     var hy = hypothesisHtml(o);
     $('hyp-h0').innerHTML = hy[0]; $('hyp-h1').innerHTML = hy[1];
+    $('hyp-var').innerHTML = (mode === 'ind' && o.V) ? 'Variabel yang diukur: <b>' + esc(o.V) + '</b>' + (o.G ? ' (pengelompokan: ' + esc(o.G) + ')' : '') : (mode === 'ind' && o.G ? 'Pengelompokan: ' + esc(o.G) : '');
 
-    $('summary-box').innerHTML = summaryTable(o.rows);
+    $('summary-box').innerHTML = summaryTable(o.rows, mode === 'ind' ? o.G : '');
     drawPlots(o);
     $('shapiro-box').innerHTML = shapiroTable(o.normality);
     drawQQ($('qq-box'), o.normality);
@@ -1432,12 +1574,12 @@ function calculate() {
     if (o.dist === 't') {
         g += statRow('Nilai t', fmt(R.stat, 2)) + statRow('Derajat bebas (df)', dfTxt(R.df)) + statRow('Nilai-p', fmtP(R.p));
     } else if (test === 'mw') {
-        g += statRow('Statistik U (nilai terkecil dari U<sub>1</sub> dan U<sub>2</sub>)', fmt(R.U, 1)) +
+        g += statRow('Statistik U (kelompok 1, sama dengan Jamovi)', fmt(R.U, 1)) +
             statRow('U<sub>1</sub> (kelompok 1) dan U<sub>2</sub> (kelompok 2)', fmt(R.U1, 1) + ' dan ' + fmt(R.U2, 1)) +
             statRow('Nilai Z (pendekatan normal)', fmt(R.z, 2)) +
             statRow('Nilai-p (' + R.method + ')', fmtP(R.p));
     } else {
-        g += statRow('W (jumlah peringkat selisih positif)', fmt(R.Wp, 1)) + statRow('W\u2032 (jumlah peringkat selisih negatif)', fmt(R.Wm, 1)) +
+        g += statRow('W (jumlah peringkat selisih positif)', fmt(R.Wp, 1)) + statRow('W′ (jumlah peringkat selisih negatif)', fmt(R.Wm, 1)) +
             statRow('Jumlah pasangan yang dipakai', R.nEff + (R.zeros ? ' (' + R.zeros + ' selisih nol dibuang)' : '')) +
             statRow('Nilai Z (pendekatan normal)', fmt(R.z, 2)) +
             statRow('Nilai-p (' + R.method + ')', fmtP(R.p));
@@ -1445,20 +1587,42 @@ function calculate() {
     $('stat-grid').innerHTML = g;
 
     var cv = o.dist === 't' ? o.critT : Z975;
-    $('cmp-text').innerHTML = 'Nilai-p (' + fmtP(R.p) + ') ' + (o.reject ? 'lebih kecil daripada' : 'sama dengan atau lebih besar daripada') + ' \u03b1 (0,05).';
+    $('cmp-text').innerHTML = 'Nilai-p (' + fmtP(R.p) + ') ' + (o.reject ? 'lebih kecil daripada' : 'sama dengan atau lebih besar daripada') + ' α (0,05).';
     $('verdict-status').innerHTML = o.reject ? 'Tolak ' + H0() : 'Gagal Tolak ' + H0();
     $('verdict-status').className = 'verdict-status ' + (o.reject ? 'reject' : 'fail');
+    $('verdict-sub').textContent = verdictSub(o);
     $('curve-note').textContent = (o.dist === 'z' ? 'Kurva normal baku dipakai sebagai gambaran pendekatan. ' : '') + (o.dist === 'z' && R.method === 'eksak' ? 'Nilai-p yang dilaporkan dihitung secara eksak, jadi kurva ini bersifat ilustrasi.' : '');
     $('curve-note').style.display = $('curve-note').textContent ? 'block' : 'none';
 
-    var dl;
-    if (test === 'student' || test === 'welch') dl = 'Selisih rerata (' + esc(o.names[0]) + ' \u2212 ' + esc(o.names[1]) + ')';
-    else if (test === 'pt') dl = 'Selisih rerata (pengukuran 2 \u2212 pengukuran 1)';
-    else if (test === 'mw') dl = 'Estimasi Hodges-Lehmann, selisih lokasi (' + esc(o.names[0]) + ' \u2212 ' + esc(o.names[1]) + ')';
-    else dl = 'Estimasi Hodges-Lehmann, pseudomedian selisih (pengukuran 2 \u2212 pengukuran 1)';
-    $('effect-grid').innerHTML = statRow(dl, isFinite(R.diff) ? fmt(R.diff, 2) : 'tidak tersedia') +
+    /* selisih dan CI */
+    var first = mode === 'ind' ? o.names[0] : o.lab[0], second = mode === 'ind' ? o.names[1] : o.lab[1], dl;
+    if (test === 'student' || test === 'welch') dl = 'Selisih rerata (' + esc(first) + ' − ' + esc(second) + ')';
+    else if (test === 'pt') dl = 'Selisih rerata (' + esc(first) + ' − ' + esc(second) + ')';
+    else if (test === 'mw') dl = 'Estimasi Hodges-Lehmann, selisih lokasi (' + esc(first) + ' − ' + esc(second) + ')';
+    else dl = 'Estimasi Hodges-Lehmann, pseudomedian selisih (' + esc(first) + ' − ' + esc(second) + ')';
+    var ciOK = isFinite(R.lo) && isFinite(R.hi), inc0 = ciOK ? (R.lo <= 0 && R.hi >= 0) : null;
+    $('diff-grid').innerHTML = statRow(dl, isFinite(R.diff) ? fmt(R.diff, 2) : 'tidak tersedia') +
         statRow('CI 95%', ciTxt(R.lo, R.hi)) +
-        statRow(o.effect.name, fmt(o.effect.value, 3)) + statRow('Kategori ukuran efek', o.effect.category);
+        statRow('Apakah CI mencakup 0?', ciOK ? (inc0 ? 'Ya' : 'Tidak') : 'tidak tersedia');
+    if (ciOK) {
+        $('ci-note').textContent = inc0
+            ? 'Rentang CI melewati garis 0, sehingga arah selisih tidak jelas: ' + first + ' bisa lebih tinggi, sama, atau lebih rendah daripada ' + second + '.'
+            : 'Rentang CI berada seluruhnya di satu sisi garis 0, sehingga arah selisih jelas (' + (R.lo > 0 ? first : second) + ' lebih tinggi).';
+    } else {
+        $('ci-note').textContent = 'CI tidak dapat dihitung untuk data ini.';
+    }
+
+    /* ukuran efek */
+    var th = o.effect.name === "Cohen's d" ? [0.2, 0.5, 0.8] : [0.1, 0.3, 0.5];
+    $('eff-grid').innerHTML = statRow('Nama ukuran efek', o.effect.name) + statRow('Nilai', fmt(o.effect.value, 3)) +
+        statRow('Kategori ukuran efek', o.effect.category) +
+        statRow('Batas kategori (sangat kecil | kecil | sedang | besar)', '< ' + fmt(th[0], 2) + ' | < ' + fmt(th[1], 2) + ' | < ' + fmt(th[2], 2) + ' | ≥ ' + fmt(th[2], 2));
+    var en;
+    if (test === 'student' || test === 'welch') en = 'Tanda d mengikuti arah selisih (kelompok 1 dikurangi kelompok 2), sama dengan Jamovi.';
+    else if (test === 'pt') en = 'd adalah rerata selisih dibagi SD selisih. Tandanya mengikuti arah selisih (' + o.lab[0] + ' dikurangi ' + o.lab[1] + '), sama dengan Jamovi.';
+    else if (test === 'mw') en = 'Tanda rank-biserial mengikuti Jamovi: positif jika kelompok 1 cenderung bernilai lebih rendah daripada kelompok 2.';
+    else en = 'Tanda rank-biserial mengikuti Jamovi: positif jika jumlah peringkat selisih positif (W) lebih besar daripada W′, yaitu ' + o.lab[0] + ' cenderung lebih tinggi daripada ' + o.lab[1] + '.';
+    $('eff-note').textContent = en;
     $('concl-text').textContent = conclusionText(o);
 
     lastCfg = { dist: o.dist, df: o.df, arah: 'dua', stat: o.stat, critLeft: -cv, critRight: cv, reject: o.reject };
@@ -1468,6 +1632,20 @@ function calculate() {
 function drawPlots(o) {
     drawBoxplot($('box-box'), o.boxSeries);
     drawHistPanels($('hist-box'), o.histPanels);
+    drawWidthCharts(o);
+}
+
+function drawWidthCharts(o) {
+    var R = o.res;
+    if (o.mode === 'pair') {
+        $('pair-wrap').style.display = 'block';
+        drawPairLines($('pair-box'), o.pairX, o.pairY, o.lab);
+        $('pair-hint').textContent = 'Setiap garis menghubungkan dua pengukuran pada satu subjek. Garis biru turun dari ' + o.lab[0] + ' ke ' + o.lab[1] + ', garis oranye naik, dan garis abu-abu tidak berubah.';
+    } else {
+        $('pair-wrap').style.display = 'none';
+    }
+    if (isFinite(R.lo) && isFinite(R.hi)) drawForest($('ci-chart'), { est: R.diff, lo: R.lo, hi: R.hi, dec: 2 });
+    else $('ci-chart').innerHTML = '';
 }
 
 function scheduleCalc() { clearTimeout(calcTimer); calcTimer = setTimeout(calculate, 120); }
@@ -1478,17 +1656,31 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     buildTestSwitch('student');
     updateLabels();
-    $('c1').addEventListener('input', scheduleCalc);
-    $('c2').addEventListener('input', scheduleCalc);
-    $('btn-clear').addEventListener('click', function () { $('c1').value = ''; $('c2').value = ''; swapState.swap = false; calculate(); });
+    ['c1', 'c2', 'vn1', 'vn2'].forEach(function (id) { $(id).addEventListener('input', scheduleCalc); });
+    $('btn-clear').addEventListener('click', function () { $('c1').value = ''; $('c2').value = ''; $('vn1').value = ''; $('vn2').value = ''; swapState.swap = false; calculate(); });
     $('btn-swap').addEventListener('click', function () { swapState.swap = !swapState.swap; calculate(); });
+    $('btn-copy').addEventListener('click', function () {
+        var btn = $('btn-copy'), txt = $('concl-text').textContent;
+        var done = function () { btn.textContent = 'Tersalin'; setTimeout(function () { btn.textContent = 'Salin kesimpulan'; }, 1600); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
+        else {
+            var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(ta); done();
+        }
+    });
     calculate();
 });
 
 var resizeTimer = null;
 window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () { if (lastCfg && $('results').style.display !== 'none') { drawTestCurve($('chart'), lastCfg); if (lastO) drawBoxplot($('box-box'), lastO.boxSeries); } }, 120);
+    resizeTimer = setTimeout(function () {
+        if (lastCfg && $('results').style.display !== 'none') {
+            drawTestCurve($('chart'), lastCfg);
+            if (lastO) { drawBoxplot($('box-box'), lastO.boxSeries); drawWidthCharts(lastO); }
+        }
+    }, 120);
 });
 
 </script>
