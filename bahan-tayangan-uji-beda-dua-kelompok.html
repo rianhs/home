@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Uji beda dua kelompok kuantitatif</title>
+<title>Uji perbedaan dua kelompok numeris</title>
+<script>try{if(localStorage.getItem('tema-tayangan')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,13 +16,13 @@
   --ok-bg:rgba(52,199,89,.14); --warn-bg:rgba(255,149,0,.16); --no-bg:rgba(142,142,147,.16); --bad-bg:rgba(255,59,48,.12);
   --shadow:0 0 0 .5px rgba(0,0,0,.05),0 2px 14px rgba(0,0,0,.04);
 }
-@media (prefers-color-scheme:dark){
-  :root{
-    --bg:#000; --card:#1C1C1E; --ink:#F5F5F7; --ink2:#98989D; --ink3:#636366;
-    --line:#38383A; --fill:#2C2C2E; --bar:rgba(0,0,0,.7);
-    --a-ink:#64A8FF; --b-ink:#FFB340; --d-ink:#30D158; --red-ink:#FF6961;
-    --shadow:0 0 0 .5px rgba(255,255,255,.06);
-  }
+:root{color-scheme:light}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#000; --card:#1C1C1E; --ink:#F5F5F7; --ink2:#98989D; --ink3:#636366;
+  --line:#38383A; --fill:#2C2C2E; --bar:rgba(0,0,0,.7);
+  --a-ink:#64A8FF; --b-ink:#FFB340; --d-ink:#30D158; --red-ink:#FF6961;
+  --shadow:0 0 0 .5px rgba(255,255,255,.06);
 }
 *{box-sizing:border-box}
 html{scroll-padding-top:72px}
@@ -37,6 +38,12 @@ button{font-family:inherit}
   -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
   border-bottom:.5px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
 .bar-in{max-width:860px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bar-r{display:flex;align-items:center;gap:8px}
+.theme-btn{width:36px;height:36px;flex:none;border:0;border-radius:50%;background:rgba(118,118,128,.14);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s}
+.theme-btn:active{transform:scale(.94)}
+.theme-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+:root[data-theme="dark"] .ic-moon{display:none}
+:root:not([data-theme="dark"]) .ic-sun{display:none}
 .seg{display:inline-flex;background:rgba(118,118,128,.14);border-radius:11px;padding:2px}
 .seg button{border:0;background:transparent;color:var(--ink);font-size:14px;font-weight:500;padding:7px 14px;border-radius:9px;cursor:pointer;transition:background .2s,box-shadow .2s}
 .seg button[aria-checked="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.05);font-weight:600}
@@ -157,13 +164,19 @@ footer{margin-top:40px;font-size:13px;color:var(--ink2);max-width:66ch}
       <button role="radio" aria-checked="true" data-act="design" data-v="ind">Independen</button>
       <button role="radio" aria-checked="false" data-act="design" data-v="pair">Berpasangan</button>
     </div>
-    <button class="btn" data-act="resample">Tarik ulang sampel</button>
+    <div class="bar-r">
+      <button class="btn" data-act="resample">Tarik ulang sampel</button>
+      <button class="theme-btn" id="themebtn" data-act="theme" role="switch" aria-checked="false" aria-label="Mode gelap" title="Ganti mode terang atau gelap">
+        <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>
+        <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
   </div>
 </div>
 
 <main class="wrap">
   <header>
-    <h1>Uji beda dua kelompok kuantitatif</h1>
+    <h1>Uji perbedaan dua kelompok numeris</h1>
     <p class="lead">Tarik sampel dari populasi yang belum kamu ketahui, periksa datanya, pilih ujinya, lalu putuskan apakah bukti dari sampel cukup kuat untuk menolak H0.</p>
   </header>
 
@@ -206,6 +219,19 @@ footer{margin-top:40px;font-size:13px;color:var(--ink2);max-width:66ch}
 <script>
 (function(){
 'use strict';
+
+/* Tema: terang bawaan, saklar ke gelap. Penyimpanan dibungkus try/catch karena bisa tidak tersedia. */
+let theme=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  const b=document.getElementById('themebtn');
+  if(b)b.setAttribute('aria-checked',t==='dark'?'true':'false');
+}
+function toggleTheme(){
+  theme=theme==='dark'?'light':'dark';applyTheme(theme);
+  try{localStorage.setItem('tema-tayangan',theme);}catch(_){}
+}
+applyTheme(theme);
 
 /*STATS-START*/
 const S=(function(){
@@ -327,9 +353,9 @@ const S=(function(){
     return {W,p:pnorm(-(y-m)/s)};
   }
 
-  /* Levene berpusat pada median (Brown-Forsythe), sama dengan bawaan scipy dan car */
+  /* Levene berpusat pada rata-rata, sama dengan Jamovi */
   function levene(groups){
-    const z=groups.map(g=>{const m=median(g);return g.map(v=>Math.abs(v-m));});
+    const z=groups.map(g=>{const m=mean(g);return g.map(v=>Math.abs(v-m));});
     const k=z.length,N=z.reduce((s,g)=>s+g.length,0),gm=mean([].concat(...z));
     let ssb=0,ssw=0;
     z.forEach(g=>{const m=mean(g);ssb+=g.length*(m-gm)*(m-gm);g.forEach(v=>{ssw+=(v-m)*(v-m);});});
@@ -413,7 +439,7 @@ const S=(function(){
     };
     let _ci=null;
     const ps=U/(m*n);
-    return {U,p,exact,est,get ci(){if(!_ci)_ci=computeCI();return _ci;},ps,rrb:2*ps-1,m,n,hasTies};
+    return {U,Umin:Math.min(U,m*n-U),p,exact,est,get ci(){if(!_ci)_ci=computeCI();return _ci;},ps,rrb:1-2*ps,m,n,hasTies};
   }
 
   function signedRank(dAll,alpha){
@@ -523,7 +549,7 @@ function makePop(design){
     const b0=Math.max(floor,ctx.mu+sdBase*randn());
     A.push(b0);B.push(Math.max(floor,b0+dm+dsd*zd[i]));
   }
-  const D=A.map((v,i)=>B[i]-v);
+  const D=A.map((v,i)=>v-B[i]);
   return {design,ctx,shape,ratio:null,deltaAbs,A,B,trueDiff:mean(D),layout};
 }
 function sampleIdx(N,n){
@@ -538,7 +564,7 @@ function drawSample(){
     state.sample={a:ia.map(i=>r(p.A[i])),b:ib.map(i=>r(p.B[i])),hlA:sampleIdx(KDOT,n),hlB:sampleIdx(KDOT,n)};
   }else{
     const ii=sampleIdx(NPOP,n),a=ii.map(i=>r(p.A[i])),b=ii.map(i=>r(p.B[i]));
-    state.sample={a,b,d:a.map((v,i)=>S.round9(b[i]-v)),hlA:sampleIdx(KDOT,n)};
+    state.sample={a,b,d:a.map((v,i)=>(v-b[i])),hlA:sampleIdx(KDOT,n)};
   }
   state.an=analyze();
   state.guess=null;
@@ -563,7 +589,7 @@ function analyze(){
 }
 function effLabel(kind,v){
   const a=Math.abs(v);
-  if(kind==='g')return a<0.2?'sangat kecil':a<0.5?'kecil':a<0.8?'sedang':'besar';
+  if(kind==='d')return a<0.2?'sangat kecil':a<0.5?'kecil':a<0.8?'sedang':'besar';
   return a<0.1?'sangat kecil':a<0.3?'kecil':a<0.5?'sedang':'besar';
 }
 function decision(p,h0,withCI){
@@ -579,33 +605,33 @@ function getResult(id){
     const dir=t.diff>=0?'lebih tinggi':'lebih rendah';
     return {id,title:tl,stat:'t = '+fmt(t.t,2)+'; db = '+fmt(t.df,id==='student'?0:1),p:t.p,
       estName:'Selisih rerata ('+A+' \u2212 '+B+')',est:t.diff,ci:t.ci,dec:dd,
-      effName:id==='student'?'Hedges\u2019 g':'Hedges\u2019 g (SD rerata kedua kelompok)',eff:t.g,effTxt:fmt(t.g,2),effLab:effLabel('g',t.g),
-      note:id==='welch'?'Untuk Welch, definisi ukuran efek berbeda-beda antarsumber. Di sini selisih rerata dibagi akar rerata kedua varians, lalu dikoreksi seperti Hedges.':'',
-      sentence:'Rerata '+A+' ('+fmt(an.A.mean,dd)+') '+dir+' daripada '+B+' ('+fmt(an.B.mean,dd)+'). Selisih rerata '+A+' \u2212 '+B+' adalah '+fmt(t.diff,dd)+' (CI 95% '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). '+decision(t.p,'rerata kedua populasi sama',true)+' Ukuran efek Hedges\u2019 g = '+fmt(t.g,2)+' ('+effLabel('g',t.g)+').'};
+      effName:'Cohen\u2019s d',eff:t.d,effTxt:fmt(t.d,2),effLab:effLabel('d',t.d),
+      note:id==='welch'?'Pada uji t Welch, d dihitung dari selisih rerata dibagi akar dari rata-rata kedua varians, sama dengan Jamovi.':'Pada uji t Student, d dihitung dari selisih rerata dibagi SD gabungan, sama dengan Jamovi.',
+      sentence:'Rerata '+A+' ('+fmt(an.A.mean,dd)+') '+dir+' daripada '+B+' ('+fmt(an.B.mean,dd)+'). Selisih rerata '+A+' \u2212 '+B+' adalah '+fmt(t.diff,dd)+' (CI 95% '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). '+decision(t.p,'rerata kedua populasi sama',true)+' Ukuran efek Cohen\u2019s d = '+fmt(t.d,2)+' ('+effLabel('d',t.d)+').'};
   }
   if(id==='mw'){
     const t=an.tests.mw;
-    return {id,title:'Uji Mann-Whitney U',stat:'U = '+fmt(t.U,1)+(t.exact?'; p eksak':'; p aproksimasi normal'+(t.hasTies?' dengan koreksi ties':'')),p:t.p,
+    return {id,title:'Uji Mann-Whitney U',stat:'U = '+fmt(t.Umin,1)+(t.exact?'; p eksak':'; p aproksimasi normal'+(t.hasTies?' dengan koreksi ties':'')),p:t.p,
       estName:'Pergeseran lokasi Hodges-Lehmann ('+A+' \u2212 '+B+')',est:t.est,ci:t.ci,dec:dd,
       effName:'Rank-biserial r',eff:t.rrb,effTxt:fmt(t.rrb,2),effLab:effLabel('r',t.rrb),
       extra:'Peluang unggul: '+fmt(t.ps*100,0)+'%',
-      note:'Estimasi Hodges-Lehmann adalah median seluruh selisih antar pasangan nilai, bukan selisih dua median. CI-nya berbasis peringkat dan tingkat kepercayaannya mendekati 95%. Menyebut Mann-Whitney sebagai uji beda median sahih bila bentuk sebaran kedua kelompok serupa.'+(t.exact?'':' Karena ada nilai kembar atau sampel besar, p dan CI memakai aproksimasi normal, sehingga batas CI bisa kasar.'),
+      note:'U yang ditampilkan adalah nilai terkecil dari U dan U\u2032, sama dengan Jamovi. Rank-biserial bernilai positif bila '+A+' cenderung lebih rendah daripada '+B+', mengikuti Jamovi. Estimasi Hodges-Lehmann adalah median seluruh selisih antar pasangan nilai, bukan selisih dua median. CI-nya berbasis peringkat dan tingkat kepercayaannya mendekati 95%. Menyebut Mann-Whitney sebagai uji beda median sahih bila bentuk sebaran kedua kelompok serupa.'+(t.exact?'':' Karena ada nilai kembar atau sampel besar, p dan CI memakai aproksimasi normal, sehingga batas CI bisa kasar.'),
       sentence:'Median '+A+' = '+fmt(an.A.median,dd)+' dan median '+B+' = '+fmt(an.B.median,dd)+'. Pergeseran lokasi Hodges-Lehmann ('+A+' \u2212 '+B+') adalah '+fmt(t.est,dd)+' (CI 95% sekitar '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). Peluang sebuah nilai acak dari '+A+' lebih besar daripada nilai acak dari '+B+' adalah '+fmt(t.ps*100,0)+'%. '+decision(t.p,'kedua populasi memiliki sebaran yang sama',false)+' Ukuran efek rank-biserial r = '+fmt(t.rrb,2)+' ('+effLabel('r',t.rrb)+').'};
   }
   if(id==='paired'){
-    const t=an.tests.paired,dir=t.diff>=0?'meningkat':'menurun';
+    const t=an.tests.paired,dir=t.diff>=0?'menurun':'meningkat';
     return {id,title:'Uji t berpasangan',stat:'t = '+fmt(t.t,2)+'; db = '+fmt(t.df,0),p:t.p,
-      estName:'Rerata selisih ('+B+' \u2212 '+A+')',est:t.diff,ci:t.ci,dec:dd,
-      effName:'Hedges\u2019 g_z (d_z terkoreksi)',eff:t.g,effTxt:fmt(t.g,2),effLab:effLabel('g',t.g),
-      note:'g_z memakai SD selisih sebagai pembagi, sehingga nilainya bergantung pada korelasi antar pasangan.',
-      sentence:'Rerata '+A+' = '+fmt(an.A.mean,dd)+' dan rerata '+B+' = '+fmt(an.B.mean,dd)+'. Nilai rata-rata '+dir+' sebesar '+fmt(Math.abs(t.diff),dd)+' (rerata selisih '+B+' \u2212 '+A+' = '+fmt(t.diff,dd)+'; CI 95% '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). '+decision(t.p,'rerata selisih di populasi sama dengan 0',true)+' Ukuran efek Hedges\u2019 g_z = '+fmt(t.g,2)+' ('+effLabel('g',t.g)+').'};
+      estName:'Rerata selisih ('+A+' \u2212 '+B+')',est:t.diff,ci:t.ci,dec:dd,
+      effName:'Cohen\u2019s d (selisih berpasangan)',eff:t.d,effTxt:fmt(t.d,2),effLab:effLabel('d',t.d),
+      note:'d dihitung dari rerata selisih dibagi SD selisih (sering disebut d_z), sehingga nilainya bergantung pada korelasi antar pasangan. Arah dan tanda sama dengan Jamovi.',
+      sentence:'Rerata '+A+' = '+fmt(an.A.mean,dd)+' dan rerata '+B+' = '+fmt(an.B.mean,dd)+'. Nilai rata-rata '+dir+' sebesar '+fmt(Math.abs(t.diff),dd)+' (rerata selisih '+A+' \u2212 '+B+' = '+fmt(t.diff,dd)+'; CI 95% '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). '+decision(t.p,'rerata selisih di populasi sama dengan 0',true)+' Ukuran efek Cohen\u2019s d = '+fmt(t.d,2)+' ('+effLabel('d',t.d)+').'};
   }
   const t=an.tests.wilcoxon;
-  return {id:'wilcoxon',title:'Uji Wilcoxon signed-rank',stat:'V = '+fmt(t.V,1)+(t.exact?'; p eksak':'; p aproksimasi normal'+(t.hasTies?' dengan koreksi ties':''))+(t.zeros?'; '+t.zeros+' selisih nol dibuang':''),p:t.p,
-    estName:'Pergeseran lokasi Hodges-Lehmann selisih ('+B+' \u2212 '+A+')',est:t.est,ci:t.ci,dec:dd,
+  return {id:'wilcoxon',title:'Uji Wilcoxon signed-rank',stat:'W = '+fmt(t.V,1)+(t.exact?'; p eksak':'; p aproksimasi normal'+(t.hasTies?' dengan koreksi ties':''))+(t.zeros?'; '+t.zeros+' selisih nol dibuang':''),p:t.p,
+    estName:'Pergeseran lokasi Hodges-Lehmann selisih ('+A+' \u2212 '+B+')',est:t.est,ci:t.ci,dec:dd,
     effName:'Rank-biserial r (berpasangan)',eff:t.rrb,effTxt:fmt(t.rrb,2),effLab:effLabel('r',t.rrb),
-    note:'Estimasi Hodges-Lehmann adalah median rata-rata Walsh dari selisih. CI-nya berbasis peringkat dan tingkat kepercayaannya mendekati 95%. Wilcoxon mengasumsikan sebaran selisih simetris, jadi periksa histogram selisih.'+(t.exact?'':' Karena ada nilai kembar, selisih nol, atau sampel besar, p dan CI memakai aproksimasi normal, sehingga batas CI bisa kasar. Selisih nol tidak ikut dalam perhitungan CI.'),
-    sentence:'Median selisih ('+B+' \u2212 '+A+') = '+fmt(an.D.median,dd)+'. Pergeseran lokasi Hodges-Lehmann selisih adalah '+fmt(t.est,dd)+' (CI 95% sekitar '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). '+decision(t.p,'selisih berpusat di 0 pada populasi',false)+' Ukuran efek rank-biserial r = '+fmt(t.rrb,2)+' ('+effLabel('r',t.rrb)+').'};
+    note:'Rank-biserial bernilai positif bila selisih ('+A+' \u2212 '+B+') cenderung positif, yaitu W lebih besar daripada W\u2032, mengikuti Jamovi. Estimasi Hodges-Lehmann adalah median rata-rata Walsh dari selisih. CI-nya berbasis peringkat dan tingkat kepercayaannya mendekati 95%. Wilcoxon mengasumsikan sebaran selisih simetris, jadi periksa histogram selisih.'+(t.exact?'':' Karena ada nilai kembar, selisih nol, atau sampel besar, p dan CI memakai aproksimasi normal, sehingga batas CI bisa kasar. Selisih nol tidak ikut dalam perhitungan CI.'),
+    sentence:'Median selisih ('+A+' \u2212 '+B+') = '+fmt(an.D.median,dd)+'. Pergeseran lokasi Hodges-Lehmann selisih adalah '+fmt(t.est,dd)+' (CI 95% sekitar '+fmt(t.ci[0],dd)+' sampai '+fmt(t.ci[1],dd)+'). '+decision(t.p,'selisih berpusat di 0 pada populasi',false)+' Ukuran efek rank-biserial r = '+fmt(t.rrb,2)+' ('+effLabel('r',t.rrb)+').'};
 }
 function recReason(){
   const an=state.an,ctx=state.pop.ctx;
@@ -667,14 +693,14 @@ function renderDesc(){
   let h='<div class="tblwrap"><table class="tbl"><thead><tr><th></th>'+cols.map(x=>'<th><span class="gname"><i class="dot" style="background:'+x.c+'"></i>'+x.n+'</span></th>').join('')+'</tr></thead><tbody>';
   rows.forEach(r=>{h+='<tr><td>'+r[0]+'</td>'+cols.map(x=>'<td>'+fmt(x.s[r[1]],r[2])+'</td>').join('')+'</tr>';});
   h+='</tbody></table></div>';
-  if(an.design==='pair')h+='<p class="cap">Selisih = '+c.B+' \u2212 '+c.A+', dihitung per subjek.</p>';
+  if(an.design==='pair')h+='<p class="cap">Selisih = '+c.A+' \u2212 '+c.B+', dihitung per subjek.</p>';
   $('#desc').innerHTML=h;
 }
 function renderViz(){
   const c=state.pop.ctx;
   let h=legend([[c.A,COL.a],[c.B,COL.b]])+'<div class="chart" data-chart="dist"></div>';
-  if(state.design==='pair')h+='<div class="vsub">Selisih per subjek ('+c.B+' \u2212 '+c.A+')</div>'+legend([['Selisih',COL.d]])+'<div class="chart" data-chart="diff"></div>';
-  h+='<p class="cap">Batang adalah histogram dan garis lengkung adalah kurva densitas. Pada boxplot, lingkaran putih menandai rerata dan titik kecil menandai pencilan (di luar 1,5 \u00d7 IQR).'+(state.design==='pair'?' Garis putus-putus menandai selisih 0.':'')+'</p>';
+  if(state.design==='pair')h+='<div class="vsub">Selisih per subjek ('+c.A+' \u2212 '+c.B+')</div>'+legend([['Selisih',COL.d]])+'<div class="chart" data-chart="diff"></div>';
+  h+='<p class="cap">Histogram dan boxplot memakai skala sumbu x yang sama agar mudah dibandingkan, tetapi masing-masing punya sumbu sendiri. Batang histogram membagi rentang seluruh data yang digambar, sehingga batang pertama dan terakhir belum tentu mewakili nilai terendah dan tertinggi setiap kelompok. Whisker boxplot berhenti di nilai terjauh yang masih berada dalam 1,5 \u00d7 IQR dari kotak, dan nilai di luarnya digambar sebagai titik pencilan. Garis lengkung adalah kurva densitas dan lingkaran putih menandai rerata.'+(state.design==='pair'?' Garis putus-putus menandai selisih 0.':'')+'</p>';
   $('#viz').innerHTML=h;
 }
 function chipFor(ok,okTxt,badTxt){return ok?'<span class="chip ok">'+okTxt+'</span>':'<span class="chip warn">'+badTxt+'</span>';}
@@ -684,7 +710,7 @@ function renderAssump(){
   if(an.design==='ind'){
     h+=sh(c.A,an.shA)+sh(c.B,an.shB)+'<div class="asm-r"><div class="asm-n">Levene, kesamaan varians</div>'+chipFor(an.lev.p>=ALPHA,'Varians setara','Varians berbeda')+'<div class="asm-s">F = '+fmt(an.lev.F,2)+'; db = '+an.lev.df1+' dan '+an.lev.df2+'; p '+fmtPeq(an.lev.p)+'</div></div>';
   }else h+=sh('selisih',an.shD);
-  h+='</div><p class="note">Hasil uji asumsi perlu dibaca bersama histogram dan boxplot. Pada n kecil, uji normalitas sulit mendeteksi penyimpangan. Pada n besar, penyimpangan sekecil apa pun bisa menghasilkan p kecil. Levene di sini berpusat pada median, sama dengan bawaan scipy dan paket car di R.</p>';
+  h+='</div><p class="note">Hasil uji asumsi perlu dibaca bersama histogram dan boxplot. Pada n kecil, uji normalitas sulit mendeteksi penyimpangan. Pada n besar, penyimpangan sekecil apa pun bisa menghasilkan p kecil. Levene di sini berpusat pada rata-rata, sama dengan Jamovi.</p>';
   $('#assump').innerHTML=h;
 }
 function renderChoose(){
@@ -737,7 +763,7 @@ function renderResults(){
     h+='<h2>Kebenaran populasi</h2><div class="card">';
     h+=state.design==='ind'
       ?'<div class="truth-row"><span>Selisih rerata populasi ('+c.A+' \u2212 '+c.B+')</span><span>'+fmt(p.trueDiff,dn)+'</span></div><div class="truth-row"><span>Rasio SD kedua populasi</span><span>'+fmt(p.ratio,1)+' kali</span></div>'
-      :'<div class="truth-row"><span>Rerata selisih populasi ('+c.B+' \u2212 '+c.A+')</span><span>'+fmt(p.trueDiff,dn)+'</span></div>';
+      :'<div class="truth-row"><span>Rerata selisih populasi ('+c.A+' \u2212 '+c.B+')</span><span>'+fmt(p.trueDiff,dn)+'</span></div>';
     h+='<div class="truth-row"><span>Bentuk sebaran '+(state.design==='ind'?'kedua populasi':'selisih di populasi')+'</span><span>'+SHAPE_TXT[p.shape]+'</span></div><div class="truth-row"><span>H0 (tidak ada perbedaan rerata)</span><span>'+(h0true?'benar':'salah')+'</span></div>';
     h+='<div class="fb '+cls+' verdict">'+v+'</div><p class="note">Pada populasi menceng atau berpencilan, selisih rerata populasi tetap dipakai sebagai acuan. Uji berbasis peringkat membandingkan sebaran secara keseluruhan, jadi keputusannya bisa berbeda dari uji rerata.</p></div>';
   }
@@ -759,13 +785,14 @@ function axis(x,lo,hi,yBase,W,m){
 }
 function distChart(W,series,o){
   o=o||{};
-  const m={l:14,r:14,t:10},hH=o.hH||180,rowH=34,axH=26,gap=14,H=m.t+hH+gap+series.length*rowH+axH;
+  const m={l:14,r:14,t:10},hH=o.hH||180,rowH=34,axH=26,lblH=18;
   const all=[].concat(...series.map(s=>s.values));
   let lo=Math.min(...all),hi=Math.max(...all);
   const dl=lo,dh=hi;
   if(o.zero){lo=Math.min(lo,0);hi=Math.max(hi,0);}
   const pad=(hi-lo)*0.09||1;lo-=pad;hi+=pad;
-  const x=v=>m.l+(v-lo)/(hi-lo)*(W-m.l-m.r),base=m.t+hH;
+  const x=v=>m.l+(v-lo)/(hi-lo)*(W-m.l-m.r);
+  const top1=m.t+lblH,base=top1+hH,divY=base+axH+8,top2=divY+lblH+10,yb=top2+series.length*rowH,H=yb+axH;
   const nmax=Math.max(...series.map(s=>s.values.length)),nb=Math.max(6,Math.min(14,Math.round(Math.sqrt(nmax)*1.4))),bw=(dh-dl)/nb||1;
   const info=series.map(s=>{
     const n=s.values.length,bins=new Array(nb).fill(0);
@@ -777,16 +804,19 @@ function distChart(W,series,o){
   });
   let ymax=0;info.forEach(i=>{i.dens.forEach(d=>ymax=Math.max(ymax,d));i.kde.forEach(k=>ymax=Math.max(ymax,k[1]));});ymax*=1.08;
   const y=d=>base-d/ymax*hH;
-  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Histogram, kurva densitas, dan boxplot">';
+  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Histogram dengan kurva densitas, dipisah garis dari boxplot">';
+  s+='<text x="'+m.l+'" y="'+(m.t+11)+'" font-size="12" font-weight="600" fill="var(--ink2)">Histogram dan kurva densitas</text>';
   info.forEach((inf,k)=>{
     const col=series[k].color;
     inf.dens.forEach((d,i)=>{const x0=x(dl+i*bw),x1=x(dl+(i+1)*bw),hh=d/ymax*hH;s+='<rect x="'+r1(x0+0.5)+'" y="'+r1(base-hh)+'" width="'+r1(Math.max(1,x1-x0-1))+'" height="'+r1(hh)+'" rx="3" fill="'+col+'" fill-opacity="'+(series.length>1?0.3:0.38)+'"/>';});
   });
   info.forEach((inf,k)=>{s+='<path d="M'+inf.kde.map(p=>r1(x(p[0]))+' '+r1(y(p[1]))).join(' L')+'" fill="none" stroke="'+series[k].color+'" stroke-width="2.2" stroke-linejoin="round"/>';});
-  const yb=base+gap+series.length*rowH;
-  if(o.zero){const zx=r1(x(0));s+='<line x1="'+zx+'" x2="'+zx+'" y1="'+m.t+'" y2="'+yb+'" stroke="var(--ink2)" stroke-dasharray="4 4"/>';}
+  if(o.zero){const zx=r1(x(0));s+='<line x1="'+zx+'" x2="'+zx+'" y1="'+top1+'" y2="'+base+'" stroke="var(--ink2)" stroke-dasharray="4 4"/><line x1="'+zx+'" x2="'+zx+'" y1="'+top2+'" y2="'+yb+'" stroke="var(--ink2)" stroke-dasharray="4 4"/>';}
+  s+=axis(x,lo,hi,base,W,m);
+  s+='<line x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+divY+'" y2="'+divY+'" stroke="var(--line)"/>';
+  s+='<text x="'+m.l+'" y="'+(divY+lblH)+'" font-size="12" font-weight="600" fill="var(--ink2)">Boxplot</text>';
   info.forEach((inf,k)=>{
-    const col=series[k].color,cy=base+gap+k*rowH+rowH/2,iqr=inf.q3-inf.q1;
+    const col=series[k].color,cy=top2+k*rowH+rowH/2,iqr=inf.q3-inf.q1;
     const wl=inf.sv.filter(v=>v>=inf.q1-1.5*iqr)[0],wh=inf.sv.filter(v=>v<=inf.q3+1.5*iqr).pop();
     s+='<line x1="'+r1(x(wl))+'" x2="'+r1(x(wh))+'" y1="'+cy+'" y2="'+cy+'" stroke="'+col+'" stroke-width="1.6"/>';
     s+='<line x1="'+r1(x(wl))+'" x2="'+r1(x(wl))+'" y1="'+(cy-5)+'" y2="'+(cy+5)+'" stroke="'+col+'" stroke-width="1.6"/><line x1="'+r1(x(wh))+'" x2="'+r1(x(wh))+'" y1="'+(cy-5)+'" y2="'+(cy+5)+'" stroke="'+col+'" stroke-width="1.6"/>';
@@ -839,6 +869,7 @@ document.addEventListener('click',e=>{
   const a=t.dataset.act;
   if(a==='design'){if(state.design!==t.dataset.v){state.design=t.dataset.v;newPop();}}
   else if(a==='resample')resample();
+  else if(a==='theme')toggleTheme();
   else if(a==='newpop')newPop();
   else if(a==='guess'){state.guess=t.dataset.id;renderGuess();}
   else if(a==='skip'){state.guess='skip';renderGuess();}
