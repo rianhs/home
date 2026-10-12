@@ -628,7 +628,7 @@ function conclusion(o,isF,p,flag){
     s+='Tidak ada sel dengan standardized residual yang melewati batas 2. ';
   }
   s+='Ukuran efek '+o.effCat+' ('+(o.size2?'phi':'Cramér’s V')+' = '+fmt(o.V,2)+').';
-  if(!rej)s+=' Bukti belum cukup untuk menyatakan ada asosiasi. Ini tidak membuktikan bahwa asosiasi tidak ada.';
+  if(!rej)s+=' Bukti dari sampel belum cukup kuat untuk menyatakan ada asosiasi. Namun, hal ini tidak membuktikan bahwa asosiasi tidak ada.';
   return s;
 }
 function getResult(id){
@@ -708,7 +708,6 @@ function renderAssump(){
   for(let i=0;i<o.r;i++)h+='<tr><td>'+o.rl[i]+'</td>'+o.E[i].map(e=>'<td class="'+(e<1?'lt1':e<5?'lt5':'')+'">'+fmt(e,2)+'</td>').join('')+'</tr>';
   h+='</tbody></table></div><p class="cap">Frekuensi harapan = total baris × total kolom ÷ N. Sel berlatar oranye memiliki frekuensi harapan di bawah 5 dan sel berlatar merah muda di bawah 1.</p>';
   h+='<div class="asm" style="margin-top:16px">';
-  h+='<div class="asm-r"><div class="asm-n">Independensi pengamatan</div><span class="chip ok">Terpenuhi oleh desain</span><div class="asm-s">Tiap subjek muncul di satu sel saja (sampel acak sederhana, tanpa pengukuran berulang).</div></div>';
   if(an.size2){
     h+='<div class="asm-r"><div class="asm-n">Semua frekuensi harapan ≥ 5</div>'+chipFor(o.minE>=5,'Terpenuhi','Tidak terpenuhi')+'<div class="asm-s">Frekuensi harapan terkecil = '+fmt(o.minE,2)+'</div></div>';
   }else{
