@@ -833,7 +833,7 @@ function renderChoose(){
   const an=state.an,el=$('#choose'),ok=an.size2;
   const intro=ok?'Kedua variabel masing-masing punya dua kategori, jadi tabelnya 2×2.':'Tabel kontingensi ini lebih besar dari 2×2 ('+an.o.r+' baris × '+an.o.c+' kolom).';
   if(state.guessMode&&state.guess===null){
-    el.innerHTML='<p class="hint">'+intro+' Berdasarkan tabel dan hasil pemeriksaan asumsi di atas, langkah mana yang kamu pilih?</p><div class="choices">'+TESTS.map(t=>'<button class="choice" data-act="guess" data-id="'+t.id+'">'+t.name+'<small>'+t.sub+'</small></button>').join('')+'</div><p style="margin:14px 0 0"><button class="btn ghost" data-act="skip">Tampilkan jawaban tanpa menebak</button></p>';
+    el.innerHTML='<p class="hint">'+intro+' Berdasarkan tabel dan hasil pemeriksaan asumsi di atas, langkah mana yang kamu pilih?</p><div class="choices">'+TESTS.filter(t=>t.des==='any'||t.des===state.design).map(t=>'<button class="choice" data-act="guess" data-id="'+t.id+'">'+t.name+'<small>'+t.sub+'</small></button>').join('')+'</div><p style="margin:14px 0 0"><button class="btn ghost" data-act="skip">Tampilkan jawaban tanpa menebak</button></p>';
     return;
   }
   let h='';
@@ -879,7 +879,6 @@ function renderResults(){
   h+='<div class="tile"><div class="k">'+o.effName+(an.size2?'':' (k = '+o.k+')')+'</div><div class="v">'+fmt(o.V,2)+'</div><div class="s">Efek '+o.effCat+'</div></div>';
   if(!an.size2)h+='<div class="tile"><div class="k">Sel dengan |residual| > 2</div><div class="v">'+o.flagged.length+'</div><div class="s">dibaca bila p < 0,05</div></div>';
   h+='</div>';
-  h+='<div class="vsub">Klasifikasi ukuran efek ('+o.effName+')</div>'+effTable(o);
   h+='<div class="vsub">'+(r.isF?'Distribusi peluang di bawah H0 (Fisher exact)':'Statistik uji dan daerah penolakan H0')+'</div><div class="chart" data-chart="test"></div>';
   h+='<p class="note" style="margin-top:4px">'+(r.isF?'Grafik menunjukkan peluang tiap kemungkinan isi sel baris 1 kolom 1 bila H0 benar dan semua total baris dan kolom tetap. Nilai p adalah jumlah peluang batang merah.':'Daerah merah adalah daerah penolakan H0 pada α = 0,05. Titik menandai nilai χ² dari sampel ini: bila titik berada di daerah merah, H0 ditolak.')+'</p>';
   if(an.size2){
@@ -899,6 +898,7 @@ function renderResults(){
     if(sig&&o.flagged.length){const pl=residPlain(o);h+='<div class="plain" style="margin-top:12px">'+pl.map(x=>'<p>'+x+'</p>').join('')+'</div>';}
     h+='<details><summary>Apa arti angka z?</summary><p>Nilai z menyatakan selisih antara frekuensi teramati dan frekuensi harapan dalam satuan simpangan baku. Nilai di atas 2 berarti sel berisi lebih banyak unit daripada yang diharapkan, dan nilai di bawah −2 berarti lebih sedikit. Nilai di antara −2 dan 2 dianggap masih wajar akibat kebetulan.</p></details>';
   }
+  h+='<div class="vsub">Klasifikasi ukuran efek ('+o.effName+')</div>'+effTable(o);
   h+='<div class="interp"><div class="k">Interpretasi untuk laporan ilmiah</div><p id="interp-sci">'+r.sentence+'</p><button class="btn sec" data-act="copy" data-target="interp-sci" data-label="Salin versi ilmiah">Salin versi ilmiah</button></div>';
   h+='<div class="interp"><div class="k">Interpretasi dalam bahasa awam</div><p id="interp-lay">'+r.lay+'</p><button class="btn sec" data-act="copy" data-target="interp-lay" data-label="Salin versi awam">Salin versi awam</button></div>';
   const ids=an.size2?['chi','fisher']:['chi'];
