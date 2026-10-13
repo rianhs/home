@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulasi Angka Lempeng Total (TPC) pada Daging</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:#F2F2F7; --card:#FFFFFF; --text:#1D1D1F; --muted:#6E6E73; --line:rgba(60,60,67,.13);
+  --fill:rgba(118,118,128,.12); --nav:rgba(242,242,247,.82); --navfade:rgba(242,242,247,.96);
+  --accent:#0071E3; --accent-soft:rgba(0,113,227,.10);
+  --green:#248A3D; --green-soft:rgba(52,199,89,.14);
+  --orange:#B25000; --orange-soft:rgba(255,149,0,.14);
+  --red:#D70015; --red-soft:rgba(255,59,48,.11);
+  --agar:#E9D3A0;
+  --bpw:rgba(226,206,150,.4); --glass:rgba(60,60,67,.5); --bin:#C4CAD3; --binrim:#A3ABB7;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#000; --card:#1C1C1E; --text:#F5F5F7; --muted:#98989F; --line:rgba(84,84,88,.55);
+    --fill:rgba(118,118,128,.24); --nav:rgba(22,22,24,.82); --navfade:rgba(22,22,24,.96);
+    --accent:#2997FF; --accent-soft:rgba(41,151,255,.18);
+    --green:#30D158; --green-soft:rgba(48,209,88,.16);
+    --orange:#FF9F0A; --orange-soft:rgba(255,159,10,.16);
+    --red:#FF453A; --red-soft:rgba(255,69,58,.16);
+    --shadow:none;
+    --bpw:rgba(226,206,150,.3); --glass:rgba(235,235,245,.45); --bin:#48484A; --binrim:#636366;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","tnum"}
+body.nosc{overflow:hidden}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:10px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Navigasi atas */
+.nav{position:sticky;top:0;z-index:20;background:var(--nav);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--line);padding-top:env(safe-area-inset-top)}
+.nav-inner{max-width:780px;margin:0 auto;padding:10px 20px 10px}
+.nav-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:600;font-size:15px;line-height:1.3}
+.brand small{display:block;color:var(--muted);font-weight:400;font-size:13px}
+.linkbtn{background:none;border:0;color:var(--accent);font-size:15px;cursor:pointer;padding:6px 0}
+.progress{height:3px;background:var(--fill);border-radius:3px;margin-top:10px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .4s}
+.steps-wrap{position:relative;margin-top:10px}
+.steps-wrap::before,.steps-wrap::after{content:"";position:absolute;top:0;bottom:0;width:32px;z-index:2;pointer-events:none;opacity:0;transition:opacity .2s}
+.steps-wrap::before{left:0;background:linear-gradient(to right,var(--navfade),transparent)}
+.steps-wrap::after{right:0;background:linear-gradient(to left,var(--navfade),transparent)}
+.steps-wrap.fl::before,.steps-wrap.fr::after{opacity:1}
+.steps{position:relative;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;cursor:grab;touch-action:pan-x;-webkit-overflow-scrolling:touch}
+.steps::-webkit-scrollbar{display:none}
+.steps.drag{cursor:grabbing;user-select:none;-webkit-user-select:none}
+.pill{flex:none;border:0;background:var(--fill);color:var(--muted);font-size:13px;font-weight:500;
+  padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.pill.done{color:var(--text)}
+.pill.active{background:var(--accent);color:#fff}
+.pill:disabled{opacity:.4;cursor:default}
+
+main{max-width:780px;margin:0 auto;padding:28px 20px 130px}
+.kicker{font-size:14px;color:var(--muted);margin:0 0 4px}
+h1{font-size:32px;line-height:1.15;letter-spacing:-.022em;margin:0 0 10px;font-weight:700}
+h2{font-size:19px;letter-spacing:-.012em;margin:0 0 6px;font-weight:600}
+h3{font-size:16px;margin:0 0 4px;font-weight:600}
+p{margin:0 0 10px}
+.lead{color:var(--muted);font-size:17px;margin:0 0 22px;max-width:62ch}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.sect{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin:22px 0 10px}
+.card{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:20px;margin:0 0 14px}
+.card.locked{opacity:.45;pointer-events:none}
+.card .sub{color:var(--muted);font-size:15px;margin-bottom:14px}
+.step-no{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--fill);font-size:13px;font-weight:600;
+  align-items:center;justify-content:center;margin-right:8px;vertical-align:1px}
+.card.complete .step-no{background:var(--green);color:#fff}
+.clean{margin:0;padding-left:20px}
+.clean li{margin:4px 0}
+
+.note{border-radius:14px;padding:14px 16px;margin:12px 0;font-size:15px;background:var(--accent-soft)}
+.note.warn{background:var(--orange-soft)}
+.note.ok{background:var(--green-soft)}
+.note.bad{background:var(--red-soft)}
+.note strong{display:block;margin-bottom:4px}
+.note p:last-child{margin:0}
+.note:empty{display:none}
+.hygiene{background:var(--card);border-radius:18px;padding:20px;margin:0 0 14px;box-shadow:var(--shadow)}
+
+.btn{appearance:none;border:0;border-radius:12px;font-weight:600;font-size:16px;padding:12px 18px;cursor:pointer;
+  background:var(--accent);color:#fff;transition:transform .1s,opacity .2s;line-height:1.2}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.tint{background:var(--accent-soft);color:var(--accent)}
+.btn.gray{background:var(--fill);color:var(--text)}
+.btn.sm{font-size:14px;padding:8px 13px;border-radius:10px}
+.btn.on{background:var(--accent);color:#fff}
+.btn.ico{padding:8px 14px;font-size:18px;line-height:1}
+.btn.grow{flex:1}
+.btn.wide{width:100%}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.between{justify-content:space-between}
+.mt{margin-top:14px}
+
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--fill);border-radius:10px;padding:2px;gap:2px}
+.seg button{border:0;background:transparent;font-size:14px;font-weight:500;padding:7px 14px;border-radius:8px;cursor:pointer;color:var(--text)}
+.seg button.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+
+/* Akordeon */
+.acc{border-top:.5px solid var(--line)}
+.acc>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;font-weight:600;font-size:16px;cursor:pointer;list-style:none}
+.acc>summary::-webkit-details-marker{display:none}
+.acc>summary::after{content:"";flex:none;width:12px;height:12px;margin:-5px 6px 0 0;box-sizing:border-box;
+  border-right:3px solid var(--accent);border-bottom:3px solid var(--accent);border-radius:1px;
+  transform:rotate(45deg);transition:transform .2s,margin .2s}
+.acc[open]>summary::after{transform:rotate(225deg);margin:5px 6px 0 0}
+.acc .accbody{padding:0 0 14px}
+.acc .accbody p{margin:0 0 10px;font-size:15px;color:var(--text)}
+.acc .accbody p.muted{color:var(--muted)}
+.acc .accbody ul{margin:0 0 10px}
+
+/* Beranda */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 14px}
+.stats div{background:var(--card);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)}
+.stats b{display:block;font-size:16px;font-weight:600}
+.stats span{font-size:13px;color:var(--muted)}
+
+/* Alat dan bahan */
+.calc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.calc{background:var(--fill);border-radius:14px;padding:14px}
+.calc span{font-size:13px;color:var(--muted);display:block}
+.calc b{font-size:22px;font-weight:600;letter-spacing:-.01em;display:block;margin:2px 0}
+.calc small{font-size:13px;color:var(--muted);line-height:1.4;display:block}
+.stepper{display:inline-flex;align-items:center;gap:6px;background:var(--fill);border-radius:10px;padding:3px}
+.stepper button{border:0;background:var(--card);width:30px;height:30px;border-radius:8px;font-size:18px;cursor:pointer;color:var(--text)}
+.stepper span{min-width:74px;text-align:center;font-size:14px;font-weight:500}
+.group-title{font-size:13px;color:var(--muted);margin:16px 0 6px}
+.list{border-radius:14px;background:var(--fill);overflow:hidden}
+.item{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-bottom:.5px solid var(--line)}
+.item:last-child{border-bottom:0}
+.chk{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--muted);background:transparent;cursor:pointer;
+  color:transparent;font-size:14px;line-height:1;margin-top:1px;display:flex;align-items:center;justify-content:center;padding:0}
+.item.on .chk{background:var(--green);border-color:var(--green);color:#fff}
+.item details{flex:1;min-width:0}
+.item summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.item summary::-webkit-details-marker{display:none}
+.item summary span{font-weight:500}
+.item summary em{font-style:normal;color:var(--muted);font-size:14px}
+.item details p{margin:6px 0 2px;font-size:14px;color:var(--muted)}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.tool{flex:1 1 220px;background:var(--fill);border-radius:12px;padding:10px 12px}
+.tool summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
+.tool summary::-webkit-details-marker{display:none}
+.tool summary span{font-size:15px;font-weight:500}
+.tool summary::after{content:"Info";font-size:12px;color:var(--accent);font-weight:500}
+.tool[open] summary::after{content:"Tutup"}
+.tool p{margin:6px 0 2px;font-size:14px;color:var(--muted)}
+
+/* Persiapan sampel */
+.scale{display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0}
+.readout{font-size:44px;font-weight:600;letter-spacing:-.02em;background:var(--fill);border-radius:16px;padding:8px 26px;min-width:200px;text-align:center}
+.bar{height:8px;border-radius:8px;background:var(--fill);overflow:hidden;margin-top:12px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:8px}
+
+/* Pengenceran */
+.labbox{height:320px}
+.lab{position:relative;height:320px;user-select:none;-webkit-user-select:none}
+.slots{position:absolute;left:0;right:0;bottom:0;z-index:2;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));pointer-events:none}
+.slot{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;padding:6px 2px;border-radius:14px;transition:background .3s}
+.slot.src{background:var(--accent-soft)}
+.slot.dst{background:var(--green-soft)}
+.slot .nm{font-size:13px;font-weight:600;margin-top:6px;line-height:1.3}
+.slot .vl{font-size:12px;color:var(--muted);min-height:16px;line-height:16px}
+.role{font-style:normal;font-size:11px;font-weight:600;border-radius:999px;padding:2px 7px;min-height:19px;line-height:15px;color:transparent}
+.role.src{background:var(--accent-soft);color:var(--accent)}
+.role.dst{background:var(--green-soft);color:var(--green)}
+.glass{fill:none;stroke:var(--glass);stroke-width:1.5}
+.bottle{position:relative;width:44px;height:100px}
+.bottle svg{position:absolute;left:0;top:0}
+.bliq{position:absolute;left:5px;right:5px;bottom:4px;height:52px;background:var(--S);border-radius:0 0 6px 6px}
+.tube{position:relative;width:26px;height:100px;border:1.5px solid var(--glass);border-top:0;border-radius:0 0 13px 13px}
+.tube::before{content:"";position:absolute;left:-5px;right:-5px;top:0;height:2px;border-radius:2px;background:var(--glass)}
+.liq{position:absolute;left:0;right:0;bottom:0;height:62%;overflow:hidden;border-radius:0 0 12px 12px;transition:height .6s}
+.tube.v10 .liq{height:68%}
+.liq i{position:absolute;left:0;right:0;top:0;bottom:0;display:block}
+.liq .b{background:var(--bpw)}
+.liq .m{background:var(--S);opacity:0;transition:opacity 1.6s}
+.liq .t{bottom:auto;height:26%;background:linear-gradient(to bottom,var(--P) 0,var(--P) 65%,transparent 100%);opacity:0;transition:opacity .8s}
+.tube.rec .t{opacity:1}
+.tube.mixed .m{opacity:1}
+.tube.mixed .t{opacity:0}
+.binwrap{height:100px;display:flex;align-items:flex-end}
+.binbody{fill:var(--bin)}
+.binrim{fill:var(--binrim)}
+.pip{position:absolute;left:0;top:0;width:26px;height:124px;z-index:1;visibility:hidden;will-change:transform}
+.pip.ready{visibility:visible}
+.pip svg{display:block;overflow:visible}
+.pip .plunger{transition:transform .25s}
+.pip.pdown .plunger{transform:translateY(5px)}
+.pip.pdown2 .plunger{transform:translateY(9px)}
+.pbtn{fill:var(--accent)}
+.prod{fill:#8E96A3}
+.pbody{fill:#E4E8EE;stroke:#9AA3AE;stroke-width:1}
+.pwin{fill:#fff;stroke:#B9C0CA;stroke-width:.8}
+.tipEl{position:absolute;left:8px;top:82px;width:10px;height:42px;display:none}
+.tipEl svg{display:block}
+.tipEl.in{animation:tipin .55s ease-out}
+@keyframes tipin{from{transform:translateY(28px);opacity:0}to{transform:none;opacity:1}}
+.tipshape{fill:rgba(255,255,255,.6);stroke:#8E96A3;stroke-width:.8}
+.tipliq{fill:var(--L,rgba(176,116,64,.8));opacity:0;transition:opacity .6s}
+.tipEl.load .tipliq{opacity:1}
+.tipEl.fall{z-index:1;transition:transform .8s cubic-bezier(.5,0,1,.6),opacity .3s .5s}
+.tipEl.fall.go{transform:translateY(118px) rotate(16deg);opacity:0}
+.eq{font-size:14px;color:var(--muted);margin:0 0 6px}
+.capbox{min-height:78px;margin:8px 0 10px}
+.seq{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
+.seqbtn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:12px;background:var(--fill);color:var(--text);
+  padding:10px 14px;font-size:15px;font-weight:500;cursor:pointer;line-height:1.3}
+.seqbtn .num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.seqbtn .tx{flex:1}
+.seqbtn.next{background:var(--accent);color:#fff}
+.seqbtn.next .num{background:rgba(255,255,255,.25);color:#fff}
+.seqbtn.done{background:var(--green-soft);color:var(--green);cursor:default}
+.seqbtn.done .num{background:var(--green);color:#fff}
+.seqbtn.wait{opacity:.45;cursor:default}
+.seqbtn:disabled.next{opacity:.6}
+@media (max-width:560px){
+  .labbox{height:272px}
+  .lab{width:117.65%;transform:scale(.85);transform-origin:0 0}
+  .capbox{min-height:100px}
+}
+
+/* Pour plate */
+.plates{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:12px}
+.pl{border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px;color:var(--text)}
+.disc{width:66px;height:66px;border-radius:50%;border:1.5px dashed var(--muted);position:relative;display:block;transition:all .3s}
+.pl.inoc .disc::after{content:"";position:absolute;width:16px;height:12px;border-radius:50%;background:rgba(196,140,92,.55);left:24px;top:26px}
+.pl.agar .disc{border:2px solid #C9D2D9;background:radial-gradient(circle at 40% 35%,#F4E8C9,#E5D19F)}
+.pl.agar .disc::after{display:none}
+.pl.flip .disc{box-shadow:inset 0 0 0 5px #DCE3E8}
+.pl small{font-size:13px;font-weight:500}
+.pl.ctrl small{color:var(--muted)}
+
+/* Inkubasi */
+.incubator{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.ring{position:relative;width:132px;height:132px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .lbl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .lbl b{font-size:24px;font-weight:600}
+.ring .lbl span{font-size:12px;color:var(--muted)}
+
+/* Hitung koloni */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:var(--fill);border-radius:10px;padding:7px 12px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text)}
+.tab.on{background:var(--accent);color:#fff}
+.tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:6px;vertical-align:1px}
+.canvas-wrap{border-radius:16px;background:var(--fill);padding:12px;margin-top:12px;text-align:center}
+canvas{touch-action:manipulation;cursor:crosshair;display:inline-block;max-width:100%}
+.counter{display:flex;align-items:baseline;gap:8px}
+.counter b{font-size:30px;font-weight:600;letter-spacing:-.02em}
+.counter span{color:var(--muted);font-size:14px}
+.secinfo{font-size:15px}
+.stickybar{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom));z-index:5;margin-top:12px;
+  background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border:.5px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 6px 24px rgba(0,0,0,.14)}
+.barrow{display:flex;gap:8px;align-items:center}
+.barmsg{margin:0 0 8px;padding:10px 12px;font-size:14px}
+.platecard.fs{position:fixed;inset:0;z-index:50;margin:0;border-radius:0;overflow:auto;padding:12px 16px 0;background:var(--bg);box-shadow:none}
+.fs .fshead{position:sticky;top:0;z-index:6;background:var(--bg);padding:4px 0 8px}
+.fs .canvas-wrap{display:flex;overflow:visible;background:none;padding:12px 0}
+.fs canvas{margin:auto;flex:none;max-width:none}
+.fs .stickybar{bottom:10px}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:.5px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:13px}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--fill);color:var(--muted);white-space:nowrap}
+.chip.g{background:var(--green-soft);color:var(--green)}
+.chip.o{background:var(--orange-soft);color:var(--orange)}
+.chip.r{background:var(--red-soft);color:var(--red)}
+select{font:inherit;font-size:15px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);max-width:100%}
+select option{background:var(--card);color:var(--text)}
+
+/* Perhitungan */
+.win-row{display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:.5px solid var(--line);font-size:14px}
+.win-row:last-child{border-bottom:0}
+.win-row.dim{opacity:.5}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.formula{background:var(--fill);border-radius:12px;padding:12px 14px;font-size:15px;margin:10px 0;overflow-x:auto}
+.formula div{margin:3px 0;white-space:nowrap}
+.ans{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:16px}
+.ans input{font:inherit;width:84px;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);text-align:center}
+.ans input.exp{width:56px}
+.pick{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--fill);margin:6px 0;cursor:pointer;border:1.5px solid transparent;width:100%;text-align:left;font-size:15px;color:var(--text)}
+.pick.on{border-color:var(--accent);background:var(--accent-soft)}
+.pick .box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--muted);flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent}
+.pick.on .box{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* Kuis */
+.q{margin-top:18px}
+.qt{font-weight:500}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:12px;
+  padding:11px 14px;margin:6px 0;font-size:15px;cursor:pointer;color:var(--text)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--green);background:var(--green-soft)}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+
+/* Navigasi bawah */
+.footer-nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:var(--nav);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-top:.5px solid var(--line);padding:10px 20px calc(10px + env(safe-area-inset-bottom))}
+.foot-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.foot-hint{font-size:13px;color:var(--muted);text-align:center;flex:1}
+
+footer.credit{font-size:13px;color:var(--muted);margin-top:24px;text-align:center}
+
+@media (max-width:560px){
+  h1{font-size:27px}
+  .stats{grid-template-columns:1fr}
+  .calc-grid{grid-template-columns:1fr}
+  .readout{font-size:38px}
+  .foot-hint{display:none}
+  .card{padding:18px 16px}
+  .role{padding:2px 5px}
+}
+@media print{
+  .nav,.footer-nav,.noprint{display:none!important}
+  body{background:#fff;color:#000}
+  main{padding:0}
+  .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="nav" id="nav"></header>
+<main id="app"></main>
+<nav class="footer-nav" id="foot"></nav>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Utilitas ---------- */
+const KEY='tpc-sim-v3';
+/* Batas luas area spreader (SNI 2897:2008 butir 4.1.7.3). Teks SNI memuat angka 25% dan 50%;
+   simulasi memakai 50% untuk spreader berupa lapisan area (tipe b dan c). */
+const SPREAD_LIMIT=0.5;
+const SUPMAP={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+const sup=n=>String(n).split('').map(c=>SUPMAP[c]||c).join('');
+const pw=k=>'10'+sup(k);
+const fmt=n=>Number(n).toLocaleString('id-ID');
+const dec=n=>String(n).replace('.',',');
+function sci(x){if(!x)return '0';let e=Math.floor(Math.log10(x));let m=x/Math.pow(10,e);m=Math.round(m*10)/10;if(m>=10){m=m/10;e++;}return m.toFixed(1).replace('.',',')+' × 10'+sup(e);}
+/* Pembulatan menurut SNI 2897:2008 butir 4.1.8 (dua angka penting) */
+function sniRound(N){
+  const n=Math.round(N);if(n<100)return n;
+  const s=String(n),k=s.length-2,first=+s.slice(0,2),t=+s[2];
+  let r=first;
+  if(t>=6)r=first+1;else if(t===5)r=(first%2===0)?first:first+1;
+  return r*Math.pow(10,k);
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function poisson(l,r){
+  if(l<=0)return 0;
+  if(l<40){const L=Math.exp(-l);let k=0,p=1;do{k++;p*=r();}while(p>L);return k-1;}
+  const u=Math.max(1e-9,r()),v=r();const z=Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+  return Math.max(0,Math.round(l+Math.sqrt(l)*z));
+}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const newSeed=()=>Math.floor(Math.random()*1e9);
+
+/* ---------- Data ---------- */
+const STEPS=[
+  {id:'beranda',t:'Beranda'},
+  {id:'alat',t:'Alat dan bahan'},
+  {id:'sampel',t:'Persiapan sampel'},
+  {id:'pengenceran',t:'Pengenceran seri'},
+  {id:'pour',t:'Pour plate'},
+  {id:'inkubasi',t:'Inkubasi'},
+  {id:'hitung',t:'Hitung koloni'},
+  {id:'perhitungan',t:'Perhitungan'},
+  {id:'ringkasan',t:'Ringkasan'}
+];
+const PLATES=[{dil:3,rep:'A'},{dil:3,rep:'B'},{dil:4,rep:'A'},{dil:4,rep:'B'},{dil:5,rep:'A'},{dil:5,rep:'B'},{dil:null,rep:'K'}];
+const plateLabel=i=>PLATES[i].dil?pw(-PLATES[i].dil)+' '+PLATES[i].rep:'Kontrol';
+const QNAME=['kanan atas','kanan bawah','kiri bawah','kiri atas'];
+
+const CASES={
+  standar:['Sampel standar','Satu pengenceran berisi cawan dengan 25 sampai 250 koloni.'],
+  dua:['Dua pengenceran masuk rentang','Dua pengenceran berurutan sama-sama berisi cawan dengan 25 sampai 250 koloni (Tabel 1 nomor 2).'],
+  rendah:['Semua cawan di bawah 25','Cemaran rendah sehingga tidak ada cawan yang masuk rentang hitung (Tabel 1 nomor 3).'],
+  tinggi:['Semua cawan di atas 250','Cemaran sangat tinggi sehingga semua cawan terlalu padat (Tabel 1 nomor 4).'],
+  kosong:['Cawan tanpa koloni','Semua cawan tidak ditumbuhi koloni (Tabel 1 nomor 6).'],
+  spreader:['Ada spreader','Satu cawan tertutup koloni yang menyebar (Tabel 1 nomor 5).'],
+  duplo7:['Duplo: satu cawan di atas 250','Pada satu pengenceran, satu cawan masuk rentang dan pasangannya lebih dari 250 (Tabel 1 nomor 7).'],
+  duplo8:['Duplo: satu cawan masuk rentang di tiap pengenceran','Di dua pengenceran, masing-masing satu cawan masuk rentang dan pasangannya di luar rentang (Tabel 1 nomor 8).'],
+  duplo9:['Duplo: dua cawan masuk rentang di satu pengenceran','Satu pengenceran berisi dua cawan dalam rentang, pengenceran lainnya satu cawan dalam rentang (Tabel 1 nomor 9).'],
+  selisih:['Duplo berselisih jauh','Dua cawan pada pengenceran yang sama memberi hasil yang jauh berbeda.'],
+  kontrol:['Kontrol terkontaminasi','Cawan kontrol ditumbuhi koloni.']
+};
+const CASE_KEYS=Object.keys(CASES);
+
+const bpwPrep=n=>Math.ceil(261*n*1.1/10)*10;
+const pcaPrep=n=>Math.ceil(140*n*1.05/10)*10;
+
+const ITEMS=[
+  {id:'daging',g:'Bahan',name:'Sampel daging',q:n=>(25*n)+' g',d:'Diambil secara aseptik menggunakan gunting dan pinset steril.'},
+  {id:'bpw',g:'Bahan',name:'BPW (buffered peptone water)',q:n=>(261*n)+' mL, siapkan ± '+bpwPrep(n)+' mL',d:'Larutan pengencer berisi pepton dan buffer fosfat. Kandungan ini menjaga sel bakteri tetap hidup selama pengenceran.'},
+  {id:'pca',g:'Bahan',name:'PCA (plate count agar)',q:n=>(105*n)+'–'+(140*n)+' mL, siapkan ± '+pcaPrep(n)+' mL',d:'Media nonselektif untuk menumbuhkan bakteri aerob mesofilik. Setelah dicairkan, PCA ditahan di waterbath sekitar 45 °C sampai dituang.'},
+  {id:'alkohol',g:'Bahan',name:'Alkohol 70%',q:()=>'secukupnya',d:'Untuk desinfeksi meja kerja, tangan, dan bagian luar wadah.'},
+  {id:'timbangan',g:'Alat',name:'Timbangan',q:()=>'1',d:'Menimbang 25 g sampel di dalam wadah steril. Nolkan timbangan dulu (wadah kosong terbaca 0 g) sebelum sampel dimasukkan.'},
+  {id:'gunting',g:'Alat',name:'Gunting dan pinset steril',q:()=>'1 set',d:'Memotong daging secara aseptis menjadi bagian kecil dan memindahkannya tanpa menyentuh dengan tangan.'},
+  {id:'mortir',g:'Alat',name:'Mortir dan alu steril',q:n=>n+' set',d:'Menggerus potongan daging bersama BPW sampai halus supaya bakteri lepas dari jaringan dan tersebar merata.'},
+  {id:'botol',g:'Alat',name:'Botol atau wadah steril (250 mL)',q:n=>n+' buah',d:'Menampung suspensi '+pw(-1)+' setelah sampel digerus. Dari wadah inilah suspensi diambil untuk pengenceran.'},
+  {id:'tabung',g:'Alat',name:'Tabung reaksi dan rak',q:n=>(4*n)+' tabung',d:'Masing-masing berisi 9 mL BPW untuk pengenceran '+pw(-2)+' sampai '+pw(-5)+'.'},
+  {id:'pipet',g:'Alat',name:'Mikropipet 1000 µL dan tip steril',q:n=>'1 mikropipet, minimal '+(7*n)+' tip',d:'Memindahkan tepat 1 mL suspensi. Tip diganti setiap berpindah tabung: 4 tip untuk pengenceran dan 3 tip untuk inokulasi.'},
+  {id:'limbah',g:'Alat',name:'Wadah limbah tip',q:()=>'1',d:'Menampung tip bekas. Tip yang sudah dipakai tidak boleh dipakai lagi.'},
+  {id:'cawan',g:'Alat',name:'Cawan petri steril',q:n=>(7*n)+' cawan',d:'Beri label pada dasar cawan sebelum dipakai: kode sampel, tingkat pengenceran, ulangan, dan tanggal.'},
+  {id:'waterbath',g:'Alat',name:'Waterbath',q:()=>'1, diatur ± 45 °C',d:'Menahan PCA tetap cair pada suhu yang aman bagi bakteri.'},
+  {id:'bunsen',g:'Alat',name:'Api bunsen atau laminar airflow',q:()=>'1',d:'Menjaga area kerja tetap aseptik selama membuka tabung dan cawan.'},
+  {id:'inkubator',g:'Alat',name:'Inkubator',q:()=>'1, diatur 34 sampai 36 °C',d:'Tempat cawan diinkubasi dalam posisi terbalik selama 24 sampai 48 jam (SNI 2897:2008).'},
+  {id:'spidol',g:'Alat',name:'Spidol',q:()=>'1',d:'Menandai koloni yang sudah dihitung pada dasar cawan supaya tidak terhitung dua kali.'},
+  {id:'tally',g:'Alat',name:'Hand tally counter (opsional)',q:()=>'1',d:'Membantu mencatat jumlah koloni saat menghitung manual.'}
+];
+const ITEM=Object.fromEntries(ITEMS.map(x=>[x.id,x]));
+const STEP_TOOLS={
+  sampel:['daging','timbangan','gunting','mortir','botol','bpw','alkohol'],
+  pengenceran:['tabung','pipet','limbah'],
+  pour:['cawan','pca','waterbath','bunsen'],
+  inkubasi:['inkubator'],
+  hitung:['spidol','tally']
+};
+
+/* Kuis: c = jawaban benar, w = pengecoh. Urutan opsi diacak dengan seed tetap per soal. */
+const QUIZ={
+  sampel:[
+    {q:'Mengapa 25 g sampel dicampur dengan 225 mL BPW?',
+     c:'Supaya terbentuk perbandingan 1:10 sebagai pengenceran '+pw(-1),
+     w:['Supaya volume akhir sesuai dengan kapasitas botol sampel','Supaya bakteri patogen dalam sampel mati karena pengenceran','Supaya BPW selalu dipakai dalam volume tetap sebanyak 225 mL'],
+     e:'Sampel 25 g dalam total 250 bagian (25 + 225) memberi perbandingan 1:10. Inilah pengenceran pertama, '+pw(-1)+'.'},
+    {q:'Apa fungsi BPW dalam pengujian ini?',
+     c:'Larutan pengencer yang menjaga sel bakteri tetap hidup',
+     w:['Media selektif untuk menumbuhkan bakteri patogen saja','Desinfektan untuk membersihkan permukaan sampel daging','Media padat tempat koloni bakteri tumbuh dan dihitung'],
+     e:'Pepton dan buffer fosfat dalam BPW melindungi sel bakteri selama pengenceran. Tanpa perlindungan ini, sebagian sel bisa rusak dan jumlah yang terhitung menurun.'},
+    {q:'Mengapa sampel dipotong dan digerus bersama BPW?',
+     c:'Supaya bakteri lepas dari jaringan dan tersebar merata',
+     w:['Supaya daging menjadi steril sebelum proses pengenceran','Supaya suhu suspensi naik dan bakteri cepat berkembang','Supaya warna suspensi seragam sehingga mudah diamati'],
+     e:'Bakteri menempel pada permukaan dan celah jaringan. Pemotongan dan penggerusan melepaskan dan menyebarkannya sehingga setiap 1 mL suspensi mewakili seluruh sampel.'}
+  ],
+  pengenceran:[
+    {q:'Sebanyak 1 mL suspensi '+pw(-2)+' dipindahkan ke tabung berisi 9 mL BPW. Berapa tingkat pengenceran di tabung tersebut?',
+     c:pw(-3),w:[pw(-1),pw(-2),pw(-9)],
+     e:'1 mL dalam total 10 mL berarti pengenceran 10 kali lipat. '+pw(-2)+' × '+pw(-1)+' = '+pw(-3)+'.'},
+    {q:'Mengapa tip mikropipet diganti setiap kali berpindah tabung?',
+     c:'Supaya sisa suspensi yang lebih pekat tidak terbawa',
+     w:['Supaya volume yang diambil menjadi lebih banyak','Karena tip akan rusak setelah dipakai satu kali','Supaya BPW di dalam tabung berikutnya tidak tumpah'],
+     e:'Sisa cairan di dinding tip dapat membawa bakteri dari tabung yang lebih pekat (carry-over). Akibatnya, hasil hitung menjadi lebih tinggi dari seharusnya.'},
+    {q:'Kapan tabung perlu dihomogenkan dengan ayunan dan putaran angka 8?',
+     c:'Setelah menerima 1 mL suspensi, sebelum diambil lagi',
+     w:['Setelah cawan selesai diinkubasi di dalam inkubator','Sebelum BPW sembilan mililiter dimasukkan ke tabung','Tabung tidak perlu dihomogenkan setelah menerima suspensi'],
+     e:'Suspensi yang baru masuk berada di lapisan atas dan belum tercampur dengan 9 mL BPW. Homogenisasi memastikan 1 mL yang diambil untuk transfer berikutnya mewakili seluruh isi tabung.'},
+    {q:'Manakah urutan yang benar untuk satu kali transfer pengenceran?',
+     c:'Pasang tip, ambil, keluarkan, lepas tip, homogenkan tabung',
+     w:['Pasang tip, ambil, homogenkan, keluarkan, lepas tip ke limbah','Ambil suspensi, pasang tip, keluarkan, homogenkan, lepas tip','Pasang tip, keluarkan, ambil, homogenkan, lepas tip bekas'],
+     e:'Tip baru dipasang lebih dulu, suspensi diambil dan dikeluarkan, tip bekas dilepas, lalu tabung tujuan dihomogenkan tanpa tip yang membawa sisa suspensi pekat.'}
+  ],
+  pour:[
+    {q:'Mengapa PCA cair ditahan pada suhu sekitar 45 °C sebelum dituang?',
+     c:'Supaya media tetap cair dan tidak merusak sel bakteri',
+     w:['Supaya media cepat memadat setelah dituang ke cawan','Supaya bakteri tumbuh lebih cepat pada media panas','Supaya warna media menjadi lebih jernih dan bening'],
+     e:'PCA mulai memadat di bawah sekitar 40 °C. Suhu yang jauh lebih tinggi dari 45 °C dapat merusak sebagian sel bakteri sehingga jumlah koloni menurun.'},
+    {q:'Apa fungsi cawan kontrol?',
+     c:'Memeriksa sterilitas media dan lingkungan kerja',
+     w:['Cadangan yang dipakai bila ada cawan lain yang pecah','Menumbuhkan bakteri pembanding bagi koloni sampel','Menentukan suhu yang tepat selama masa inkubasi'],
+     e:'Cawan kontrol berisi PCA tanpa inokulum. Bila setelah inkubasi muncul koloni, berarti media, alat, atau lingkungan kerja terkontaminasi.'},
+    {q:'Mengapa cawan dibalik saat inkubasi?',
+     c:'Supaya embun tidak menetes ke permukaan media',
+     w:['Supaya label pada dasar cawan lebih mudah dibaca','Supaya bakteri tumbuh mengarah ke tutup cawan','Supaya cawan tidak mudah pecah di dalam inkubator'],
+     e:'Tetesan embun di permukaan media dapat menyebarkan bakteri. Koloni lalu bergabung atau membentuk spreader sehingga sulit dihitung.'},
+    {q:'Berapa volume PCA yang dituang ke setiap cawan?',
+     c:'15 sampai 20 mL',w:['5 sampai 10 mL','25 sampai 30 mL','40 sampai 50 mL'],
+     e:'SNI 2897:2008 butir d) menetapkan 15 sampai 20 mL PCA pada 45 ± 1 °C untuk setiap cawan yang sudah berisi suspensi.'}
+  ],
+  inkubasi:[
+    {q:'Pada suhu berapa cawan diinkubasi menurut SNI 2897:2008?',
+     c:'34 °C sampai 36 °C',w:['28 °C sampai 30 °C','40 °C sampai 42 °C','44 °C sampai 46 °C'],
+     e:'SNI 2897:2008 butir e) menetapkan 34 sampai 36 °C selama 24 sampai 48 jam dengan cawan terbalik. SNI 7388:2009 mencantumkan kondisi berbeda (30 °C, 72 jam), jadi selalu rujuk standar yang dipakai.'},
+    {q:'Kelompok bakteri apa yang dihitung dalam uji ALT?',
+     c:'Bakteri aerob mesofilik',w:['Bakteri anaerob obligat','Bakteri termofilik ekstrem','Kapang dan khamir pangan'],
+     e:'ALT menghitung bakteri aerob mesofilik. Kelompok ini tumbuh baik pada suhu sedang dan dipakai sebagai indikator mutu serta higiene produk.'},
+    {q:'Apa akibatnya bila cawan diinkubasi kurang dari 24 jam?',
+     c:'Koloni kecil belum tampak sehingga hasil terlalu rendah',
+     w:['Koloni menjadi terlalu besar sehingga saling bergabung','Media mencair kembali sehingga cawan tidak bisa dibaca','Tidak ada pengaruh terhadap jumlah koloni yang tampak'],
+     e:'Sebagian koloni belum cukup besar untuk terlihat. Jumlah yang terhitung menjadi lebih rendah dari jumlah sebenarnya.'}
+  ],
+  hitung:[
+    {q:'Cawan '+pw(-3)+' berisi koloni yang jelas lebih dari 250. Apa yang dilakukan?',
+     c:'Hitung satu sektor lalu kalikan 4 sebagai estimasi',
+     w:['Hitung semua koloni satu per satu sampai selesai','Buang cawan tanpa mencatatnya di lembar kerja','Catat 250 koloni karena itu batas tertinggi rentang'],
+     e:'SNI 2897:2008 butir 4.1.7.2 meminta koloni dihitung secara representatif. Salah satu caranya adalah menghitung satu sektor lalu mengalikan 4. Di literatur lain, kondisi ini disebut TNTC (Too Numerous To Count).'},
+    {q:'Cawan kontrol berisi 4 koloni. Apa artinya?',
+     c:'Terjadi kontaminasi sehingga hasil pengujian tidak valid',
+     w:['Hal normal karena kontrol boleh berisi sedikit koloni','Sampel yang diuji memiliki tingkat cemaran sangat rendah','Inkubasi berlangsung terlalu lama sehingga koloni muncul'],
+     e:'Kontrol seharusnya steril. Koloni pada kontrol berarti ada kontaminasi dari media, alat, atau lingkungan, sehingga koloni di cawan lain bisa berasal dari sumber yang sama.'},
+    {q:'Mengapa koloni yang sudah dihitung ditandai dengan spidol?',
+     c:'Supaya koloni yang sama tidak terhitung dua kali',
+     w:['Supaya koloni yang sudah ditandai berhenti tumbuh','Supaya warna koloni berubah dan lebih mudah dilihat','Supaya cawan mudah difoto untuk dokumentasi laporan'],
+     e:'Penandaan di dasar cawan membantu melacak koloni yang sudah dihitung, terutama pada cawan dengan ratusan koloni.'},
+    {q:'Satu cawan tertutup spreader pada lebih dari separuh permukaan. Bagaimana cawan itu diperlakukan?',
+     c:'Tidak dihitung, tetapi cawan pasangannya tetap dipakai',
+     w:['Dihitung penuh bersama cawan pasangannya di pengenceran sama','Semua cawan pada pengenceran itu ikut dibuang','Dicatat sebagai estimasi dengan metode sektor'],
+     e:'Menurut butir 4.1.7.3 (Tabel 1 nomor 5), cawan spreader tidak dihitung. Rerata pengenceran itu diambil dari cawan pasangannya.'}
+  ],
+  perhitungan:[
+    {q:'Duplo '+pw(-4)+' berisi 120 dan 140 koloni, cawan lain di luar rentang. Berapa ALT sampel?',
+     c:'1,3 × 10'+sup(6)+' CFU/g',w:['1,3 × 10'+sup(4)+' CFU/g','1,3 × 10'+sup(5)+' CFU/g','2,6 × 10'+sup(6)+' CFU/g'],
+     e:'Rerata (120 + 140) ÷ 2 = 130 koloni. Kalikan dengan faktor pengenceran 10'+sup(4)+': 130 × 10'+sup(4)+' = 1,3 × 10'+sup(6)+' CFU/g.'},
+    {q:'Hasil 1,3 × 10'+sup(6)+' CFU/g dibandingkan dengan batas daging mentah 1 × 10'+sup(6)+' CFU/g. Apa kesimpulannya?',
+     c:'Tidak memenuhi syarat karena melebihi batas maksimum',
+     w:['Memenuhi syarat karena masih berada di bawah batas','Memenuhi syarat karena angkanya mendekati batas','Belum dapat disimpulkan karena kontrol tidak ada'],
+     e:'Hasil melebihi batas maksimum cemaran sehingga sampel tidak memenuhi syarat.'},
+    {q:'Mengapa jumlah koloni di bawah 25 kurang dapat dipercaya sebagai dasar perhitungan?',
+     c:'Kesalahan acak relatif besar karena jumlahnya kecil',
+     w:['Koloni yang terlalu kecil tidak dapat dilihat mata','Pengencerannya pasti salah saat proses pemipetan','Jumlah koloni selalu harus berupa angka genap'],
+     e:'Pada jumlah koloni kecil, selisih beberapa koloni mengubah hasil secara besar. Ketidakpastian acak pada 18 koloni sekitar ±24%.'},
+    {q:'Duplo '+pw(-4)+' berisi 225 dan 255 koloni, sedangkan duplo '+pw(-5)+' berisi 21 dan 40 koloni. Cawan mana yang dihitung?',
+     c:'Keempat cawan dihitung, lalu kedua rerata dirata-ratakan',
+     w:['Cawan 225 dan 40 saja, yaitu yang masuk rentang','Duplo '+pw(-4)+' saja karena jumlah kolonya paling besar','Duplo '+pw(-5)+' saja karena jumlah kolonya paling kecil'],
+     e:'Butir 4.1.7.6 (Tabel 1 nomor 8): bila satu cawan dari tiap pengenceran masuk rentang, keempat cawan dihitung. Rerata '+pw(-4)+' = 240 (2,4 × 10'+sup(6)+'), rerata '+pw(-5)+' = 30,5 (3,05 × 10'+sup(6)+'). Rata-ratanya 2,725 × 10'+sup(6)+', dibulatkan 2,7 × 10'+sup(6)+' CFU/g.'},
+    {q:'Menurut butir 4.1.8, bagaimana 445 dibulatkan ke dua angka penting?',
+     c:'440, karena angka ketiga 5 dan angka kedua genap',
+     w:['450, karena angka ketiga 5 selalu dibulatkan ke atas','400, karena angka kedua dan ketiga dibuang semua','445, karena angka ketiga 5 tidak dibulatkan'],
+     e:'Butir 4.1.8: bila angka ketiga 5 dan angka kedua genap, angka ketiga menjadi 0 dan angka kedua tetap (445 menjadi 440). Bila angka kedua ganjil, angka kedua naik 1 (455 menjadi 460).'}
+  ]
+};
+const QCACHE={};
+function qopts(id,qi){
+  const k=id+'-'+qi;if(QCACHE[k])return QCACHE[k];
+  const q=QUIZ[id][qi];
+  const arr=[q.c].concat(q.w).map((t,i)=>({t,ok:i===0}));
+  const r=mulberry32(hashStr(k+'#tpc'));
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;}
+  return QCACHE[k]={o:arr,a:arr.findIndex(x=>x.ok)};
+}
+
+/* ---------- State ---------- */
+function fresh(){
+  return {
+    step:0,done:{0:true},nsamp:1,checks:{},open:{},
+    prep:{w:0,wOk:false,wmsg:null,bpw:null,homog:0},
+    dil:{t:0,ph:0,col:0,msg:null},
+    pour:{sel:null,inoc:[false,false,false,false,false,false,false],temp:null,vol:0,poured:false,mixed:false,solid:false,inverted:false,msg:null,vmsg:null},
+    inc:{temp:30,hours:null,done:false,msg:null},
+    scen:{sel:'standar',c:'standar',seed:newSeed()},
+    cur:0,zoom:false,sec:{on:false,q:{}},marks:{},rec:{},reveal:{},hmsg:null,
+    calc:{ctrl:null,sel:{},selOk:null,m:'',e:'',ansOk:null,sol:false,interp:null,win:5.8},
+    quiz:{}
+  };
+}
+let S;
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object.assign(fresh(),o);}}catch(e){}
+  if(!S)S=fresh();
+  if(S.prep.homog===1)S.prep.homog=0;
+  if(!S.dil||typeof S.dil.t!=='number')S.dil=fresh().dil;
+  if(!S.open)S.open={};
+  if(!S.sec)S.sec={on:false,q:{}};
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ---------- Skenario dan koloni ---------- */
+function genCounts(c,seed){
+  const r=mulberry32(seed);
+  const ri=(a,b)=>a+Math.floor(r()*(b-a+1));
+  const logU=(a,b)=>Math.pow(10,Math.log10(a)+r()*(Math.log10(b)-Math.log10(a)));
+  const n=[0,0,0,0,0,0,0],sp=[false,false,false,false,false,false,false];
+  const base=()=>{const N=logU(3.5e5,1.9e6);
+    n[0]=Math.max(270,poisson(N/1e3,r));n[1]=Math.max(270,poisson(N/1e3,r));
+    n[2]=clamp(poisson(N/1e4,r),27,245);n[3]=clamp(poisson(N/1e4,r),27,245);
+    n[4]=clamp(poisson(N/1e5,r),0,22);n[5]=clamp(poisson(N/1e5,r),0,22);};
+  if(c==='standar')base();
+  else if(c==='dua'){n[0]=poisson(2400,r);n[1]=poisson(2400,r);n[2]=ri(228,247);n[3]=ri(228,247);n[4]=ri(25,30);n[5]=ri(25,30);}
+  else if(c==='rendah'){const N=logU(4e3,1.8e4);n[0]=clamp(poisson(N/1e3,r),2,23);n[1]=clamp(poisson(N/1e3,r),2,23);n[2]=poisson(N/1e4,r);n[3]=poisson(N/1e4,r);}
+  else if(c==='tinggi'){const N=logU(6e7,2.5e8);for(let i=0;i<6;i++)n[i]=Math.max(400,poisson(N/Math.pow(10,PLATES[i].dil),r));}
+  else if(c==='kosong'){/* semua cawan tanpa koloni */}
+  else if(c==='spreader'){n[0]=ri(215,248);n[1]=ri(215,248);n[2]=ri(26,36);n[3]=ri(30,55);sp[3]=true;n[4]=ri(2,5);n[5]=ri(0,4);}
+  else if(c==='kontrol'){base();n[6]=ri(3,7);}
+  else if(c==='selisih'){n[2]=ri(160,205);n[3]=ri(48,78);const m=(n[2]+n[3])/20;n[4]=clamp(poisson(m,r),0,22);n[5]=clamp(poisson(m,r),0,22);n[0]=Math.max(270,poisson((n[2]+n[3])*5,r));n[1]=Math.max(270,poisson((n[2]+n[3])*5,r));}
+  else if(c==='duplo7'){n[0]=ri(228,248);n[1]=ri(262,300);n[2]=ri(15,23);n[3]=ri(15,23);n[4]=ri(0,3);n[5]=ri(0,3);}
+  else if(c==='duplo8'){n[0]=ri(218,248);n[1]=ri(255,290);n[2]=ri(17,23);n[3]=ri(27,45);n[4]=ri(0,4);n[5]=ri(0,4);}
+  else if(c==='duplo9'){
+    if(r()<0.5){n[0]=ri(215,248);n[1]=ri(215,248);n[2]=ri(15,23);n[3]=ri(28,48);}
+    else{n[0]=ri(215,248);n[1]=ri(255,285);n[2]=ri(27,35);n[3]=ri(26,33);}
+    n[4]=ri(0,4);n[5]=ri(0,4);
+  }
+  return {n,sp};
+}
+function inPoly(x,y,poly){let ins=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))ins=!ins;}return ins;}
+function genColonies(i,n,spread,seed){
+  const r=mulberry32(seed*31+i*977+7);const C=150,R=137;const out=[];let poly=null;
+  if(spread){poly=[];const cx=166,cy=138,b=104;for(let k=0;k<56;k++){const a=k/56*Math.PI*2;const rr=b*(0.86+0.26*(0.5+0.5*Math.sin(k*1.7))*r());poly.push([cx+Math.cos(a)*rr,cy+Math.sin(a)*rr]);}}
+  const draw=Math.min(n,4000),dense=n>600,spaced=n<=350;
+  const pal=['#F7F0DC','#F1E4C0','#FBF6E8','#EBDBAE'];
+  for(let k=0;k<draw;k++){
+    const rad=dense?0.7+r()*0.8:(r()<0.7?1.7+r()*1.1:2.9+r()*1.5);
+    let x=0,y=0,ok=false,t=0;
+    while(!ok&&t<60){t++;const a=r()*Math.PI*2,d=Math.sqrt(r())*(R-rad-1);x=C+Math.cos(a)*d;y=C+Math.sin(a)*d;ok=true;
+      if(poly&&inPoly(x,y,poly))ok=false;
+      if(ok&&spaced&&t<45){for(const o of out){if(Math.hypot(o.x-x,o.y-y)<o.r+rad+1.4){ok=false;break;}}}}
+    if(!ok)continue;
+    out.push({x,y,r:rad,c:r()<0.1?'#E3C060':pal[Math.floor(r()*4)]});
+  }
+  return {col:out,poly};
+}
+let PL=null,PLkey='';
+function plates(){
+  const key=S.scen.c+':'+S.scen.seed;if(PL&&PLkey===key)return PL;
+  const g=genCounts(S.scen.c,S.scen.seed);
+  PL=PLATES.map((p,i)=>{const c=genColonies(i,g.n[i],g.sp[i],S.scen.seed);return Object.assign({},p,{n:g.n[i]>4000?g.n[i]:c.col.length,spread:g.sp[i],col:c.col,poly:c.poly});});
+  PLkey=key;return PL;
+}
+/* Sektor cawan untuk estimasi (SNI 4.1.7.2): 0 kanan atas, 1 kanan bawah, 2 kiri bawah, 3 kiri atas */
+function sectorOf(x,y){return x>=150?(y<150?0:1):(y>=150?2:3);}
+function sectorInfo(i,q){
+  const P=plates()[i];let c=0;
+  for(const k of P.col){if(sectorOf(k.x,k.y)===q)c++;}
+  const scale=P.col.length?P.n/P.col.length:1;
+  const cnt=Math.round(c*scale);
+  return {cnt,est:cnt*4};
+}
+
+/* ---------- Analisis hasil (SNI 2897:2008 butir 4.1.7 dan 4.1.8) ---------- */
+function analysis(){
+  const R=S.rec;
+  const ctrlV=R[6]&&R[6].type==='count'?R[6].v:0;
+  const a={ctrlV,ctrlBad:ctrlV>0,mode:'none',used:[],groups:[],N:0,Nr:0,prefix:'',star:false,duploFlag:false};
+  const byD={};
+  [0,1,2,3,4,5].forEach(i=>{const r=R[i];if(!r||r.type==='excl')return;(byD[PLATES[i].dil]=byD[PLATES[i].dil]||[]).push(i);});
+  const dils=Object.keys(byD).map(Number).sort((x,y)=>x-y);
+  const cat=i=>{const r=R[i];return r.type==='est'?'hi':(r.v>250?'hi':(r.v>=25?'in':'lo'));};
+  const mean=idx=>idx.reduce((s,i)=>s+R[i].v,0)/idx.length;
+  const mk=d=>{const m=mean(byD[d]);return {d,idx:byD[d].slice(),mean:m,N:m*Math.pow(10,d)};};
+  const Q=dils.filter(d=>byD[d].some(i=>cat(i)==='in'));
+  if(Q.length>=1){
+    a.groups=Q.slice(0,2).map(mk);
+    a.mode=a.groups.length===2?'two':'one';
+    a.N=a.groups.reduce((s,g)=>s+g.N,0)/a.groups.length;
+    a.groups.forEach(g=>{if(g.idx.length===2&&g.idx.every(i=>cat(i)==='in')){const v=g.idx.map(i=>R[i].v);if(Math.max(...v)/Math.max(1,Math.min(...v))>=2)a.duploFlag=true;}});
+  }else if(dils.length){
+    const allZero=dils.every(d=>byD[d].every(i=>R[i].type==='count'&&R[i].v===0));
+    if(allZero){const g=mk(dils[0]);a.groups=[g];a.mode='zero';a.N=Math.pow(10,g.d);a.prefix='< ';a.star=true;}
+    else{
+      const hiD=dils.filter(d=>byD[d].some(i=>cat(i)==='hi'));
+      if(hiD.length){const g=mk(hiD[hiD.length-1]);a.groups=[g];a.mode='high';a.N=g.N;a.star=true;}
+      else{const g=mk(dils[0]);a.groups=[g];a.mode='low';a.N=g.N;a.star=true;}
+    }
+  }
+  a.used=[].concat(...a.groups.map(g=>g.idx));
+  a.Nr=a.mode==='none'?0:sniRound(a.N);
+  a.verdict=a.ctrlBad?'invalid':(a.mode==='none'?'invalid':(a.Nr<=1e6?'ok':'notok'));
+  a.result=a.mode==='none'?'–':a.prefix+sci(a.Nr)+' CFU/g'+(a.star?'*':'');
+  return a;
+}
+function solutionLines(a){
+  const R=S.rec;const L=[];
+  const vtxt=i=>R[i].type==='est'?R[i].v+' (estimasi)':String(R[i].v);
+  const line=g=>'Pengenceran '+pw(-g.d)+': ('+g.idx.map(vtxt).join(' + ')+') ÷ '+g.idx.length+' = '+dec(+g.mean.toFixed(1))+' koloni; × '+pw(g.d)+' = '+fmt(Math.round(g.N))+' CFU/g';
+  const rnd='Pembulatan butir 4.1.8: '+fmt(Math.round(a.N))+' menjadi '+fmt(a.Nr)+' = '+sci(a.Nr)+' CFU/g';
+  if(a.mode==='one'||a.mode==='two'){
+    a.groups.forEach(g=>L.push(line(g)));
+    if(a.mode==='two')L.push('N = ('+a.groups.map(g=>fmt(Math.round(g.N))).join(' + ')+') ÷ 2 = '+fmt(Math.round(a.N))+' CFU/g');
+    L.push(rnd);
+  }else if(a.mode==='low'){
+    L.push('Semua cawan berisi kurang dari 25 koloni (butir 4.1.7.1).');
+    L.push(line(a.groups[0]));L.push(rnd);
+    L.push('Hasil diberi tanda * (di luar rentang 25 sampai 250 koloni).');
+  }else if(a.mode==='high'){
+    L.push('Semua cawan berisi lebih dari 250 koloni (butir 4.1.7.2).');
+    L.push(line(a.groups[0]));L.push(rnd);
+    L.push('Hasil diberi tanda * (di luar rentang 25 sampai 250 koloni).');
+  }else if(a.mode==='zero'){
+    L.push('Semua cawan tanpa koloni (butir 4.1.7.4).');
+    L.push('ALT < 1 × '+pw(a.groups[0].d)+' = < '+sci(a.Nr)+' CFU/g*');
+  }
+  return L;
+}
+
+/* ---------- Komponen tampilan ---------- */
+const head=(t,lead)=>'<p class="kicker">Langkah '+(S.step+1)+' dari '+STEPS.length+'</p><h1>'+t+'</h1>'+(lead?'<p class="lead">'+lead+'</p>':'');
+const note=(m)=>m?'<div class="note '+(m.k||'')+'">'+(m.h?'<strong>'+m.h+'</strong>':'')+m.t+'</div>':'';
+const det=(key,cls,sum,body)=>'<details class="'+cls+'" data-key="'+key+'"'+(S.open[key]?' open':'')+'><summary>'+sum+'</summary><div class="accbody">'+body+'</div></details>';
+function toolsInner(id){
+  return '<p class="muted">Ketuk untuk melihat fungsinya.</p><div class="tools">'+
+    STEP_TOOLS[id].map(k=>'<details class="tool" data-key="tl-'+k+'"'+(S.open['tl-'+k]?' open':'')+'><summary><span>'+ITEM[k].name+'</span></summary><p>'+ITEM[k].d+'</p></details>').join('')+'</div>';
+}
+function toolsHTML(id){
+  if(!STEP_TOOLS[id])return '';
+  return '<div class="card" style="padding-top:6px;padding-bottom:0">'+det('tools-'+id,'acc','Alat dan bahan di langkah ini',toolsInner(id)).replace('class="acc"','class="acc" style="border-top:0"')+'</div>';
+}
+function quizHTML(id){
+  const qs=QUIZ[id];if(!qs)return '';
+  return '<div class="card"><h2>Cek pemahaman</h2><p class="sub">Tidak dinilai. Pilih jawaban untuk melihat penjelasannya.</p>'+
+  qs.map((q,qi)=>{const key=id+'-'+qi,ans=S.quiz[key],has=ans!==undefined;const op=qopts(id,qi);
+    return '<div class="q"><p class="qt">'+(qi+1)+'. '+q.q+'</p>'+
+      op.o.map((o,oi)=>{let c='';if(has){if(oi===op.a)c='correct';else if(oi===ans)c='wrong';}
+        return '<button class="opt '+c+'" data-act="quiz" data-k="'+key+'" data-v="'+oi+'"'+(has?' disabled':'')+'>'+o.t+'</button>';}).join('')+
+      (has?'<div class="note '+(ans===op.a?'ok':'warn')+'"><strong>'+(ans===op.a?'Tepat.':'Belum tepat.')+'</strong>'+q.e+'</div><button class="linkbtn" data-act="qreset" data-k="'+key+'">Jawab ulang</button>':'')+
+    '</div>';}).join('')+'</div>';
+}
+const stepCard=(n,title,body,opts)=>{opts=opts||{};return '<div class="card'+(opts.locked?' locked':'')+(opts.complete?' complete':'')+'"><h2><span class="step-no">'+(opts.complete?'✓':n)+'</span>'+title+'</h2>'+body+'</div>';};
+
+/* ---------- Tampilan per langkah ---------- */
+const VIEWS={};
+
+VIEWS.beranda=()=>
+  '<p class="kicker">Praktikum Higiene Pangan Asal Hewan</p>'+
+  '<h1>Simulasi angka lempeng total pada daging</h1>'+
+  '<p class="lead">Jalani tahapan uji angka lempeng total (ALT), atau total plate count (TPC), secara virtual sebelum masuk laboratorium. Setiap langkah berisi satu kegiatan utama dan beberapa soal latihan.</p>'+
+  '<div class="stats"><div><b>± 30 menit</b><span>Perkiraan durasi</span></div><div><b>Pour plate</b><span>Metode</span></div><div><b>2 standar SNI</b><span>Prosedur dan batas cemaran</span></div></div>'+
+  '<div class="hygiene"><h2>Jaga higiene dan sterilitas sepanjang praktikum</h2>'+
+  '<p>Simulasi ini menampilkan kondisi ideal. Di laboratorium, setiap kelalaian dapat memasukkan bakteri dari tangan, udara, alat, atau meja kerja ke dalam sampel. Akibatnya, koloni yang tumbuh di cawan bisa berasal dari lingkungan, sehingga angka TPC tidak lagi menggambarkan mutu daging yang diuji.</p>'+
+  '<p class="muted" style="margin:0">Kebiasaan yang perlu dijaga: bekerja di dekat api bunsen atau di laminar airflow, menyemprot meja dan tangan dengan alkohol 70%, mengganti tip mikropipet setiap berpindah tabung, dan membuka tutup tabung atau cawan seperlunya.</p></div>'+
+  '<div class="card"><h2>Tujuan</h2><p class="muted">Setelah menyelesaikan simulasi ini, Anda diharapkan mampu:</p><ol class="clean">'+
+  '<li>menyiapkan sampel dan larutan pengencer dengan perbandingan yang tepat;</li>'+
+  '<li>membuat pengenceran seri sampai '+pw(-5)+' secara aseptik;</li>'+
+  '<li>melakukan pour plate dan menentukan kondisi inkubasi;</li>'+
+  '<li>menghitung koloni, memilih cawan yang memenuhi syarat, dan menghitung CFU/g;</li>'+
+  '<li>menafsirkan hasil terhadap batas maksimum cemaran.</li></ol></div>'+
+  '<div class="card"><h2>Acuan standar</h2><ul class="clean">'+
+  '<li><b>SNI 2897:2008</b> (metode pengujian cemaran mikroba dalam daging, telur, dan susu serta hasil olahannya): prosedur, inkubasi, dan aturan perhitungan.</li>'+
+  '<li><b>SNI 7388:2009</b> (batas maksimum cemaran mikroba dalam pangan): batas ALT daging mentah sebesar 1 × 10'+sup(6)+' koloni/g.</li></ul>'+
+  '<p class="muted small mt" style="margin-bottom:0">SNI menuliskan satuan koloni/g. Simulasi memakai CFU/g (colony forming unit per gram), yang setara.</p></div>'+
+  '<div class="card"><h2>Cara memakai</h2><ul class="clean">'+
+  '<li>Kerjakan langkah secara berurutan. Tombol Lanjut aktif setelah kegiatan di langkah itu selesai.</li>'+
+  '<li>Progres tersimpan otomatis di peramban ini, jadi Anda bisa menutup halaman dan melanjutkan nanti.</li>'+
+  '<li>Soal latihan tidak dinilai. Gunakan untuk mengecek pemahaman.</li>'+
+  '<li>Strip langkah di atas bisa digeser ke kanan dan kiri.</li>'+
+  '<li>Istilah teknis ditulis dalam bahasa Inggris, sesuai yang lazim dipakai di laboratorium.</li></ul></div>'+
+  '<button class="btn wide" data-act="next">Mulai simulasi</button>'+
+  '<footer class="credit">Simulasi pembelajaran untuk praktikum Higiene Pangan Asal Hewan.</footer>';
+
+VIEWS.alat=()=>{
+  const n=S.nsamp;const all=ITEMS.every(x=>S.checks[x.id]);const cnt=ITEMS.filter(x=>S.checks[x.id]).length;
+  const group=g=>'<div class="group-title">'+g+'</div><div class="list">'+ITEMS.filter(x=>x.g===g).map(x=>
+    '<div class="item'+(S.checks[x.id]?' on':'')+'"><button class="chk" data-act="check" data-id="'+x.id+'" aria-label="Tandai '+x.name+'" aria-pressed="'+(!!S.checks[x.id])+'">✓</button>'+
+    '<details data-key="it-'+x.id+'"'+(S.open['it-'+x.id]?' open':'')+'><summary><span>'+x.name+'</span><em>'+x.q(n)+'</em></summary><p>'+x.d+'</p></details></div>').join('')+'</div>';
+  return head('Alat dan bahan','Siapkan semua kebutuhan sebelum mulai bekerja. Angka di bawah dihitung untuk pengujian secara duplo.')+
+  '<div class="card"><div class="row between"><h2 style="margin:0">Kebutuhan</h2><div class="stepper"><button data-act="ns" data-v="-1" aria-label="Kurangi sampel">−</button><span>'+n+' sampel</span><button data-act="ns" data-v="1" aria-label="Tambah sampel">+</button></div></div>'+
+  '<div class="calc-grid mt">'+
+  '<div class="calc"><span>BPW</span><b>'+fmt(261*n)+' mL</b><small>(225 mL + 4 tabung × 9 mL)'+(n>1?' × '+n+' sampel':'')+'. Siapkan ± '+fmt(bpwPrep(n))+' mL sebagai cadangan.</small></div>'+
+  '<div class="calc"><span>PCA</span><b>'+fmt(105*n)+'–'+fmt(140*n)+' mL</b><small>'+(7*n)+' cawan × 15–20 mL. Siapkan ± '+fmt(pcaPrep(n))+' mL.</small></div>'+
+  '<div class="calc"><span>Cawan petri</span><b>'+(7*n)+'</b><small>Tiga tingkat pengenceran ('+pw(-3)+', '+pw(-4)+', '+pw(-5)+') × 2 cawan + 1 cawan kontrol'+(n>1?', untuk setiap sampel':'')+'.</small></div>'+
+  '<div class="calc"><span>Tabung reaksi</span><b>'+(4*n)+'</b><small>Untuk pengenceran '+pw(-2)+' sampai '+pw(-5)+', masing-masing berisi 9 mL BPW.</small></div>'+
+  '</div></div>'+
+  '<div class="card"><h2>Checklist</h2><p class="sub">Tandai item yang sudah siap. Ketuk nama item untuk melihat fungsinya.</p>'+group('Bahan')+group('Alat')+
+  '<div class="row between mt"><span class="muted small">'+cnt+' dari '+ITEMS.length+' siap</span><button class="btn tint sm" data-act="checkall">Tandai semua</button></div>'+
+  (all?note({k:'ok',t:'Semua alat dan bahan siap. Lanjutkan ke persiapan sampel.'}):'')+'</div>';
+};
+
+VIEWS.sampel=()=>{
+  const p=S.prep;const bOk=p.bpw===225;
+  const bmsg={90:{k:'warn',t:'Belum tepat. 25 g dengan 90 mL menghasilkan total 115 bagian, perbandingannya sekitar 1:4,6.'},
+    225:{k:'ok',t:'Tepat. 25 g sampel dalam total 250 bagian memberi perbandingan 1:10, yaitu pengenceran '+pw(-1)+'.'},
+    250:{k:'warn',t:'Belum tepat. Totalnya menjadi 275 bagian sehingga perbandingannya 1:11.'}};
+  const wbtn=v=>'<button class="btn gray sm" data-act="w" data-v="'+v+'">'+(v>0?'+':'−')+dec(Math.abs(v))+' g</button>';
+  return head('Persiapan sampel','Sampel ditimbang, digerus bersama BPW, lalu dipindahkan ke botol steril. Hasilnya adalah suspensi pengenceran '+pw(-1)+'.')+
+  toolsHTML('sampel')+
+  stepCard(1,'Timbang sampel','<p class="sub">Letakkan wadah steril di atas timbangan, potong daging secara aseptis, lalu masukkan potongan daging sampai beratnya 25 g.</p>'+
+    '<div class="scale"><div class="readout" aria-live="polite">'+dec(p.w.toFixed(1))+' g</div>'+
+    '<div class="row" style="justify-content:center">'+wbtn(10)+wbtn(5)+wbtn(1)+wbtn(0.5)+wbtn(-0.5)+wbtn(-1)+'<button class="btn gray sm" data-act="tare">Nolkan timbangan</button></div>'+
+    '<button class="btn" data-act="wconfirm">Konfirmasi berat</button></div>'+note(p.wmsg),{complete:p.wOk})+
+  stepCard(2,'Tambahkan BPW','<p class="sub">Berapa volume BPW yang ditambahkan ke sampel daging supaya terbentuk pengenceran '+pw(-1)+'?</p>'+
+    '<div class="seg">'+[90,225,250].map(v=>'<button class="'+(p.bpw===v?'on':'')+'" data-act="bpw" data-v="'+v+'">'+v+' mL</button>').join('')+'</div>'+
+    note(p.bpw?bmsg[p.bpw]:null),{locked:!p.wOk,complete:bOk})+
+  stepCard(3,'Gerus sampel bersama BPW','<p class="sub">Gerus potongan daging bersama BPW di dalam mortir sampai halus dan tercampur. Setelah itu pindahkan suspensi ke botol steril.</p>'+
+    (p.homog===2?note({k:'ok',t:'Suspensi '+pw(-1)+' sudah dipindahkan ke botol steril (250 mL) dan siap dipakai untuk pengenceran.'}):
+    '<button class="btn" data-act="homog"'+(p.homog===1?' disabled':'')+'>'+(p.homog===1?'Menggerus…':'Gerus sampel bersama BPW')+'</button><div class="bar"><i id="mixBar"></i></div>'),
+    {locked:!(p.wOk&&bOk),complete:p.homog===2})+
+  quizHTML('sampel');
+};
+
+/* ---------- Pengenceran seri ---------- */
+const $=id=>document.getElementById(id);
+const REDUCED=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+const sleep=ms=>new Promise(r=>setTimeout(r,REDUCED?Math.min(ms,80):ms));
+let BUSY=false,DEMOING=false,DEMO_STOP=false;
+const DIP=70;
+const ORDER=['tip','asp','dis','eje','mix'];
+const dcol=i=>'rgba(176,116,64,'+[.8,.58,.42,.3,.2][i]+')';
+const vname=i=>i===0?'botol '+pw(-1):'tabung '+pw(-(i+1));
+const up=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const actLabel=(a,s,d)=>({tip:'Pasang tip baru',asp:'Ambil 1 mL dari '+vname(s),dis:'Keluarkan 1 mL ke '+vname(d),eje:'Lepas tip ke wadah limbah',mix:'Homogenkan '+vname(d)+' (ayun dan putar angka 8)'}[a]);
+const CAP={
+  tip:()=>'Tip baru yang steril terpasang. Setiap transfer memakai tip baru supaya suspensi yang lebih pekat tidak terbawa (carry-over).',
+  asp:(s)=>'1 mL suspensi diambil dari '+vname(s)+'. Tekan tombol pipet sampai tahanan pertama, celupkan tip, lalu lepaskan perlahan.',
+  dis:(s,d)=>'1 mL dikeluarkan ke '+vname(d)+' yang berisi 9 mL BPW. Totalnya 10 mL, sehingga konsentrasi menjadi sepersepuluh.',
+  eje:()=>'Tip bekas dilepas ke wadah limbah. Tip yang sudah dipakai tidak digunakan lagi.',
+  mix:(s,d)=>up(vname(d))+' dihomogenkan dengan ayunan dan putaran seperti angka 8, supaya suspensi tersebar merata sebelum diambil lagi.'
+};
+function tubeState(j){
+  const D=S.dil,t=D.t,ph=D.ph;
+  const recv=t>j-1||(t===j-1&&ph>=3);
+  const mixed=t>=j;
+  let v10=recv;
+  if(recv&&((t===j&&ph>=2)||t>j))v10=false;
+  return {recv,mixed,v10};
+}
+function sceneHTML(){
+  const D=S.dil,t=D.t,ph=D.ph,fin=t>=4;
+  const src=fin?-1:t,dst=fin?-1:t+1;
+  const cls=i=>'slot'+(src===i?' src':dst===i?' dst':'');
+  const role=i=>'<i class="role'+(src===i?' src':dst===i?' dst':'')+'">'+(src===i?'Sumber':dst===i?'Tujuan':'')+'</i>';
+  const bvol=(t>0||ph>=2)?249:250;
+  let h='<div class="labbox"><div class="lab" id="lab"><div class="slots">';
+  h+='<div class="'+cls(0)+'"><div class="bottle" id="tube0" style="--S:'+dcol(0)+'"><svg width="44" height="100" viewBox="0 0 44 100" aria-hidden="true"><path class="glass" d="M16 2h12v12c0 6 12 8 12 20v56a8 8 0 0 1-8 8H12a8 8 0 0 1-8-8V34c0-12 12-14 12-20z"/></svg><div class="bliq"></div></div><b class="nm">'+pw(-1)+'</b><span class="vl">'+bvol+' mL</span>'+role(0)+'</div>';
+  for(let j=1;j<=4;j++){
+    const st=tubeState(j);
+    const c='tube'+(st.recv&&!st.mixed?' rec':'')+(st.mixed?' mixed':'')+(st.v10?' v10':'');
+    h+='<div class="'+cls(j)+'"><div class="'+c+'" id="tube'+j+'" style="--P:'+dcol(j-1)+';--S:'+dcol(j)+'"><div class="liq"><i class="b"></i><i class="m"></i><i class="t"></i></div></div><b class="nm">'+pw(-(j+1))+'</b><span class="vl">'+(st.v10?10:9)+' mL</span>'+role(j)+'</div>';
+  }
+  h+='<div class="slot"><div class="binwrap"><svg width="46" height="66" viewBox="0 0 46 66" aria-hidden="true"><path class="binbody" d="M5 8h36l-4 54a3 3 0 0 1-3 3H12a3 3 0 0 1-3-3z"/><rect class="binrim" x="1" y="3" width="44" height="7" rx="3"/></svg></div><b class="nm">Limbah</b><span class="vl">'+(t+(ph>=4?1:0))+' tip</span><i class="role"></i></div>';
+  h+='</div>';
+  h+='<div class="pip" id="pip" aria-hidden="true"><svg width="26" height="84" viewBox="0 0 26 84"><g class="plunger"><rect class="pbtn" x="7" y="0" width="12" height="8" rx="3"/><rect class="prod" x="11.5" y="8" width="3" height="8"/></g><path class="pbody" d="M4 18a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v30l-5 12v24H9V60l-5-12z"/><rect class="pwin" x="8" y="24" width="10" height="16" rx="2"/></svg>'+
+    '<div class="tipEl'+(ph===2?' load':'')+'" id="tipEl" style="--L:'+dcol(Math.min(t,4))+(ph>=1&&ph<=3?';display:block':'')+'"><svg width="10" height="42" viewBox="0 0 10 42"><polygon class="tipshape" points="0,0 10,0 6.6,42 3.4,42"/><polygon class="tipliq" points="1.3,16 8.7,16 6.6,42 3.4,42"/></svg></div></div></div></div>';
+  return h;
+}
+function capHTML(m){return '<div id="cap" class="note capbox'+(m&&m.k?' '+m.k:'')+'" aria-live="polite">'+(m?(m.h?'<strong>'+m.h+'</strong>':'')+m.t:'')+'</div>';}
+function setCapDom(m){const c=$('cap');if(!c)return;c.className='note capbox'+(m&&m.k?' '+m.k:'');c.innerHTML=m?(m.h?'<strong>'+m.h+'</strong>':'')+m.t:'';}
+function setPip(col,y,ms){
+  const p=$('pip'),lab=$('lab');if(!p||!lab)return;
+  const x=(col+0.5)*lab.clientWidth/6-13;
+  if(ms){void p.offsetWidth;p.style.transition='transform '+ms+'ms cubic-bezier(.4,0,.2,1)';}else p.style.transition='none';
+  p.style.transform='translate('+x.toFixed(1)+'px,'+(y||0)+'px)';
+}
+function afterDil(){const p=$('pip');if(!p)return;setPip(S.dil.col,0,0);p.classList.add('ready');}
+
+const ANIM={
+  async tip(){
+    const tp=$('tipEl');tp.style.display='block';tp.classList.remove('in','load');void tp.offsetWidth;tp.classList.add('in');
+    await sleep(750);
+  },
+  async asp(s){
+    const pip=$('pip'),tp=$('tipEl');
+    if(S.dil.col!==s){setPip(s,0,800);await sleep(850);}
+    pip.classList.add('pdown');await sleep(250);
+    setPip(s,DIP,550);await sleep(600);
+    tp.style.setProperty('--L',dcol(s));tp.classList.add('load');pip.classList.remove('pdown');
+    const tb=$('tube'+s);if(tb&&s>0)tb.classList.remove('v10');
+    await sleep(800);
+    setPip(s,0,550);await sleep(600);
+  },
+  async dis(s,d){
+    const pip=$('pip'),tp=$('tipEl');
+    setPip(d,0,800);await sleep(850);
+    setPip(d,DIP,550);await sleep(600);
+    pip.classList.add('pdown');tp.classList.remove('load');
+    const tb=$('tube'+d);if(tb)tb.classList.add('v10','rec');
+    await sleep(900);
+    setPip(d,0,550);await sleep(600);
+    pip.classList.remove('pdown');
+  },
+  async eje(){
+    const pip=$('pip'),tp=$('tipEl'),lab=$('lab');
+    setPip(5,0,800);await sleep(850);
+    pip.classList.add('pdown2');await sleep(220);
+    const c=tp.cloneNode(true);c.removeAttribute('id');c.classList.remove('in','load');c.classList.add('fall');
+    c.style.left=((5.5)*lab.clientWidth/6-13+8).toFixed(1)+'px';c.style.top='82px';c.style.display='block';
+    lab.appendChild(c);tp.style.display='none';
+    void c.offsetWidth;c.classList.add('go');
+    await sleep(900);c.remove();
+    pip.classList.remove('pdown2');
+  },
+  async mix(s,d){
+    const tb=$('tube'+d);if(!tb)return;
+    tb.classList.add('mixed');
+    await new Promise(res=>{
+      if(REDUCED){res();return;}
+      const t0=performance.now(),T=1900;
+      const f=now=>{const k=Math.min(1,(now-t0)/T);const th=k*Math.PI*4;
+        tb.style.transform='translate('+(9*Math.sin(th)).toFixed(1)+'px,'+(7*Math.sin(2*th)).toFixed(1)+'px) rotate('+(14*Math.sin(th)).toFixed(1)+'deg)';
+        if(k<1)requestAnimationFrame(f);else{tb.style.transform='';res();}};
+      requestAnimationFrame(f);
+    });
+    await sleep(250);
+  }
+};
+async function runAction(a){
+  BUSY=true;
+  const D=S.dil,t=D.t,s=t,d=t+1;
+  setCapDom({t:CAP[a](s,d)});
+  document.querySelectorAll('.seqbtn,[data-act="demo"]').forEach(b=>{b.disabled=true;});
+  try{await ANIM[a](s,d);}catch(e){}
+  D.ph++;
+  if(a==='asp')D.col=s;else if(a==='dis')D.col=d;else if(a==='eje')D.col=5;
+  let m;
+  if(D.ph>=5){
+    D.t++;D.ph=0;
+    if(D.t>=4){S.done[3]=true;m={k:'ok',h:'Pengenceran seri selesai.',t:'Seri '+pw(-1)+' sampai '+pw(-5)+' siap dan semua tabung sudah homogen.'};}
+    else m={k:'ok',h:'Transfer '+(t+1)+' selesai.',t:up(vname(d))+' sudah homogen. Lanjutkan ke transfer '+(D.t+1)+' dari 4 dengan tombol nomor 1.'};
+  }else m={t:CAP[a](s,d)};
+  D.msg=m;BUSY=false;save();render();
+}
+
+VIEWS.pengenceran=()=>{
+  const D=S.dil,t=D.t,ph=D.ph,fin=t>=4;
+  const eq=fin?'Semua transfer selesai: '+pw(-1)+' sampai '+pw(-5)+'.':'1 mL suspensi '+pw(-(t+1))+' + 9 mL BPW = 10 mL, sehingga menjadi '+pw(-(t+2))+' (10 kali lebih encer).';
+  const defMsg=fin?{k:'ok',h:'Pengenceran seri selesai.',t:'Seri '+pw(-1)+' sampai '+pw(-5)+' siap dan semua tabung sudah homogen.'}:
+    {t:'Pindahkan 1 mL dari '+vname(t)+' ke '+vname(t+1)+'. Tekan tombol yang menyala, satu per satu sesuai nomor.'};
+  let body=sceneHTML()+capHTML(D.msg||defMsg);
+  if(!fin){
+    const lock=BUSY||DEMOING;
+    body+='<ol class="seq">'+ORDER.map((a,i)=>{
+      const st=i<ph?'done':(i===ph?'next':'wait');
+      return '<li><button class="seqbtn '+st+'" data-act="dact" data-a="'+a+'"'+((st!=='next'||lock)?' disabled':'')+'><span class="num">'+(st==='done'?'✓':(i+1))+'</span><span class="tx">'+actLabel(a,t,t+1)+'</span></button></li>';}).join('')+'</ol>'+
+      '<div class="row mt">'+(DEMOING?'<button class="linkbtn" id="stopBtn" data-act="stopdemo">Hentikan putar otomatis</button>':'<button class="linkbtn" data-act="demo"'+(BUSY?' disabled':'')+'>Putar otomatis sisa langkah transfer ini</button>')+'</div>';
+  }
+  return head('Pengenceran seri','Buat pengenceran dari '+pw(-1)+' sampai '+pw(-5)+'. Setiap transfer memindahkan 1 mL suspensi ke tabung berisi 9 mL BPW. Ada 4 transfer, masing-masing terdiri atas 5 tindakan berurutan.')+
+  toolsHTML('pengenceran')+
+  '<div class="card"><h2>'+(fin?'Pengenceran seri selesai':'Transfer '+(t+1)+' dari 4')+'</h2><p class="eq">'+eq+'</p>'+body+'</div>'+
+  quizHTML('pengenceran');
+};
+
+VIEWS.pour=()=>{
+  const p=S.pour;const allInoc=[0,1,2,3,4,5].every(i=>p.inoc[i]);
+  const tmsg={30:{k:'warn',t:'Terlalu dingin. Media mulai memadat sebelum tercampur rata dengan inokulum.'},
+    45:{k:'ok',t:'Tepat. Pada sekitar 45 °C, media masih cair dan tidak merusak sel bakteri.'},
+    60:{k:'warn',t:'Terlalu panas. Sebagian sel bakteri bisa rusak sehingga hasil hitung lebih rendah.'},
+    80:{k:'bad',t:'Terlalu panas. Banyak sel bakteri akan mati.'}};
+  const pl=PLATES.map((x,i)=>{let c='pl';if(i===6)c+=' ctrl';if(p.inoc[i])c+=' inoc';if(p.poured)c+=' agar';if(p.inverted)c+=' flip';
+    return '<button class="'+c+'" data-act="plate" data-i="'+i+'" aria-label="Cawan '+plateLabel(i)+'"><span class="disc"></span><small>'+plateLabel(i)+'</small></button>';}).join('');
+  const ph4=p.inverted?'Cawan sudah dibalik dan siap diinkubasi.':!p.mixed?'Goyangkan cawan perlahan membentuk angka delapan supaya inokulum tersebar rata di dalam media.':!p.solid?'Biarkan cawan diam di permukaan datar sampai media memadat.':'Balik cawan sebelum dimasukkan ke inkubator.';
+  return head('Pour plate','Inokulum 1 mL diletakkan di cawan kosong, lalu PCA cair dituang dan dicampur. Koloni akan tumbuh di permukaan dan di dalam media.')+
+  toolsHTML('pour')+
+  stepCard(1,'Inokulasi','<p class="sub">Pilih tabung, lalu ketuk cawan yang labelnya sesuai. Setiap berganti tabung, tabung dihomogenkan (ayun dan putar angka 8) dan tip baru dipasang.</p>'+
+    '<div class="seg">'+[3,4,5].map(v=>'<button class="'+(p.sel===v?'on':'')+'" data-act="tube" data-v="'+v+'">Tabung '+pw(-v)+'</button>').join('')+'</div>'+
+    '<div class="plates mt">'+pl+'</div>'+note(p.msg)+
+    note({t:'Cawan kontrol diisi PCA tanpa inokulum. Cawan ini memeriksa sterilitas media dan lingkungan kerja.'}),{complete:allInoc})+
+  stepCard(2,'Siapkan PCA','<p class="sub">PCA cair diambil dari waterbath. Pada suhu berapa PCA siap dituang?</p>'+
+    '<div class="seg">'+[30,45,60,80].map(v=>'<button class="'+(p.temp===v?'on':'')+'" data-act="pcatemp" data-v="'+v+'">'+v+' °C</button>').join('')+'</div>'+note(p.temp?tmsg[p.temp]:null),
+    {locked:!allInoc,complete:p.temp===45})+
+  stepCard(3,'Tuang PCA','<p class="sub">Geser slider untuk menentukan volume PCA per cawan, lalu tuang ke ketujuh cawan.</p>'+
+    '<div class="row between"><span>Volume per cawan</span><b id="volLbl">'+p.vol+' mL</b></div><input type="range" min="0" max="30" step="1" value="'+p.vol+'" data-in="vol" aria-label="Volume PCA per cawan"'+(p.poured?' disabled':'')+'>'+
+    '<div class="row mt"><button class="btn" id="pourBtn" data-act="pour"'+((p.poured||p.vol===0)?' disabled':'')+'>Tuang PCA ke 7 cawan</button></div>'+note(p.vmsg),
+    {locked:p.temp!==45,complete:p.poured})+
+  stepCard(4,'Homogenkan, padatkan, balik','<p class="sub">'+ph4+'</p><div class="row">'+
+    '<button class="btn '+(p.mixed?'gray':'')+'" data-act="mix"'+(p.mixed?' disabled':'')+'>Homogenkan</button>'+
+    '<button class="btn '+(p.solid?'gray':'')+'" data-act="solid"'+(!p.mixed||p.solid?' disabled':'')+'>Biarkan memadat</button>'+
+    '<button class="btn '+(p.inverted?'gray':'')+'" data-act="invert"'+(!p.solid||p.inverted?' disabled':'')+'>Balik cawan</button></div>',
+    {locked:!p.poured,complete:p.inverted})+
+  quizHTML('pour');
+};
+
+VIEWS.inkubasi=()=>{
+  const c=S.inc;const C=2*Math.PI*56;const frac=c.done?1:0;
+  return head('Inkubasi','Atur suhu dan lama inkubasi sesuai prosedur. Cawan dimasukkan dalam posisi terbalik.')+
+  toolsHTML('inkubasi')+
+  '<div class="card"><h2>Pengaturan inkubator</h2><div class="incubator mt">'+
+  '<div class="ring"><svg width="132" height="132" viewBox="0 0 132 132"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--fill)" stroke-width="10"/><circle id="ringArc" cx="66" cy="66" r="56" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-frac)).toFixed(1)+'"/></svg>'+
+  '<div class="lbl"><b id="ringTxt">'+(c.done?c.hours:0)+' jam</b><span>'+c.temp+' °C</span></div></div>'+
+  '<div style="flex:1;min-width:220px"><div class="row between"><span>Suhu</span><div class="stepper"><button data-act="itemp" data-v="-1" aria-label="Turunkan suhu">−</button><span>'+c.temp+' °C</span><button data-act="itemp" data-v="1" aria-label="Naikkan suhu">+</button></div></div>'+
+  '<div class="row between mt"><span>Lama</span><div class="seg">'+[12,24,48,72].map(h=>'<button class="'+(c.hours===h?'on':'')+'" data-act="hours" data-v="'+h+'">'+h+' jam</button>').join('')+'</div></div>'+
+  '<button class="btn wide mt" data-act="incubate" id="incBtn"'+(c.done?' disabled':'')+'>'+(c.done?'Inkubasi selesai':'Mulai inkubasi')+'</button></div></div>'+
+  note(c.msg)+'</div>'+
+  '<div class="note"><strong>Perlu diketahui</strong>'+
+  '<p><b>SNI 2897:2008</b> (metode pengujian, dipakai pada simulasi ini): inkubasi pada 34 sampai 36 °C selama 24 sampai 48 jam, cawan dalam posisi terbalik. Khusus produk susu: 32 ± 1 °C selama 24 sampai 48 jam.</p>'+
+  '<p><b>SNI 7388:2009</b> (batas maksimum cemaran mikroba) mencantumkan kondisi berbeda: 30 °C selama 72 jam.</p>'+
+  '<p>Ikuti SOP laboratorium dan arahan dosen untuk menentukan kondisi yang dipakai.</p></div>'+
+  quizHTML('inkubasi');
+};
+
+VIEWS.hitung=()=>{
+  const P=plates();const i=S.cur;const pl=P[i];const m=(S.marks[i]||[]).length;const rec=S.rec[i];
+  const secOn=S.sec.on;const q=S.sec.q[i];const qi=q!==undefined?sectorInfo(i,q):null;
+  const recTxt=r=>!r?'<span class="muted">Belum dicatat</span>':r.type==='count'?r.v+' koloni':r.type==='est'?'Estimasi '+fmt(r.v)+' koloni (> 250)':'Tidak dihitung (spreader)';
+  const statChip=(j)=>{const r=S.rec[j];if(!r)return '<span class="chip">–</span>';
+    if(j===6)return r.v>0?'<span class="chip r">Terkontaminasi</span>':'<span class="chip g">Bersih</span>';
+    if(r.type==='est')return '<span class="chip o">> 250 (estimasi)</span>';
+    if(r.type==='excl')return '<span class="chip o">Spreader</span>';
+    if(r.v<25)return '<span class="chip">< 25</span>';
+    if(r.v>250)return '<span class="chip o">> 250</span>';
+    return '<span class="chip g">25–250</span>';};
+  const opts='<option value="acak"'+(S.scen.sel==='acak'?' selected':'')+'>Acak (jenis kasus disembunyikan)</option>'+CASE_KEYS.map(k=>'<option value="'+k+'"'+(S.scen.sel===k?' selected':'')+'>'+CASES[k][0]+'</option>').join('');
+  const truth=pl.n>4000?'lebih dari 4.000':fmt(pl.n);
+  const info=secOn?(qi?'<span class="secinfo">Sektor '+QNAME[q]+': <b>'+fmt(qi.cnt)+'</b> koloni × 4 = <b>'+fmt(qi.est)+'</b></span>':'<span class="secinfo muted">Ketuk satu sektor pada cawan</span>'):
+    '<span class="counter"><b id="cnt">'+m+'</b><span>koloni ditandai</span></span>';
+  const primary=secOn?(qi?'<button class="btn sm grow" data-act="rec" data-v="est" id="recBtn">Catat estimasi '+fmt(qi.est)+'</button>':'<button class="btn sm grow" id="recBtn" disabled>Pilih satu sektor</button>'):
+    '<button class="btn sm grow" data-act="rec" data-v="count" id="recBtn">Catat '+m+' koloni</button>';
+  const bar='<div class="stickybar">'+(S.hmsg?'<div class="note barmsg '+(S.hmsg.k||'')+'">'+(S.hmsg.h?'<strong>'+S.hmsg.h+'</strong>':'')+S.hmsg.t+'</div>':'')+
+    '<div class="barrow"><button class="btn gray sm ico" data-act="pprev" aria-label="Cawan sebelumnya"'+(i===0?' disabled':'')+'>‹</button>'+
+    '<button class="btn gray sm" data-act="undo">'+(secOn?'Hapus sektor':'Urungkan')+'</button>'+primary+
+    '<button class="btn gray sm ico" data-act="pnext" aria-label="Cawan berikutnya"'+(i===PLATES.length-1?' disabled':'')+'>›</button></div></div>';
+  const tips='<ul class="clean">'+
+    '<li>Hitung semua koloni, termasuk koloni kecil di dalam media dan di dekat tepi cawan. Ketuk setiap koloni untuk menandainya, seperti menandai dasar cawan dengan spidol.</li>'+
+    '<li>Koloni yang jelas lebih dari 250 tidak dihitung satu per satu. SNI 2897:2008 butir 4.1.7.2 meminta estimasi yang representatif: bagi cawan menjadi empat sektor (tombol Sektor), pilih satu sektor, lalu kalikan jumlahnya dengan 4. Di literatur lain, kondisi ini disebut TNTC (Too Numerous To Count, terlalu banyak untuk dihitung).</li>'+
+    '<li>Spreader (butir 4.1.7.3): cawan dilaporkan sebagai cawan spreader bila luas area spreader melebihi batas tertentu. Simulasi ini memakai '+Math.round(SPREAD_LIMIT*100)+'%. Cawan spreader tidak dihitung. Bila luasnya di bawah batas, cawan tetap dihitung: rantai tunggal dihitung satu koloni, dan tiap sumber rantai yang terpisah dihitung satu koloni.</li>'+
+    '<li>Gunakan Layar penuh untuk cawan yang padat.</li></ul>';
+  const scen='<p class="muted">Pengaturan ini alat bantu latihan dan tidak ada di praktikum sebenarnya. Mengganti skenario menghapus hitungan di langkah ini dan di langkah perhitungan.</p>'+
+    '<p>'+(S.scen.sel==='acak'?'Jenis kasus disembunyikan. Tentukan sendiri cara mencatat setiap cawan.':CASES[S.scen.c][1])+'</p>'+
+    '<div class="row"><select data-in="scen" aria-label="Pilih skenario">'+opts+'</select><button class="btn gray sm" data-act="reseed">Data baru</button></div>';
+  return head('Hitung koloni','Ketuk setiap koloni untuk menandainya, lalu catat hasilnya di lembar kerja.')+
+  '<div class="card"><h2>Panduan menghitung</h2><p class="sub">Bacaan pendukung. Buka bila perlu.</p>'+
+  det('hg-tips','acc','Tips menghitung koloni',tips)+
+  det('hg-tools','acc','Alat dan bahan di langkah ini',toolsInner('hitung'))+
+  det('hg-scen','acc','Pengaturan skenario latihan',scen)+'</div>'+
+  '<div class="card platecard'+(S.zoom?' fs':'')+'" id="pcard">'+
+  (S.zoom?'<div class="row between fshead"><b>Cawan '+plateLabel(i)+'</b><button class="btn gray sm" data-act="zoom">Tutup layar penuh</button></div>':'')+
+  '<div class="tabs">'+PLATES.map((x,j)=>'<button class="tab'+(j===i?' on':'')+'" data-act="pt" data-i="'+j+'">'+plateLabel(j)+(S.rec[j]?'<span class="dot"></span>':'')+'</button>').join('')+'</div>'+
+  '<div class="row between mt">'+info+'<div class="row"><button class="btn gray sm" data-act="clearm">Hapus tanda</button><button class="btn sm '+(secOn?'on':'gray')+'" data-act="sector" aria-pressed="'+secOn+'">Sektor</button>'+(S.zoom?'':'<button class="btn gray sm" data-act="zoom">Layar penuh</button>')+'</div></div>'+
+  '<div class="canvas-wrap" id="cwrap"><canvas id="plate" aria-label="Cawan '+plateLabel(i)+'"></canvas></div>'+
+  '<div class="row between mt"><span class="small muted">Catatan cawan ini: '+recTxt(rec)+'</span><button class="btn tint sm" data-act="rec" data-v="excl">Tidak dihitung (spreader)</button></div>'+
+  bar+
+  '<div class="row mt"><button class="linkbtn" data-act="reveal">'+(S.reveal[i]?'Sembunyikan':'Lihat')+' jumlah sebenarnya</button><button class="linkbtn" data-act="autofill" style="margin-left:14px">Isi otomatis cawan ini</button></div>'+
+  (S.reveal[i]?'<p class="small" style="margin:4px 0 0">Jumlah sebenarnya: <b>'+truth+'</b> koloni'+(pl.spread?' di luar area spreader':'')+'. Koloni yang belum ditandai diberi lingkaran merah.</p>':'')+
+  '</div>'+
+  '<div class="card"><h2>Lembar kerja</h2><div class="table-wrap"><table><thead><tr><th>Cawan</th><th>Catatan</th><th>Status</th></tr></thead><tbody>'+
+  PLATES.map((x,j)=>'<tr><td>'+plateLabel(j)+'</td><td>'+recTxt(S.rec[j])+'</td><td>'+statChip(j)+'</td></tr>').join('')+
+  '</tbody></table></div>'+(S.done[6]?note({k:'ok',t:'Semua cawan sudah dicatat. Lanjutkan ke perhitungan.'}):'')+'</div>'+
+  quizHTML('hitung');
+};
+
+VIEWS.perhitungan=()=>{
+  const a=analysis();const c=S.calc;const R=S.rec;
+  const ctrlCorrect=a.ctrlBad?'invalid':'valid';const ctrlOk=c.ctrl===ctrlCorrect;
+  const showSel=ctrlOk&&!a.ctrlBad;const showAns=showSel&&c.selOk===true;
+  const showInterp=(ctrlOk&&a.ctrlBad)||(showAns&&(c.ansOk===true||c.sol));
+  const LIM='1 × 10'+sup(6)+' CFU/g';
+  const verdictTxt={ok:'Memenuhi syarat (≤ '+LIM+')',notok:'Tidak memenuhi syarat (> '+LIM+')',invalid:'Tidak dapat disimpulkan, pengujian perlu diulang'};
+  let interpMsg=null;
+  if(c.interp){
+    if(c.interp===a.verdict)interpMsg={k:'ok',h:'Tepat.',t:a.verdict==='invalid'?'Kontrol yang terkontaminasi membuat seluruh hasil tidak dapat dipercaya. Cari sumber kontaminasi, lalu ulangi pengujian.':
+      a.verdict==='ok'?'Hasil '+a.result+' berada di bawah atau sama dengan batas maksimum '+LIM+'.':'Hasil '+a.result+' melebihi batas maksimum '+LIM+'.'};
+    else interpMsg={k:'warn',h:'Belum tepat.',t:a.ctrlBad?'Perhatikan kembali hasil cawan kontrol.':'Bandingkan hasil '+a.result+' dengan batas '+LIM+'.'};
+  }
+  const lines=solutionLines(a);
+  const g1='<p><b>Di bawah 25 koloni</b>, jumlahnya terlalu kecil sehingga kesalahan acaknya besar. Selisih beberapa koloni dapat mengubah hasil akhir secara nyata. Pada 20 koloni, ketidakpastian acaknya sekitar ±22%, sedangkan pada 100 koloni sekitar ±10%.</p>'+
+    '<p><b>Di atas 250 koloni</b>, koloni berdempetan dan bergabung sehingga sulit dibedakan. Persaingan ruang dan nutrisi juga menghambat pertumbuhan. Akibatnya, hasil hitung cenderung lebih rendah dari jumlah sebenarnya.</p>'+
+    '<p class="muted">Rentang 25 sampai 250 mengikuti SNI 2897:2008. Standar lain dapat memakai rentang berbeda, misalnya 30 sampai 300 koloni. Gunakan rentang dari standar yang menjadi acuan pengujian.</p>';
+  const g2='<p>Sampel awal memang 25 g, tetapi yang dicari adalah konsentrasi, yaitu jumlah bakteri dalam setiap gram daging. Sampel 25 g dicampur dengan 225 mL BPW sehingga perbandingannya 1:10 (pengenceran '+pw(-1)+'). Artinya, setiap 1 mL suspensi mewakili sekitar 0,1 g daging.</p>'+
+    '<p>Pada pengenceran '+pw(-4)+', setiap 1 mL mewakili 0,0001 g daging. Jika cawan '+pw(-4)+' berisi 120 koloni, jumlah bakteri dalam 1 g daging adalah 120 ÷ 0,0001 = 1,2 × 10'+sup(6)+' CFU/g.</p>'+
+    '<p class="muted">Perhitungan ini menganggap 1 g sampel setara 1 mL cairan, perkiraan yang lazim dipakai. Dengan satuan per gram, hasil dapat dibandingkan langsung dengan batas maksimum cemaran dan dengan hasil laboratorium lain, berapa pun berat sampel awalnya.</p>';
+  const g3='<div class="note" style="margin-top:0"><strong>Bukan langkah praktikum</strong>Ini simulasi interaktif untuk memahami konsep. Di laboratorium, arahnya maju: Anda menghitung koloni, lalu mencari cemaran. Di sini arahnya dibalik: geser perkiraan cemaran, lalu lihat berapa koloni yang akan muncul di tiap pengenceran. Dari sini terlihat mengapa satu atau dua pengenceran saja yang jatuh di rentang 25 sampai 250.</div>'+
+    '<div class="row between"><span>Perkiraan cemaran</span><b id="winN"></b></div><input type="range" min="2" max="9" step="0.05" value="'+c.win+'" data-in="win" aria-label="Perkiraan cemaran">'+
+    '<div id="winOut" class="mt"></div>';
+  const rules='<ul class="clean small">'+
+    '<li><b>Satu pengenceran punya cawan 25 sampai 250 koloni:</b> hitung rerata semua cawan pada pengenceran itu, termasuk pasangan duplo yang di luar rentang (butir 4.1.7.5, Tabel 1 nomor 1 dan 7).</li>'+
+    '<li><b>Dua pengenceran punya cawan 25 sampai 250 koloni:</b> hitung semua cawan dari kedua pengenceran, termasuk yang kurang dari 25 atau lebih dari 250. Rerata tiap pengenceran dihitung dulu, lalu kedua hasilnya dirata-ratakan (butir 4.1.7.6 dan 4.1.7.7, nomor 2, 8, dan 9).</li>'+
+    '<li><b>Semua cawan kurang dari 25:</b> pakai cawan pengenceran terendah, hasil diberi tanda * (butir 4.1.7.1, nomor 3).</li>'+
+    '<li><b>Semua cawan lebih dari 250:</b> pakai estimasi dari pengenceran tertinggi, hasil diberi tanda * (butir 4.1.7.2, nomor 4).</li>'+
+    '<li><b>Semua cawan tanpa koloni:</b> laporkan kurang dari 1 × faktor pengenceran terendah, diberi tanda * (butir 4.1.7.4, nomor 6).</li>'+
+    '<li><b>Cawan spreader:</b> tidak dihitung, cawan pasangannya tetap dipakai (butir 4.1.7.3, nomor 5).</li>'+
+    '<li>Cawan kontrol tidak dipakai dalam perhitungan.</li></ul>'+
+    '<p class="muted small">Catatan: dua angka pada contoh Tabel 1 tidak cocok dengan aturan butir 4.1.8. Baris 4 tertulis 5.100.000, padahal rerata 505 × 10'+sup(4)+' = 5.050.000 dan menurut 4.1.8 menjadi 5,0 × 10'+sup(6)+'. Baris 9 bagian atas tertulis 260.000, padahal data tertulis memberi 280.000 (kemungkinan salah ketik). Simulasi ini mengikuti aturan, bukan angka tabel.</p>';
+  return head('Perhitungan dan interpretasi','Ubah jumlah koloni menjadi CFU/g, lalu bandingkan dengan batas maksimum cemaran.')+
+  '<div class="card"><h2>Panduan</h2><p class="sub">Bacaan pendukung, bukan bagian prosedur praktikum. Buka bila perlu.</p>'+
+  det('g1','acc','Mengapa 25 sampai 250 koloni?',g1)+
+  det('g2','acc','Mengapa hasilnya per gram?',g2)+
+  det('g3','acc','Simulasi interaktif: dari cemaran ke jumlah koloni',g3)+'</div>'+
+  '<p class="sect">Kegiatan perhitungan</p>'+
+  stepCard(1,'Periksa cawan kontrol','<p class="sub">Cawan kontrol berisi <b>'+a.ctrlV+'</b> koloni. Apakah pengujian ini valid?</p>'+
+    '<div class="seg"><button class="'+(c.ctrl==='valid'?'on':'')+'" data-act="ctrl" data-v="valid">Valid, kontrol bersih</button><button class="'+(c.ctrl==='invalid'?'on':'')+'" data-act="ctrl" data-v="invalid">Tidak valid, kontrol terkontaminasi</button></div>'+
+    (c.ctrl?(ctrlOk?note({k:'ok',h:'Tepat.',t:a.ctrlBad?'Koloni pada kontrol menunjukkan kontaminasi dari media, alat, atau lingkungan kerja. Koloni pada cawan lain bisa berasal dari sumber yang sama, jadi hasilnya tidak dapat dipakai.':'Kontrol steril sehingga koloni pada cawan lain dapat dianggap berasal dari sampel.'}):note({k:'warn',h:'Belum tepat.',t:'Kontrol yang baik tidak berisi koloni sama sekali.'})):''),{complete:ctrlOk})+
+  (a.ctrlBad&&ctrlOk?'':
+  stepCard(2,'Pilih cawan yang dipakai','<p class="sub">Pilih semua cawan yang dipakai dalam perhitungan menurut SNI 2897:2008 butir 4.1.7. Buka aturan di bawah bila perlu.</p>'+
+    det('rules','acc','Aturan pemilihan cawan',rules)+
+    [0,1,2,3,4,5].map(i=>{const r=R[i];const t=!r?'–':r.type==='count'?r.v+' koloni':r.type==='est'?'Estimasi '+fmt(r.v):'Spreader';
+      return '<button class="pick'+(c.sel[i]?' on':'')+'" data-act="selp" data-i="'+i+'"><span class="box">✓</span><span style="flex:1">'+plateLabel(i)+'</span><span class="muted">'+t+'</span></button>';}).join('')+
+    '<button class="btn tint mt" data-act="checksel">Periksa pilihan</button>'+
+    (c.selOk===true?note({k:'ok',h:'Tepat.',t:a.mode==='one'?'Satu pengenceran ('+pw(-a.groups[0].d)+') memiliki cawan dalam rentang 25 sampai 250. Semua cawan pada pengenceran itu dipakai, termasuk pasangan duplonya.':
+      a.mode==='two'?'Dua pengenceran memiliki cawan dalam rentang. Semua cawan dari kedua pengenceran dipakai, termasuk yang kurang dari 25 atau lebih dari 250.':
+      a.mode==='low'?'Tidak ada cawan dalam rentang dan semuanya kurang dari 25. Pakai cawan pengenceran terendah. Hasil diberi tanda *.':
+      a.mode==='high'?'Tidak ada cawan dalam rentang dan semuanya lebih dari 250. Pakai estimasi dari pengenceran tertinggi. Hasil diberi tanda *.':
+      'Semua cawan tanpa koloni. Hasil dilaporkan kurang dari 1 × faktor pengenceran terendah, diberi tanda *.'}):
+     c.selOk===false?note({k:'warn',h:'Belum tepat.',t:'Periksa aturan pemilihan cawan. Perhatikan apakah cawan duplo di luar rentang ikut dihitung, dan cawan spreader tidak dihitung.'}):'')+
+    (a.duploFlag&&c.selOk===true?note({k:'warn',h:'Selisih antar-duplo cukup besar.',t:'Kemungkinan penyebabnya: suspensi kurang homogen, volume pipet tidak tepat, atau kontaminasi. Hasil tetap dihitung, tetapi beri catatan pada laporan dan diskusikan dengan dosen atau asisten apakah pengujian perlu diulang.'}):''),
+    {locked:!showSel,complete:c.selOk===true}))+
+  (a.ctrlBad&&ctrlOk?'':
+  stepCard(3,'Hitung ALT','<div class="formula"><div>Rerata tiap pengenceran = ΣC ÷ jumlah cawan yang dipakai</div><div>N tiap pengenceran = rerata × faktor pengenceran (10<sup>d</sup>)</div><div>Dua pengenceran: N = (N₁ + N₂) ÷ 2</div></div>'+
+    '<p class="muted small">N: jumlah koloni per gram (CFU/g). ΣC: jumlah koloni dari cawan yang dipakai pada satu pengenceran. d: tingkat pengenceran. Bulatkan hasil ke dua angka penting menurut butir 4.1.8: bila angka ketiga 6 atau lebih, angka kedua naik 1. Bila angka ketiga 4 atau kurang, angka kedua tetap. Bila angka ketiga 5, angka kedua dijadikan genap.</p>'+
+    (a.mode==='low'||a.mode==='high'||a.mode==='zero'?'<p class="small">Pada kasus ini hasil diberi tanda *'+(a.mode==='zero'?' dan dilaporkan sebagai kurang dari 1 × faktor pengenceran terendah. Tulis angkanya tanpa tanda &lt;.':'. Tulis angkanya tanpa tanda *.')+'</p>':'')+
+    '<div class="ans mt"><span>Hasil Anda:</span><input inputmode="decimal" data-in="m" value="'+c.m+'" placeholder="1,3" aria-label="Angka depan"><span>× 10</span><input class="exp" inputmode="numeric" data-in="e" value="'+c.e+'" placeholder="6" aria-label="Pangkat"><span>CFU/g</span></div>'+
+    '<div class="row mt"><button class="btn tint" data-act="checkans">Periksa hasil</button><button class="linkbtn" data-act="sol">'+(c.sol?'Sembunyikan':'Lihat')+' pembahasan</button></div>'+
+    (c.ansOk===true?note({k:'ok',h:'Tepat.',t:'Hasilnya '+a.result+'.'}):c.ansOk===false?note({k:'warn',h:'Belum tepat.',t:'Periksa kembali ΣC, jumlah cawan, tingkat pengenceran, dan pembulatannya.'}):'')+
+    (c.sol?'<div class="formula">'+lines.map(l=>'<div>'+l+'</div>').join('')+'</div>':''),
+    {locked:!showAns,complete:c.ansOk===true}))+
+  stepCard(a.ctrlBad&&ctrlOk?2:4,'Interpretasi','<p class="sub">Batas maksimum cemaran ALT untuk daging mentah (SNI 7388:2009): <b>'+LIM+'</b>.'+(a.ctrlBad?'':' Hasil Anda: <b>'+a.result+'</b>.')+'</p>'+
+    ['ok','notok','invalid'].map(v=>'<button class="pick'+(c.interp===v?' on':'')+'" data-act="interp" data-v="'+v+'"><span class="box">✓</span><span>'+verdictTxt[v]+'</span></button>').join('')+note(interpMsg),
+    {locked:!showInterp,complete:c.interp===a.verdict})+
+  quizHTML('perhitungan');
+};
+
+VIEWS.ringkasan=()=>{
+  const a=analysis();const R=S.rec;
+  const verdictTxt={ok:'Memenuhi syarat',notok:'Tidak memenuhi syarat',invalid:'Tidak dapat disimpulkan, pengujian perlu diulang'};
+  const total=Object.values(QUIZ).reduce((s,q)=>s+q.length,0);const answered=Object.keys(S.quiz).length;
+  const recTxt=r=>!r?'–':r.type==='count'?r.v+' koloni':r.type==='est'?'Estimasi '+fmt(r.v)+' koloni (> 250)':'Tidak dihitung (spreader)';
+  const tgl=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+  return head('Ringkasan','Rekap hasil simulasi Anda. Gunakan tombol cetak untuk menyimpannya sebagai PDF.')+
+  '<div class="card"><div class="table-wrap"><table><tbody>'+
+  '<tr><th>Tanggal</th><td>'+tgl+'</td></tr>'+
+  '<tr><th>Skenario</th><td>'+CASES[S.scen.c][0]+(S.scen.sel==='acak'?' (acak)':'')+'</td></tr>'+
+  '<tr><th>Hasil ALT</th><td><b>'+(a.ctrlBad?'Tidak valid':a.result)+'</b></td></tr>'+
+  '<tr><th>Batas maksimum</th><td>1 × 10'+sup(6)+' CFU/g (daging mentah, SNI 7388:2009)</td></tr>'+
+  '<tr><th>Kesimpulan</th><td>'+verdictTxt[a.verdict]+'</td></tr>'+
+  '</tbody></table></div></div>'+
+  '<div class="card"><h2>Lembar hasil hitung</h2><div class="table-wrap"><table><thead><tr><th>Cawan</th><th>Catatan</th></tr></thead><tbody>'+
+  PLATES.map((x,j)=>'<tr><td>'+plateLabel(j)+'</td><td>'+recTxt(R[j])+'</td></tr>').join('')+'</tbody></table></div></div>'+
+  (a.ctrlBad?'':'<div class="card"><h2>Perhitungan</h2><div class="formula">'+solutionLines(a).map(l=>'<div>'+l+'</div>').join('')+'</div>'+
+    (a.star?'<p class="muted small" style="margin:0">* Di luar rentang 25 sampai 250 koloni per cawan.</p>':'')+'</div>')+
+  '<div class="card"><h2>Soal latihan</h2><p style="margin:0">Terjawab '+answered+' dari '+total+' soal.</p></div>'+
+  '<div class="note"><strong>Catatan tentang standar</strong>'+
+  '<p>Inkubasi pada simulasi ini mengikuti SNI 2897:2008 (34 sampai 36 °C, 24 sampai 48 jam). SNI 7388:2009 mencantumkan kondisi berbeda (30 °C, 72 jam). Ikuti SOP laboratorium dan arahan dosen.</p>'+
+  '<p>SNI menuliskan satuan koloni/g, sedangkan simulasi memakai CFU/g yang setara.</p>'+
+  '<p>Simulasi ini menyederhanakan beberapa bagian prosedur. Pada contoh Tabel 1 SNI 2897:2008, baris 4 (5.100.000) dan baris 9 bagian atas (260.000) tidak cocok dengan aturan perhitungan dan pembulatan. Simulasi mengikuti aturan butir 4.1.7 dan 4.1.8.</p></div>'+
+  '<div class="row noprint mt"><button class="btn" data-act="print">Cetak atau simpan PDF</button><button class="btn tint" data-act="again">Ulangi dengan data baru</button></div>';
+};
+
+/* ---------- Render ---------- */
+const nav=document.getElementById('nav'),app=document.getElementById('app'),foot=document.getElementById('foot');
+const canEnter=i=>{for(let j=0;j<i;j++)if(!S.done[j])return false;return true;};
+let lastStep=-1;
+function updFade(pc){const w=document.getElementById('swrap');if(!w||!pc)return;w.classList.toggle('fl',pc.scrollLeft>4);w.classList.toggle('fr',pc.scrollLeft<pc.scrollWidth-pc.clientWidth-4);}
+function setupStrip(pc){
+  let down=false,sx=0,sl=0,moved=false;
+  pc.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;down=true;moved=false;sx=e.clientX;sl=pc.scrollLeft;});
+  pc.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;
+    if(!moved&&Math.abs(dx)>4){moved=true;pc.classList.add('drag');try{pc.setPointerCapture(e.pointerId);}catch(_){}}
+    if(moved)pc.scrollLeft=sl-dx;});
+  const end=()=>{if(!down)return;down=false;pc.classList.remove('drag');};
+  pc.addEventListener('pointerup',end);pc.addEventListener('pointercancel',end);
+  pc.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
+  pc.addEventListener('wheel',e=>{
+    if(pc.scrollWidth<=pc.clientWidth)return;
+    if(Math.abs(e.deltaY)<=Math.abs(e.deltaX))return;
+    const max=pc.scrollWidth-pc.clientWidth;
+    if((e.deltaY<0&&pc.scrollLeft<=0)||(e.deltaY>0&&pc.scrollLeft>=max-1))return;
+    pc.scrollLeft+=e.deltaY;e.preventDefault();
+  },{passive:false});
+  pc.addEventListener('scroll',()=>updFade(pc),{passive:true});
+}
+function render(){
+  const doneCount=STEPS.filter((s,i)=>S.done[i]).length;
+  const old=document.getElementById('pills');const keep=old?old.scrollLeft:0;
+  nav.innerHTML='<div class="nav-inner"><div class="nav-top"><div class="brand">Simulasi TPC daging<small>'+STEPS[S.step].t+'</small></div><button class="linkbtn" data-act="reset">Mulai ulang</button></div>'+
+    '<div class="progress"><i style="width:'+(doneCount/STEPS.length*100)+'%"></i></div>'+
+    '<div class="steps-wrap" id="swrap"><div class="steps" id="pills">'+STEPS.map((s,i)=>'<button class="pill'+(i===S.step?' active':'')+(S.done[i]?' done':'')+'" data-act="go" data-i="'+i+'"'+(canEnter(i)?'':' disabled')+(i===S.step?' aria-current="step"':'')+'>'+(i+1)+'. '+s.t+'</button>').join('')+'</div></div></div>';
+  app.innerHTML=VIEWS[STEPS[S.step].id]();
+  const last=S.step===STEPS.length-1;
+  foot.innerHTML='<div class="foot-inner"><button class="btn gray" data-act="prev"'+(S.step===0?' disabled':'')+'>Kembali</button>'+
+    '<span class="foot-hint">'+(S.done[S.step]||last?'':'Selesaikan kegiatan di langkah ini untuk melanjutkan.')+'</span>'+
+    (last?'<span></span>':'<button class="btn" data-act="next"'+(S.done[S.step]?'':' disabled')+'>Lanjut</button>')+'</div>';
+  const pc=document.getElementById('pills');
+  pc.scrollLeft=keep;
+  const act=pc.querySelector('.pill.active');
+  if(act&&S.step!==lastStep){
+    const target=Math.max(0,act.offsetLeft-pc.clientWidth/2+act.clientWidth/2);
+    if(lastStep===-1||REDUCED)pc.scrollLeft=target;else pc.scrollTo({left:target,behavior:'smooth'});
+  }
+  lastStep=S.step;
+  setupStrip(pc);updFade(pc);
+  document.body.classList.toggle('nosc',!!(S.zoom&&STEPS[S.step].id==='hitung'));
+  if(STEPS[S.step].id==='hitung')drawCanvas();
+  if(STEPS[S.step].id==='perhitungan')updWin();
+  if(STEPS[S.step].id==='pengenceran')afterDil();
+}
+function go(i){
+  if(i<0||i>=STEPS.length)return;
+  if(i>S.step&&!canEnter(i))return;
+  S.step=i;S.zoom=false;if(STEPS[i].id==='ringkasan')S.done[i]=true;
+  save();render();window.scrollTo(0,0);
+}
+
+/* ---------- Canvas cawan ---------- */
+function drawCanvas(){
+  const cv=document.getElementById('plate');if(!cv)return;
+  const wrap=cv.parentElement;
+  let size;
+  if(S.zoom)size=Math.round(Math.min(1100,Math.max(620,Math.min(window.innerWidth,window.innerHeight)*1.8)));
+  else size=Math.round(Math.max(220,Math.min(440,wrap.clientWidth-24,window.innerHeight-380)));
+  const dpr=window.devicePixelRatio||1;
+  cv.style.width=size+'px';cv.style.height=size+'px';cv.width=Math.round(size*dpr);cv.height=Math.round(size*dpr);
+  const ctx=cv.getContext('2d');if(!ctx)return;
+  const s=size*dpr/300;ctx.setTransform(s,0,0,s,0,0);ctx.clearRect(0,0,300,300);
+  const P=plates()[S.cur];
+  ctx.beginPath();ctx.arc(150,150,148,0,Math.PI*2);ctx.fillStyle='#E3E9EE';ctx.fill();ctx.lineWidth=1.2;ctx.strokeStyle='#B8C2CB';ctx.stroke();
+  ctx.beginPath();ctx.arc(150,150,141,0,Math.PI*2);
+  const g=ctx.createRadialGradient(125,115,10,150,150,141);g.addColorStop(0,'#F4E8C9');g.addColorStop(1,'#E3CE9B');ctx.fillStyle=g;ctx.fill();
+  ctx.strokeStyle='rgba(150,130,90,.35)';ctx.lineWidth=.8;ctx.stroke();
+  if(P.n>600){ctx.beginPath();ctx.arc(150,150,140,0,Math.PI*2);ctx.fillStyle='rgba(250,244,226,.35)';ctx.fill();}
+  if(P.poly){
+    ctx.save();ctx.beginPath();ctx.arc(150,150,140,0,Math.PI*2);ctx.clip();
+    ctx.beginPath();P.poly.forEach((q,k)=>k?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]));ctx.closePath();
+    ctx.fillStyle='rgba(250,246,234,.82)';ctx.fill();ctx.strokeStyle='rgba(196,178,135,.9)';ctx.lineWidth=1.2;ctx.stroke();
+    ctx.strokeStyle='rgba(205,190,150,.45)';ctx.lineWidth=.8;
+    for(let k=1;k<4;k++){ctx.beginPath();P.poly.forEach((q,j)=>{const x=166+(q[0]-166)*(1-k*0.22),y=138+(q[1]-138)*(1-k*0.22);j?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.closePath();ctx.stroke();}
+    ctx.restore();
+  }
+  const dense=P.n>600;
+  for(const c of P.col){ctx.beginPath();ctx.arc(c.x,c.y,c.r,0,Math.PI*2);ctx.fillStyle=c.c;ctx.fill();
+    if(!dense){ctx.lineWidth=.5;ctx.strokeStyle='rgba(150,125,80,.55)';ctx.stroke();}}
+  if(S.sec.on){
+    ctx.save();ctx.beginPath();ctx.arc(150,150,141,0,Math.PI*2);ctx.clip();
+    const q=S.sec.q[S.cur];
+    if(q!==undefined){ctx.fillStyle='rgba(0,113,227,.18)';ctx.fillRect((q===0||q===1)?150:0,(q===0||q===3)?0:150,150,150);}
+    ctx.strokeStyle='rgba(0,113,227,.9)';ctx.lineWidth=1.3;ctx.setLineDash([5,4]);
+    ctx.beginPath();ctx.moveTo(150,5);ctx.lineTo(150,295);ctx.moveTo(5,150);ctx.lineTo(295,150);ctx.stroke();
+    ctx.setLineDash([]);ctx.restore();
+  }
+  const mk=new Set(S.marks[S.cur]||[]);
+  if(S.reveal[S.cur]&&!dense){ctx.strokeStyle='#E5302A';ctx.lineWidth=.9;P.col.forEach((c,k)=>{if(!mk.has(k)){ctx.beginPath();ctx.arc(c.x,c.y,c.r+2.2,0,Math.PI*2);ctx.stroke();}});}
+  ctx.fillStyle='#1D4ED8';mk.forEach(k=>{const c=P.col[k];if(c){ctx.beginPath();ctx.arc(c.x,c.y,Math.max(1.3,c.r*0.55),0,Math.PI*2);ctx.fill();}});
+  cv.onclick=onPlateClick;
+}
+function onPlateClick(e){
+  const cv=e.currentTarget;const rect=cv.getBoundingClientRect();
+  const x=(e.clientX-rect.left)/rect.width*300,y=(e.clientY-rect.top)/rect.height*300;
+  if(S.sec.on){
+    if(Math.hypot(x-150,y-150)>141)return;
+    S.sec.q[S.cur]=sectorOf(x,y);S.hmsg=null;save();render();return;
+  }
+  const P=plates()[S.cur];const m=S.marks[S.cur]||(S.marks[S.cur]=[]);const set=new Set(m);
+  const tol=S.zoom?3:5;let best=-1,bd=1e9;
+  P.col.forEach((c,k)=>{if(set.has(k))return;const d=Math.hypot(c.x-x,c.y-y);if(d<c.r+tol&&d<bd){bd=d;best=k;}});
+  if(best<0)return;
+  m.push(best);save();drawCanvas();updCount();
+}
+function updCount(){const n=(S.marks[S.cur]||[]).length;const c=document.getElementById('cnt');if(c)c.textContent=n;const b=document.getElementById('recBtn');if(b&&!S.sec.on)b.textContent='Catat '+n+' koloni';}
+
+function updWin(){
+  const out=document.getElementById('winOut'),lbl=document.getElementById('winN');if(!out)return;
+  const N=Math.pow(10,S.calc.win);lbl.textContent=sci(N)+' CFU/g';
+  let rows='',ok=[];
+  for(let k=1;k<=5;k++){const v=N*Math.pow(10,-k);const plated=k>=3;
+    const st=v>250?'<span class="chip o">> 250</span>':v<25?'<span class="chip">< 25</span>':'<span class="chip g">25–250</span>';
+    if(plated&&v>=25&&v<=250)ok.push(pw(-k));
+    rows+='<div class="win-row'+(plated?'':' dim')+'"><b>'+pw(-k)+'</b><span>± '+(v>=1e5?sci(v):fmt(Math.round(v)))+' koloni'+(plated?'':' (tidak dituang)')+'</span>'+st+'</div>';}
+  out.innerHTML=rows+'<p class="small mt" style="margin-bottom:0">'+(ok.length?'Cawan yang dapat dihitung: '+ok.join(' dan ')+'.':'Tidak ada cawan yang dituang berada dalam rentang 25 sampai 250.')+
+    ' '+(N>1e6?'Perkiraan ini melebihi batas 1 × 10'+sup(6)+' CFU/g.':'Perkiraan ini tidak melebihi batas 1 × 10'+sup(6)+' CFU/g.')+'</p>';
+}
+
+/* ---------- Aksi ---------- */
+function resetCount(){S.marks={};S.rec={};S.reveal={};S.hmsg=null;S.cur=0;S.sec={on:false,q:{}};S.calc=Object.assign(fresh().calc,{win:S.calc.win});S.done[6]=false;S.done[7]=false;S.done[8]=false;}
+function setScenario(sel){S.scen.sel=sel;S.scen.c=sel==='acak'?CASE_KEYS[Math.floor(Math.random()*CASE_KEYS.length)]:sel;S.scen.seed=newSeed();resetCount();}
+function animate(ms,onStep,onEnd){const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/ms);onStep(k);if(k<1)requestAnimationFrame(f);else onEnd();};requestAnimationFrame(f);}
+function afterRec(){S.done[6]=PLATES.every((x,j)=>S.rec[j]);S.done[7]=false;S.calc=Object.assign(fresh().calc,{win:S.calc.win});render();}
+
+const A={
+  go:d=>go(+d.i), next:()=>go(S.step+1), prev:()=>go(S.step-1),
+  reset:()=>{if(confirm('Mulai ulang simulasi? Semua progres akan dihapus.')){S=fresh();PL=null;lastStep=-1;save();render();window.scrollTo(0,0);}},
+  ns:d=>{S.nsamp=clamp(S.nsamp+(+d.v),1,10);render();},
+  check:d=>{S.checks[d.id]=!S.checks[d.id];S.done[1]=ITEMS.every(x=>S.checks[x.id]);render();},
+  checkall:()=>{ITEMS.forEach(x=>S.checks[x.id]=true);S.done[1]=true;render();},
+  w:d=>{const p=S.prep;p.w=Math.max(0,Math.min(60,Math.round((p.w+(+d.v))*10)/10));if(p.wOk){p.wOk=false;p.bpw=null;p.homog=0;S.done[2]=false;}p.wmsg=null;render();},
+  tare:()=>{const p=S.prep;p.w=0;p.wOk=false;p.bpw=null;p.homog=0;p.wmsg=null;S.done[2]=false;render();},
+  wconfirm:()=>{const p=S.prep;if(Math.abs(p.w-25)<0.05){p.wOk=true;p.wmsg={k:'ok',t:'Berat sampel 25,0 g.'};}
+    else{p.wOk=false;p.wmsg={k:'warn',t:'Berat belum tepat. Target 25,0 g, saat ini '+dec(p.w.toFixed(1))+' g.'};}render();},
+  bpw:d=>{S.prep.bpw=+d.v;if(S.prep.bpw!==225){S.prep.homog=0;S.done[2]=false;}render();},
+  homog:()=>{const p=S.prep;if(p.homog)return;p.homog=1;render();
+    animate(2200,k=>{const b=document.getElementById('mixBar');if(b)b.style.width=(k*100)+'%';},()=>{p.homog=2;S.done[2]=true;save();render();});},
+  dact:d=>{const D=S.dil;if(D.t>3||BUSY||DEMOING)return;if(ORDER[D.ph]!==d.a)return;runAction(d.a);},
+  demo:async()=>{
+    if(BUSY||DEMOING||S.dil.t>3)return;
+    DEMOING=true;DEMO_STOP=false;const t0=S.dil.t;render();
+    while(S.dil.t===t0&&!DEMO_STOP){
+      await runAction(ORDER[S.dil.ph]);
+      if(S.dil.t===t0&&!DEMO_STOP)await sleep(700);
+    }
+    DEMOING=false;DEMO_STOP=false;save();render();
+  },
+  stopdemo:()=>{DEMO_STOP=true;const b=$('stopBtn');if(b)b.textContent='Berhenti setelah tindakan ini…';},
+  tube:d=>{const p=S.pour;if(p.poured)return;p.sel=+d.v;p.msg={t:'Tabung '+pw(-p.sel)+' dihomogenkan (ayun dan putar angka 8) dan tip baru dipasang. Ketuk cawan '+pw(-p.sel)+' A dan '+pw(-p.sel)+' B.'};render();},
+  plate:d=>{const p=S.pour;const i=+d.i;if(p.poured)return;
+    if(i===6){p.msg={k:'warn',t:'Cawan kontrol tidak diberi inokulum.'};}
+    else if(p.sel===null){p.msg={k:'warn',t:'Pilih tabung terlebih dahulu.'};}
+    else if(PLATES[i].dil!==p.sel){p.msg={k:'warn',t:'Label cawan ini '+pw(-PLATES[i].dil)+'. Inokulum dari tabung '+pw(-p.sel)+' masuk ke cawan '+pw(-p.sel)+'.'};}
+    else if(p.inoc[i]){p.msg={t:'Cawan ini sudah berisi 1 mL inokulum.'};}
+    else{p.inoc[i]=true;const all=[0,1,2,3,4,5].every(j=>p.inoc[j]);p.msg={k:all?'ok':'',t:all?'Enam cawan sudah berisi inokulum. Cawan kontrol tetap kosong.':'1 mL suspensi '+pw(-p.sel)+' dimasukkan ke cawan '+plateLabel(i)+'.'};}
+    render();},
+  pcatemp:d=>{const p=S.pour;if(p.poured)return;p.temp=+d.v;render();},
+  pour:()=>{const p=S.pour;
+    if(p.vol<15)p.vmsg={k:'warn',t:'Volume terlalu sedikit. Media terlalu tipis, mudah kering, dan inokulum tidak tercampur rata. Gunakan 15 sampai 20 mL.'};
+    else if(p.vol>20)p.vmsg={k:'warn',t:'Volume terlalu banyak. Media terlalu tebal sehingga koloni di dalamnya sulit terlihat dan bahan terbuang. Gunakan 15 sampai 20 mL.'};
+    else{p.poured=true;p.vmsg={k:'ok',t:'PCA '+p.vol+' mL dituang ke setiap cawan, termasuk cawan kontrol.'};}
+    render();},
+  mix:()=>{S.pour.mixed=true;render();},
+  solid:()=>{S.pour.solid=true;render();},
+  invert:()=>{S.pour.inverted=true;S.done[4]=true;render();},
+  itemp:d=>{if(S.inc.done)return;S.inc.temp=clamp(S.inc.temp+(+d.v),25,45);S.inc.msg=null;render();},
+  hours:d=>{if(S.inc.done)return;S.inc.hours=+d.v;S.inc.msg=null;render();},
+  incubate:()=>{const c=S.inc;if(c.done)return;
+    if(c.hours===null){c.msg={k:'warn',t:'Pilih lama inkubasi terlebih dahulu.'};render();return;}
+    if(c.temp<34||c.temp>36){
+      c.msg={k:'warn',h:'Suhu belum sesuai metode.',t:'SNI 2897:2008 butir e) menetapkan 34 sampai 36 °C.'+(c.temp===30?' Kondisi 30 °C tercantum di SNI 7388:2009, sedangkan simulasi ini mengikuti metode SNI 2897:2008. Atur suhu ke 34 sampai 36 °C.':' Suhu di luar rentang ini mengubah pertumbuhan bakteri sehingga hasil tidak sebanding dengan standar.')};
+      render();return;}
+    if(c.hours===12){c.msg={k:'warn',t:'Terlalu singkat. SNI 2897:2008 menetapkan 24 sampai 48 jam. Pada 12 jam banyak koloni belum cukup besar untuk terlihat.'};render();return;}
+    if(c.hours===72){c.msg={k:'warn',h:'Lama inkubasi belum sesuai metode.',t:'Inkubasi 72 jam tercantum di SNI 7388:2009, sedangkan simulasi ini mengikuti metode SNI 2897:2008 (24 sampai 48 jam). Pilih 24 atau 48 jam.'};render();return;}
+    const btn=document.getElementById('incBtn');if(btn){btn.disabled=true;btn.textContent='Inkubasi berjalan…';}
+    const C=2*Math.PI*56;
+    animate(2400,k=>{const a=document.getElementById('ringArc'),t=document.getElementById('ringTxt');if(a)a.setAttribute('stroke-dashoffset',(C*(1-k)).toFixed(1));if(t)t.textContent=Math.round(k*c.hours)+' jam';},
+      ()=>{c.done=true;S.done[5]=true;c.msg={k:'ok',t:'Inkubasi '+c.hours+' jam pada '+c.temp+' °C selesai. Koloni sudah tumbuh dan siap dihitung.'+(c.hours===24?' Bila koloni masih sangat kecil pada 24 jam, SNI 2897:2008 mengizinkan inkubasi sampai 48 jam.':'')};save();render();});},
+  pt:d=>{S.cur=+d.i;S.hmsg=null;render();},
+  pprev:()=>{S.cur=Math.max(0,S.cur-1);S.hmsg=null;render();},
+  pnext:()=>{S.cur=Math.min(PLATES.length-1,S.cur+1);S.hmsg=null;render();},
+  undo:()=>{
+    if(S.sec.on){delete S.sec.q[S.cur];S.hmsg=null;render();return;}
+    const m=S.marks[S.cur];if(m&&m.length){m.pop();save();drawCanvas();updCount();}},
+  clearm:()=>{S.marks[S.cur]=[];save();drawCanvas();updCount();},
+  sector:()=>{S.sec.on=!S.sec.on;S.hmsg=null;render();},
+  zoom:()=>{S.zoom=!S.zoom;render();},
+  reveal:()=>{S.reveal[S.cur]=!S.reveal[S.cur];render();},
+  rec:d=>{const i=S.cur;const P=plates()[i];const big=P.n>250&&!P.spread;const t=d.v;
+    if(t==='count'){
+      if(P.spread){S.hmsg={k:'warn',t:'Area spreader menutupi lebih dari '+Math.round(SPREAD_LIMIT*100)+'% cawan. Cawan seperti ini tidak dihitung.'};}
+      else if(big){S.hmsg={k:'warn',t:'Koloni pada cawan ini lebih dari 250 dan terlalu padat untuk dihitung satu per satu. Gunakan estimasi per sektor (tombol Sektor).'};}
+      else{const v=(S.marks[i]||[]).length;S.rec[i]={type:'count',v};const diff=Math.abs(v-P.n);
+        S.hmsg=diff===0?{k:'ok',t:'Tercatat '+v+' koloni. Hitungan Anda tepat.'}:
+          diff<=Math.max(2,P.n*0.05)?{k:'ok',t:'Tercatat '+v+' koloni. Selisihnya kecil dari jumlah sebenarnya.'}:
+          {k:'warn',t:'Tercatat '+v+' koloni. Selisihnya cukup jauh dari jumlah sebenarnya. Periksa koloni yang belum ditandai, lalu catat ulang.'};}
+    }else if(t==='est'){
+      const q=S.sec.q[i];const info=q!==undefined?sectorInfo(i,q):null;
+      if(!info){S.hmsg={k:'warn',t:'Ketuk satu sektor pada cawan terlebih dahulu.'};}
+      else if(P.spread){S.hmsg={k:'warn',t:'Cawan ini tertutup spreader. Gunakan tombol "Tidak dihitung (spreader)".'};}
+      else if(!big){S.hmsg={k:'warn',t:'Koloni pada cawan ini masih bisa dihitung satu per satu. Matikan mode Sektor, tandai setiap koloni, lalu catat jumlahnya.'};}
+      else{S.rec[i]={type:'est',v:info.est,q};S.hmsg={k:'ok',t:'Tercatat estimasi '+fmt(info.est)+' koloni (sektor '+QNAME[q]+' × 4).'};}
+    }else{
+      if(!P.spread){S.hmsg={k:'warn',t:'Tidak ada spreader besar pada cawan ini.'};}
+      else{S.rec[i]={type:'excl'};S.hmsg={k:'ok',t:'Cawan tidak dihitung karena spreader menutupi lebih dari '+Math.round(SPREAD_LIMIT*100)+'% permukaan media.'};}
+    }
+    afterRec();},
+  autofill:()=>{const i=S.cur;const P=plates()[i];
+    if(P.spread)S.rec[i]={type:'excl'};
+    else if(P.n>250){const info=sectorInfo(i,0);S.sec.q[i]=0;S.rec[i]={type:'est',v:info.est,q:0};}
+    else{S.marks[i]=P.col.map((c,k)=>k);S.rec[i]={type:'count',v:P.n};}
+    S.hmsg={t:'Cawan diisi otomatis. Di laboratorium, setiap koloni tetap dihitung manual.'};
+    afterRec();},
+  reseed:()=>{setScenario(S.scen.sel);render();},
+  ctrl:d=>{S.calc.ctrl=d.v;render();},
+  selp:d=>{const c=S.calc;c.sel[d.i]=!c.sel[d.i];c.selOk=null;render();},
+  checksel:()=>{const a=analysis();const c=S.calc;const picked=[0,1,2,3,4,5].filter(i=>c.sel[i]);
+    c.selOk=picked.length===a.used.length&&picked.every(i=>a.used.includes(i));render();},
+  checkans:()=>{const a=analysis();const c=S.calc;const m=parseFloat(String(c.m).replace(',','.'));const e=parseInt(c.e,10);
+    if(isNaN(m)||isNaN(e)){c.ansOk=false;render();return;}
+    const v=m*Math.pow(10,e);c.ansOk=Math.abs(v-a.Nr)/a.Nr<=0.03||Math.abs(v-a.N)/a.N<=0.03;render();},
+  sol:()=>{S.calc.sol=!S.calc.sol;render();},
+  interp:d=>{const a=analysis();S.calc.interp=d.v;S.done[7]=d.v===a.verdict;render();},
+  quiz:d=>{S.quiz[d.k]=+d.v;render();},
+  qreset:d=>{delete S.quiz[d.k];render();},
+  print:()=>window.print(),
+  again:()=>{setScenario(S.scen.sel);go(6);}
+};
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t||t.disabled)return;
+  if((BUSY||DEMOING)&&t.dataset.act!=='stopdemo')return;
+  const f=A[t.dataset.act];if(f){f(t.dataset);save();}
+});
+document.addEventListener('input',e=>{
+  const t=e.target;const k=t.dataset&&t.dataset.in;if(!k)return;
+  if(k==='vol'){S.pour.vol=+t.value;S.pour.vmsg=null;const l=document.getElementById('volLbl');if(l)l.textContent=t.value+' mL';const b=document.getElementById('pourBtn');if(b)b.disabled=S.pour.poured||S.pour.vol===0;}
+  else if(k==='win'){S.calc.win=+t.value;updWin();}
+  else if(k==='m'){S.calc.m=t.value;S.calc.ansOk=null;}
+  else if(k==='e'){S.calc.e=t.value;S.calc.ansOk=null;}
+  save();
+});
+document.addEventListener('change',e=>{
+  const t=e.target;if(t.dataset&&t.dataset.in==='scen'){setScenario(t.value);save();render();}
+});
+document.addEventListener('toggle',e=>{
+  const d=e.target;if(d&&d.dataset&&d.dataset.key){S.open[d.dataset.key]=d.open;save();}
+},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.zoom){S.zoom=false;render();}});
+let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const id=STEPS[S.step].id;if(id==='hitung')drawCanvas();else if(id==='pengenceran'&&!BUSY)setPip(S.dil.col,0,0);updFade(document.getElementById('pills'));},150);});
+
+load();render();
+})();
+</script>
+</body>
+</html>
