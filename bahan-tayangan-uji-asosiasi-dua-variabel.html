@@ -14,6 +14,7 @@
   --line:#E5E5EA; --fill:#F2F2F7; --bar:rgba(245,245,247,.78);
   --blue:#007AFF; --a-ink:#0062CC; --b-ink:#B25E00; --d-ink:#1E8E3E; --red-ink:#C62828;
   --ok-bg:rgba(52,199,89,.14); --warn-bg:rgba(255,149,0,.16); --no-bg:rgba(142,142,147,.16); --bad-bg:rgba(255,59,48,.12);
+  --more-bg:rgba(0,122,255,.16);
   --shadow:0 0 0 .5px rgba(0,0,0,.05),0 2px 14px rgba(0,0,0,.04);
 }
 :root{color-scheme:light}
@@ -79,6 +80,13 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .switch input:checked + i::after{transform:translateX(20px)}
 .switch input:focus-visible + i{outline:3px solid rgba(0,122,255,.55);outline-offset:2px}
 
+.hyp{display:grid;gap:12px}
+.hyp-r{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start}
+.hyp-k{font-weight:700;font-size:14px;background:var(--fill);border-radius:10px;padding:3px 0;text-align:center}
+.hyp-r p{margin:0;font-size:15.5px;max-width:68ch}
+.notat{background:var(--fill);border-radius:16px;padding:14px 16px;font-size:15px}
+.notat .lg{font-size:13px;color:var(--ink2);margin-top:6px}
+
 .pops{display:flex;gap:12px;justify-content:center;align-items:flex-start}
 .pop-col{flex:1 1 0;max-width:290px;display:flex;flex-direction:column;align-items:center;text-align:center}
 .pop-title{font-weight:600;font-size:15px;margin-bottom:8px}
@@ -97,6 +105,10 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
 .cap{font-size:13px;color:var(--ink2);margin:12px 0 0}
 .tblwrap{overflow-x:auto}
+.idx{display:inline-block;min-width:16px;color:var(--ink3);font-weight:600;margin-right:4px}
+.swapbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.arw{border:0;background:rgba(118,118,128,.14);color:var(--ink);border-radius:8px;width:26px;height:26px;font-size:11px;cursor:pointer;margin-left:4px;vertical-align:middle;padding:0;line-height:1}
+.arw:disabled{opacity:.3;cursor:default}
 
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;font-weight:500;margin-bottom:8px}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
@@ -145,7 +157,7 @@ details p{font-size:14px;color:var(--ink2);margin:8px 0 0;max-width:66ch}
 .tile .s{font-size:13px;color:var(--ink2);margin-top:4px}
 .interp{margin-top:16px;border-top:.5px solid var(--line);padding-top:16px}
 .interp .k{font-size:13px;color:var(--ink2);margin-bottom:4px}
-.interp p{margin:0 0 8px;font-size:15.5px;max-width:68ch}
+.interp p{margin:0 0 10px;font-size:15.5px;max-width:68ch}
 .cmp td:last-child{font-weight:600}
 .truth-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:.5px solid var(--line);font-size:15px}
 .truth-row:first-of-type{border-top:0}
@@ -159,11 +171,15 @@ footer{margin-top:40px;font-size:13px;color:var(--ink2);max-width:66ch}
 .tbl td.tot{font-weight:600}
 .tbl td.lt5{background:var(--warn-bg)}
 .tbl td.lt1{background:var(--bad-bg)}
-.tbl td.hl{font-weight:700;color:var(--red-ink)}
+.tbl td.rp{background:var(--more-bg);color:var(--a-ink);font-weight:700}
+.tbl td.rn{background:var(--warn-bg);color:var(--b-ink);font-weight:700}
+.tbl td small{display:block;font-size:11px;font-weight:500}
+.tbl tr.hlrow td{background:var(--fill);color:var(--ink);font-weight:700}
 .odds{margin:6px 0 14px;padding-left:20px;font-size:15px}
 .odds li{margin:2px 0}
 .tbl th,.tbl td{white-space:nowrap}
 .tbl th:first-child,.tbl td:first-child{white-space:normal}
+.plain p{margin:0 0 6px;font-size:15px;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -205,25 +221,33 @@ footer{margin-top:40px;font-size:13px;color:var(--ink2);max-width:66ch}
     </div>
   </section>
 
+  <h2>Hipotesis</h2>
+  <p class="sub">H0 adalah anggapan awal yang diuji. H1 adalah kemungkinan yang berlaku bila H0 ditolak.</p>
+  <div class="card" id="hyp"></div>
+
   <h2>Populasi dan sampel</h2>
   <p class="sub" id="illu-sub"></p>
   <div class="card" id="illu"></div>
 
   <h2>Data deskriptif</h2>
+  <p class="sub" id="desc-sub"></p>
   <div class="card" id="desc"></div>
 
   <h2>Sebaran data</h2>
+  <p class="sub">Batang dengan komposisi yang mirip menandakan asosiasi lemah. Komposisi yang berbeda menandakan asosiasi kuat.</p>
   <div class="card" id="viz"></div>
 
   <h2>Pemeriksaan asumsi</h2>
+  <p class="sub">Sel yang berwarna menandakan frekuensi harapan kecil, yang dapat membuat uji kurang andal.</p>
   <div class="card" id="assump"></div>
 
   <h2>Pilih uji</h2>
+  <p class="sub">Pilih uji yang syaratnya terpenuhi oleh tabel ini.</p>
   <div class="card" id="choose"></div>
 
   <div id="results"></div>
 
-  <footer>Seluruh perhitungan berjalan di peramban. Uji chi-square memakai statistik Pearson tanpa koreksi kontinuitas, sama dengan pengaturan bawaan Jamovi. Uji Fisher exact tersedia untuk tabel 2×2 dan nilai p-nya dua arah. Sampel ditarik acak sederhana dari populasi 1.000 subjek, sehingga total baris dan kolom ikut berubah dari satu penarikan ke penarikan lain. Taraf signifikansi tetap 0,05.</footer>
+  <footer>Seluruh perhitungan berjalan di peramban. Uji chi-square memakai statistik Pearson tanpa koreksi kontinuitas, sama dengan pengaturan bawaan Jamovi. Uji Fisher exact tersedia untuk tabel 2×2 dan nilai p-nya dua arah. Sampel ditarik acak sederhana dari populasi 1.000 unit, sehingga total baris dan kolom ikut berubah dari satu penarikan ke penarikan lain. Taraf signifikansi tetap 0,05.</footer>
 </main>
 
 <script>
@@ -480,18 +504,21 @@ return {analyzeTable:analyzeTable,critChi:critChi,pdfChi:pdfChi,categoryV:catego
 /* ===== Aplikasi ===== */
 const ALPHA=0.05,NPOP=1000,KDOT=240;
 const COL={a:'#007AFF',b:'#FF9500',d:'#34C759',grey:'#8E8E93'};
-const PAL=['#007AFF','#FF9500','#34C759'];
+/* Palet kategori kolom (ungu, teal, merah muda) dibedakan dari warna keputusan (biru, jingga, hijau, merah). */
+const PAL=['#8E5BD6','#1B97A8','#D6477F'];
+/* dir: arah yang dikunci. Pada 2x2, dir = 1 berarti baris pertama memiliki proporsi kolom pertama lebih tinggi.
+   Pada tabel besar, dir = -1 berarti baris pertama condong ke kolom pertama. dir kosong berarti arah diacak. */
 const CTX_22=[
-  {rowName:'Sistem kandang',rows:['Kandang terbuka','Kandang tertutup'],colName:'Kejadian mastitis',cols:['Mastitis','Tidak mastitis']},
-  {rowName:'Status vaksinasi',rows:['Divaksin','Tidak divaksin'],colName:'Kejadian penyakit',cols:['Sakit','Sehat']},
-  {rowName:'Jenis kelamin',rows:['Jantan','Betina'],colName:'Hasil pemeriksaan cacing',cols:['Positif cacingan','Negatif cacingan']},
-  {rowName:'Sumber air minum',rows:['Sumur','PDAM'],colName:'Hasil kultur Salmonella',cols:['Positif Salmonella','Negatif Salmonella']}
+  {rowName:'Sistem kandang',rows:['Kandang terbuka','Kandang tertutup'],colName:'Kejadian mastitis',cols:['Mastitis','Tidak mastitis'],unit:'sapi perah',verb:'dipelihara di',dir:1},
+  {rowName:'Status vaksinasi',rows:['Tidak divaksin','Divaksin'],colName:'Kejadian penyakit',cols:['Sakit','Sehat'],unit:'ternak',verb:'berstatus',dir:1},
+  {rowName:'Jenis kelamin',rows:['Jantan','Betina'],colName:'Hasil pemeriksaan cacing',cols:['Positif cacingan','Negatif cacingan'],unit:'sapi',verb:'berjenis kelamin'},
+  {rowName:'Sumber air minum',rows:['Sumur','PDAM'],colName:'Hasil kultur Salmonella',cols:['Positif Salmonella','Negatif Salmonella'],unit:'peternakan',verb:'memakai',dir:1}
 ];
 const CTX_BIG=[
-  {rowName:'Jenis pakan',rows:['Pakan A','Pakan B','Pakan C'],colName:'Kondisi tubuh',cols:['Kurus','Sedang','Gemuk'],ord:true},
-  {rowName:'Bangsa sapi',rows:['Sapi Bali','Sapi PO','Sapi Brahman'],colName:'Status fasciolosis',cols:['Positif fasciolosis','Negatif fasciolosis']},
-  {rowName:'Wilayah peternakan',rows:['Makassar','Maros','Gowa','Takalar'],colName:'Hasil uji brucellosis',cols:['Positif brucellosis','Negatif brucellosis']},
-  {rowName:'Sistem pemeliharaan',rows:['Intensif','Semi intensif','Ekstensif'],colName:'Kualitas kulit dan rambut',cols:['Baik','Cukup','Buruk'],ord:true}
+  {rowName:'Jenis pakan',rows:['Pakan A','Pakan B','Pakan C'],colName:'Kondisi tubuh',cols:['Kurus','Sedang','Gemuk'],unit:'sapi',verb:'diberi',dir:-1,ordCol:true},
+  {rowName:'Bangsa sapi',rows:['Sapi Bali','Sapi PO','Sapi Brahman'],colName:'Status fasciolosis',cols:['Positif fasciolosis','Negatif fasciolosis'],unit:'sapi',verb:'berbangsa'},
+  {rowName:'Wilayah peternakan',rows:['Makassar','Maros','Gowa','Takalar'],colName:'Hasil uji brucellosis',cols:['Positif brucellosis','Negatif brucellosis'],unit:'ternak',verb:'dipelihara di',lcRows:false},
+  {rowName:'Sistem pemeliharaan',rows:['Intensif','Semi-intensif','Ekstensif'],colName:'Kualitas kulit dan rambut',cols:['Baik','Cukup','Buruk'],unit:'sapi',verb:'dipelihara secara',dir:-1,ordRow:true,ordCol:true}
 ];
 const ROWPROP={2:[[.5,.5],[.3,.7],[.6,.4],[.2,.8]],3:[[.4,.4,.2],[.3,.3,.4],[.5,.3,.2]],4:[[.3,.3,.2,.2],[.4,.3,.2,.1],[.2,.3,.3,.2]]};
 const TESTS=[
@@ -501,7 +528,7 @@ const TESTS=[
 ];
 const tname=id=>id==='merge'?'Gabungkan kategori, lalu ulangi uji chi-square':TESTS.find(t=>t.id===id).name;
 
-const state={design:'g22',n:60,guessMode:true,pop:null,sample:null,an:null,guess:null,revealed:false,history:[]};
+const state={design:'g22',n:60,guessMode:true,pop:null,sample:null,an:null,guess:null,revealed:false,history:[],rowOrder:[],colOrder:[]};
 
 const $=s=>document.querySelector(s);
 const fmt=(x,d)=>{
@@ -519,6 +546,10 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 function wpick(items){let t=0;items.forEach(i=>t+=i[1]);let r=Math.random()*t;for(const i of items){r-=i[1];if(r<=0)return i[0];}return items[0][0];}
 const r1=v=>Math.round(v*10)/10;
 const shortName=(s,n)=>s.length>n?s.slice(0,n-1)+'…':s;
+const lcFirst=s=>/^[A-Z][a-z]/.test(s)?s.charAt(0).toLowerCase()+s.slice(1):s;
+const lr=s=>state.pop.ctx.lcRows===false?s:lcFirst(s);
+function joinList(a){return a.length<=2?a.join(' dan '):a.slice(0,-1).join(', ')+', dan '+a[a.length-1];}
+const catCol=(o,j)=>PAL[o.colIdx[j]%PAL.length];
 
 /* ----- Populasi dan sampel ----- */
 function sunflower(K,R){const pts=[];for(let i=0;i<K;i++){const r=R*Math.sqrt((i+0.5)/K),t=i*2.399963229728653;pts.push([r*Math.cos(t),r*Math.sin(t)]);}return pts;}
@@ -527,7 +558,7 @@ const logit=p=>Math.log(p/(1-p));
 function makePop(design){
   const ctx=pick(design==='g22'?CTX_22:CTX_BIG),r=ctx.rows.length,c=ctx.cols.length;
   const rowN=pick(ROWPROP[r]).map(p=>Math.round(p*NPOP));
-  const sign=Math.random()<0.5?-1:1;
+  const sign=ctx.dir||(Math.random()<0.5?-1:1);
   const strength=wpick(c===2?[[0,3],[0.59,2],[1.1,2],[1.8,2]]:[[0,3],[0.5,2],[0.9,2],[1.5,2]]);
   const base=pick(c===2?[[.1,.9],[.2,.8],[.3,.7],[.4,.6],[.5,.5]]:[[.5,.3,.2],[.4,.4,.2],[.2,.3,.5],[.3,.4,.3]]);
   const popN=[];
@@ -546,8 +577,7 @@ function makePop(design){
   }
   const subjects=[];
   popN.forEach((row,i)=>row.forEach((k,j)=>{for(let t=0;t<k;t++)subjects.push([i,j]);}));
-  const popO=S.analyzeTable({rl:ctx.rows,cl:ctx.cols,n:popN,rowName:ctx.rowName,colName:ctx.colName},'chi');
-  return {design,ctx,r,c,rowN,popN,subjects,strength,h0true:strength===0,popO,layout:sunflower(KDOT,92)};
+  return {design,ctx,r,c,rowN,popN,subjects,strength,h0true:strength===0,layout:sunflower(KDOT,92)};
 }
 function sampleIdx(N,n){
   const idx=Array.from({length:N},(_,i)=>i);
@@ -570,23 +600,29 @@ function drawSample(){
 }
 
 /* ----- Analisis ----- */
+function analyzeCounts(cnt){
+  const c=state.pop.ctx,ro=state.rowOrder,co=state.colOrder;
+  const o=S.analyzeTable({rl:ro.map(i=>c.rows[i]),cl:co.map(j=>c.cols[j]),n:ro.map(i=>co.map(j=>cnt[i][j])),rowName:c.rowName,colName:c.colName},'chi');
+  o.colIdx=co.slice();o.rowIdx=ro.slice();
+  return o;
+}
 function analyze(){
-  const c=state.pop.ctx;
-  const o=S.analyzeTable({rl:c.rows,cl:c.cols,n:state.sample.n,rowName:c.rowName,colName:c.colName},'chi');
+  const o=analyzeCounts(state.sample.n);
   const size2=o.size2;
   const rec=size2?(o.minE>=5?'chi':'fisher'):(o.okChi?'chi':'merge');
   const tests={chi:{p:o.pChi}};
   if(size2)tests.fisher={p:o.fisher.p};
   return {o:o,size2:size2,rec:rec,tests:tests};
 }
+function refresh(){state.an=analyze();renderAll();}
 function ciTxt(lo,hi,d){return fmt(lo,d)+' sampai '+fmt(hi,d);}
 function orPrim(o,isF){return isF?o.orFisher:o.orWald;}
 function orIncl(q){return (isFinite(q.lo)&&isFinite(q.hi)&&q.lo<=1&&q.hi>=1)||(q.lo===0&&q.hi>=1)||(isFinite(q.lo)&&q.lo<=1&&q.hi===Infinity);}
 function propList(o){
   const parts=[];
   if(o.c===2){
-    for(let i=0;i<o.r;i++)parts.push(fmt(o.rowPct[i][0],1)+'% pada '+o.rl[i]+' ('+o.n[i][0]+'/'+o.rowTot[i]+')');
-    return 'Proporsi '+o.cl[0]+' adalah '+parts.join(', ')+'.';
+    for(let i=0;i<o.r;i++)parts.push(fmt(o.rowPct[i][0],1)+'% pada '+lr(o.rl[i])+' ('+o.n[i][0]+'/'+o.rowTot[i]+')');
+    return 'Proporsi '+lcFirst(o.cl[0])+' adalah '+parts.join(', ')+'.';
   }
   for(let i=0;i<o.r;i++){
     const q=[];for(let j=0;j<o.c;j++)q.push(o.cl[j]+' '+fmt(o.rowPct[i][j],1)+'%');
@@ -594,6 +630,7 @@ function propList(o){
   }
   return 'Persentase baris: '+parts.join('; ')+'.';
 }
+/* Versi ilmiah: memuat angka z */
 function residSentence(o){
   const rows=[];
   for(let i=0;i<o.r;i++){
@@ -601,34 +638,70 @@ function residSentence(o){
     o.flagged.forEach(x=>{if(x.i===i)(x.z>0?more:less).push('kategori '+o.cl[x.j]+' (z = '+fmt(x.z,2)+')');});
     if(more.length||less.length)rows.push({i:i,more:more,less:less});
   }
-  const ph=r=>{const t=[];if(r.more.length)t.push('lebih banyak subjek pada '+r.more.join(' dan '));if(r.less.length)t.push((r.more.length?'dan ':'')+'lebih sedikit pada '+r.less.join(' dan '));return t.join(' ');};
+  const ph=r=>{const t=[];if(r.more.length)t.push('lebih banyak unit pada '+r.more.join(' dan '));if(r.less.length)t.push((r.more.length?'dan ':'')+'lebih sedikit pada '+r.less.join(' dan '));return t.join(' ');};
   const sign=(r,j)=>{const f=o.flagged.find(x=>x.i===r.i&&x.j===j);return f?Math.sign(f.z):0;};
-  let s='Penelusuran dengan standardized residuals menunjukkan bahwa kelompok '+o.rl[rows[0].i]+' memiliki '+ph(rows[0])+' daripada yang diharapkan bila tidak ada asosiasi.';
+  let s='Penelusuran dengan residual terstandar (standardized residual) menunjukkan bahwa kelompok '+lr(o.rl[rows[0].i])+' memiliki '+ph(rows[0])+' daripada yang diharapkan bila tidak ada asosiasi.';
   for(let k=1;k<rows.length;k++){
     let opp=false;for(let j=0;j<o.c;j++)if(sign(rows[0],j)*sign(rows[k],j)<0)opp=true;
-    s+=(opp?' Hal ini berbeda dengan kelompok ':' Selain itu, kelompok ')+o.rl[rows[k].i]+(opp?' yang memiliki ':' memiliki ')+ph(rows[k])+'.';
+    s+=(opp?' Hal ini berbeda dengan kelompok ':' Selain itu, kelompok ')+lr(o.rl[rows[k].i])+(opp?' yang memiliki ':' memiliki ')+ph(rows[k])+'.';
   }
   return s;
 }
+/* Versi awam: tanpa angka z */
+function residPlain(o){
+  const out=[];
+  for(let i=0;i<o.r;i++){
+    const more=[],less=[];
+    o.flagged.forEach(x=>{if(x.i===i)(x.z>0?more:less).push(lcFirst(o.cl[x.j]));});
+    if(!more.length&&!less.length)continue;
+    const pts=[];
+    if(more.length)pts.push('unit dengan kategori '+joinList(more)+' lebih banyak dari yang diharapkan');
+    if(less.length)pts.push('unit dengan kategori '+joinList(less)+' lebih sedikit dari yang diharapkan');
+    out.push('Pada kelompok '+lr(o.rl[i])+', '+pts.join(', sedangkan ')+'.');
+  }
+  return out;
+}
+/* Interpretasi untuk laporan ilmiah */
 function conclusion(o,isF,p,flag){
-  const rej=p<ALPHA,A=o.rowName,B=o.colName;
+  const rej=p<ALPHA,A=lcFirst(o.rowName),B=lcFirst(o.colName);
   let s=flag?'Syarat chi-square belum terpenuhi, sehingga hasil ini belum layak dilaporkan. ':'';
-  s+=(isF?'Uji Fisher exact ':'Uji chi-square ')+(rej?'menunjukkan':'tidak menunjukkan')+' asosiasi antara '+A+' dan '+B+', dengan '+(isF?'':'χ²('+o.df+') = '+fmt(o.chi2,2)+' dan ')+'nilai p '+fmtPeq(p)+'. ';
+  s+=(isF?'Uji Fisher exact ':'Uji chi-square ')+(rej?'menunjukkan':'tidak menunjukkan')+' asosiasi antara '+A+' dan '+B+', dengan '+(isF?'':'χ²('+o.df+', N = '+o.N+') = '+fmt(o.chi2,2)+' dan ')+'nilai p '+fmtPeq(p)+'. ';
   if(o.size2){
     s+=propList(o)+' ';
     const d=o.diff,q=orPrim(o,isF);
-    s+='Selisih proporsi ('+o.rl[0]+' − '+o.rl[1]+') = '+fmt(d.diff,1)+' poin persentase (CI 95% '+ciTxt(d.lo,d.hi,1)+'). ';
-    s+='Odds ratio ('+o.rl[0]+' dibanding '+o.rl[1]+') = '+fmt(q.est,2)+(isNaN(q.lo)?' (CI tidak dapat dihitung karena ada sel bernilai 0)':' (CI 95% '+ciTxt(q.lo,q.hi,2)+')');
-    if(isFinite(q.est)&&q.est>0)s+=', artinya odds '+o.cl[0]+' pada '+o.rl[0]+' sekitar '+fmt(q.est,1)+' kali odds pada '+o.rl[1];
+    s+='Selisih proporsi ('+lr(o.rl[0])+' − '+lr(o.rl[1])+') = '+fmt(d.diff,1)+' poin persentase (CI 95% '+ciTxt(d.lo,d.hi,1)+'). ';
+    s+='Odds ratio ('+lr(o.rl[0])+' dibanding '+lr(o.rl[1])+') = '+fmt(q.est,2)+(isNaN(q.lo)?' (CI tidak dapat dihitung karena ada sel bernilai 0)':' (CI 95% '+ciTxt(q.lo,q.hi,2)+')');
+    if(isFinite(q.est)&&q.est>0)s+=', artinya odds '+lcFirst(o.cl[0])+' pada '+lr(o.rl[0])+' sekitar '+fmt(q.est,1)+' kali odds pada '+lr(o.rl[1]);
     if(!isNaN(q.lo)&&orIncl(q))s+=', tetapi CI mencakup 1';
     s+='. ';
   }else if(rej&&o.flagged.length){
     s+=residSentence(o)+' ';
   }else if(rej){
-    s+='Tidak ada sel dengan standardized residual yang melewati batas 2. ';
+    s+='Tidak ada sel dengan residual terstandar yang melewati batas 2. ';
   }
   s+='Ukuran efek '+o.effCat+' ('+(o.size2?'phi':'Cramér’s V')+' = '+fmt(o.V,2)+').';
   if(!rej)s+=' Bukti dari sampel belum cukup kuat untuk menyatakan ada asosiasi. Namun, hal ini tidak membuktikan bahwa asosiasi tidak ada.';
+  return s;
+}
+/* Interpretasi dalam bahasa awam, merujuk kembali ke populasi */
+function layText(o,isF,p,flag){
+  const rej=p<ALPHA,A=lcFirst(o.rowName),B=lcFirst(o.colName);
+  let s=flag?'Catatan: syarat uji belum terpenuhi, jadi hasil ini belum layak dilaporkan. ':'';
+  s+='Kita menarik '+fmtInt(o.N)+' unit secara acak dari populasi '+fmtInt(NPOP)+' unit. ';
+  if(o.size2){
+    s+='Pada sampel ini, proporsi '+lcFirst(o.cl[0])+' pada '+lr(o.rl[0])+' sebesar '+fmt(o.rowPct[0][0],1)+'%, sedangkan pada '+lr(o.rl[1])+' sebesar '+fmt(o.rowPct[1][0],1)+'%. ';
+    s+=rej?'Selisih ini terlalu besar untuk dianggap kebetulan (p '+fmtPeq(p)+'). ':'Selisih ini masih bisa dijelaskan oleh faktor kebetulan akibat pengambilan sampel (p '+fmtPeq(p)+'). ';
+  }else{
+    if(rej){
+      s+='Pada sampel ini, komposisi '+B+' tampak berbeda di antara berbagai '+A+'. ';
+      const pl=residPlain(o);if(pl.length)s+=pl.join(' ')+' ';
+      s+='Perbedaan ini terlalu besar untuk dianggap kebetulan (p '+fmtPeq(p)+'). ';
+    }else{
+      s+='Pada sampel ini, perbedaan komposisi '+B+' di antara berbagai '+A+' masih bisa dijelaskan oleh faktor kebetulan akibat pengambilan sampel (p '+fmtPeq(p)+'). ';
+    }
+  }
+  if(rej)s+='Karena sampel diambil secara acak, kita menduga bahwa ada asosiasi antara '+A+' dan '+B+' pada populasi '+fmtInt(NPOP)+' unit, dengan kekuatan hubungan '+o.effCat+'.';
+  else s+='Data dari sampel belum cukup kuat untuk menyimpulkan bahwa ada asosiasi pada populasi '+fmtInt(NPOP)+' unit. Hal ini tidak berarti bahwa asosiasi pasti tidak ada. Kekuatan hubungan pada sampel tergolong '+o.effCat+'.';
   return s;
 }
 function getResult(id){
@@ -636,7 +709,7 @@ function getResult(id){
   const p=isF?o.fisher.p:o.pChi;
   const title=isF?'Uji Fisher exact':(flag?'Uji chi-square (syarat belum terpenuhi)':'Uji chi-square');
   const stat=isF?'tanpa statistik uji; p eksak dua arah':'χ² = '+fmt(o.chi2,2)+'; db = '+o.df;
-  return {id:id,title:title,stat:stat,p:p,flag:flag,isF:isF,sentence:conclusion(o,isF,p,flag)};
+  return {id:id,title:title,stat:stat,p:p,flag:flag,isF:isF,sentence:conclusion(o,isF,p,flag),lay:layText(o,isF,p,flag)};
 }
 function recReason(){
   const an=state.an,o=an.o;
@@ -644,7 +717,7 @@ function recReason(){
     if(an.rec==='chi')return 'Semua frekuensi harapan bernilai 5 atau lebih (terkecil '+fmt(o.minE,2)+'), sehingga syarat uji chi-square terpenuhi.';
     return 'Frekuensi harapan terkecil '+fmt(o.minE,2)+' kurang dari 5, sehingga aproksimasi chi-square kurang andal. Pada tabel 2×2 dipakai uji Fisher exact.';
   }
-  if(an.rec==='chi')return 'Tidak ada sel dengan frekuensi harapan di bawah 1, dan sel dengan frekuensi harapan di bawah 5 berjumlah '+o.lt5+' dari '+(o.r*o.c)+' sel ('+fmt(o.pctLt5,1)+'%), tidak melebihi 20%. Syarat uji chi-square terpenuhi.';
+  if(an.rec==='chi')return 'Semua sel memiliki frekuensi harapan 1 atau lebih, dan sel dengan frekuensi harapan di bawah 5 berjumlah '+o.lt5+' dari '+(o.r*o.c)+' sel ('+fmt(o.pctLt5,1)+'%), tidak melebihi 20%. Syarat uji chi-square terpenuhi.';
   const why=[];
   if(o.lt1>0)why.push('ada '+o.lt1+' sel dengan frekuensi harapan di bawah 1');
   if(o.pctLt5>20)why.push(fmt(o.pctLt5,1)+'% sel memiliki frekuensi harapan di bawah 5, melebihi batas 20%');
@@ -655,8 +728,31 @@ function recReason(){
 function legend(items){return '<div class="legend">'+items.map(i=>'<span><i style="background:'+i[1]+'"></i>'+i[0]+'</span>').join('')+'</div>';}
 function renderBar(){
   document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-checked',b.dataset.v===state.design?'true':'false'));
-  $('#nlabel').textContent='Ukuran sampel (jumlah subjek)';
+  $('#nlabel').textContent='Ukuran sampel (jumlah unit)';
   $('#nval').textContent='n = '+state.n;
+}
+function renderHyp(){
+  const o=state.an.o,c=state.pop.ctx,two=o.c===2;
+  const rowsTxt=joinList(o.rl.map(lr));
+  const pair='antara '+lcFirst(o.rowName)+' dan '+lcFirst(o.colName);
+  const grp=c.unit+' yang '+c.verb+' '+rowsTxt;
+  const what=two?'proporsi '+lcFirst(o.cl[0]):'sebaran '+lcFirst(o.colName);
+  let nt,lg;
+  if(two&&o.r===2){
+    nt='H<sub>0</sub>: π<sub>1</sub> = π<sub>2</sub> &nbsp;&nbsp; H<sub>1</sub>: π<sub>1</sub> ≠ π<sub>2</sub>';
+    lg='π<sub>1</sub> dan π<sub>2</sub> adalah proporsi '+lcFirst(o.cl[0])+' di populasi pada kelompok 1 ('+lr(o.rl[0])+') dan kelompok 2 ('+lr(o.rl[1])+').';
+  }else if(two){
+    const eq=o.rl.map((_,i)=>'π<sub>'+(i+1)+'</sub>').join(' = ');
+    nt='H<sub>0</sub>: '+eq+' &nbsp;&nbsp; H<sub>1</sub>: sedikitnya satu π berbeda';
+    lg='π<sub>i</sub> adalah proporsi '+lcFirst(o.cl[0])+' di populasi pada kelompok ke-i.';
+  }else{
+    nt='H<sub>0</sub>: kedua variabel saling bebas &nbsp;&nbsp; H<sub>1</sub>: kedua variabel berasosiasi';
+    lg='Saling bebas berarti sebaran '+lcFirst(o.colName)+' sama pada setiap kelompok '+lcFirst(o.rowName)+'.';
+  }
+  $('#hyp').innerHTML='<div class="hyp"><div class="hyp-r"><span class="hyp-k">H<sub>0</sub></span><p>Tidak ada asosiasi '+pair+' ('+what+' sama pada '+grp+').</p></div>'+
+    '<div class="hyp-r"><span class="hyp-k">H<sub>1</sub></span><p>Ada asosiasi '+pair+' ('+what+' berbeda pada '+grp+').</p></div>'+
+    '<div class="notat">'+nt+'<div class="lg">'+lg+'</div></div></div>'+
+    '<p class="cap">Taraf signifikansi α = 0,05. Hipotesis berlaku untuk populasi, sedangkan data yang kita lihat berasal dari sampel.</p>';
 }
 function bigCircle(color,layout,hl){
   const set=new Set(hl);let s='<svg class="pop-big" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="97" fill="'+color+'" fill-opacity=".08" stroke="'+color+'" stroke-opacity=".55" stroke-width="1.5"/>';
@@ -675,50 +771,66 @@ function smallCircle(color,n){
 const ARROW='<svg class="pop-arrow" viewBox="0 0 22 34" aria-hidden="true"><path d="M11 2v26M4 21l7 8 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function renderIllu(){
   const p=state.pop,s=state.sample,n=state.n,c=p.ctx,g='#8E8E93';
-  $('#illu-sub').textContent='Satu populasi berisi '+fmtInt(NPOP)+' subjek, dan tiap subjek punya dua variabel kategoris. Titik terang di lingkaran besar menandai subjek yang terpilih menjadi sampel (populasi digambar dengan '+KDOT+' titik, jadi proporsi titik terang mengikuti proporsi sampel).';
-  $('#illu').innerHTML='<div class="pops"><div class="pop-col"><div class="pop-title">Populasi subjek</div>'+bigCircle(g,p.layout,s.hl)+'<div class="pop-sub">Populasi, N = '+fmtInt(NPOP)+' subjek</div>'+ARROW+smallCircle(g,n)+'<div class="pop-sub">Sampel acak, n = '+n+' subjek</div></div></div><p class="cap" style="text-align:center">Tiap subjek dikelompokkan menurut '+c.rowName+' ('+c.rows.join(', ')+') dan '+c.colName+' ('+c.cols.join(', ')+').</p>';
+  $('#illu-sub').textContent='Titik terang adalah unit yang terpilih menjadi sampel. Kita hanya melihat sampel, tetapi ingin menyimpulkan keadaan populasi. Satu populasi berisi '+fmtInt(NPOP)+' unit, dan tiap unit punya dua variabel kategoris. Populasi digambar dengan '+KDOT+' titik, jadi proporsi titik terang mengikuti proporsi sampel.';
+  $('#illu').innerHTML='<div class="pops"><div class="pop-col"><div class="pop-title">Populasi unit</div>'+bigCircle(g,p.layout,s.hl)+'<div class="pop-sub">Populasi, N = '+fmtInt(NPOP)+' unit</div>'+ARROW+smallCircle(g,n)+'<div class="pop-sub">Sampel acak, n = '+n+' unit</div></div></div><p class="cap" style="text-align:center">Tiap unit dikelompokkan menurut '+lcFirst(c.rowName)+' ('+c.rows.map(lr).join(', ')+') dan '+lcFirst(c.colName)+' ('+c.cols.map(lcFirst).join(', ')+').</p>';
 }
 function headCells(o,withTotal){
-  return o.cl.map((l,j)=>'<th><span class="gname"><i class="dot" style="background:'+PAL[j%PAL.length]+'"></i>'+l+'</span></th>').join('')+(withTotal?'<th>Total</th>':'');
+  return o.cl.map((l,j)=>'<th><span class="gname"><i class="dot" style="background:'+catCol(o,j)+'"></i>'+l+'</span></th>').join('')+(withTotal?'<th>Total</th>':'');
 }
-function obsTable(o){
-  let h='<div class="tblwrap"><table class="tbl"><thead><tr><th>'+o.rowName+'</th>'+headCells(o,true)+'</tr></thead><tbody>';
-  for(let i=0;i<o.r;i++)h+='<tr><td>'+o.rl[i]+'</td>'+o.n[i].map(v=>'<td>'+v+'</td>').join('')+'<td class="tot">'+o.rowTot[i]+'</td></tr>';
+function rowLbl(o,i){return '<span class="idx">'+(i+1)+'</span>'+o.rl[i];}
+function arw(act,i,d,sym,lab,dis){
+  return '<button class="arw" data-act="'+act+'" data-i="'+i+'" data-d="'+d+'" aria-label="Pindahkan '+(act==='mvrow'?'baris':'kolom')+' ke '+lab+'"'+(dis?' disabled':'')+'>'+sym+'</button>';
+}
+function obsTable(o,sw){
+  const big=sw&&!o.size2;
+  let h='<div class="tblwrap"><table class="tbl"><thead><tr><th>'+o.rowName+'</th>';
+  h+=o.cl.map((l,j)=>'<th><span class="gname"><i class="dot" style="background:'+catCol(o,j)+'"></i>'+l+'</span>'+(big?arw('mvcol',j,-1,'◀','kiri',j===0)+arw('mvcol',j,1,'▶','kanan',j===o.c-1):'')+'</th>').join('')+'<th>Total</th></tr></thead><tbody>';
+  for(let i=0;i<o.r;i++)h+='<tr><td>'+rowLbl(o,i)+(big?arw('mvrow',i,-1,'▲','atas',i===0)+arw('mvrow',i,1,'▼','bawah',i===o.r-1):'')+'</td>'+o.n[i].map(v=>'<td>'+v+'</td>').join('')+'<td class="tot">'+o.rowTot[i]+'</td></tr>';
   h+='<tr><td>Total</td>'+o.colTot.map(v=>'<td class="tot">'+v+'</td>').join('')+'<td class="tot">'+o.N+'</td></tr></tbody></table></div>';
   return h;
 }
+function ordChanged(){
+  const c=state.pop.ctx;
+  return (c.ordRow&&state.rowOrder.some((v,i)=>v!==i))||(c.ordCol&&state.colOrder.some((v,i)=>v!==i));
+}
 function renderDesc(){
   const o=state.an.o;
-  let h='<div class="vsub" style="margin-top:0">Tabel kontingensi (frekuensi teramati)</div>'+obsTable(o);
+  let sub='Bandingkan persentase antarbaris pada kolom yang sama. ';
+  sub+=o.size2?'Tombol tukar mengubah urutan baris dan kolom. Tanda selisih proporsi dan odds ratio ikut berubah, sedangkan nilai p dan ukuran efek tetap.':'Panah pada tabel memindahkan urutan baris dan kolom. Nilai χ², nilai p, dan ukuran efek tidak bergantung pada urutan.';
+  $('#desc-sub').textContent=sub;
+  let h='';
+  if(o.size2)h+='<div class="swapbar"><button class="btn sec" data-act="swaprow">⇅ Tukar baris</button><button class="btn sec" data-act="swapcol">⇄ Tukar kolom</button></div>';
+  h+='<div class="vsub" style="margin-top:0">Tabel kontingensi (frekuensi teramati)</div>'+obsTable(o,true);
+  if(ordChanged())h+='<p class="cap">Salah satu variabel berskala ordinal. Menukar urutan kategori tidak mengubah hasil uji chi-square, tetapi pola menjadi lebih sulit dibaca karena urutan alaminya terganggu.</p>';
   h+='<div class="vsub">Persentase dalam baris</div><div class="tblwrap"><table class="tbl"><thead><tr><th>'+o.rowName+'</th>'+headCells(o,false)+'</tr></thead><tbody>';
-  for(let i=0;i<o.r;i++)h+='<tr><td>'+o.rl[i]+' (n = '+o.rowTot[i]+')</td>'+o.rowPct[i].map(v=>'<td>'+fmt(v,1)+'%</td>').join('')+'</tr>';
-  h+='</tbody></table></div><p class="cap">Setiap baris dijumlahkan menjadi 100%. Bandingkan persentase antarbaris pada kolom yang sama untuk melihat apakah komposisinya berbeda.</p>';
+  for(let i=0;i<o.r;i++)h+='<tr><td>'+rowLbl(o,i)+' (n = '+o.rowTot[i]+')</td>'+o.rowPct[i].map(v=>'<td>'+fmt(v,1)+'%</td>').join('')+'</tr>';
+  h+='</tbody></table></div><p class="cap">Setiap baris dijumlahkan menjadi 100%. Warna titik pada judul kolom tetap melekat pada kategorinya, sekalipun urutan kolom ditukar.</p>';
   $('#desc').innerHTML=h;
 }
 function renderViz(){
   const o=state.an.o;
-  let h=legend(o.cl.map((l,j)=>[l,PAL[j%PAL.length]]))+'<div class="chart" data-chart="stack"></div>';
-  h+='<p class="cap">Tiap batang menunjukkan komposisi '+o.colName.toLowerCase()+' dalam satu baris, sehingga semua batang berpanjang sama (100%) dan panjangnya tidak mencerminkan jumlah subjek. Jumlah subjek tiap baris (n) tertulis di sebelah kiri batang. Batang dengan komposisi yang mirip menunjukkan tidak ada asosiasi yang jelas, sedangkan komposisi yang berbeda menunjukkan adanya asosiasi pada sampel.</p>';
+  let h=legend(o.cl.map((l,j)=>[l,catCol(o,j)]))+'<div class="chart" data-chart="stack"></div>';
+  h+='<p class="cap">Tiap batang menunjukkan komposisi '+lcFirst(o.colName)+' dalam satu baris, sehingga semua batang berpanjang sama (100%) dan panjangnya tidak mencerminkan jumlah unit. Jumlah unit tiap baris (n) tertulis di sebelah kiri batang.</p>';
   $('#viz').innerHTML=h;
 }
 function chipFor(ok,okTxt,badTxt){return ok?'<span class="chip ok">'+okTxt+'</span>':'<span class="chip warn">'+badTxt+'</span>';}
 function renderAssump(){
   const an=state.an,o=an.o;
   let h='<div class="vsub" style="margin-top:0">Frekuensi harapan jika tidak ada asosiasi</div><div class="tblwrap"><table class="tbl"><thead><tr><th>'+o.rowName+'</th>'+headCells(o,false)+'</tr></thead><tbody>';
-  for(let i=0;i<o.r;i++)h+='<tr><td>'+o.rl[i]+'</td>'+o.E[i].map(e=>'<td class="'+(e<1?'lt1':e<5?'lt5':'')+'">'+fmt(e,2)+'</td>').join('')+'</tr>';
+  for(let i=0;i<o.r;i++)h+='<tr><td>'+rowLbl(o,i)+'</td>'+o.E[i].map(e=>'<td class="'+(e<1?'lt1':e<5?'lt5':'')+'">'+fmt(e,2)+'</td>').join('')+'</tr>';
   h+='</tbody></table></div><p class="cap">Frekuensi harapan = total baris × total kolom ÷ N. Sel berlatar oranye memiliki frekuensi harapan di bawah 5 dan sel berlatar merah muda di bawah 1.</p>';
   h+='<div class="asm" style="margin-top:16px">';
   if(an.size2){
     h+='<div class="asm-r"><div class="asm-n">Semua frekuensi harapan ≥ 5</div>'+chipFor(o.minE>=5,'Terpenuhi','Tidak terpenuhi')+'<div class="asm-s">Frekuensi harapan terkecil = '+fmt(o.minE,2)+'</div></div>';
   }else{
-    h+='<div class="asm-r"><div class="asm-n">Tidak ada sel dengan frekuensi harapan < 1</div>'+chipFor(o.lt1===0,'Terpenuhi','Tidak terpenuhi')+'<div class="asm-s">Jumlah sel dengan frekuensi harapan < 1 = '+o.lt1+'</div></div>';
+    h+='<div class="asm-r"><div class="asm-n">Semua sel memiliki frekuensi harapan ≥ 1</div>'+chipFor(o.lt1===0,'Terpenuhi','Tidak terpenuhi')+'<div class="asm-s">Jumlah sel dengan frekuensi harapan < 1 = '+o.lt1+'</div></div>';
     h+='<div class="asm-r"><div class="asm-n">Sel dengan frekuensi harapan < 5 tidak lebih dari 20%</div>'+chipFor(o.pctLt5<=20,'Terpenuhi','Tidak terpenuhi')+'<div class="asm-s">'+o.lt5+' dari '+(o.r*o.c)+' sel ('+fmt(o.pctLt5,1)+'%)</div></div>';
   }
   h+='</div><p class="note">Syarat chi-square dinilai dari frekuensi harapan, bukan dari frekuensi teramati. Pada n kecil, frekuensi harapan mudah menjadi kecil. Menaikkan n atau menggabungkan kategori yang bermakna secara biologis memperbaiki keadaan ini.</p>';
   $('#assump').innerHTML=h;
 }
 function renderChoose(){
-  const an=state.an,el=$('#choose'),des=state.design,ok=an.size2;
+  const an=state.an,el=$('#choose'),ok=an.size2;
   const intro=ok?'Kedua variabel masing-masing punya dua kategori, jadi tabelnya 2×2.':'Tabel kontingensi ini lebih besar dari 2×2 ('+an.o.r+' baris × '+an.o.c+' kolom).';
   if(state.guessMode&&state.guess===null){
     el.innerHTML='<p class="hint">'+intro+' Berdasarkan tabel dan hasil pemeriksaan asumsi di atas, langkah mana yang kamu pilih?</p><div class="choices">'+TESTS.map(t=>'<button class="choice" data-act="guess" data-id="'+t.id+'">'+t.name+'<small>'+t.sub+'</small></button>').join('')+'</div><p style="margin:14px 0 0"><button class="btn ghost" data-act="skip">Tampilkan jawaban tanpa menebak</button></p>';
@@ -733,30 +845,41 @@ function renderChoose(){
     else h+='<div class="fb warn"><b>Belum tepat.</b> Kamu memilih '+g.name+'. Berdasarkan frekuensi harapan, langkah yang dianjurkan berbeda.</div>';
   }
   h+='<div class="rec"><div class="k">Langkah yang dianjurkan</div><div class="v">'+tname(an.rec)+'</div><p>'+recReason()+'</p></div>';
-  h+='<details><summary>Catatan tentang aturan pemilihan uji</summary><p>Aturan di sini dipakai untuk latihan. Pada tabel 2×2, chi-square dipakai bila semua frekuensi harapan bernilai 5 atau lebih, dan Fisher exact bila ada yang di bawah 5. Pada tabel yang lebih besar, chi-square dipakai bila tidak ada frekuensi harapan di bawah 1 dan sel dengan frekuensi harapan di bawah 5 tidak lebih dari 20%. Sumber lain memakai batas yang sedikit berbeda, dan ada juga yang menyarankan Fisher exact lebih sering. Bila sel perlu digabung, pertimbangan biologis menentukan penggabungannya, bukan angka semata.</p></details>';
+  h+='<details><summary>Catatan tentang aturan pemilihan uji</summary><p>Aturan di sini dipakai untuk latihan. Pada tabel 2×2, chi-square dipakai bila semua frekuensi harapan bernilai 5 atau lebih, dan Fisher exact bila ada yang di bawah 5. Pada tabel yang lebih besar, chi-square dipakai bila semua sel memiliki frekuensi harapan 1 atau lebih dan sel dengan frekuensi harapan di bawah 5 tidak lebih dari 20%. Sumber lain memakai batas yang sedikit berbeda, dan ada juga yang menyarankan Fisher exact lebih sering. Bila sel perlu digabung, pertimbangan biologis menentukan penggabungannya, bukan angka semata.</p></details>';
   el.innerHTML=h;
 }
 function residTable(o){
   let h='<div class="tblwrap"><table class="tbl"><thead><tr><th>'+o.rowName+'</th>'+headCells(o,false)+'</tr></thead><tbody>';
-  for(let i=0;i<o.r;i++)h+='<tr><td>'+o.rl[i]+'</td>'+o.R[i].map(z=>'<td class="'+(Math.abs(z)>2?'hl':'')+'">'+fmt(z,2)+'</td>').join('')+'</tr>';
+  for(let i=0;i<o.r;i++)h+='<tr><td>'+rowLbl(o,i)+'</td>'+o.R[i].map(z=>{
+    const cls=z>2?'rp':z<-2?'rn':'';
+    return '<td class="'+cls+'">'+fmt(z,2)+(z>2?'<small>lebih banyak</small>':z<-2?'<small>lebih sedikit</small>':'')+'</td>';
+  }).join('')+'</tr>';
   return h+'</tbody></table></div>';
+}
+function effTable(o){
+  const t=o.thr;
+  const rows=[['sangat kecil','< '+fmt(t[0],2)],['kecil',fmt(t[0],2)+' sampai < '+fmt(t[1],2)],['sedang',fmt(t[1],2)+' sampai < '+fmt(t[2],2)],['besar','≥ '+fmt(t[2],2)]];
+  let h='<div class="tblwrap"><table class="tbl"><thead><tr><th>Kategori ukuran efek</th><th>Rentang '+(o.size2?'phi':'V')+'</th></tr></thead><tbody>';
+  rows.forEach(r=>{h+='<tr'+(r[0]===o.effCat?' class="hlrow"':'')+'><td>'+r[0].charAt(0).toUpperCase()+r[0].slice(1)+(r[0]===o.effCat?' (hasil ini)':'')+'</td><td>'+r[1]+'</td></tr>';});
+  return h+'</tbody></table></div><p class="note" style="margin-top:8px">Batas klasifikasi adalah 0,10; 0,30; dan 0,50 dibagi akar k, dengan k = nilai terkecil antara (jumlah baris − 1) dan (jumlah kolom − 1). Pada tabel ini k = '+o.k+'.</p>';
 }
 function renderResults(){
   const el=$('#results');
-  if(state.guessMode&&state.guess===null){el.innerHTML='<h2>Hasil uji</h2><div class="card muted">Pilih satu langkah di atas untuk membuka hasilnya.</div>';return;}
+  if(state.guessMode&&state.guess===null){el.innerHTML='<h2>Hasil uji</h2><p class="sub">Nilai p di bawah 0,05 berarti H0 ditolak. Baca juga ukuran efeknya.</p><div class="card muted">Pilih satu langkah di atas untuk membuka hasilnya.</div>';return;}
   const an=state.an,o=an.o,r=getResult(an.rec),sig=r.p<ALPHA;
-  let h='<h2>Hasil uji</h2><div class="card">';
+  let h='<h2>Hasil uji</h2><p class="sub">Nilai p di bawah 0,05 berarti H0 ditolak. Baca juga ukuran efeknya.</p><div class="card">';
   if(r.flag)h+='<div class="fb warn">Syarat chi-square belum terpenuhi pada tabel ini. Hasil di bawah ditampilkan sebagai gambaran dan belum layak dilaporkan. Gabungkan kategori yang bermakna, atau naikkan n.</div>';
   h+='<div class="res-head"><span class="res-name">'+r.title+'</span><span class="res-stat">'+r.stat+'</span></div><div class="gridn">';
   h+='<div class="tile"><div class="k">Nilai p</div><div class="v">'+fmtP(r.p)+'</div><div class="s">'+(sig?'<span class="chip ok">Tolak H0</span>':'<span class="chip no">Gagal menolak H0</span>')+'</div></div>';
   if(an.size2){
     const d=o.diff,q=orPrim(o,r.isF);
-    h+='<div class="tile"><div class="k">Selisih proporsi '+o.cl[0]+', poin persentase ('+o.rl[0]+' − '+o.rl[1]+')</div><div class="v">'+fmt(d.diff,1)+'</div><div class="s">CI 95% (Wald): '+ciTxt(d.lo,d.hi,1)+'</div></div>';
-    h+='<div class="tile"><div class="k">Odds ratio ('+o.rl[0]+' dibanding '+o.rl[1]+')</div><div class="v">'+fmt(q.est,2)+'</div><div class="s">'+(isNaN(q.lo)?'CI tidak tersedia (ada sel bernilai 0)':'CI 95% ('+(r.isF?'exact':'Wald')+'): '+ciTxt(q.lo,q.hi,2))+'</div></div>';
+    h+='<div class="tile"><div class="k">Selisih proporsi '+lcFirst(o.cl[0])+', poin persentase ('+lr(o.rl[0])+' − '+lr(o.rl[1])+')</div><div class="v">'+fmt(d.diff,1)+'</div><div class="s">CI 95% (Wald): '+ciTxt(d.lo,d.hi,1)+'</div></div>';
+    h+='<div class="tile"><div class="k">Odds ratio ('+lr(o.rl[0])+' dibanding '+lr(o.rl[1])+')</div><div class="v">'+fmt(q.est,2)+'</div><div class="s">'+(isNaN(q.lo)?'CI tidak tersedia (ada sel bernilai 0)':'CI 95% ('+(r.isF?'exact':'Wald')+'): '+ciTxt(q.lo,q.hi,2))+'</div></div>';
   }
   h+='<div class="tile"><div class="k">'+o.effName+(an.size2?'':' (k = '+o.k+')')+'</div><div class="v">'+fmt(o.V,2)+'</div><div class="s">Efek '+o.effCat+'</div></div>';
   if(!an.size2)h+='<div class="tile"><div class="k">Sel dengan |residual| > 2</div><div class="v">'+o.flagged.length+'</div><div class="s">dibaca bila p < 0,05</div></div>';
   h+='</div>';
+  h+='<div class="vsub">Klasifikasi ukuran efek ('+o.effName+')</div>'+effTable(o);
   h+='<div class="vsub">'+(r.isF?'Distribusi peluang di bawah H0 (Fisher exact)':'Statistik uji dan daerah penolakan H0')+'</div><div class="chart" data-chart="test"></div>';
   h+='<p class="note" style="margin-top:4px">'+(r.isF?'Grafik menunjukkan peluang tiap kemungkinan isi sel baris 1 kolom 1 bila H0 benar dan semua total baris dan kolom tetap. Nilai p adalah jumlah peluang batang merah.':'Daerah merah adalah daerah penolakan H0 pada α = 0,05. Titik menandai nilai χ² dari sampel ini: bila titik berada di daerah merah, H0 ditolak.')+'</p>';
   if(an.size2){
@@ -765,37 +888,41 @@ function renderResults(){
     const od=i=>o.n[i][1]===0?(o.n[i][0]===0?NaN:Infinity):o.n[i][0]/o.n[i][1];
     const sm=o.orWald.est;
     h+='<div class="vsub">Odds ratio dan CI 95% (skala logaritmik)</div>';
-    h+='<p class="note" style="margin-top:0">Odds adalah jumlah subjek dengan '+o.cl[0]+' dibagi jumlah subjek dengan '+o.cl[1]+' dalam satu kelompok.</p>';
-    h+='<ul class="odds"><li>Odds untuk '+o.rl[0]+' = '+o.n[0][0]+'/'+o.n[0][1]+' = '+fmt(od(0),2)+'</li><li>Odds untuk '+o.rl[1]+' = '+o.n[1][0]+'/'+o.n[1][1]+' = '+fmt(od(1),2)+'</li><li>Odds ratio = '+fmt(od(0),2)+'/'+fmt(od(1),2)+' = '+fmt(sm,2)+'</li></ul>';
+    h+='<p class="note" style="margin-top:0">Odds adalah jumlah unit dengan '+lcFirst(o.cl[0])+' dibagi jumlah unit dengan '+lcFirst(o.cl[1])+' dalam satu kelompok.</p>';
+    h+='<ul class="odds"><li>Odds untuk '+lr(o.rl[0])+' = '+o.n[0][0]+'/'+o.n[0][1]+' = '+fmt(od(0),2)+'</li><li>Odds untuk '+lr(o.rl[1])+' = '+o.n[1][0]+'/'+o.n[1][1]+' = '+fmt(od(1),2)+'</li><li>Odds ratio = '+fmt(od(0),2)+'/'+fmt(od(1),2)+' = '+fmt(sm,2)+'</li></ul>';
     if(r.isF)h+='<p class="note" style="margin-top:-6px">Odds ratio di atas dihitung dari tabel sampel. Uji Fisher exact memakai estimasi bersyarat ('+fmt(q.est,2)+'), sehingga angkanya sedikit berbeda dan dipakai pada grafik di bawah.</p>';
     h+='<div class="chart" data-chart="or"></div>';
     h+='<p class="note" style="margin-top:4px">Garis putus-putus menandai keadaan tanpa asosiasi menurut H0 (selisih 0 dan odds ratio 1). Bila CI tidak memotong garis, arah asosiasi jelas. Odds ratio memakai CI '+(r.isF?'exact dari estimasi bersyarat (Fisher)':'Wald dari odds ratio sampel')+'.'+(q.est===Infinity||q.est===0?' Salah satu sel bernilai 0, sehingga estimasi berada di batas dan CI terbuka di satu sisi.':'')+'</p>';
   }else{
-    h+='<div class="vsub">Standardized residuals</div>'+residTable(o)+'<p class="note">Residual positif berarti sel berisi lebih banyak subjek daripada yang diharapkan bila tidak ada asosiasi, dan residual negatif berarti lebih sedikit. Nilai di atas 2 atau di bawah −2 dianggap menonjol (cetak tebal merah). Residual dibaca bila hasil uji bernilai p < 0,05'+(sig?'.':'. Pada tabel ini H0 tidak ditolak, jadi tabel ini ditampilkan sebagai informasi.')+' Dengan banyak sel, sorotan dibaca sebagai petunjuk.</p>'+(sig&&o.flagged.length?'<p class="note" style="color:var(--ink);font-size:15px">'+residSentence(o)+'</p>':'');
+    h+='<div class="vsub">Residual terstandar (standardized residual)</div><p class="note" style="margin-top:0">Sel berwarna menunjukkan kategori yang lebih banyak (biru) atau lebih sedikit (jingga) dari yang diharapkan bila tidak ada asosiasi. Angka di dalam sel adalah nilai z.</p>'+residTable(o);
+    h+='<p class="note">Residual dibaca bila hasil uji bernilai p < 0,05'+(sig?'.':'. Pada tabel ini H0 tidak ditolak, jadi tabel ini ditampilkan sebagai informasi.')+' Dengan banyak sel, sorotan dibaca sebagai petunjuk.</p>';
+    if(sig&&o.flagged.length){const pl=residPlain(o);h+='<div class="plain" style="margin-top:12px">'+pl.map(x=>'<p>'+x+'</p>').join('')+'</div>';}
+    h+='<details><summary>Apa arti angka z?</summary><p>Nilai z menyatakan selisih antara frekuensi teramati dan frekuensi harapan dalam satuan simpangan baku. Nilai di atas 2 berarti sel berisi lebih banyak unit daripada yang diharapkan, dan nilai di bawah −2 berarti lebih sedikit. Nilai di antara −2 dan 2 dianggap masih wajar akibat kebetulan.</p></details>';
   }
-  h+='<div class="interp"><div class="k">Interpretasi</div><p id="interp-text">'+r.sentence+'</p><button class="btn sec" data-act="copy">Salin interpretasi</button></div>';
+  h+='<div class="interp"><div class="k">Interpretasi untuk laporan ilmiah</div><p id="interp-sci">'+r.sentence+'</p><button class="btn sec" data-act="copy" data-target="interp-sci" data-label="Salin versi ilmiah">Salin versi ilmiah</button></div>';
+  h+='<div class="interp"><div class="k">Interpretasi dalam bahasa awam</div><p id="interp-lay">'+r.lay+'</p><button class="btn sec" data-act="copy" data-target="interp-lay" data-label="Salin versi awam">Salin versi awam</button></div>';
   const ids=an.size2?['chi','fisher']:['chi'];
   h+='<details><summary>Bandingkan semua uji pada data yang sama</summary><div class="tblwrap" style="margin-top:10px"><table class="tbl cmp"><thead><tr><th>Uji</th><th>Nilai p</th></tr></thead><tbody>'+ids.map(id=>'<tr><td>'+TESTS.find(t=>t.id===id).name+(id===an.rec?' (dianjurkan)':'')+'</td><td>'+fmtP(an.tests[id].p)+'</td></tr>').join('')+'</tbody></table></div></details>';
   h+='</div>';
   const hs=state.history,nsig=hs.filter(x=>x.p<ALPHA).length;
-  h+='<h2>Nilai p lintas penarikan sampel</h2><p class="sub">Tiap kali sampel ditarik ulang dari populasi yang sama, nilai p ikut berubah dan keputusannya kadang berbalik.</p><div class="card"><div class="chart" data-chart="hist"></div><p class="cap">'+nsig+' dari '+hs.length+' penarikan menghasilkan p < 0,05 (titik biru), diukur dengan langkah yang dianjurkan pada setiap penarikan. Titik dengan cincin adalah penarikan terbaru.</p></div>';
+  h+='<h2>Nilai p lintas penarikan sampel</h2><p class="sub">Sampel yang berbeda dari populasi yang sama dapat memberi keputusan yang berbeda. Tiap kali sampel ditarik ulang, nilai p ikut berubah dan keputusannya kadang berbalik.</p><div class="card"><div class="chart" data-chart="hist"></div><p class="cap">'+nsig+' dari '+hs.length+' penarikan menghasilkan p < 0,05 (titik biru), diukur dengan langkah yang dianjurkan pada setiap penarikan. Titik dengan cincin adalah penarikan terbaru.</p></div>';
   const p=state.pop;
   if(!state.revealed){
     h+='<div class="card muted" style="margin-top:26px">Sudah menentukan kesimpulan? Bandingkan dengan keadaan populasi yang sebenarnya.<div style="margin-top:14px"><button class="btn" data-act="reveal">Buka kebenaran populasi</button></div></div>';
   }else{
-    const po=p.popO,c=p.ctx;let v,cls;
+    const po=analyzeCounts(p.popN);let v,cls;
     if(sig&&!p.h0true){v='Keputusan benar. Asosiasi memang ada di populasi dan berhasil terdeteksi oleh sampel ini.';cls='ok';}
     else if(sig&&p.h0true){v='Positif palsu (galat tipe I). H0 sebenarnya benar, tetapi sampel ini kebetulan menghasilkan p < 0,05.';cls='warn';}
     else if(!sig&&!p.h0true){v='Negatif palsu (galat tipe II). Asosiasi ada di populasi, tetapi sampel ini belum cukup kuat untuk mendeteksinya. Coba naikkan n atau tarik ulang sampel.';cls='warn';}
     else{v='Keputusan benar. H0 benar dan tidak ditolak.';cls='ok';}
-    h+='<h2>Kebenaran populasi</h2><div class="card">';
+    h+='<h2>Kebenaran populasi</h2><p class="sub">Ini keadaan sebenarnya, untuk memeriksa apakah keputusan dari sampel tepat.</p><div class="card">';
     if(po.size2){
-      h+='<div class="truth-row"><span>Selisih proporsi '+c.cols[0]+' di populasi ('+c.rows[0]+' − '+c.rows[1]+')</span><span>'+fmt(po.diff.diff,1)+' poin persentase</span></div>';
-      h+='<div class="truth-row"><span>Odds ratio populasi ('+c.rows[0]+' dibanding '+c.rows[1]+')</span><span>'+fmt(po.orWald.est,2)+'</span></div>';
+      h+='<div class="truth-row"><span>Selisih proporsi '+lcFirst(po.cl[0])+' di populasi ('+lr(po.rl[0])+' − '+lr(po.rl[1])+')</span><span>'+fmt(po.diff.diff,1)+' poin persentase</span></div>';
+      h+='<div class="truth-row"><span>Odds ratio populasi ('+lr(po.rl[0])+' dibanding '+lr(po.rl[1])+')</span><span>'+fmt(po.orWald.est,2)+'</span></div>';
     }
     h+='<div class="truth-row"><span>Ukuran efek populasi ('+po.effName+')</span><span>'+fmt(po.V,2)+' ('+po.effCat+')</span></div>';
     h+='<div class="truth-row"><span>H0 (tidak ada asosiasi)</span><span>'+(p.h0true?'benar':'salah')+'</span></div>';
-    h+='<div class="vsub">Tabel populasi ('+fmtInt(NPOP)+' subjek)</div>'+obsTable(po);
+    h+='<div class="vsub">Tabel populasi ('+fmtInt(NPOP)+' unit)</div>'+obsTable(po,false);
     h+='<div class="fb '+cls+' verdict">'+v+'</div><p class="note">Perbedaan antara tabel sampel dan tabel populasi disebut galat sampling. Tabel populasi dipakai sebagai acuan keadaan sebenarnya.</p></div>';
   }
   el.innerHTML=h;
@@ -813,17 +940,17 @@ function txt(x,y,str,o){
 }
 function line(x1,y1,x2,y2,stroke,w,extra){return '<line x1="'+r1(x1)+'" y1="'+r1(y1)+'" x2="'+r1(x2)+'" y2="'+r1(y2)+'" stroke="'+stroke+'" stroke-width="'+w+'"'+(extra||'')+'/>';}
 function stackChart(W){
-  const o=state.an.o,r=o.r,c=o.c,bh=34,gap=16,ml=Math.round(Math.min(160,Math.max(96,W*0.26))),mr=14,mt=8,mb=30;
+  const o=state.an.o,r=o.r,c=o.c,bh=34,gap=16,ml=Math.round(Math.min(170,Math.max(104,W*0.28))),mr=14,mt=8,mb=30;
   const H=mt+r*(bh+gap)-gap+mb,pw=W-ml-mr;
   let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Persentase tiap kategori kolom dalam setiap baris">';
   for(let i=0;i<r;i++){
     const y=mt+i*(bh+gap);let x=ml;
-    s+=txt(ml-8,y+bh/2-1,shortName(o.rl[i],ml<130?14:22),{size:12,weight:600,anchor:'end',fill:'var(--ink)'});
+    s+=txt(ml-8,y+bh/2-1,(i+1)+'. '+shortName(o.rl[i],ml<130?14:22),{size:12,weight:600,anchor:'end',fill:'var(--ink)'});
     s+=txt(ml-8,y+bh/2+13,'n = '+o.rowTot[i],{size:11,anchor:'end'});
     for(let j=0;j<c;j++){
       const w=o.rowPct[i][j]/100*pw;
       if(w>0){
-        s+='<rect x="'+r1(x)+'" y="'+r1(y)+'" width="'+r1(w)+'" height="'+bh+'" fill="'+PAL[j%PAL.length]+'" fill-opacity="0.88"/>';
+        s+='<rect x="'+r1(x)+'" y="'+r1(y)+'" width="'+r1(w)+'" height="'+bh+'" fill="'+catCol(o,j)+'" fill-opacity="0.9"/>';
         if(w>40)s+=txt(x+w/2,y+bh/2+4.5,fmt(o.rowPct[i][j],1)+'%',{size:12,weight:700,fill:'#fff'});
       }
       x+=w;
@@ -945,9 +1072,14 @@ function drawCharts(){
 }
 
 /* ----- Alur ----- */
-function renderAll(){renderBar();renderIllu();renderDesc();renderViz();renderAssump();renderChoose();renderResults();drawCharts();}
+function renderAll(){renderBar();renderHyp();renderIllu();renderDesc();renderViz();renderAssump();renderChoose();renderResults();drawCharts();}
 function renderGuess(){renderChoose();renderResults();drawCharts();}
-function newPop(){state.pop=makePop(state.design);state.history=[];state.revealed=false;drawSample();renderAll();}
+function newPop(){
+  state.pop=makePop(state.design);
+  state.rowOrder=state.pop.ctx.rows.map((_,i)=>i);
+  state.colOrder=state.pop.ctx.cols.map((_,i)=>i);
+  state.history=[];state.revealed=false;drawSample();renderAll();
+}
 function resample(){drawSample();renderAll();}
 
 document.addEventListener('click',e=>{
@@ -957,12 +1089,19 @@ document.addEventListener('click',e=>{
   else if(a==='resample')resample();
   else if(a==='theme')toggleTheme();
   else if(a==='newpop')newPop();
+  else if(a==='swaprow'){state.rowOrder.reverse();refresh();}
+  else if(a==='swapcol'){state.colOrder.reverse();refresh();}
+  else if(a==='mvrow'||a==='mvcol'){
+    const arr=a==='mvrow'?state.rowOrder:state.colOrder,i=+t.dataset.i,j=i+(+t.dataset.d);
+    if(j<0||j>=arr.length)return;
+    const tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;refresh();
+  }
   else if(a==='guess'){state.guess=t.dataset.id;renderGuess();}
   else if(a==='skip'){state.guess='skip';renderGuess();}
   else if(a==='reveal'){state.revealed=true;renderGuess();}
   else if(a==='copy'){
-    const txtv=$('#interp-text').textContent;
-    const done=()=>{t.textContent='Tersalin';setTimeout(()=>{t.textContent='Salin interpretasi';},1600);};
+    const src=document.getElementById(t.dataset.target),txtv=src?src.textContent:'',orig=t.dataset.label||t.textContent;
+    const done=()=>{t.textContent='Tersalin';setTimeout(()=>{t.textContent=orig;},1600);};
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txtv).then(done,done);
     else{const ta=document.createElement('textarea');ta.value=txtv;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(_){}document.body.removeChild(ta);done();}
   }
