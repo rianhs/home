@@ -1,0 +1,2449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Week 1 Module · Human-Animal Dynamics and Animal Welfare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#000; --card:#1c1c1e; --card2:#2c2c2e; --field:#111113; --line:#3a3a3c;
+  --text:#f5f5f7; --muted:#a1a1a6; --btn:#0071e3; --link:#6cb0ff;
+  --ok:#5ee27a; --no:#ff8a82;
+  --r:18px;
+  --font:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.65 var(--font);-webkit-font-smoothing:antialiased}
+a{color:var(--link)}
+:focus-visible{outline:3px solid #6cb0ff;outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px;background:var(--btn);color:#fff;padding:10px 16px;border-radius:12px;z-index:100;text-decoration:none}
+.skip:focus{left:8px}
+.muted{color:var(--muted)}
+
+/* top bar and navigation */
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:10px 20px;background:rgba(18,18,20,.82);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--line)}
+.brand{margin:0;flex:1;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand span{color:var(--muted);font-weight:500}
+.menu-btn{display:none;align-items:center;gap:8px}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:#6cb0ff}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:44px;max-width:1180px;margin:0 auto;padding:0 20px}
+#toc{position:sticky;top:62px;align-self:start;max-height:calc(100vh - 76px);overflow:auto;padding:24px 0}
+#toc p.toc-t{margin:0 12px 10px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+#toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+#toc a{display:flex;gap:12px;align-items:baseline;padding:9px 12px;border-radius:12px;color:var(--muted);text-decoration:none;font-size:14px;line-height:1.35}
+#toc a .n{flex:none;width:20px;font-weight:600;color:var(--muted)}
+#toc a:hover{background:var(--card)}
+#toc a[aria-current="true"]{background:var(--card);color:var(--text)}
+#toc a[aria-current="true"] .n{color:var(--text)}
+main{min-width:0;max-width:780px;padding:36px 0 140px}
+.hero{padding:12px 0 8px}
+.eyebrow{margin:0 0 8px;font-size:14px;font-weight:600;color:var(--muted)}
+.hero h1{margin:0;font-size:clamp(32px,6vw,48px);line-height:1.1;font-weight:700;letter-spacing:-.02em}
+
+/* typography */
+.part{margin-top:56px;padding-top:44px;border-top:1px solid var(--line)}
+.hero+.part{margin-top:32px}
+h2{margin:0 0 18px;font-size:clamp(26px,4.4vw,34px);line-height:1.2;font-weight:700;letter-spacing:-.015em;display:flex;gap:14px;align-items:baseline}
+h2 .pn{flex:none;display:inline-grid;place-items:center;min-width:38px;height:38px;padding:0 10px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:18px;font-weight:600;color:var(--muted)}
+h3{margin:40px 0 12px;font-size:22px;line-height:1.3;font-weight:650;letter-spacing:-.01em}
+h4{margin:0 0 8px;font-size:17px;line-height:1.35;font-weight:650}
+p{margin:0 0 14px}
+ul,ol{margin:0 0 14px;padding-left:22px}
+li{margin:4px 0}
+li::marker{color:var(--muted)}
+.lead{font-size:18px;color:#dcdce0}
+em,i{font-style:italic}
+
+/* uniform box */
+.box,.card,.tw{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.card{padding:20px}
+.card>*:last-child{margin-bottom:0}
+.tw{overflow-x:auto;margin:14px 0}
+.stack>*+*{margin-top:14px}
+.gap{margin-top:14px}
+.big{font-size:19px;line-height:1.5;font-weight:600}
+
+/* tables */
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.5}
+th,td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font-size:12.5px;font-weight:600;letter-spacing:.03em;color:var(--muted);background:rgba(255,255,255,.03)}
+tr:last-child td{border-bottom:0}
+table.w1{min-width:520px}table.w2{min-width:680px}table.w3{min-width:820px}
+
+/* controls */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 20px;border:0;border-radius:999px;background:var(--btn);color:#fff;font:600 15px/1.2 var(--font);cursor:pointer}
+.btn:hover{filter:brightness(1.1)}
+.btn.sec{background:var(--card2);color:var(--text);border:1px solid var(--line)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+textarea,input[type=text],select{width:100%;font:400 15px/1.5 var(--font);color:var(--text);background:var(--field);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+textarea{min-height:78px;resize:vertical}
+select{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,#a1a1a6 50%),linear-gradient(135deg,#a1a1a6 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 12px) 55%;background-size:6px 6px;background-repeat:no-repeat}
+::placeholder{color:#8a8a8f}
+label.fld,.fld-t{display:block;margin:0 0 6px;font-size:14px;font-weight:500;color:var(--muted)}
+.fieldset{border:0;margin:0 0 16px;padding:0;min-width:0}
+.fieldset legend{padding:0;margin:0 0 6px;font-weight:600}
+.fieldset legend small{display:block;font-weight:400;color:var(--muted)}
+.radios{display:grid;gap:8px}
+.radios label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--field);cursor:pointer;font-size:14.5px;line-height:1.45}
+.radios label:hover{background:var(--card2)}
+.radios input{margin:3px 0 0;accent-color:#0a84ff;width:18px;height:18px;flex:none}
+.radios label.on{background:var(--card2);border-color:#6cb0ff}
+.radios .sc{flex:none;min-width:18px;font-weight:700}
+
+/* feedback */
+.fb{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--line);font-size:15px}
+.fb[hidden]{display:none}
+.fb .st{font-weight:700}
+.fb.ok .st{color:var(--ok)}
+.fb.no .st{color:var(--no)}
+.fb p:last-child{margin-bottom:0}
+
+/* accordion */
+.acc{margin:12px 0}
+.acc-h{display:flex;width:100%;align-items:center;justify-content:space-between;gap:14px;min-height:52px;padding:14px 20px;background:none;border:0;color:inherit;font:600 16px/1.4 var(--font);text-align:left;cursor:pointer;border-radius:var(--r)}
+.acc-h .sub{display:block;font-weight:400;font-size:13.5px;color:var(--muted)}
+.chev{flex:none;display:inline-block;font-size:22px;line-height:1;transform:translateY(-4px);transition:transform .2s ease;color:var(--muted)}
+.acc-h[aria-expanded="true"] .chev{transform:translateY(3px) rotate(180deg)}
+.acc-b{padding:2px 20px 20px}
+.acc-b>*:last-child{margin-bottom:0}
+
+/* zone chips */
+.zt{display:inline-flex;gap:7px;align-items:center;padding:3px 11px;border-radius:999px;border:1px solid currentColor;font-size:13px;font-weight:600;white-space:nowrap}
+.z-custody{color:#ff8a82;background:rgba(255,69,58,.13)}
+.z-indirect,.z-neighbor{color:#ffd60a;background:rgba(255,214,10,.1)}
+.z-remote{color:#5ee27a;background:rgba(48,209,88,.11)}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--card2);border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--muted)}
+
+/* photos */
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
+.ph-fig{margin:0;overflow:hidden;display:flex;flex-direction:column}
+.imgwrap{position:relative;aspect-ratio:4/3;background:var(--card2)}
+.imgwrap img{display:block;width:100%;height:100%;object-fit:cover}
+.ph-fallback{display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;text-align:center;color:var(--muted);font-size:14px;background:repeating-linear-gradient(135deg,#232325,#232325 12px,#2a2a2c 12px,#2a2a2c 24px)}
+.ph-fallback b{color:var(--text);font-size:16px}
+.ph-fallback code{font-size:12.5px;color:#cfcfd4;word-break:break-all}
+.imgwrap.noimg img{display:none}
+.imgwrap.noimg .ph-fallback{display:flex}
+.ph-fig figcaption{padding:14px 16px 4px;font-size:14.5px}
+.ph-fig .rev{padding:8px 16px 16px;margin-top:auto}
+.rev-b{margin-top:12px;font-size:14.5px}
+.rev-b p{margin-bottom:10px}
+
+/* definition cards */
+.defs{display:grid;gap:12px;margin:14px 0}
+.def .dh{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.def .dh h4{margin:0}
+.lvl{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.lockmsg{margin-left:auto;font-size:13px;color:var(--muted)}
+.def.locked{background:#161618}
+.def .db{margin-top:10px}
+.def .db[hidden]{display:none}
+.quote{font-size:19px;line-height:1.5;font-weight:500}
+
+/* MCQ */
+.mcq .q{font-weight:600;margin-bottom:10px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--field);color:var(--text);font:400 15px/1.5 var(--font);cursor:pointer;min-height:48px}
+.opt:hover:not([disabled]){background:var(--card2)}
+.opt[disabled]{cursor:default}
+.opt .ol{flex:none;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;background:var(--card2);font-size:12.5px;font-weight:700;color:var(--muted)}
+.opt .ot{flex:1}
+.opt .mark{flex:none;font-weight:700;min-width:18px}
+.opt.right{background:rgba(48,209,88,.13);border-color:#3fbf5b}
+.opt.right .mark{color:var(--ok)}
+.opt.wrong{background:rgba(255,69,58,.12);border-color:#e0605a}
+.opt.wrong .mark{color:var(--no)}
+.qcard{margin:14px 0}
+.qn{display:inline-block;margin-bottom:6px;font-size:12.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+
+/* spectrum */
+.spec{margin:18px 0 4px}
+.lanes{margin:0 20px}
+.lane{position:relative;height:50px}
+.mk{position:absolute;top:3px;width:40px;height:40px;margin-left:-20px;border-radius:50%;display:grid;place-items:center;background:var(--field);border:2px dashed #cfcfd4;color:#fff;font-weight:700;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:2}
+.mk.placed{background:var(--btn);border:2px solid #fff}
+.mk.drag{cursor:grabbing;filter:brightness(1.15)}
+.mk::after{content:"";position:absolute;left:50%;top:40px;width:0;height:var(--drop,0);border-left:2px dotted rgba(255,255,255,.55);pointer-events:none}
+.barrow{display:flex;align-items:center;margin-top:2px}
+.ah{flex:none;width:0;height:0;border-top:13px solid transparent;border-bottom:13px solid transparent}
+.ah.l{border-right:20px solid #8e6cf0}
+.ah.r{border-left:20px solid #5ac8fa}
+.barwrap{position:relative;flex:1;height:14px}
+.bar{height:14px;background:linear-gradient(90deg,#8e6cf0,#5ac8fa)}
+.anc{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:30px;line-height:1;pointer-events:none}
+.ends{display:flex;justify-content:space-between;margin:12px 0 0;font-size:14px;font-weight:600}
+.legend{display:grid;gap:6px;margin:0 0 6px;padding:0;list-style:none;font-size:14.5px}
+.legend li{display:flex;gap:10px;align-items:baseline;margin:0}
+.legend .b{flex:none;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--btn);font-size:12.5px;font-weight:700;color:#fff}
+.evs{display:grid;gap:12px;margin-top:18px}
+
+/* sorter */
+.sorter-pool{display:grid;gap:8px;margin:12px 0}
+.scn{display:block;width:100%;text-align:left;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--field);color:var(--text);font:400 15px/1.5 var(--font);cursor:grab;min-height:48px}
+.scn[aria-pressed="true"]{background:var(--card2);border-color:#6cb0ff;box-shadow:0 0 0 2px #6cb0ff inset}
+.buckets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
+.bucket{border:1.5px dashed var(--line);border-radius:16px;padding:8px;min-height:120px;background:var(--card)}
+.bucket.over{background:var(--card2);border-color:#6cb0ff}
+.bk-h{display:block;width:100%;min-height:44px;padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);font:600 14px/1.3 var(--font);text-align:left;cursor:pointer}
+.bk-h small{display:block;font-weight:400;color:var(--muted)}
+.bk-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.bk-list li{margin:0;padding:8px 10px;border-radius:10px;background:var(--field);border:1px solid var(--line);font-size:13px;line-height:1.4}
+.bk-list li b{margin-right:4px}
+.bk-list li.good b{color:var(--ok)}
+.bk-list li.bad b{color:var(--no)}
+
+/* quadrant svg */
+.quad{width:100%;height:auto;display:block;touch-action:pan-y}
+.quad text{font-family:var(--font);fill:var(--text)}
+.q-bg{fill:#141416}
+.qr-custody{fill:rgba(255,69,58,.2)}
+.qr-indirect,.qr-neighbor{fill:rgba(255,214,10,.15)}
+.qr-remote{fill:rgba(48,209,88,.17)}
+.qz{cursor:pointer}
+.qz:focus-visible rect.qzr,.qz.sel rect.qzr{stroke:#fff;stroke-width:3}
+.qz rect.qzr{stroke:transparent;stroke-width:3}
+.zn{font-size:19px;font-weight:700}
+.zs{font-size:14px;fill:#cfcfd4}
+.axl{font-size:14px;fill:#a1a1a6;font-weight:500}
+.tk{font-size:13px;fill:#a1a1a6}
+.q-line{stroke:#6e6e73;stroke-width:1.5}
+.q-mid{stroke:#a1a1a6;stroke-width:1.5;stroke-dasharray:5 5}
+.q-band{fill:url(#hatch)}
+.q-bl{font-size:12.5px;fill:#cfcfd4}
+.dot{cursor:default;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.dot.nodrag-anim{transition:none}
+.dot[data-drag="1"]{cursor:grab;touch-action:none}
+.dot .dc{fill:#1c1c1e;stroke:#fff;stroke-width:2.5}
+.dot .dt{font-size:20px;text-anchor:middle;dominant-baseline:central}
+.dot .dn{font-size:15px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.dot .dl{font-size:13px;font-weight:600;text-anchor:middle}
+.dot .ring{fill:none;stroke:#fff;stroke-width:2.5;stroke-dasharray:4 4}
+.dot:focus-visible .dc{stroke:#6cb0ff;stroke-width:4}
+.arrow{fill:none;stroke:#fff;stroke-width:3}
+.arrow.alt{stroke-dasharray:7 6}
+.arrowlbl{font-size:13px;font-weight:700}
+.zinfo{margin-top:12px}
+.zinfo dl{margin:10px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14.5px}
+.zinfo dt{color:var(--muted)}
+.zinfo dd{margin:0}
+.exp{display:flex;flex-wrap:wrap;gap:8px 14px;margin:10px 0 0;padding:0;list-style:none;font-size:13.5px;color:var(--muted)}
+.exp li{margin:0}
+@media (max-width:560px){.zs{display:none}.zn{font-size:21px}.axl{font-size:16px}.tk{font-size:15px}}
+
+/* steps */
+.steps{list-style:none;margin:14px 0;padding:0;display:grid;gap:12px}
+.step{margin:0}
+.step.locked{opacity:.55}
+.step .sh{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.step .sn{flex:none;display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--card2);border:1px solid var(--line);font-size:14px;font-weight:700}
+.step .sh h4{margin:0}
+.step .done-b{color:var(--ok);font-size:13px;font-weight:600;margin-left:auto}
+.totals{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 0}
+.totals .pill{font-size:14px}
+.evrow{margin-bottom:12px}
+.evrow label{display:block;margin-bottom:6px;font-size:14px;font-weight:600}
+.evrow label span{font-weight:400;color:var(--muted)}
+.sum dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:8px 0 0;font-size:14.5px}
+.sum dt{color:var(--muted)}
+.sum dd{margin:0}
+
+/* practice cards */
+.pc-grid{display:grid;gap:12px;margin:8px 0}
+.itemrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:8px;margin-bottom:10px}
+.itemrow .nm{font-weight:600;font-size:14px;margin-bottom:4px}
+@media (max-width:620px){.itemrow{grid-template-columns:1fr}}
+
+/* tree */
+.tree{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:14px 22px;align-items:start;margin:14px 0}
+.t-root{padding:16px;border-radius:var(--r);background:var(--card2);border:1px solid var(--line);font-weight:700;text-align:center;align-self:center;max-width:150px}
+.t-ben{display:grid;gap:10px}
+.t-b{display:flex;align-items:center;gap:10px;min-width:190px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font:600 14.5px/1.3 var(--font);text-align:left;cursor:pointer;min-height:50px}
+.t-b[aria-expanded="true"]{background:var(--card2);border-color:#6cb0ff}
+.t-b .ic{font-size:20px;flex:none}
+.t-b .chev{margin-left:auto;font-size:18px}
+.t-detail{display:grid;gap:10px}
+.t-detail[hidden]{display:none}
+.t-sub{display:grid;grid-template-columns:minmax(120px,170px) minmax(0,1fr);gap:12px;align-items:center}
+.t-sbox{padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:14px;font-weight:600}
+.t-ex{display:flex;flex-wrap:wrap;gap:6px 14px}
+.t-leaf{background:none;border:0;padding:6px 2px;color:var(--link);font:500 14.5px/1.35 var(--font);text-align:left;cursor:pointer;text-decoration:underline;text-underline-offset:3px;min-height:36px}
+.t-leaf[aria-pressed="true"]{color:var(--text);font-weight:700}
+.t-plain{font-size:14.5px}
+.t-note{margin-top:4px}
+@media (max-width:760px){.tree{grid-template-columns:1fr}.t-root{max-width:none}.t-sub{grid-template-columns:1fr}.t-b{min-width:0}}
+
+/* pillar svg */
+.pil{width:100%;height:auto;display:block}
+.pil text{font-family:var(--font);fill:var(--text)}
+.pil-c{fill:var(--card2);stroke:#cfcfd4;stroke-width:2;cursor:pointer}
+.pil-g:hover .pil-c,.pil-g.sel .pil-c{fill:#3a3a3d;stroke:#fff;stroke-width:3}
+.pil-g:focus-visible .pil-c{stroke:#6cb0ff;stroke-width:4}
+.pil-t{font-size:15px;font-weight:700;text-anchor:middle}
+.pil-q{font-size:13px;fill:#cfcfd4;text-anchor:middle}
+.pil-l{stroke:#a1a1a6;stroke-width:2;stroke-dasharray:7 6;fill:none}
+.pil-h{stroke:transparent;stroke-width:30;fill:none;cursor:pointer}
+.pil-lg:hover .pil-l,.pil-lg.sel .pil-l{stroke:#fff;stroke-width:3}
+.pil-lg:focus-visible .pil-l{stroke:#6cb0ff;stroke-width:4}
+.pil-lt{font-size:12.5px;fill:#cfcfd4;text-anchor:middle;font-style:italic}
+
+/* abuse 2x2 */
+.g22{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;margin:12px 0}
+.g22 .hd{padding:8px 10px;font-size:13px;font-weight:600;color:var(--muted);align-self:center}
+.cell{min-height:84px;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--field);color:var(--text);font:400 14px/1.45 var(--font);text-align:left;cursor:pointer}
+.cell:hover:not([disabled]){background:var(--card2)}
+.cell[disabled]{cursor:default}
+.cell.hid .cl{color:var(--muted)}
+.cell.good{background:rgba(48,209,88,.12);border-color:#3fbf5b}
+.cell .cl{display:block;font-weight:600;margin-bottom:4px}
+.cell ul{margin:4px 0 0;padding-left:18px}
+@media (max-width:560px){.g22{grid-template-columns:1fr 1fr}.g22 .corner{display:none}.g22 .hd.rowh{grid-column:1/-1;padding-bottom:0}}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--field);cursor:pointer;font-size:14.5px}
+.seg input{accent-color:#0a84ff;width:16px;height:16px;margin:0}
+.seg label.on{background:var(--card2);border-color:#6cb0ff}
+.dims{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:620px){.dims{grid-template-columns:1fr}}
+.dim .fld-t{margin-bottom:6px}
+
+/* path (4i) */
+.pathq{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.pathq .qt{flex:1 1 260px;font-weight:600}
+.pathlog{margin:10px 0;padding:0;list-style:none;display:grid;gap:6px;font-size:14.5px}
+.pathlog li{margin:0;padding:8px 12px;border-radius:12px;background:var(--field);border:1px solid var(--line)}
+
+/* case reveal */
+.rv{margin:12px 0}
+.rv.locked{opacity:.55}
+.rv .rvb{margin-top:10px}
+.rv .rvb[hidden]{display:none}
+
+footer.foot{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+
+/* mobile layout */
+@media (max-width:920px){
+  .layout{display:block;padding:0 16px}
+  .menu-btn{display:inline-flex}
+  #toc{display:none;position:fixed;top:60px;left:12px;right:12px;z-index:60;max-height:calc(100vh - 76px);padding:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  #toc.open{display:block}
+  main{padding-top:20px}
+  .photos{grid-template-columns:1fr}
+  .buckets{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:520px){
+  body{font-size:15.5px}
+  .card{padding:16px}
+  .acc-h{padding:13px 16px}.acc-b{padding:2px 16px 16px}
+  h3{font-size:20px}
+  .topbar{padding:8px 14px}
+}
+@media (max-width:560px){.pil-q{display:none}.pil-t{font-size:19px}.pil-lt{font-size:15px}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+<header class="topbar">
+  <p class="brand">Week 1 <span>· Human-Animal Dynamics and Animal Welfare</span></p>
+  <button class="btn sec menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="toc">Parts <span class="chev" aria-hidden="true">⌄</span></button>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+</header>
+<div class="layout">
+<nav id="toc" aria-label="Module parts">
+  <p class="toc-t">Parts</p>
+  <ol>
+    <li><a href="#p1"><span class="n">1</span>Opening and learning outcome</a></li>
+    <li><a href="#p2"><span class="n">2</span>Animal welfare and why it matters</a></li>
+    <li><a href="#p3"><span class="n">3</span>Vocabulary: interaction, relationship and bond</a></li>
+    <li><a href="#p4"><span class="n">4</span>The Contact-Influence Quadrant</a></li>
+    <li><a href="#p5"><span class="n">5</span>Roles of animals in human life</a></li>
+    <li><a href="#p6"><span class="n">6</span>Three pillars of animal welfare</a></li>
+    <li><a href="#p7"><span class="n">7</span>Violations of welfare: abuse and cruelty</a></li>
+    <li><a href="#p8"><span class="n">8</span>Why people fail animals</a></li>
+    <li><a href="#p9"><span class="n">9</span>Applied practice and summary</a></li>
+  </ol>
+</nav>
+<main id="main" tabindex="-1">
+<header class="hero">
+  <p class="eyebrow">Animal Welfare · Week 1 Module</p>
+  <h1>Human-Animal Dynamics and Animal Welfare</h1>
+</header>
+<!-- ============ PART 1 ============ -->
+<section class="part" id="p1" aria-labelledby="h-p1">
+<h2 id="h-p1"><span class="pn">1</span>Opening and learning outcome</h2>
+<p class="lead">This module teaches students to read any human-animal situation through two questions: how much contact do people have with the animal, and how much do people control its life. The answers indicate where welfare hazards of human origin are most likely to reach the animal.</p>
+
+<h3>1.1 Hook: one species, two situations</h3>
+<p>Two photographs of chital deer (spotted deer, <i>Axis axis</i>). Look at both, answer the two questions below in your own words, and only then open the notes.</p>
+
+<div class="photos">
+  <figure class="box ph-fig">
+    <div class="imgwrap">
+      <img src="img/deer-park-enclosure.jpg" alt="Chital deer in an enclosure at the Unhas deer park. A child feeds one deer through the fence." loading="lazy" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph-fallback" role="img" aria-label="Image placeholder: chital deer in an enclosure at the Unhas deer park, a child feeds a deer through the fence."><b>Image A</b><span>Chital deer in an enclosure, a child feeds a deer through the fence</span><code>img/deer-park-enclosure.jpg</code></div>
+    </div>
+    <figcaption><strong>Image A:</strong> deer in an enclosure at the Unhas deer park. A child feeds a deer through the fence.</figcaption>
+    <div class="rev">
+      <button type="button" class="btn sec" data-reveal="revA" aria-expanded="false" aria-controls="revA">Reveal notes for Image A</button>
+      <div class="rev-b" id="revA" hidden>
+        <p><strong>What information is missing before anyone can judge?</strong> The size of the enclosure, the diet, who provides water, veterinary care, what visitors feed the deer, how many visitors come each day.</p>
+        <p><strong>Responsibility.</strong> Almost every condition the deer experiences is chosen or permitted by people, so responsibility is high.</p>
+      </div>
+    </div>
+  </figure>
+  <figure class="box ph-fig">
+    <div class="imgwrap">
+      <img src="img/deer-tiger-forest.jpg" alt="A chital deer in a forest, caught by a tiger." loading="lazy" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph-fallback" role="img" aria-label="Image placeholder: a chital deer in a forest, caught by a tiger."><b>Image B</b><span>A chital deer in a forest, caught by a tiger</span><code>img/deer-tiger-forest.jpg</code></div>
+    </div>
+    <figcaption><strong>Image B:</strong> a deer in a forest, caught by a tiger.</figcaption>
+    <div class="rev">
+      <button type="button" class="btn sec" data-reveal="revB" aria-expanded="false" aria-controls="revB">Reveal notes for Image B</button>
+      <div class="rev-b" id="revB" hidden>
+        <p><strong>Event or conditions?</strong> Students usually rate Image B as worse because it shows predation. Separate the <em>event</em> (a death) from the <em>conditions of life</em> (food, space, health, freedom to behave naturally). Welfare is about the conditions in which an animal lives and dies, so one photograph cannot settle the question.</p>
+        <p><strong>Responsibility.</strong> The predator-prey event is natural, so direct responsibility is low. People still shape the deer's world there through habitat, hunting pressure and land use.</p>
+      </div>
+    </div>
+  </figure>
+</div>
+
+<div class="card stack">
+  <div>
+    <label class="fld" for="hook-q1">1. What is the welfare level of the deer in Image A and in Image B?</label>
+    <textarea id="hook-q1" data-k="hook-q1" placeholder="Write your answer before you open the notes"></textarea>
+  </div>
+  <div>
+    <label class="fld" for="hook-q2">2. Are humans responsible for the fate of the deer in Image A? In Image B?</label>
+    <textarea id="hook-q2" data-k="hook-q2" placeholder="Write your answer before you open the notes"></textarea>
+  </div>
+</div>
+
+<div class="card gap" id="bridge" hidden>
+  <p class="big"><em>Same species, different relationship to humans. The more people shape an animal's life, the more responsibility they carry for its welfare.</em></p>
+</div>
+<p class="muted gap" id="bridgeHint">Open the notes under both photographs to see the closing sentence.</p>
+
+<h3>1.2 Learning outcome</h3>
+<div class="card">
+  <p class="big" style="margin:0"><em>By the end of this module, students will be able to analyze how a person's contact with and influence over an animal shape how exposed the animal is to welfare hazards.</em></p>
+</div>
+</section>
+
+<!-- ============ PART 2 ============ -->
+<section class="part" id="p2" aria-labelledby="h-p2">
+<h2 id="h-p2"><span class="pn">2</span>Animal welfare and why it matters</h2>
+<p class="lead">Animal welfare is a measure of an animal's quality of life. Everything else in this part refines that sentence and explains why it deserves our attention.</p>
+
+<h3>2.1 Three definitions, from simple to formal</h3>
+<p>Level 1 is open. Answer the check question below the cards to unlock Levels 2 and 3.</p>
+<div class="defs">
+  <div class="box card def" id="def1">
+    <div class="dh"><span class="lvl">Level 1</span><h4>The memory version</h4></div>
+    <div class="db">
+      <p class="quote"><em>Animal welfare is a measure of an animal's quality of life.</em></p>
+      <p>Students should be able to say this sentence from memory. It carries two ideas: welfare is a <em>state of the animal</em> (an outcome that can be good or poor), and it sits on a <em>scale</em> (better or worse, not present or absent).</p>
+    </div>
+  </div>
+  <div class="box card def locked" id="def2">
+    <div class="dh"><span class="lvl">Level 2</span><h4>The WOAH version</h4><span class="lockmsg">🔒 Locked</span></div>
+    <div class="db" hidden>
+      <p class="quote"><em>Animal welfare means the physical and mental state of an animal in relation to the conditions in which it lives and dies.</em> (World Organisation for Animal Health)</p>
+      <p>Two additions to notice: both body and mind count, and the definition covers how the animal <em>dies</em> as well as how it lives.</p>
+    </div>
+  </div>
+  <div class="box card def locked" id="def3">
+    <div class="dh"><span class="lvl">Level 3</span><h4>The Indonesian legal version</h4><span class="lockmsg">🔒 Locked</span></div>
+    <div class="db" hidden>
+      <p>The Indonesian Law on Animal Husbandry and Animal Health defines animal welfare as all matters related to the physical and mental condition of animals, according to the natural behavior of the animal, that need to be applied and enforced to protect animals from improper treatment by any person toward animals used by humans. <span class="muted">(Unofficial translation of the original Indonesian text.)</span></p>
+      <p>A useful exercise is to split the legal sentence into parts:</p>
+      <div class="tw"><table class="w1">
+        <thead><tr><th>Phrase in the law</th><th>What it tells us</th></tr></thead>
+        <tbody>
+          <tr><td>physical and mental condition</td><td>the same two dimensions as WOAH</td></tr>
+          <tr><td>according to the natural behavior of the animal</td><td>what is normal for that species</td></tr>
+          <tr><td>applied and enforced</td><td>welfare is a duty to act, backed by authority</td></tr>
+          <tr><td>to protect animals from improper treatment by any person</td><td>the threat the law has in mind is human conduct</td></tr>
+          <tr><td>animals used by humans</td><td>the scope: animals that people keep or use</td></tr>
+        </tbody>
+      </table></div>
+      <p>The last row sets the scope: the law is written for animals that people keep or use.</p>
+    </div>
+  </div>
+</div>
+<div class="card qcard" id="defcheck"></div>
+
+<h3>2.2 Welfare is a spectrum</h3>
+<p>Welfare is a matter of degree. An animal's state can be very poor, very good, or anywhere between, and its position can change over weeks or within a single day.</p>
+<p>Two consequences follow. A question such as "does this animal have welfare?" has no yes or no answer; the answerable question is where the animal sits on the line and what evidence supports that position. Two animals of the same species can sit at different points, and one animal can move along the line as its conditions change.</p>
+<div id="spectrum"></div>
+
+<h3>2.3 Welfare of individuals and of populations</h3>
+<p>Animal welfare is a state of an individual animal, because only an individual can feel pain, fear or comfort. A population feels nothing. When a text speaks of the welfare of a herd, a flock or a wildlife population, it means the welfare of the individuals in it.</p>
+<p>Population measures such as the trend in numbers (rising or falling) and the composition (many young or old animals, the balance of males and females) describe the health and conservation status of a population. They are useful clues, but they are indirect. A growing population can still contain many suffering individuals, and a stable one can hide poor welfare. Group welfare is assessed by measuring indicators in many individuals, for example the share of a flock with lameness. For wildlife the same approach applies to sampled animals: body condition, injuries, disease and behavior. Population counts serve as supporting evidence.</p>
+
+<h3>2.4 Why does animal welfare matter?</h3>
+<p>There are two families of reasons. Students should be able to state both and say which one they find more persuasive for a given audience.</p>
+<div class="card stack">
+  <div><h4>Reason 1: it matters for the animal itself (intrinsic value)</h4>
+  <p>Animals are living beings that can feel pain and can suffer. For that reason, their condition deserves respect and consideration on moral grounds, whether or not a person gains anything from it.</p></div>
+  <div><h4>Reason 2: it matters for people (consequences for humans)</h4>
+  <div class="tw" style="margin-bottom:0"><table class="w1">
+    <thead><tr><th>Benefit to people</th><th>How welfare produces it</th></tr></thead>
+    <tbody>
+      <tr><td>Better human-animal interaction</td><td>calm, healthy animals are safer and easier to handle, for owners, farmers and veterinarians</td></tr>
+      <tr><td>Lower cost of disease and injury</td><td>fewer treatments, fewer losses, less medication</td></tr>
+      <tr><td>Better quality and safety of animal-derived food</td><td>stress before slaughter is linked to poorer meat quality, and stress can increase pathogen shedding in some livestock (the strength of evidence differs by species)</td></tr>
+      <tr><td>Better reputation</td><td>industries, institutions and individuals responsible for animal lives are judged by how those animals are treated</td></tr>
+    </tbody>
+  </table></div></div>
+</div>
+<div class="card gap">
+  <h4>Discussion prompt</h4>
+  <p>A smallholder who raises chickens, a pet owner, and an animal ethicist each ask why they should care about welfare. Which reason would you lead with for each person? Why?</p>
+  <textarea data-k="p2-discuss" aria-label="Your notes for the discussion prompt" placeholder="Your notes"></textarea>
+  <p class="muted" style="margin:12px 0 0">This prompt has no single right answer. The aim is to show that the same concept can be justified in more than one way, and that a veterinarian often has to speak to several audiences.</p>
+</div>
+</section>
+
+<!-- ============ PART 3 ============ -->
+<section class="part" id="p3" aria-labelledby="h-p3">
+<h2 id="h-p3"><span class="pn">3</span>Vocabulary: interaction, relationship and bond</h2>
+<p class="lead">Researchers use three different words for how people and animals connect, and the words are not interchangeable. This part gives students a shared vocabulary for naming what happens when a person and an animal meet.</p>
+
+<h3>3.1 Three terms</h3>
+<p>The distinction goes back to the work of Robert Hinde on social relationships and has been applied to human-animal contact by Hosey and Melfi (2014).</p>
+<div class="tw"><table class="w3">
+  <thead><tr><th>Term</th><th>Abbreviation</th><th>Meaning</th><th>Time scale</th><th>Example</th></tr></thead>
+  <tbody>
+    <tr><td>Human-animal interaction</td><td><strong>HAI</strong></td><td>a single event of contact between a person and an animal</td><td>one episode</td><td>a veterinarian restrains a dog for an injection; a visitor feeds a deer through a fence</td></tr>
+    <tr><td>Human-animal relationship</td><td><strong>HAR</strong></td><td>a pattern built from repeated interactions between the same individuals, in which each side comes to expect certain behavior from the other</td><td>weeks to years</td><td>a stockperson who handles the same herd every day; the cows learn whether this person means calm or threat</td></tr>
+    <tr><td>Human-animal bond</td><td><strong>HAB</strong></td><td>a relationship that includes emotional attachment, usually mutual and valued</td><td>long term</td><td>the attachment between an owner and a long-lived companion dog</td></tr>
+  </tbody>
+</table></div>
+<div class="card"><p class="big" style="margin:0">A short way to remember the ladder: <strong>interaction is an event, relationship is a pattern, bond is a relationship with attachment.</strong> Every bond is a relationship, and every relationship is built from interactions. The reverse is not true.</p></div>
+
+<h4 class="gap" style="margin-top:28px">Sorting task</h4>
+<div id="sorter"></div>
+
+<h3>3.2 Quality matters</h3>
+<p>A relationship can be positive, neutral or negative from the animal's point of view. Studies of farm animals show that how people handle animals shapes the animal's fear of humans, and fear of humans is linked to stress and to productivity. This is a well-established research area, associated with the work of Hemsworth, Rault, Waiblinger and colleagues.</p>
+<p>One consequence for this module:</p>
+<ul><li>Quantity of contact is not the same as quality of contact. A lot of gentle handling and a lot of rough handling are very different situations.</li></ul>
+</section>
+
+<!-- ============ PART 4 ============ -->
+<section class="part" id="p4" aria-labelledby="h-p4">
+<h2 id="h-p4"><span class="pn">4</span>The Contact-Influence Quadrant</h2>
+<p class="lead">The quadrant sorts any human-animal situation into one of four zones using two scores: contact and influence. Each zone points to a different kind of welfare hazard and a different kind of human duty.</p>
+<p>Many situations have no individual interaction at all: deep-sea animals are an extreme case, and so is wildlife in a landscape that people are clearing. Calling those situations interactions or relationships would be inaccurate, so the quadrant classifies the position of a situation and does not describe an interaction. HAI, HAR and HAB from Part 3 describe what happens inside the zones with high contact. The quadrant describes where a situation sits before we look at anything inside it.</p>
+<p>The quadrant covers hazards that originate in human activity, such as housing, handling, pest control and habitat change. Natural events, such as the predation in Image B of the hook, fall outside it.</p>
+<div class="card">
+  <h4>Four terms used from here on</h4>
+  <ul style="margin-bottom:0">
+    <li><strong>Hazard:</strong> a source of potential harm to welfare, such as heat, rough handling or loss of habitat.</li>
+    <li><strong>Pathway:</strong> the route by which a hazard reaches the animal, either through handling and care or through the environment.</li>
+    <li><strong>Hazard exposure:</strong> how likely an animal is to meet hazards of human origin, given the structure of the situation.</li>
+    <li><strong>Welfare consequence:</strong> the effect on the animal, described by its severity, duration, the number of animals affected and whether the effect can be reversed.</li>
+  </ul>
+  <p style="margin:12px 0 0">The two axes of the quadrant indicate hazard exposure only. They say nothing about consequences.</p>
+</div>
+
+<h3 id="s41">4.1 The four zones</h3>
+<p>The horizontal axis is <strong>contact</strong> (how much direct exposure people and the animal have to each other). The vertical axis is <strong>influence</strong> (how much people shape the animal's resources, space and life events).</p>
+<div class="tw"><table class="w3">
+  <thead><tr><th>Zone</th><th>Contact</th><th>Influence</th><th>One-line definition</th><th>Typical examples</th><th>Main hazard pathway</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Custody Zone</strong></td><td>high</td><td>high</td><td>People live with the animal and control most of its life.</td><td>livestock, laboratory animals, companion animals, zoo animals, captive deer</td><td>failure to meet needs; harmful handling and procedures</td></tr>
+    <tr><td><strong>Indirect Zone</strong></td><td>low</td><td>high</td><td>People rarely touch these animals, yet shape their world.</td><td>wildlife in cleared forest, marine animals near drilling or shipping lanes</td><td>habitat loss, pollution, noise, disturbance</td></tr>
+    <tr><td><strong>Neighbor Zone</strong></td><td>high</td><td>low</td><td>Animals share our space. People neither care for them nor manage their space or resources, though people may decide to remove them (pest control).</td><td>sparrows and swallows in settlements, insects in houses, urban rodents</td><td>incidental harm, conflict, pest control methods</td></tr>
+    <tr><td><strong>Remote Zone</strong></td><td>low</td><td>low</td><td>Contact is rare and people have little effect on the animal's life.</td><td>deep-sea animals, desert animals far from settlement</td><td>little current exposure, but reach can grow</td></tr>
+  </tbody>
+</table></div>
+
+<div class="card">
+  <h4>Expected hazard exposure: a working hypothesis, not a finding</h4>
+  <p>Expected exposure to hazards of human origin is highest in Custody Zone, moderate in Indirect and Neighbor zones, and lowest in Remote Zone. This ordering follows from the logic of the axes and has not been tested with data. It indicates where hazards are most likely to reach the animal. It says nothing about how severe the consequences would be, how many animals are affected or whether the harm can be undone, so it is not a ranking of overall welfare risk, and it does not mean that a welfare problem is already present. Treat it as a starting expectation you can challenge.</p>
+</div>
+
+<figure class="box card gap" style="margin-left:0;margin-right:0" id="quad41">
+  <div id="quad41map"></div>
+  <figcaption class="muted" style="margin-top:10px;font-size:14px"><strong style="color:var(--text)">Contact-Influence Quadrant · 4 zones, 2 axes.</strong> Read the map from the corner: top right is high contact and high influence (Custody), and bottom left is low on both (Remote). Hazard exposure by zone is an expectation, not a measured result.</figcaption>
+  <ul class="exp" aria-label="Expected hazard exposure by zone">
+    <li><span class="zt z-custody"><span aria-hidden="true">■</span>Custody: highest</span></li>
+    <li><span class="zt z-indirect"><span aria-hidden="true">▲</span>Indirect: moderate</span></li>
+    <li><span class="zt z-neighbor"><span aria-hidden="true">◆</span>Neighbor: moderate</span></li>
+    <li><span class="zt z-remote"><span aria-hidden="true">●</span>Remote: lowest</span></li>
+  </ul>
+  <div class="fb zinfo" id="zinfo" aria-live="polite"><span class="muted">Hover over, focus or tap a zone to see its definition and examples.</span></div>
+  <p style="margin:12px 0 0;font-size:14.5px">Two deer from the hook are on the map: the captive deer and the wild deer. Drag a deer to another zone (or focus it and use the arrow keys) to see how the zone changes.</p>
+  <p class="big" id="deerStatus" style="margin:8px 0 0;font-size:16px" aria-live="polite"></p>
+  <div class="btnrow"><button type="button" class="btn sec" id="deerReset">Put the deer back</button></div>
+</figure>
+
+<h3>4.2 Scoring rubric</h3>
+<p>Score each item 0, 1 or 2, then add the three items on each axis. Scores are always given for a <strong>typical encounter or typical week</strong> for the case, and from the viewpoint of the human party who has the most control over the animal or, when no one controls it, the party whose activity affects it most.</p>
+<h4>Contact index (0 to 6)</h4>
+<div class="tw" id="rubricC"></div>
+<h4>Influence index (0 to 6)</h4>
+<p>The three items are three separate channels through which people shape an animal's life.</p>
+<div class="tw" id="rubricI"></div>
+<h4>Zone rule</h4>
+<div class="tw"><table class="w1">
+  <thead><tr><th>Score on an axis</th><th>Reading</th></tr></thead>
+  <tbody><tr><td>0 to 2</td><td>low</td></tr><tr><td>3</td><td>borderline</td></tr><tr><td>4 to 6</td><td>high</td></tr></tbody>
+</table></div>
+
+<h3>4.3 The five-step procedure</h3>
+<p>Complete each step to unlock the next. The last screen draws your case as a dot on the map.</p>
+<div id="scoreform43"></div>
+<div class="card gap">
+  <h4>Borderline rule</h4>
+  <p style="margin:0">An axis score of exactly 3 means the situation sits on the line between two zones. Do two things: write down the <em>context</em> that would push the score up or down, and, for planning purposes, treat the case as belonging to the zone with higher expected hazard exposure (a precautionary default). Mark the dot on the map with a ring to show it is borderline.</p>
+</div>
+
+<h3>4.4 Worked cases</h3>
+<p>Scores below are a proposed answer key. They depend on the stated assumptions, and some of them are expected to be debated in class. F = frequency, D = duration, P = proximity, R = resources, S = space, L = life events. Think about each case first, then open it. Each opened case appears as a numbered dot on the map.</p>
+<div id="worked"></div>
+<div class="card gap"><div id="workedmap"></div></div>
+<div class="card gap">
+  <h4>Discussion points that go with the key</h4>
+  <ul style="margin-bottom:0">
+    <li>The sparrow case lands on the line. Ask: what would push it into Custody Zone? (Students begin feeding the birds every day and placing nest boxes, or the school begins pest control.) What would push it toward Remote Zone? (The building is vacated and the birds nest unseen.)</li>
+    <li>The two deer cases show that <em>species alone does not determine the zone</em>. The same chital sits in different zones depending on the conditions people create.</li>
+    <li>The stray cat can move into Custody Zone the day a person takes it home. Positions are not permanent.</li>
+  </ul>
+</div>
+
+<h3>4.5 Positions change</h3>
+<p>A case sits at a position only for a given moment and a given human viewpoint. Typical movements:</p>
+<div class="tw"><table class="w2">
+  <thead><tr><th>Change</th><th>Movement</th><th>Welfare meaning</th></tr></thead>
+  <tbody>
+    <tr><td>A wild monkey is captured and kept at home as a pet</td><td>Remote or Neighbor to Custody</td><td>the animal's whole life now depends on people who may lack the knowledge to meet its needs</td></tr>
+    <tr><td>A forest is cleared around an animal population</td><td>Remote to Indirect</td><td>exposure to human-caused harm appears without any direct contact</td></tr>
+    <tr><td>Seabed drilling changes the habitat of marine animals</td><td>Remote to Indirect</td><td>influence rises through noise, pollution and habitat change while contact stays low</td></tr>
+    <tr><td>Wildlife living in a deforested area next to a settlement</td><td>Remote to Neighbor</td><td>contact rises because animals now share human space, yet people still do not care for or control them</td></tr>
+    <tr><td>A stray cat is adopted</td><td>Neighbor to Custody</td><td>responsibility for welfare moves to one person</td></tr>
+    <tr><td>A captive animal is released into the wild without support</td><td>Custody toward Indirect or Remote</td><td>the animal loses support it depends on (this is why release needs planning)</td></tr>
+  </tbody>
+</table></div>
+<div id="movemap"></div>
+
+<h3>4.6 Practice: place eight animals</h3>
+<p>For each animal: write a one-sentence case definition, score the rubric with evidence, see the dot appear on the map, and pick the main hazard from the list. Then check your answer against the key. The key checks the zone and shows the suggested scores as a guide, because reasonable scorers can differ by one point. Each card names the viewpoint to use.</p>
+<div id="practice"></div>
+<div class="card gap">
+  <h4>Reflection question</h4>
+  <p>Which case was hardest to place, and which single score would move it to another zone? Compare the main hazards across the four zones: what kind of human action lies behind each one (handling and care, pest control, habitat change, or none yet)?</p>
+  <textarea data-k="p46-reflect" aria-label="Your reflection" placeholder="Your reflection"></textarea>
+</div>
+
+<h3>4.7 Limits of the model</h3>
+<p>State these openly, since they protect students from over-trusting a score.</p>
+<ul>
+  <li><strong>Contact counts quantity, and quality is not scored.</strong> Much gentle handling and much rough handling receive the same contact score. Research on handling shows that quality matters a great deal.</li>
+  <li><strong>Zones show exposure, not outcome.</strong> A Custody Zone animal can have excellent welfare, and an animal in Remote Zone can suffer. The zone says where to look first.</li>
+  <li><strong>The model does not capture scale or reversibility.</strong> Harm to one individual and harm to a whole population differ morally and practically, and some harms (extinction, habitat loss) cannot be undone. A forest fire set to clear land shows this. The fire sits in the Indirect Zone because people rarely meet the animals, yet the number of animals harmed and the irreversibility of the harm can far exceed any single Custody case. The zone describes the structure of human contact and influence, not the severity of harm.</li>
+  <li><strong>The score depends on the viewpoint and the case definition.</strong> That is the reason for Step 1 of the procedure. The same logic applies to timing: a typical week hides brief, intense events such as transport, slaughter and ceremonies, so define those cases as the event itself.</li>
+  <li><strong>This is a teaching tool.</strong> Its reliability and validity have not been tested. A suggested test: several raters score a set of 12 to 16 case vignettes independently, then agreement is measured. Treat the answer key as the instructor's judgment, not an authority.</li>
+</ul>
+</section>
+
+<!-- ============ PART 5 ============ -->
+<section class="part" id="p5" aria-labelledby="h-p5">
+<h2 id="h-p5"><span class="pn">5</span>Roles of animals in human life</h2>
+<p class="lead">Animals in Custody Zone are kept for a purpose, and the purpose decides what people demand from the animal. Welfare problems become more likely when those demands clash with what the animal needs.</p>
+
+<h3>5.1 Why people use animals</h3>
+<p>People gain four kinds of benefit from animals. Each benefit creates one or more roles. Open one benefit at a time, then select an example to read how that animal's role fits.</p>
+<div id="tree"></div>
+
+<h3>5.2 When roles create welfare hazards</h3>
+<p>A role places <em>demands</em> on the animal: grow fast, pull a load, stay still, perform on cue, tolerate handling, breed often. The animal also has <em>needs</em>: nutrition, a suitable environment, health care, the chance to behave naturally, and a positive mental state. Two features of roles seem to make welfare problems more likely.</p>
+<div class="card stack">
+  <p style="margin:0"><strong>Modifier 1: conflict between role demands and animal needs.</strong> The larger the clash, the more likely a welfare problem, even when the animal has only one role. A broiler chicken has a single role (meat), yet the demand for very fast growth at high density clashes strongly with leg health, comfort and movement.</p>
+  <p style="margin:0"><strong>Modifier 2: role stacking.</strong> When one animal fills several roles at once, the demands can compete with each other. A family dog that is a companion, a night guard and a breeding animal may be kept indoors one day and chained outside the next, and may be bred repeatedly. The more roles an animal holds, the more chances there are for conflicting demands.</p>
+</div>
+<div class="tw"><table class="w2">
+  <thead><tr><th>Role</th><th>Typical demand on the animal</th><th>Typical clash with needs</th></tr></thead>
+  <tbody>
+    <tr><td>Meat or egg production</td><td>rapid growth, high output, high density</td><td>disease and injury from fast growth, limited movement</td></tr>
+    <tr><td>Draft or ride</td><td>pulling loads, working in heat, standing for hours</td><td>exhaustion, heat stress, foot and joint problems</td></tr>
+    <tr><td>Performance</td><td>training to behave on cue</td><td>fear-based training, confinement, deprivation</td></tr>
+    <tr><td>Companion</td><td>being available and affectionate</td><td>isolation, wrong diet, neglect when attention fades</td></tr>
+    <tr><td>Ceremony</td><td>being present, handled or killed at a set time</td><td>stress during gathering and handling, variable killing methods</td></tr>
+    <tr><td>Research or teaching</td><td>repeated procedures, standardized housing</td><td>pain, stress, barren housing</td></tr>
+  </tbody>
+</table></div>
+<div class="card"><p style="margin:0">The idea that more roles make welfare problems more likely is a working hypothesis. We are not aware of data that supports it. The clash between demands and needs is the more informative factor, and role stacking is best taught as one way such clashes arise.</p></div>
+
+<h3>5.3 Activity: role audit</h3>
+<p>Pick an animal, tick the roles it holds, and write the demand and the clash with needs for each ticked role.</p>
+<div id="roleaudit"></div>
+
+<h3>5.4 Takeaway</h3>
+<div class="card"><p class="big" style="margin:0">Custody Zone is where hazard exposure starts out highest, and roles help explain <em>which</em> animals within that zone are most exposed.</p></div>
+</section>
+
+<!-- ============ PART 6 ============ -->
+<section class="part" id="p6" aria-labelledby="h-p6">
+<h2 id="h-p6"><span class="pn">6</span>Three pillars of animal welfare</h2>
+<p class="lead">Animal welfare stands on three pillars: science, ethics and law. Each pillar answers a different question about the same situation, and the three influence each other.</p>
+
+<h3>6.1 The pillars</h3>
+<p>Select a circle to read its question and an example from the deer case. Select a dashed line to read how two pillars influence each other.</p>
+<div class="box card" id="pillars"><div id="pillarsvg"></div><div class="fb zinfo" id="pillarinfo" aria-live="polite"><span class="muted">Select a circle or a dashed line.</span></div></div>
+<div class="tw"><table class="w2">
+  <thead><tr><th>Pillar</th><th>Core question</th><th>What it gives us</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Animal ethics</strong></td><td>How should people treat animals?</td><td>reasons for our duties; the values behind the rules</td></tr>
+    <tr><td><strong>Animal welfare science</strong></td><td>What do animals need, and how can we tell whether an animal is faring well or badly?</td><td>evidence about needs, behavior, health and stress; methods of assessment</td></tr>
+    <tr><td><strong>Animal law</strong></td><td>Which human actions toward animals must be punished or required?</td><td>enforceable standards; consequences for violations</td></tr>
+  </tbody>
+</table></div>
+<p>How they influence each other:</p>
+<ul>
+  <li>Science informs ethics. Evidence that animals feel pain changes what people regard as acceptable.</li>
+  <li>Ethics shapes science. Moral concern decides which animals and which welfare problems researchers choose to study, and which states of the animal count as good or poor welfare.</li>
+  <li>Ethics shapes law. Laws turn widely shared values into rules.</li>
+  <li>Law shapes ethics. Once a practice is banned or required, it tends to be seen as wrong or normal over time, so legal standards can move what a society regards as acceptable.</li>
+  <li>Law shapes science. Legal duties create demand for ways of measuring welfare, and funding for studies.</li>
+  <li>Science also informs law. Standards for space, transport time or stunning are often based on evidence.</li>
+</ul>
+
+<h3>6.2 The deer case through three lenses</h3>
+<p>Return to the captive deer in the hook.</p>
+<div class="tw"><table class="w2">
+  <thead><tr><th>Lens</th><th>Questions a student can ask</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Ethics</strong></td><td>Is it acceptable to keep deer in an enclosure so people can see them? What do visitors owe the animals? Does enjoyment of visitors outweigh limits on the deer's freedom?</td></tr>
+    <tr><td><strong>Science</strong></td><td>What does a chital need in food, space, shelter and social contact? Which signs (body condition, behavior, injuries) would show whether those needs are met? Does feeding by visitors affect health?</td></tr>
+    <tr><td><strong>Law</strong></td><td>Which duties does the law place on the keeper? Which treatments would count as violations? Who is responsible for enforcing them?</td></tr>
+  </tbody>
+</table></div>
+<p>Students will see that a question about one deer branches into three kinds of reasoning, and that a complete judgment needs all three.</p>
+
+<h3>6.3 Activity: two societies</h3>
+<p>Society A: animals tend to fare poorly. Society B: animals tend to fare well. For each pillar, what is likely to differ between them? Fill in the table, then compare it with the sample answer.</p>
+<div id="societies"></div>
+
+<h3>6.4 Optional reading: a short history of animal welfare</h3>
+<div id="hist"></div>
+</section>
+
+<!-- ============ PART 7 ============ -->
+<section class="part" id="p7" aria-labelledby="h-p7">
+<h2 id="h-p7"><span class="pn">7</span>Violations of welfare: abuse and cruelty</h2>
+<p class="lead">When a person's conduct breaches welfare norms and the animal suffers or is put at risk, we call it abuse or cruelty. This part gives students four ways to classify such conduct.</p>
+
+<h3>7.1 Words for the same problem</h3>
+<p>Several terms describe conduct that violates welfare norms, including animal abuse, animal cruelty and animal violence.</p>
+<p>Usage varies between authors, laws and cultures. In this module we use <strong>abuse</strong> as the general term for any act or omission by a person that breaches welfare norms and causes or risks suffering. <strong>Cruelty</strong> is used when the conduct is severe or deliberate. Students should expect the two words to overlap in everyday speech, and should check how a given law defines each term before relying on it.</p>
+
+<h3>7.2 Active and passive, physical and mental</h3>
+<p>Two questions classify any case. Was the harm caused by something a person <em>did</em> (active) or by something a person <em>failed to do</em> (passive)? Did it affect the animal's <em>body</em> (physical) or <em>mind</em> (mental)? Combining the questions gives four types (after Vermeulen and Odendaal, 1993).</p>
+<div id="abuse22"></div>
+<p class="gap">Some writers use <em>cruelty</em> for both rows and distinguish active cruelty (an act that was not needed) from passive cruelty (neglect: the absence of an action that was needed).</p>
+
+<h3>7.3 Intentional and unintentional, obvious and ambiguous</h3>
+<p>The Social Media Animal Cruelty Coalition (SMACC) proposed another classification in a 2021 report on cruelty content online. It crosses two questions: was the harm intended, and is it obvious to a viewer that harm is occurring?</p>
+<div class="tw"><table class="w2">
+  <thead><tr><th></th><th>Intentional</th><th>Unintentional</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Obvious cruelty</strong></td><td>burying a baby monkey alive; pitting a dog against a kitten; burning or wounding animals</td><td>tickling a slow loris until it raises its arms (a defensive posture, not a sign of enjoyment); making a monkey "smile" in a way that may be a fear or stress expression</td></tr>
+    <tr><td><strong>Ambiguous cruelty</strong></td><td>teasing a caged monkey; showing wild animals as entertainment; staged animal rescues</td><td>taking selfies with wild animals; keeping a baby monkey at home; dressing animals in human clothes</td></tr>
+  </tbody>
+</table></div>
+<p>The lower-right cell matters most for veterinary students. Much harm in daily life is done by people who believe they are being kind. Ambiguous and unintentional cases are also where knowledge (the science pillar) most changes the judgment.</p>
+
+<h3>7.4 Where abuse sits on the quadrant</h3>
+<p>The abuse framework fits some zones better than others.</p>
+<div class="tw"><table class="w1">
+  <thead><tr><th>Zone</th><th>How the framework applies</th></tr></thead>
+  <tbody>
+    <tr><td>Custody</td><td>applies fully: people can act on, or fail to provide for, an animal they control</td></tr>
+    <tr><td>Neighbor</td><td>applies to deliberate or careless acts by individuals (cruel pest control, harassment of stray animals)</td></tr>
+    <tr><td>Indirect</td><td>applies poorly: harm is usually spread out, unintended and caused by many actors (habitat loss, pollution). Environmental harm needs other tools, such as impact assessment and planning</td></tr>
+    <tr><td>Remote</td><td>rarely applies at present</td></tr>
+  </tbody>
+</table></div>
+<p>Students should understand that "no abuse" does not mean "no welfare problem". Some serious welfare problems arise in Indirect Zone without any person doing anything we would normally call cruel.</p>
+
+<h3>7.5 Activity: classify five cases</h3>
+<p>For each case, choose a value on all four dimensions, then check. The key and a short explanation appear after each answer.</p>
+<div id="classify"></div>
+<div class="card gap">
+  <h4>Discussion</h4>
+  <p>For the second case, change it so that it moves from obvious to ambiguous (for example, the man films it and calls it a joke). What changed? Which pillar (science, ethics or law) helps decide whether this is still abuse?</p>
+  <textarea data-k="p75-discuss" aria-label="Your notes" placeholder="Your notes"></textarea>
+</div>
+</section>
+
+<!-- ============ PART 8 ============ -->
+<section class="part" id="p8" aria-labelledby="h-p8">
+<h2 id="h-p8"><span class="pn">8</span>Why people fail animals</h2>
+<p class="lead">People fail animals for different reasons, and each reason needs a different remedy. The 4i framework gives students a way to find the main reason in a given case before they decide what to do.</p>
+
+<h3>8.1 Many causes, no single profile</h3>
+<p>People who are cruel to animals have varied and complex motives, shaped by many factors. Studies link animal cruelty with mental disorders, such as antisocial personality disorder, and with substance misuse. People who are cruel to animals also tend to commit other crimes and violence against people at higher rates.</p>
+
+<h3>8.2 Three families of causes</h3>
+<div class="tw"><table class="w1">
+  <thead><tr><th>Aspect</th><th>Causes of cruelty, active or passive</th></tr></thead>
+  <tbody>
+    <tr><td>Psychological</td><td>a mental disorder such as antisocial personality disorder; desensitization after repeated exposure to violence; wanting to dominate an animal's fate for satisfaction</td></tr>
+    <tr><td>Knowledge and mindset</td><td>not knowing how to treat an animal well; seeing animals as commodities and believing harm has no real consequence; cultural beliefs that tolerate or encourage cruelty</td></tr>
+    <tr><td>Situational</td><td>too little money or resources to meet the animal's needs; peer pressure to show toughness or win acceptance from a group</td></tr>
+  </tbody>
+</table></div>
+<p>This list explains why a single solution cannot work. Teaching a person who already knows what to do will not help, and punishing a person who did not know is unfair and unlikely to work.</p>
+
+<h3>8.3 The 4i framework</h3>
+<p>There are four factors by which a person can fail to meet an animal's welfare needs. Telling them apart matters because the remedy differs for each.</p>
+<div class="tw"><table class="w3">
+  <thead><tr><th>Factor</th><th>Meaning</th><th>Example</th><th>Remedy</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Ignorance</strong></td><td>The person does not know what to do, or has no theoretical knowledge of the animal's needs.</td><td>A cat owner gives paracetamol to a lethargic cat because human medicine seems safe for animals. Paracetamol is highly toxic to cats.</td><td><strong>Education</strong></td></tr>
+    <tr><td><strong>Inexperience</strong></td><td>The person has the knowledge but lacks the skill or practice to do it correctly.</td><td>An owner knows where to stop when trimming claws, but is not used to holding a wriggling animal and cuts too deep.</td><td><strong>Training</strong>: a veterinarian or veterinary paramedic teaches or demonstrates the correct technique</td></tr>
+    <tr><td><strong>Incompetence</strong></td><td>The person has knowledge and experience, yet is unable to do the task.</td><td>An elderly person with limited strength keeps a large, very active dog, cannot walk it far, and keeps it indoors all the time.</td><td><strong>Change of role</strong>: find a new owner, or choose an animal that fits the person's capacity</td></tr>
+    <tr><td><strong>Inconsideration</strong></td><td>The person has knowledge, experience and ability, and chooses not to act because they do not care.</td><td>An owner leaves a dog in a closed car on a hot day, saying "just a quick shop", despite knowing the risk of heatstroke.</td><td><strong>Sanction</strong>: strong warning, social sanction, or legal action; this may count as mild animal abuse</td></tr>
+  </tbody>
+</table></div>
+<h4>Knowledge, skill, ability and care</h4>
+<p>The four factors mark where the chain of requirements breaks.</p>
+<div class="tw"><table class="w2">
+  <thead><tr><th>Factor</th><th>Knowledge</th><th>Skill</th><th>Ability</th><th>Care</th></tr></thead>
+  <tbody>
+    <tr><td>Ignorance</td><td>missing</td><td></td><td></td><td></td></tr>
+    <tr><td>Inexperience</td><td>present</td><td>missing</td><td></td><td></td></tr>
+    <tr><td>Incompetence</td><td>present</td><td>present</td><td>missing</td><td></td></tr>
+    <tr><td>Inconsideration</td><td>present</td><td>present</td><td>present</td><td>missing</td></tr>
+  </tbody>
+</table></div>
+<h4 style="margin-top:24px">Question path</h4>
+<p>Pick a case and answer four questions about the person. The path stops at the first "no" and names the factor and its remedy.</p>
+<div id="fouri"></div>
+<p class="gap">Lack of money, time or space (the <em>situational</em> cause in 8.2) belongs here under <strong>ability</strong> in most cases, since the person cares and knows what to do but cannot provide it.</p>
+
+<h3>8.4 The same act can have different causes</h3>
+<p>Take the dog left without water in the case list of Part 7. If the owner did not know that dogs need constant access to water, the cause is ignorance. If the owner knew and left anyway, the cause is inconsideration. A teacher or a veterinarian must find out which it is before choosing education or sanction. This is why a good case history asks questions, and why veterinarians are often the right people to ask them.</p>
+
+<h3>8.5 Remedies and the three pillars</h3>
+<p>Each remedy rests on a pillar from Part 6:</p>
+<ul>
+  <li><strong>Education and training</strong> rest on welfare <em>science</em> and veterinary knowledge.</li>
+  <li><strong>Change of role</strong> needs <em>ethical</em> judgment about what is best for the animal and the person.</li>
+  <li><strong>Sanction</strong> rests on <em>law</em>, and on social norms that grow out of ethics.</li>
+</ul>
+<p>When the cause is inconsideration, ethics and law work together. When the cause is ignorance or inexperience, science does most of the work.</p>
+
+<h3>8.6 Optional reading: nine motives</h3>
+<div id="motives"></div>
+</section>
+
+<!-- ============ PART 9 ============ -->
+<section class="part" id="p9" aria-labelledby="h-p9">
+<h2 id="h-p9"><span class="pn">9</span>Applied practice and summary</h2>
+<p class="lead">This closing part lets students use every tool from the module on one case, and then check their understanding.</p>
+
+<h3>9.1 Worked case: a pet macaque</h3>
+<div class="card">
+  <h4>Case</h4>
+  <p style="margin:0">A family keeps a juvenile long-tailed macaque on a chain in the backyard. They bought it from a street seller. The children play with it every afternoon, usually for less than an hour. Viewpoint: the owner.</p>
+</div>
+<p class="gap">The case is revealed one step at a time. Write your own answer first, then reveal the analysis to compare.</p>
+<div id="macaque"></div>
+
+<h3>9.2 Independent task</h3>
+<p>Choose one case, apply Steps 1 to 5 of the quadrant procedure, then answer the four questions below. Submit the answers in the form provided in this module.</p>
+<div id="indep"></div>
+
+<h3>9.3 Check your understanding</h3>
+<div id="quiz"></div>
+
+<h3>9.4 Key messages</h3>
+<div class="card">
+<ol style="margin:0">
+  <li>Animal welfare is a measure of an animal's quality of life.</li>
+  <li>Welfare sits on a spectrum, and one animal can sit at different points at different times.</li>
+  <li>Welfare matters for the animal's own sake and for the sake of people.</li>
+  <li>Interaction, relationship and bond are different things. The quadrant classifies situations and does not replace those terms.</li>
+  <li>Contact and influence together locate a situation in one of four zones: Custody, Indirect, Neighbor and Remote.</li>
+  <li>Positions in the quadrant are not fixed. A change in contact or influence moves a case to another zone.</li>
+  <li>Zones show where hazard exposure is expected to be highest. They do not show actual welfare.</li>
+  <li>Roles create demands, and welfare problems become more likely when demands clash with needs.</li>
+  <li>Science, ethics and law are the three pillars used to judge a situation.</li>
+  <li>Abuse can be active or passive, physical or mental, intentional or not, obvious or ambiguous.</li>
+  <li>Ignorance, inexperience, incompetence and inconsideration need different remedies.</li>
+</ol>
+</div>
+</section>
+<footer class="foot">Week 1 Module · Human-Animal Dynamics and Animal Welfare</footer>
+</main>
+</div>
+<script>
+(function () {
+'use strict';
+/* =====================================================================
+   CORE HELPERS
+   ===================================================================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const SVGNS = 'http://www.w3.org/2000/svg';
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+function setAttrs(e, a) {
+  for (const n in (a || {})) {
+    const v = a[n];
+    if (v === false || v == null) continue;
+    if (n.startsWith('on') && typeof v === 'function') e.addEventListener(n.slice(2), v);
+    else if (n === 'html') e.innerHTML = v;
+    else if (n === 'text') e.textContent = v;
+    else e.setAttribute(n, v === true ? '' : v);
+  }
+}
+function addKids(e, k) {
+  k.flat(Infinity).forEach(c => {
+    if (c == null || c === false) return;
+    e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  });
+}
+function h(tag, a, ...k) { const e = document.createElement(tag); setAttrs(e, a); addKids(e, k); return e; }
+function s(tag, a, ...k) { const e = document.createElementNS(SVGNS, tag); setAttrs(e, a); addKids(e, k); return e; }
+
+const liveEl = $('#live');
+function say(t) { if (!liveEl) return; liveEl.textContent = ''; setTimeout(() => { liveEl.textContent = t; }, 30); }
+
+const store = {
+  get(k) { try { return localStorage.getItem('w1:' + k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem('w1:' + k, v); } catch (e) { /* storage unavailable */ } }
+};
+function persist(root = document) {
+  $$('[data-k]', root).forEach(el => {
+    if (el.dataset.bound) return;
+    el.dataset.bound = '1';
+    const v = store.get(el.dataset.k);
+    if (v !== null) el.value = v;
+    el.addEventListener('input', () => store.set(el.dataset.k, el.value));
+  });
+}
+
+/* accordion (chevron, never a plus sign) */
+function setAcc(btn, open) {
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  const body = document.getElementById(btn.getAttribute('aria-controls'));
+  if (body) body.hidden = !open;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.acc-h');
+  if (b) setAcc(b, b.getAttribute('aria-expanded') !== 'true');
+});
+let accN = 0;
+function makeAcc(title, bodyNode, opts = {}) {
+  const id = 'acc-' + (++accN);
+  const btn = h('button', { type: 'button', class: 'acc-h', 'aria-expanded': 'false', 'aria-controls': id },
+    h('span', {}, title, opts.sub ? h('span', { class: 'sub' }, opts.sub) : null),
+    h('span', { class: 'chev', 'aria-hidden': 'true' }, '⌄'));
+  const body = h('div', { class: 'acc-b', id, hidden: true });
+  if (typeof bodyNode === 'string') body.innerHTML = bodyNode; else if (bodyNode) body.append(bodyNode);
+  const wrap = h('div', { class: 'box acc' }, btn, body);
+  if (opts.open) setAcc(btn, true);
+  return { el: wrap, btn, body };
+}
+
+/* =====================================================================
+   DATA
+   ===================================================================== */
+const ZONES = {
+  custody: { name: 'Custody Zone', short: 'Custody', glyph: '■', exp: 'highest',
+    contact: 'high', influence: 'high',
+    def: 'People live with the animal and control most of its life.',
+    ex: 'livestock, laboratory animals, companion animals, zoo animals, captive deer',
+    path: 'failure to meet needs; harmful handling and procedures' },
+  indirect: { name: 'Indirect Zone', short: 'Indirect', glyph: '▲', exp: 'moderate',
+    contact: 'low', influence: 'high',
+    def: 'People rarely touch these animals, yet shape their world.',
+    ex: 'wildlife in cleared forest, marine animals near drilling or shipping lanes',
+    path: 'habitat loss, pollution, noise, disturbance' },
+  neighbor: { name: 'Neighbor Zone', short: 'Neighbor', glyph: '◆', exp: 'moderate',
+    contact: 'high', influence: 'low',
+    def: 'Animals share our space. People neither care for them nor manage their space or resources, though people may decide to remove them (pest control).',
+    ex: 'sparrows and swallows in settlements, insects in houses, urban rodents',
+    path: 'incidental harm, conflict, pest control methods' },
+  remote: { name: 'Remote Zone', short: 'Remote', glyph: '●', exp: 'lowest',
+    contact: 'low', influence: 'low',
+    def: "Contact is rare and people have little effect on the animal's life.",
+    ex: 'deep-sea animals, desert animals far from settlement',
+    path: 'little current exposure, but reach can grow' }
+};
+const zoneChip = k => `<span class="zt z-${k}"><span aria-hidden="true">${ZONES[k].glyph}</span>${ZONES[k].name}</span>`;
+/* an axis score of 3 counts as high (precautionary default of the borderline rule) */
+function zoneOf(c, i) {
+  const hc = c >= 3, hi = i >= 3;
+  return hc && hi ? 'custody' : (!hc && hi ? 'indirect' : (hc && !hi ? 'neighbor' : 'remote'));
+}
+const borderOf = (c, i) => ({ c: c === 3, i: i === 3 });
+
+const RUBRIC = {
+  contact: [
+    { k: 'F', name: 'Frequency', q: 'How often do people and the animal meet?',
+      o: ['Less often than weekly, or never', 'At least weekly, but not every day', 'Daily'] },
+    { k: 'D', name: 'Duration', q: 'How long is a typical encounter?',
+      o: ['Under 1 minute', '1 to 59 minutes', '1 hour or more'] },
+    { k: 'P', name: 'Proximity', q: 'How close are they during the encounter?',
+      o: ['More than 10 meters', 'Within 10 meters, without touching', 'Direct physical contact'] }
+  ],
+  influence: [
+    { k: 'R', name: 'Resources', q: 'Who supplies or takes away food, water, shelter and health care?',
+      o: ['The animal obtains all of them itself and people do not affect their availability',
+          'People supply some of them, or reduce some of them (cleared foraging area, polluted water)',
+          'People supply nearly all of them, or have removed or degraded most of them'] },
+    { k: 'S', name: 'Space', q: 'Who decides where the animal can go and what its surroundings are like?',
+      o: ['The animal ranges freely in surroundings people do not manage',
+          'Surroundings are partly altered or limited by people (fragmented habitat, large paddock)',
+          'People design and limit the space (cage, stall, pond, tank, enclosure)'] },
+    { k: 'L', name: 'Life events', q: 'Who decides breeding, group composition, relocation and end of life?',
+      o: ['People decide none of these', 'People decide some (culling, translocation, hunting quota)', 'People decide most or all'] }
+  ]
+};
+const AXNAME = { F: 'Frequency', D: 'Duration', P: 'Proximity', R: 'Resources', S: 'Space', L: 'Life events' };
+
+/* =====================================================================
+   MULTIPLE-CHOICE COMPONENT
+   ===================================================================== */
+function buildMCQ(o) {
+  const root = h('div', { class: 'mcq' });
+  const fb = h('div', { class: 'fb', hidden: true, 'aria-live': 'polite' });
+  const list = h('div', { class: 'opts', role: 'group', 'aria-label': 'Answer options' });
+  const state = { done: false, correct: null };
+  const btns = o.opts.map((txt, i) => {
+    const b = h('button', { type: 'button', class: 'opt' },
+      h('span', { class: 'ol', 'aria-hidden': 'true' }, 'ABCDEFGH'[i]),
+      h('span', { class: 'ot' }, txt),
+      h('span', { class: 'mark' }));
+    b.addEventListener('click', () => {
+      if (state.done || b.disabled) return;
+      const ok = i === o.answer;
+      mark(b, ok);
+      if (ok || !o.retry) {
+        state.done = true; state.correct = ok;
+        btns.forEach(x => { x.disabled = true; });
+        if (!ok) mark(btns[o.answer], true);
+      } else {
+        b.disabled = true;
+      }
+      fb.hidden = false;
+      fb.className = 'fb ' + (ok ? 'ok' : 'no');
+      const text = (ok || !o.retry) ? o.explain : (o.hint || 'Try another option.');
+      fb.innerHTML = `<span class="st">${ok ? '✓ Correct.' : '✗ Not quite.'}</span> ${text}`;
+      say(ok ? 'Correct' : 'Not quite');
+      if (o.onAnswer) o.onAnswer(ok, i, state);
+    });
+    return b;
+  });
+  function mark(b, ok) {
+    b.classList.add(ok ? 'right' : 'wrong');
+    b.querySelector('.mark').innerHTML = ok ? '✓<span class="sr-only"> correct</span>' : '✗<span class="sr-only"> incorrect</span>';
+  }
+  list.append(...btns);
+  root.append(h('div', { class: 'q', html: o.q }), list, fb);
+  return { el: root, state };
+}
+
+/* =====================================================================
+   QUADRANT MAP (shared by Part 4, 9 and the practice cards)
+   ===================================================================== */
+const QG = { W: 560, H: 492, x0: 76, x1: 536, y0: 404, y1: 22 };
+const qx = c => QG.x0 + (QG.x1 - QG.x0) * c / 6;
+const qy = i => QG.y0 - (QG.y0 - QG.y1) * i / 6;
+let quadN = 0;
+
+function makeQuad(host, opts = {}) {
+  const uid = 'q' + (++quadN);
+  const svg = s('svg', { class: 'quad', viewBox: `0 0 ${QG.W} ${QG.H}`, role: 'group',
+    'aria-label': opts.label || 'Contact-Influence Quadrant. Contact runs left to right, influence runs bottom to top.' });
+  const defs = s('defs', {},
+    s('pattern', { id: uid + 'h', width: 8, height: 8, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' },
+      s('line', { x1: 0, y1: 0, x2: 0, y2: 8, stroke: 'rgba(255,255,255,.28)', 'stroke-width': 2 })),
+    s('marker', { id: uid + 'a', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' },
+      s('path', { d: 'M0,0 L10,5 L0,10 z', fill: '#fff' })));
+  svg.append(defs);
+  svg.append(s('rect', { class: 'q-bg', x: QG.x0, y: QG.y1, width: QG.x1 - QG.x0, height: QG.y0 - QG.y1, rx: 14 }));
+
+  const zonesG = s('g', {});
+  const zoneRects = {
+    custody: [3, 6, 3, 6], indirect: [0, 3, 3, 6], neighbor: [3, 6, 0, 3], remote: [0, 3, 0, 3]
+  };
+  const zEls = {};
+  Object.keys(zoneRects).forEach(k => {
+    const [c0, c1, i0, i1] = zoneRects[k];
+    const g = s('g', { class: 'qz', tabindex: opts.zoneInfo ? 0 : null, role: opts.zoneInfo ? 'button' : null,
+      'aria-label': opts.zoneInfo ? `${ZONES[k].name}: ${ZONES[k].def}` : null });
+    g.append(s('rect', { class: 'qzr qr-' + k, x: qx(c0), y: qy(i1), width: qx(c1) - qx(c0), height: qy(i0) - qy(i1), rx: 10 }));
+    const right = c0 === 3, top = i0 === 3;
+    const tx = right ? qx(c1) - 12 : qx(c0) + 12;
+    const ty = top ? qy(i1) + 28 : qy(i0) - 30;
+    const anchor = right ? 'end' : 'start';
+    g.append(s('text', { class: 'zn', x: tx, y: ty, 'text-anchor': anchor }, `${ZONES[k].glyph} ${ZONES[k].short}`));
+    g.append(s('text', { class: 'zs', x: tx, y: ty + 18, 'text-anchor': anchor }, `${ZONES[k].contact} contact · ${ZONES[k].influence} influence`));
+    if (opts.zoneInfo) {
+      const fire = () => { $$('.qz', svg).forEach(z => z.classList.remove('sel')); g.classList.add('sel'); opts.zoneInfo(k); };
+      g.addEventListener('mouseenter', fire);
+      g.addEventListener('focus', fire);
+      g.addEventListener('click', fire);
+      g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); } });
+    }
+    zEls[k] = g; zonesG.append(g);
+  });
+  svg.append(zonesG);
+
+  /* borderline band (score 3) */
+  svg.append(s('rect', { class: 'q-band', x: qx(2.75), y: QG.y1, width: qx(3.25) - qx(2.75), height: QG.y0 - QG.y1, 'pointer-events': 'none', fill: `url(#${uid}h)` }));
+  svg.append(s('rect', { x: QG.x0, y: qy(3.25), width: QG.x1 - QG.x0, height: qy(2.75) - qy(3.25), 'pointer-events': 'none', fill: `url(#${uid}h)` }));
+  svg.append(s('line', { class: 'q-mid', x1: qx(3), y1: QG.y1, x2: qx(3), y2: QG.y0, 'pointer-events': 'none' }));
+  svg.append(s('line', { class: 'q-mid', x1: QG.x0, y1: qy(3), x2: QG.x1, y2: qy(3), 'pointer-events': 'none' }));
+  /* axes */
+  svg.append(s('line', { class: 'q-line', x1: QG.x0, y1: QG.y0, x2: QG.x1, y2: QG.y0 }));
+  svg.append(s('line', { class: 'q-line', x1: QG.x0, y1: QG.y0, x2: QG.x0, y2: QG.y1 }));
+  for (let n = 0; n <= 6; n++) {
+    svg.append(s('text', { class: 'tk', x: qx(n), y: QG.y0 + 20, 'text-anchor': 'middle' }, n));
+    svg.append(s('text', { class: 'tk', x: QG.x0 - 12, y: qy(n) + 5, 'text-anchor': 'end' }, n));
+  }
+  svg.append(s('text', { class: 'axl', x: (QG.x0 + QG.x1) / 2, y: QG.y0 + 48, 'text-anchor': 'middle' }, 'Contact index  →'));
+  svg.append(s('text', { class: 'axl', transform: `translate(20 ${(QG.y0 + QG.y1) / 2}) rotate(-90)`, 'text-anchor': 'middle' }, 'Influence index  →'));
+  svg.append(s('text', { class: 'q-bl', x: QG.x0, y: QG.H - 8, 'text-anchor': 'start', 'pointer-events': 'none' }, 'Hatched band = borderline score (3)'));
+
+  const arrowsG = s('g', { 'pointer-events': 'none' });
+  const dotsG = s('g', {});
+  svg.append(arrowsG, dotsG);
+  host.append(svg);
+
+  const dots = {};
+  const api = { svg, zEls, dots, uid };
+
+  function toPt(c, i) { return [qx(c), qy(i)]; }
+  function place(g, c, i) { const [x, y] = toPt(c, i); g.style.transform = `translate(${x}px,${y}px)`; g.dataset.c = c; g.dataset.i = i; }
+
+  api.addDot = function (id, o) {
+    const g = s('g', { class: 'dot', 'data-drag': o.drag ? '1' : null, tabindex: o.drag ? 0 : null,
+      role: o.drag ? 'slider' : 'img', 'aria-label': o.aria || o.label || id });
+    const ring = s('circle', { class: 'ring', r: 25, cx: 0, cy: 0, style: 'display:none' });
+    g.append(ring, s('circle', { class: 'dc', r: 17, cx: 0, cy: 0 }));
+    if (o.emoji) g.append(s('text', { class: 'dt', x: 0, y: 1 }, o.emoji));
+    else g.append(s('text', { class: 'dn', x: 0, y: 1 }, o.text || ''));
+    if (o.label) g.append(s('text', { class: 'dl', x: 0, y: 36, stroke: '#141416', 'stroke-width': 4, 'paint-order': 'stroke' }, o.label));
+    dotsG.append(g);
+    place(g, o.c, o.i);
+    dots[id] = { g, ring, c: o.c, i: o.i, o };
+    api.setRing(id, !!o.ring);
+    if (o.drag) enableDrag(id);
+    return dots[id];
+  };
+  api.setDot = function (id, c, i, o = {}) {
+    const d = dots[id]; if (!d) return;
+    d.c = c; d.i = i;
+    if (o.instant) { d.g.classList.add('nodrag-anim'); place(d.g, c, i); void d.g.getBoundingClientRect(); d.g.classList.remove('nodrag-anim'); }
+    else place(d.g, c, i);
+    if (o.ring !== undefined) api.setRing(id, o.ring);
+  };
+  api.setRing = function (id, on) { const d = dots[id]; if (d) d.ring.style.display = on ? '' : 'none'; };
+  api.removeDot = function (id) { const d = dots[id]; if (d) { d.g.remove(); delete dots[id]; } };
+  api.clearArrows = function () { while (arrowsG.firstChild) arrowsG.removeChild(arrowsG.firstChild); };
+  api.arrow = function (c0, i0, c1, i1, o = {}) {
+    let [x0, y0] = toPt(c0, i0), [x1, y1] = toPt(c1, i1);
+    const dx = x1 - x0, dy = y1 - y0, len = Math.hypot(dx, dy) || 1;
+    x0 += dx / len * 22; y0 += dy / len * 22; x1 -= dx / len * 24; y1 -= dy / len * 24;
+    const p = s('path', { class: 'arrow' + (o.alt ? ' alt' : ''), d: `M${x0},${y0} L${x1},${y1}`, 'marker-end': `url(#${uid}a)` });
+    arrowsG.append(p);
+    if (o.label) arrowsG.append(s('text', { class: 'arrowlbl', x: (x0 + x1) / 2 + 10, y: (y0 + y1) / 2 - 8, stroke: '#141416', 'stroke-width': 4, 'paint-order': 'stroke' }, o.label));
+    try {
+      const L = p.getTotalLength();
+      if (!o.alt) { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; void p.getBoundingClientRect(); p.style.transition = 'stroke-dashoffset .8s ease'; p.style.strokeDashoffset = 0; }
+    } catch (e) { /* path length unavailable */ }
+  };
+
+  function enableDrag(id) {
+    const d = dots[id];
+    const g = d.g;
+    let dragging = false;
+    const fromEvent = e => {
+      const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+      const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+      return [clamp((p.x - QG.x0) / (QG.x1 - QG.x0) * 6, 0, 6), clamp((QG.y0 - p.y) / (QG.y0 - QG.y1) * 6, 0, 6)];
+    };
+    const update = (c, i) => {
+      d.c = c; d.i = i;
+      g.classList.add('nodrag-anim'); place(g, c, i);
+      g.setAttribute('aria-valuetext', `${ZONES[zoneOf(c, i)].name}`);
+      if (d.o.onMove) d.o.onMove(c, i, zoneOf(c, i));
+    };
+    g.addEventListener('pointerdown', e => { dragging = true; g.classList.add('nodrag-anim'); try { g.setPointerCapture(e.pointerId); } catch (x) { /* ignore */ } e.preventDefault(); });
+    g.addEventListener('pointermove', e => { if (!dragging) return; const [c, i] = fromEvent(e); update(c, i); });
+    const end = () => { if (!dragging) return; dragging = false; if (d.o.onDrop) d.o.onDrop(d.c, d.i, zoneOf(d.c, d.i)); };
+    g.addEventListener('pointerup', end); g.addEventListener('pointercancel', end);
+    g.addEventListener('keydown', e => {
+      const step = e.shiftKey ? 1 : 0.5;
+      let { c, i } = d, hit = true;
+      if (e.key === 'ArrowLeft') c -= step; else if (e.key === 'ArrowRight') c += step;
+      else if (e.key === 'ArrowUp') i += step; else if (e.key === 'ArrowDown') i -= step; else hit = false;
+      if (!hit) return;
+      e.preventDefault();
+      update(clamp(c, 0, 6), clamp(i, 0, 6));
+      if (d.o.onDrop) d.o.onDrop(d.c, d.i, zoneOf(d.c, d.i));
+    });
+    g.setAttribute('aria-valuetext', ZONES[zoneOf(d.c, d.i)].name);
+  }
+  return api;
+}
+
+/* =====================================================================
+   NAVIGATION, PROGRESS, REVEAL BUTTONS
+   ===================================================================== */
+function initNav() {
+  const toc = $('#toc'), btn = $('#menuBtn');
+  btn.addEventListener('click', () => {
+    const open = !toc.classList.contains('open');
+    toc.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  $$('#toc a').forEach(a => a.addEventListener('click', () => { toc.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && toc.classList.contains('open')) { toc.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); btn.focus(); } });
+  const links = {};
+  $$('#toc a').forEach(a => { links[a.getAttribute('href').slice(1)] = a; });
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => {
+      es.forEach(en => {
+        if (en.isIntersecting) { Object.values(links).forEach(l => l.removeAttribute('aria-current')); if (links[en.target.id]) links[en.target.id].setAttribute('aria-current', 'true'); }
+      });
+    }, { rootMargin: '-25% 0px -65% 0px' });
+    $$('.part').forEach(p => io.observe(p));
+  }
+  const bar = $('#progress');
+  const upd = () => { const d = document.documentElement; const max = d.scrollHeight - window.innerHeight; bar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + '%'; };
+  window.addEventListener('scroll', upd, { passive: true }); upd();
+}
+
+/* generic locked-step helper */
+function unlockEl(el) { el.classList.remove('locked'); el.removeAttribute('inert'); el.removeAttribute('aria-disabled'); }
+function lockEl(el) { el.classList.add('locked'); el.setAttribute('inert', ''); el.setAttribute('aria-disabled', 'true'); }
+
+const INITS = [initNav];
+/* =====================================================================
+   PART 1: reveal buttons
+   ===================================================================== */
+function initHook() {
+  const seen = { revA: false, revB: false };
+  $$('[data-reveal]').forEach(b => {
+    b.addEventListener('click', () => {
+      const id = b.dataset.reveal, body = document.getElementById(id);
+      const open = body.hidden;
+      body.hidden = !open;
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      b.textContent = (open ? 'Hide notes for ' : 'Reveal notes for ') + (id === 'revA' ? 'Image A' : 'Image B');
+      if (open) seen[id] = true;
+      if (seen.revA && seen.revB) { $('#bridge').hidden = false; $('#bridgeHint').hidden = true; }
+    });
+  });
+}
+
+/* =====================================================================
+   PART 2.1: definition cards unlocked by a check question
+   ===================================================================== */
+function initDefs() {
+  const host = $('#defcheck'); if (!host) return;
+  const m = buildMCQ({
+    q: '<span class="qn">Check question</span><br>Which statement describes welfare as a state of the animal rather than an action by people?',
+    opts: ['The farm provides clean water twice a day.',
+           'The pigs are in good physical condition and show normal exploratory behavior.',
+           'The owner attended a welfare training.',
+           'The zoo has a welfare policy.'],
+    answer: 1, retry: true,
+    hint: 'This option describes something people do, or a document. Look for the option that describes the animal itself.',
+    explain: 'Options 1, 3 and 4 describe human actions or documents that <em>aim</em> to produce good welfare. Option 2 describes what the animal is actually experiencing. This distinction matters in practice: an assessment looks at the animal itself, and paperwork alone cannot settle the question. Levels 2 and 3 are now unlocked.',
+    onAnswer(ok) {
+      if (!ok) return;
+      ['def2', 'def3'].forEach(id => {
+        const c = document.getElementById(id);
+        c.classList.remove('locked');
+        $('.lockmsg', c).remove();
+        $('.db', c).hidden = false;
+      });
+      say('Levels 2 and 3 unlocked');
+    }
+  });
+  host.append(m.el);
+}
+
+/* =====================================================================
+   PART 2.2: welfare spectrum (draggable markers)
+   ===================================================================== */
+function initSpectrum() {
+  const host = $('#spectrum'); if (!host) return;
+  const cases = [
+    { k: 'A', t: 'The deer in Image A (enclosure at the Unhas deer park)' },
+    { k: 'B', t: 'The deer in Image B (forest, caught by a tiger)' },
+    { k: 'C', t: 'A stray cat with an untreated leg wound' }
+  ];
+  const card = h('div', { class: 'card' });
+  card.append(h('p', {}, 'Drag each marker onto the line, then write one clause of evidence for the position you chose. With a keyboard, focus a marker and use the arrow keys.'));
+  const legend = h('ul', { class: 'legend' }, cases.map(c => h('li', {}, h('span', { class: 'b', 'aria-hidden': 'true' }, c.k), h('span', {}, c.t))));
+  card.append(legend);
+
+  const spec = h('div', { class: 'spec' });
+  const lanes = h('div', { class: 'lanes' });
+  const placed = {};
+  cases.forEach((c, n) => {
+    const lane = h('div', { class: 'lane' });
+    const mk = h('div', { class: 'mk', tabindex: 0, role: 'slider', 'aria-label': `Case ${c.k}: ${c.t}`,
+      'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': 50, 'aria-valuetext': 'Not placed yet' }, c.k);
+    mk.style.left = '50%';
+    mk.style.setProperty('--drop', ((cases.length - 1 - n) * 50 + 12) + 'px');
+    lane.append(mk); lanes.append(lane);
+    let dragging = false, val = 50;
+    const setVal = v => {
+      val = clamp(v, 0, 100);
+      mk.style.left = val + '%';
+      mk.setAttribute('aria-valuenow', Math.round(val));
+      mk.setAttribute('aria-valuetext', val < 35 ? 'Toward very poor welfare' : (val > 65 ? 'Toward very good welfare' : 'Near the middle of the line'));
+      mk.classList.add('placed'); placed[c.k] = true; check();
+    };
+    mk.addEventListener('pointerdown', e => { dragging = true; mk.classList.add('drag'); try { mk.setPointerCapture(e.pointerId); } catch (x) { /* ignore */ } e.preventDefault(); });
+    mk.addEventListener('pointermove', e => { if (!dragging) return; const r = lane.getBoundingClientRect(); setVal((e.clientX - r.left) / r.width * 100); });
+    const end = () => { dragging = false; mk.classList.remove('drag'); };
+    mk.addEventListener('pointerup', end); mk.addEventListener('pointercancel', end);
+    mk.addEventListener('keydown', e => {
+      let hit = true;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') setVal(val - 4);
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') setVal(val + 4);
+      else if (e.key === 'PageDown') setVal(val - 15);
+      else if (e.key === 'PageUp') setVal(val + 15);
+      else if (e.key === 'Home') setVal(0);
+      else if (e.key === 'End') setVal(100);
+      else hit = false;
+      if (hit) e.preventDefault();
+    });
+  });
+  spec.append(lanes);
+  spec.append(h('div', { class: 'barrow' },
+    h('span', { class: 'ah l', 'aria-hidden': 'true' }),
+    h('div', { class: 'barwrap' },
+      h('div', { class: 'bar' }),
+      h('span', { class: 'anc', style: 'left:25%', 'aria-hidden': 'true' }, '😿'),
+      h('span', { class: 'anc', style: 'left:75%', 'aria-hidden': 'true' }, '😸')),
+    h('span', { class: 'ah r', 'aria-hidden': 'true' })));
+  spec.append(h('div', { class: 'ends' }, h('span', {}, 'Very poor welfare'), h('span', {}, 'Very good welfare')));
+  card.append(spec);
+
+  const evs = h('div', { class: 'evs' });
+  cases.forEach(c => {
+    const id = 'spec-ev-' + c.k;
+    evs.append(h('div', {},
+      h('label', { class: 'fld', for: id }, `Evidence for case ${c.k}: one clause`),
+      h('input', { type: 'text', id, 'data-k': id, placeholder: 'For example: "the animal can move freely and has food"', autocomplete: 'off' })));
+  });
+  card.append(evs);
+  const done = h('div', { class: 'fb ok', hidden: true, 'aria-live': 'polite' },
+    h('span', { class: 'st' }, '✓ '), 'A position is a judgment about the animal\'s state at one moment, and evidence can move it left or right.');
+  card.append(done);
+  host.append(card);
+  persist(card);
+
+  function check() {
+    const all = cases.every(c => placed[c.k] && $('#spec-ev-' + c.k).value.trim().length > 0);
+    if (all && done.hidden) { done.hidden = false; say('All three cases placed'); }
+  }
+  evs.addEventListener('input', check);
+}
+
+/* =====================================================================
+   PART 3.1: sorting task (drag, or tap then tap)
+   ===================================================================== */
+function initSorter() {
+  const host = $('#sorter'); if (!host) return;
+  const items = [
+    { t: 'A tourist pats a street cat once during a holiday.', ok: ['HAI'], show: 'HAI', r: 'One episode, no continuing expectation.' },
+    { t: 'A dairy worker milks the same cows twice a day for three years.', ok: ['HAR'], show: 'HAR', r: 'Repeated contact, mutual expectations, no need for attachment.' },
+    { t: 'A woman and her dog have lived together for eleven years and both seek each other out.', ok: ['HAB'], show: 'HAB', r: 'A relationship with attachment.' },
+    { t: 'A shrimp in a pond is fed by an automated system that no one watches.', ok: ['NONE'], show: 'None of these', r: 'No contact between the shrimp and any person who knows it as an individual.' },
+    { t: 'A bird nests in a school roof, and children see it most days but never touch it.', ok: ['NONE', 'HAR'], show: 'None of these, or a weak HAR', r: 'Frequent proximity, yet no true exchange between known individuals (a good discussion item).' },
+    { t: 'A veterinarian examines a hospitalized cat for ten minutes.', ok: ['HAI'], show: 'HAI', r: 'Single event, even if the cat is later seen again.' }
+  ];
+  const buckets = [
+    { k: 'HAI', t: 'HAI', s: 'interaction' }, { k: 'HAR', t: 'HAR', s: 'relationship' },
+    { k: 'HAB', t: 'HAB', s: 'bond' }, { k: 'NONE', t: 'None of these', s: 'no category fits' }
+  ];
+  const st = { placed: {}, sel: null, log: [] };
+  host.innerHTML = '';
+  const card = h('div', { class: 'card' });
+  card.append(h('p', {}, 'Drag each scenario into HAI, HAR, HAB or "None of these". On a touch screen or with a keyboard, select a scenario first, then select a bucket. Feedback appears after each drop.'));
+  const pool = h('div', { class: 'sorter-pool', 'aria-label': 'Scenarios to sort' });
+  const bk = h('div', { class: 'buckets' });
+  const fbs = h('div', { class: 'stack', 'aria-live': 'polite' });
+  const score = h('p', { class: 'big' });
+  const reset = h('button', { type: 'button', class: 'btn sec', hidden: true, onclick() { st.placed = {}; st.sel = null; st.log = []; render(); } }, 'Try again');
+  card.append(pool, bk, fbs, score, h('div', { class: 'btnrow' }, reset));
+  host.append(card);
+
+  function place(idx, key) {
+    if (st.placed[idx] !== undefined) return;
+    const it = items[idx], ok = it.ok.includes(key);
+    st.placed[idx] = { key, ok };
+    st.sel = null;
+    st.log.push({ idx, ok });
+    render();
+    say(ok ? 'Correct' : 'Not quite');
+  }
+  function render() {
+    pool.innerHTML = ''; bk.innerHTML = ''; fbs.innerHTML = '';
+    items.forEach((it, idx) => {
+      if (st.placed[idx] !== undefined) return;
+      const b = h('button', { type: 'button', class: 'scn', draggable: 'true', 'aria-pressed': st.sel === idx ? 'true' : 'false' }, it.t);
+      b.addEventListener('click', () => { st.sel = st.sel === idx ? null : idx; render(); const nb = pool.querySelector('[aria-pressed="true"]'); if (nb) nb.focus(); });
+      b.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', String(idx)); e.dataTransfer.effectAllowed = 'move'; });
+      pool.append(b);
+    });
+    if (!pool.children.length) pool.append(h('p', { class: 'muted', style: 'margin:0' }, 'All six scenarios are placed.'));
+    buckets.forEach(bu => {
+      const list = h('ul', { class: 'bk-list' });
+      items.forEach((it, idx) => {
+        const p = st.placed[idx];
+        if (p && p.key === bu.k) list.append(h('li', { class: p.ok ? 'good' : 'bad' }, h('b', {}, p.ok ? '✓' : '✗'), it.t));
+      });
+      const btn = h('button', { type: 'button', class: 'bk-h', 'aria-label': `Place the selected scenario in ${bu.t}` }, bu.t, h('small', {}, bu.s));
+      btn.addEventListener('click', () => { if (st.sel !== null) place(st.sel, bu.k); else say('Select a scenario first'); });
+      const box = h('div', { class: 'bucket' }, btn, list);
+      box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('over'); });
+      box.addEventListener('dragleave', () => box.classList.remove('over'));
+      box.addEventListener('drop', e => { e.preventDefault(); box.classList.remove('over'); const idx = parseInt(e.dataTransfer.getData('text/plain'), 10); if (!isNaN(idx)) place(idx, bu.k); });
+      bk.append(box);
+    });
+    st.log.forEach(l => {
+      const it = items[l.idx];
+      fbs.append(h('div', { class: 'fb ' + (l.ok ? 'ok' : 'no') },
+        h('span', { class: 'st' }, l.ok ? '✓ Correct. ' : '✗ Not quite. '),
+        h('strong', {}, `${it.show}.`), ' ', it.r,
+        h('div', { class: 'muted', style: 'margin-top:4px;font-size:13.5px' }, it.t)));
+    });
+    const n = Object.keys(st.placed).length, good = st.log.filter(l => l.ok).length;
+    score.textContent = n === items.length ? `You placed all six: ${good} of 6 correct.` : '';
+    reset.hidden = n === 0;
+  }
+  render();
+}
+
+INITS.push(initHook, initDefs, initSpectrum, initSorter);
+/* =====================================================================
+   PART 4.1: quadrant map with two draggable deer
+   ===================================================================== */
+function initQuad41() {
+  const host = $('#quad41map'); if (!host) return;
+  const info = $('#zinfo'), status = $('#deerStatus');
+  const showZone = k => {
+    const z = ZONES[k];
+    info.innerHTML = `<div>${zoneChip(k)}</div><dl>
+      <dt>Definition</dt><dd>${esc(z.def)}</dd>
+      <dt>Contact · influence</dt><dd>${z.contact} · ${z.influence}</dd>
+      <dt>Typical examples</dt><dd>${esc(z.ex)}</dd>
+      <dt>Main hazard pathway</dt><dd>${esc(z.path)}</dd>
+      <dt>Expected hazard exposure</dt><dd>${z.exp}</dd></dl>`;
+  };
+  const q = makeQuad(host, { zoneInfo: showZone });
+  const start = { cap: [4, 5], wild: [0.6, 1] };
+  const upd = () => {
+    const a = q.dots.cap, b = q.dots.wild;
+    const t = `Captive deer: ${ZONES[zoneOf(a.c, a.i)].name}. Wild deer: ${ZONES[zoneOf(b.c, b.i)].name}.`;
+    status.textContent = t;
+  };
+  q.addDot('cap', { emoji: '🦌', label: 'Captive deer', c: start.cap[0], i: start.cap[1], drag: true, aria: 'Captive deer. Use the arrow keys to move it between zones.', onMove: () => upd(), onDrop: (c, i, z) => { upd(); say('Captive deer is in ' + ZONES[z].name); } });
+  q.addDot('wild', { emoji: '🦌', label: 'Wild deer', c: start.wild[0], i: start.wild[1], drag: true, aria: 'Wild deer. Use the arrow keys to move it between zones.', onMove: () => upd(), onDrop: (c, i, z) => { upd(); say('Wild deer is in ' + ZONES[z].name); } });
+  upd();
+  $('#deerReset').addEventListener('click', () => {
+    q.setDot('cap', start.cap[0], start.cap[1]); q.setDot('wild', start.wild[0], start.wild[1]); upd();
+  });
+}
+
+/* =====================================================================
+   PART 4.2: rubric tables
+   ===================================================================== */
+function initRubric() {
+  const mk = (host, arr, title) => {
+    const t = h('table', { class: 'w2' });
+    t.innerHTML = `<thead><tr><th>Item</th><th>0</th><th>1</th><th>2</th></tr></thead>`;
+    const tb = h('tbody');
+    arr.forEach(it => tb.append(h('tr', {}, h('td', {}, h('strong', {}, it.name + ': '), it.q), ...it.o.map(o => h('td', {}, o)))));
+    t.append(tb); host.append(t);
+  };
+  mk($('#rubricC'), RUBRIC.contact); mk($('#rubricI'), RUBRIC.influence);
+}
+
+/* =====================================================================
+   SCORE FORM: the five-step procedure (used in 4.3 and again in Part 9)
+   ===================================================================== */
+function ScoreForm(host, o) {
+  const P = o.prefix;
+  const st = { def: '', s: {}, ev: {}, ctx: '', hz: '' };
+  host.innerHTML = '';
+  const ol = h('ol', { class: 'steps' });
+  const steps = [];
+
+  function mkStep(n, title, kids, nextLabel) {
+    const li = h('li', { class: 'step box card' + (n > 1 ? ' locked' : ''), id: `${P}-step${n}` });
+    if (n > 1) { li.setAttribute('inert', ''); li.setAttribute('aria-disabled', 'true'); }
+    const badge = h('span', { class: 'done-b', hidden: true }, '✓ Done');
+    li.append(h('div', { class: 'sh' }, h('span', { class: 'sn', 'aria-hidden': 'true' }, n), h('h4', {}, `Step ${n} · ${title}`), badge));
+    kids.forEach(k => li.append(k));
+    const next = h('button', { type: 'button', class: 'btn', disabled: true }, nextLabel);
+    li.append(h('div', { class: 'btnrow' }, next));
+    ol.append(li);
+    const step = { n, li, next, badge };
+    steps.push(step);
+    return step;
+  }
+  function advance(from) {
+    const cur = steps[from - 1], nx = steps[from];
+    cur.badge.hidden = false;
+    if (nx) {
+      unlockEl(nx.li);
+      if (nx.onOpen) nx.onOpen();
+      nx.li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      const f = nx.li.querySelector('textarea,input,select'); if (f) setTimeout(() => f.focus({ preventScroll: true }), 50);
+      say(`Step ${nx.n} unlocked`);
+    }
+  }
+
+  /* step 1 */
+  const defBox = h('textarea', { id: `${P}-def`, 'data-k': `${P}-def`, 'aria-label': 'Case definition', placeholder: 'One group of animals, one typical routine, one human viewpoint' });
+  const s1 = mkStep(1, 'Define the case in one sentence', [
+    h('p', {}, 'Name one group of animals, one typical routine and one human viewpoint (the party with the most control). Score a typical individual in that group, because welfare belongs to individuals. Example: "Layer hens in a battery-cage farm, as seen by the farm manager." This step prevents most disagreements, because people often score different situations without realizing it.'),
+    defBox], 'Continue to step 2');
+  defBox.addEventListener('input', () => { st.def = defBox.value; s1.next.disabled = defBox.value.trim().length < 8; });
+  s1.next.addEventListener('click', () => advance(1));
+
+  /* steps 2 and 3 */
+  const totals = {};
+  function axisStep(n, axis, title, label) {
+    const items = RUBRIC[axis];
+    const tot = h('div', { class: 'totals' });
+    const kids = [h('p', {}, 'Score each item 0, 1 or 2 for a typical encounter or typical week.')];
+    items.forEach(it => {
+      const fs = h('fieldset', { class: 'fieldset' }, h('legend', {}, it.name, h('small', {}, it.q)));
+      const rad = h('div', { class: 'radios' });
+      it.o.forEach((txt, v) => {
+        const id = `${P}-${it.k}-${v}`;
+        const inp = h('input', { type: 'radio', name: `${P}-${it.k}`, id, value: v });
+        const lab = h('label', { for: id }, inp, h('span', { class: 'sc' }, v), h('span', {}, txt));
+        inp.addEventListener('change', () => {
+          st.s[it.k] = v;
+          $$('label', rad).forEach(l => l.classList.remove('on')); lab.classList.add('on');
+          refresh();
+        });
+        rad.append(lab);
+      });
+      fs.append(rad); kids.push(fs);
+    });
+    kids.push(tot);
+    const stp = mkStep(n, title, kids, label);
+    stp.tot = tot; stp.items = items;
+    stp.next.addEventListener('click', () => advance(n));
+    return stp;
+  }
+  const s2 = axisStep(2, 'contact', 'Score contact (three items)', 'Continue to step 3');
+  const s3 = axisStep(3, 'influence', 'Score influence (three items)', 'Continue to step 4');
+  const sum = (items) => items.every(it => st.s[it.k] !== undefined) ? items.reduce((a, it) => a + st.s[it.k], 0) : null;
+
+  /* step 4 */
+  const evHost = h('div', {});
+  const s4 = mkStep(4, 'Write one clause of evidence for every score', [
+    h('p', {}, 'Example: "Resources = 2: feed and water are delivered by staff twice a day." Evidence turns an impression into an observation, and lets a teacher see why a student scored as they did.'),
+    evHost], 'Continue to step 5');
+  function renderEv() {
+    const had = {};
+    $$('input', evHost).forEach(i => { had[i.dataset.key] = i.value; });
+    evHost.innerHTML = '';
+    [...RUBRIC.contact, ...RUBRIC.influence].forEach(it => {
+      const id = `${P}-ev-${it.k}`;
+      const inp = h('input', { type: 'text', id, 'data-key': it.k, autocomplete: 'off', placeholder: 'One clause of evidence' });
+      inp.value = had[it.k] !== undefined ? had[it.k] : (st.ev[it.k] || store.get(id) || '');
+      st.ev[it.k] = inp.value;
+      inp.addEventListener('input', () => { st.ev[it.k] = inp.value; store.set(id, inp.value); checkEv(); });
+      evHost.append(h('div', { class: 'evrow' },
+        h('label', { for: id }, `${it.name} = ${st.s[it.k] === undefined ? '?' : st.s[it.k]} `, h('span', {}, `(${it.q})`)), inp));
+    });
+    checkEv();
+  }
+  function checkEv() {
+    const all = [...RUBRIC.contact, ...RUBRIC.influence].every(it => (st.ev[it.k] || '').trim().length > 1);
+    s4.next.disabled = !all;
+  }
+  s4.onOpen = renderEv;
+  s4.next.addEventListener('click', () => advance(4));
+
+  /* step 5 */
+  const zoneLine = h('div', { class: 'fb', 'aria-live': 'polite' });
+  const ctxBox = h('textarea', { id: `${P}-ctx`, 'data-k': `${P}-ctx`, placeholder: 'What would push the borderline score up or down?' });
+  const ctxWrap = h('div', { hidden: true, style: 'margin-top:12px' }, h('label', { class: 'fld', for: `${P}-ctx` }, 'Borderline: write down the context that would push the score up or down'), ctxBox);
+  const hzBox = h('textarea', { id: `${P}-hz`, 'data-k': `${P}-hz`, placeholder: 'Name the pathway and explain it in a sentence' });
+  const hzWrap = h('div', { style: 'margin-top:12px' }, h('label', { class: 'fld', for: `${P}-hz` }, 'Most likely hazard pathway'), hzBox);
+  const s5 = mkStep(5, 'Place the case and name the hazard', [
+    h('p', {}, 'Read the zone from the table in ', h('a', { href: '#s41' }, 'Section 4.1'), ' and state the most likely hazard pathway.'),
+    zoneLine, ctxWrap, hzWrap], 'Place my case on the map');
+  const fin = h('div', { class: 'box card gap', hidden: true, 'aria-live': 'polite' });
+  ctxBox.addEventListener('input', () => { st.ctx = ctxBox.value; check5(); });
+  hzBox.addEventListener('input', () => { st.hz = hzBox.value; check5(); });
+  function view() {
+    const c = sum(RUBRIC.contact), i = sum(RUBRIC.influence);
+    return { c, i, ok: c !== null && i !== null };
+  }
+  function check5() {
+    const v = view(); if (!v.ok) { s5.next.disabled = true; return; }
+    const b = borderOf(v.c, v.i), any = b.c || b.i;
+    s5.next.disabled = !(st.hz.trim().length > 5 && (!any || st.ctx.trim().length > 5));
+  }
+  function render5() {
+    const v = view(); if (!v.ok) return;
+    const z = zoneOf(v.c, v.i), b = borderOf(v.c, v.i), any = b.c || b.i;
+    const axes = [b.c ? 'contact' : null, b.i ? 'influence' : null].filter(Boolean).join(' and ');
+    zoneLine.className = 'fb';
+    zoneLine.innerHTML = `Contact index ${v.c}, influence index ${v.i}. ${zoneChip(z)}` +
+      (any ? `<p style="margin:8px 0 0"><strong>Borderline on ${axes}</strong> (a score of 3). For planning, the case is treated as the zone with higher expected hazard exposure, so it is read as ${ZONES[z].name}. The dot will carry a ring.</p>` : '');
+    ctxWrap.hidden = !any;
+    check5();
+  }
+  s5.onOpen = render5;
+  s5.next.addEventListener('click', () => {
+    const v = view(), z = zoneOf(v.c, v.i), b = borderOf(v.c, v.i), any = b.c || b.i;
+    s5.badge.hidden = false;
+    fin.hidden = false; fin.innerHTML = '';
+    fin.append(h('h4', {}, 'Your case on the map'));
+    const mapHost = h('div', {}); fin.append(mapHost);
+    const q = makeQuad(mapHost, { label: 'Your case on the Contact-Influence Quadrant' });
+    q.addDot('me', { text: '★', c: v.c, i: v.i, ring: any, label: 'Your case', aria: `Your case: contact ${v.c}, influence ${v.i}, ${ZONES[z].name}` });
+    fin.append(h('div', { class: 'sum', html:
+      `<dl><dt>Case</dt><dd>${esc(st.def)}</dd><dt>Zone</dt><dd>${zoneChip(z)}${any ? ' (borderline, ringed)' : ''}</dd>` +
+      `<dt>Main hazard pathway in this zone</dt><dd>${esc(ZONES[z].path)}</dd><dt>Your hazard pathway</dt><dd>${esc(st.hz)}</dd>` +
+      (any ? `<dt>Context that would move the score</dt><dd>${esc(st.ctx)}</dd>` : '') + '</dl>' }));
+    fin.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    say('Your case is placed on the map');
+    if (o.onDone) o.onDone();
+  });
+  host.append(ol, fin);
+  persist(host);
+  st.ctx = ctxBox.value; st.hz = hzBox.value;
+  defBox.dispatchEvent(new Event('input'));
+
+  /* whenever scores change */
+  function refresh() {
+    const c = sum(RUBRIC.contact), i = sum(RUBRIC.influence);
+    s2.tot.innerHTML = c === null ? '' : `<span class="pill">Contact index: ${c} of 6</span>`;
+    s3.tot.innerHTML = i === null ? '' : `<span class="pill">Influence index: ${i} of 6</span>`;
+    s2.next.disabled = c === null; s3.next.disabled = i === null;
+    if (!s4.li.hasAttribute('inert')) renderEv();
+    if (!s5.li.hasAttribute('inert')) render5();
+  }
+  return {
+    setDefinition(t) { defBox.value = t; defBox.dispatchEvent(new Event('input')); store.set(defBox.dataset.k, t); },
+    getText() {
+      const v = view(); if (!v.ok) return 'Quadrant analysis: not completed.';
+      const z = zoneOf(v.c, v.i), b = borderOf(v.c, v.i);
+      const lines = [`Case: ${st.def}`, `Contact index: ${v.c} of 6`, `Influence index: ${v.i} of 6`];
+      [...RUBRIC.contact, ...RUBRIC.influence].forEach(it => lines.push(`  ${it.name} = ${st.s[it.k]}: ${st.ev[it.k] || ''}`));
+      lines.push(`Zone: ${ZONES[z].name}${(b.c || b.i) ? ' (borderline)' : ''}`);
+      if (b.c || b.i) lines.push(`Context that would move the score: ${st.ctx}`);
+      lines.push(`Main hazard pathway: ${st.hz}`);
+      return lines.join('\n');
+    }
+  };
+}
+function initScoreForm43() { const h43 = $('#scoreform43'); if (h43) ScoreForm(h43, { prefix: 'sf43' }); }
+
+/* =====================================================================
+   PART 4.4: worked cases (accordion reveals + dots on one map)
+   ===================================================================== */
+const WORKED = [
+  { t: 'Broiler chickens in a commercial house', v: 'farm staff', c: [2, 1, 1], i: [2, 2, 2], why: 'daily routine checks, people supply everything and decide the lifespan' },
+  { t: 'Spotted deer in the Unhas deer park', v: 'caretaker', c: [2, 1, 1], i: [1, 2, 2], why: 'daily feeding rounds, fenced space, managers decide breeding and transfers. R = 1 because deer also graze the paddock. This score would rise if the deer were fed mainly by people.' },
+  { t: 'Spotted deer in a forest reserve', v: 'the reserve management', c: [0, 0, 0], i: [0, 1, 0], why: 'rare encounters, animals find their own food, only the reserve boundary reflects human decisions' },
+  { t: 'Wildlife in forest being cleared for a plantation', v: 'the company', c: [1, 0, 0], i: [1, 2, 1], why: 'few direct encounters, yet people destroy and fragment the space' },
+  { t: 'House sparrows nesting in a school roof', v: 'school staff', c: [2, 0, 1], i: [1, 1, 0], why: 'daily sight, no touching, buildings supply nesting space', note: 'Neighbor, borderline on contact' },
+  { t: 'A stray cat fed daily by a neighbor', v: 'the neighbor', c: [2, 1, 2], i: [1, 0, 0], why: 'frequent touch, yet the cat roams freely and feeds itself in part. L = 0 while the neighbor makes no such decisions, and L = 1 if the neighbor neuters or relocates the cat.' }
+];
+function initWorked() {
+  const host = $('#worked'), mapHost = $('#workedmap'); if (!host) return;
+  const q = makeQuad(mapHost, { label: 'Map of the six worked cases' });
+  const sumA = a => a.reduce((x, y) => x + y, 0);
+  WORKED.forEach((w, n) => {
+    const c = sumA(w.c), i = sumA(w.i), z = zoneOf(c, i), b = borderOf(c, i), any = b.c || b.i;
+    const body = h('div', { html:
+      `<p style="margin-bottom:8px"><strong>Contact ${c}</strong> (F ${w.c[0]}, D ${w.c[1]}, P ${w.c[2]}) · <strong>Influence ${i}</strong> (R ${w.i[0]}, S ${w.i[1]}, L ${w.i[2]})</p>` +
+      `<p style="margin-bottom:8px">${zoneChip(z)}${w.note ? ' <span class="pill">' + esc(w.note) + '</span>' : ''}</p>` +
+      `<p style="margin:0"><strong>Why:</strong> ${esc(w.why)}</p>` });
+    const a = makeAcc(`${n + 1}. ${w.t}`, body, { sub: `Viewpoint: ${w.v}` });
+    host.append(a.el);
+    a.btn.addEventListener('click', () => setTimeout(() => {
+      const open = a.btn.getAttribute('aria-expanded') === 'true';
+      if (open) { if (!q.dots['w' + n]) q.addDot('w' + n, { text: String(n + 1), c, i, ring: any, aria: `Case ${n + 1}: ${w.t}` }); }
+      else q.removeDot('w' + n);
+    }, 0));
+  });
+}
+
+/* =====================================================================
+   PART 4.5: zone movement map
+   ===================================================================== */
+const MOVES = [
+  { t: 'A wild monkey is captured and kept at home as a pet', from: [0.5, 0.5], to: [5, 5], axis: 'both', ax: 'Both change when the animal starts in Remote Zone. Only influence changes when it starts in Neighbor Zone.', z: ['custody'], mean: "the animal's whole life now depends on people who may lack the knowledge to meet its needs" },
+  { t: 'A forest is cleared around an animal population', from: [1, 0.5], to: [1, 4.5], axis: 'influence', ax: 'Influence rises while contact stays low.', z: ['indirect'], mean: 'exposure to human-caused harm appears without any direct contact' },
+  { t: 'Seabed drilling changes the habitat of marine animals', from: [0.5, 0.5], to: [0.5, 4.5], axis: 'influence', ax: 'Influence rises while contact stays low.', z: ['indirect'], mean: 'influence rises through noise, pollution and habitat change while contact stays low' },
+  { t: 'Wildlife living in a deforested area next to a settlement', from: [0.5, 1], to: [4.5, 1], axis: 'contact', ax: 'Contact rises while influence stays low.', z: ['neighbor'], mean: 'contact rises because animals now share human space, yet people still do not care for or control them' },
+  { t: 'A stray cat is adopted', from: [5, 1], to: [5, 5.5], axis: 'influence', ax: 'Influence rises while contact stays high.', z: ['custody'], mean: 'responsibility for welfare moves to one person' },
+  { t: 'A captive animal is released into the wild without support', from: [5, 5.5], branch: [[1, 4.5, 'Indirect'], [0.5, 1, 'Remote']], axis: 'contact or both', ax: 'Toward Indirect Zone, contact falls and influence stays high. Toward Remote Zone, both fall.', z: ['indirect', 'remote'], mean: 'the animal loses support it depends on (this is why release needs planning)' }
+];
+function initMoveMap() {
+  const host = $('#movemap'); if (!host) return;
+  const card = h('div', { class: 'card' });
+  card.append(h('p', {}, 'Choose a change. The dot starts in its zone, then an arrow shows the movement. After each arrow, name the axis that changed and state the hazard that appears in the new zone.'));
+  const mapHost = h('div', {}); const btns = h('div', { class: 'btnrow', role: 'group', 'aria-label': 'Movements' });
+  const task = h('div', { class: 'gap', 'aria-live': 'polite' });
+  card.append(btns, h('div', { class: 'gap' }, mapHost), task);
+  host.append(card);
+  const q = makeQuad(mapHost, { label: 'Zone movement map' });
+  q.addDot('mv', { text: '●', c: 0.5, i: 0.5, label: 'Case', aria: 'Moving case' });
+  let n = 0;
+  MOVES.forEach((m, idx) => {
+    const b = h('button', { type: 'button', class: 'btn sec', 'aria-pressed': 'false' }, `${idx + 1}. ${m.t}`);
+    b.addEventListener('click', () => {
+      $$('button', btns).forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true');
+      q.clearArrows(); q.setDot('mv', m.from[0], m.from[1], { instant: true });
+      setTimeout(() => {
+        if (m.branch) {
+          q.arrow(m.from[0], m.from[1], m.branch[0][0], m.branch[0][1], { label: m.branch[0][2] });
+          q.arrow(m.from[0], m.from[1], m.branch[1][0], m.branch[1][1], { alt: true, label: m.branch[1][2] });
+        } else {
+          q.arrow(m.from[0], m.from[1], m.to[0], m.to[1]);
+          q.setDot('mv', m.to[0], m.to[1]);
+        }
+      }, 60);
+      renderTask(m, idx);
+      say('Movement ' + (idx + 1) + ' shown');
+    });
+    btns.append(b);
+  });
+  function renderTask(m, idx) {
+    n++;
+    task.innerHTML = '';
+    const name = `mv${n}`;
+    const seg = h('div', { class: 'seg', role: 'radiogroup', 'aria-label': 'Which axis changed?' });
+    [['contact', 'Contact'], ['influence', 'Influence'], ['both', 'Both']].forEach(([v, l]) => {
+      const inp = h('input', { type: 'radio', name, value: v });
+      const lab = h('label', {}, inp, l);
+      inp.addEventListener('change', () => { $$('label', seg).forEach(x => x.classList.remove('on')); lab.classList.add('on'); });
+      seg.append(lab);
+    });
+    const hz = h('textarea', { id: name + 'hz', 'aria-label': 'Hazard in the new zone', placeholder: 'Which hazard appears in the new zone?' });
+    const fb = h('div', { class: 'fb', hidden: true });
+    const chk = h('button', { type: 'button', class: 'btn' }, 'Check');
+    chk.addEventListener('click', () => {
+      const picked = ($(`input[name="${name}"]:checked`, task) || {}).value;
+      if (!picked) { say('Choose an axis first'); return; }
+      const ok = m.axis === picked || (m.axis === 'contact or both' && (picked === 'contact' || picked === 'both'));
+      fb.hidden = false; fb.className = 'fb ' + (ok ? 'ok' : 'no');
+      fb.innerHTML = `<p><span class="st">${ok ? '✓ Axis correct.' : '✗ Not quite.'}</span> ${esc(m.ax)}</p>` +
+        m.z.map(k => `<p>${zoneChip(k)} <strong>Main hazard pathway:</strong> ${esc(ZONES[k].path)}.</p>`).join('') +
+        `<p style="margin:0"><strong>Welfare meaning:</strong> ${esc(m.mean)}.</p>`;
+    });
+    task.append(h('div', { class: 'box card' }, h('h4', {}, m.t), h('p', { class: 'fld-t' }, 'Which axis changed?'), seg,
+      h('label', { class: 'fld', for: name + 'hz', style: 'margin-top:12px' }, 'Hazard in the new zone'), hz, h('div', { class: 'btnrow' }, chk), fb));
+  }
+}
+
+/* =====================================================================
+   PART 4.6: practice deck (eight cards)
+   ===================================================================== */
+const PRACTICE = [
+  { t: 'Horse pulling an andong (tourist carriage)', v: 'the driver', z: 'custody', c: 6, i: 6, hz: 'heavy loads, heat, hard road surfaces, too little rest and water' },
+  { t: 'Rats in a restaurant kitchen', v: 'the cook', z: 'neighbor', c: 4, i: 2, hz: 'glue traps and poison that cause a slow, painful death' },
+  { t: 'Fish in a river below a new hydropower dam', v: 'the dam operator', z: 'indirect', c: 0, i: 4, hz: 'blocked migration, changed flow and water temperature, loss of habitat' },
+  { t: 'Laboratory mouse', v: 'the animal technician', z: 'custody', c: 5, i: 6, hz: 'barren housing, painful procedures, handling stress' },
+  { t: 'Deep-sea animals at 3,000 m depth', v: 'the crew of a research ship', z: 'remote', c: 0, i: 0, hz: 'no direct human activity at that depth, though diffuse hazards such as climate change and debris can still reach it; trawling or mining would add direct hazards' },
+  { t: 'Pigeons in a city square fed by passers-by', v: 'the vendor who sells the feed', z: 'neighbor', c: 5, i: 1, hz: 'handout diets, crowding, harassment, culling as pest control' },
+  { t: 'Wetland birds on a wetland drained for a housing estate', v: 'the developer', z: 'indirect', c: 1, i: 4, hz: 'loss of habitat and food, displacement, pollution' },
+  { t: 'Qurban cattle at a roadside market', v: 'the seller', z: 'custody', c: 5, i: 6, hz: 'long transport, crowding, rough handling, heat and noise at the market' }
+];
+function initPractice() {
+  const host = $('#practice'); if (!host) return;
+  const zkeys = ['custody', 'indirect', 'neighbor', 'remote'];
+  PRACTICE.forEach((p, n) => {
+    const P = 'pc' + n;
+    const body = h('div', {});
+    const def = h('textarea', { id: P + 'def', 'data-k': P + 'def', placeholder: 'One group of animals, one typical routine, the viewpoint named above' });
+    body.append(h('label', { class: 'fld', for: P + 'def' }, 'Case definition (one sentence)'), def);
+    const sel = {};
+    const grid = h('div', { class: 'gap' });
+    [...RUBRIC.contact, ...RUBRIC.influence].forEach(it => {
+      const s1 = h('select', { id: `${P}-${it.k}`, 'aria-label': `${it.name} score` }, h('option', { value: '' }, 'Choose a score'), ...it.o.map((t, v) => h('option', { value: v }, `${v} · ${t}`)));
+      const ev = h('input', { type: 'text', id: `${P}-ev-${it.k}`, 'data-k': `${P}-ev-${it.k}`, 'aria-label': `${it.name} evidence`, placeholder: 'One clause of evidence', autocomplete: 'off' });
+      grid.append(h('div', { class: 'itemrow' }, h('div', {}, h('div', { class: 'nm' }, it.name), s1), h('div', {}, h('div', { class: 'nm', style: 'visibility:hidden' }, '.'), ev)));
+      sel[it.k] = s1;
+      s1.addEventListener('change', refresh);
+    });
+    body.append(grid);
+    const tot = h('div', { class: 'totals', 'aria-live': 'polite' });
+    const mapHost = h('div', { class: 'gap' });
+    body.append(tot, mapHost);
+    const q = makeQuad(mapHost, { label: `Map for case ${n + 1}` });
+    const hzSel = h('select', { id: P + 'hz', 'aria-label': 'Main hazard pathway' }, h('option', { value: '' }, 'Choose the main hazard pathway'), ...zkeys.map(k => h('option', { value: k }, ZONES[k].path.charAt(0).toUpperCase() + ZONES[k].path.slice(1))));
+    body.append(h('label', { class: 'fld', for: P + 'hz', style: 'margin-top:14px' }, 'Main hazard (pick from the list)'), hzSel);
+    const chk = h('button', { type: 'button', class: 'btn', disabled: true }, 'Check my answer');
+    const fb = h('div', { class: 'fb', hidden: true, 'aria-live': 'polite' });
+    body.append(h('div', { class: 'btnrow' }, chk), fb);
+    const acc = makeAcc(`${n + 1}. ${p.t}`, body, { sub: `Viewpoint: ${p.v}` });
+    host.append(acc.el);
+    persist(body);
+
+    function scores() {
+      const ks = Object.keys(sel);
+      if (ks.some(k => sel[k].value === '')) return null;
+      const g = k => parseInt(sel[k].value, 10);
+      return { c: g('F') + g('D') + g('P'), i: g('R') + g('S') + g('L') };
+    }
+    function refresh() {
+      const sc = scores();
+      if (!sc) { tot.innerHTML = ''; q.removeDot('me'); chk.disabled = true; return; }
+      const z = zoneOf(sc.c, sc.i), b = borderOf(sc.c, sc.i), any = b.c || b.i;
+      tot.innerHTML = `<span class="pill">Contact index: ${sc.c}</span><span class="pill">Influence index: ${sc.i}</span>${zoneChip(z)}${any ? '<span class="pill">Borderline</span>' : ''}`;
+      if (q.dots.me) q.setDot('me', sc.c, sc.i, { ring: any }); else q.addDot('me', { text: '★', c: sc.c, i: sc.i, ring: any, label: 'You', aria: 'Your placement' });
+      chk.disabled = !hzSel.value;
+    }
+    hzSel.addEventListener('change', refresh);
+    chk.addEventListener('click', () => {
+      const sc = scores(); if (!sc) return;
+      const z = zoneOf(sc.c, sc.i), zOk = z === p.z, hOk = hzSel.value === p.z;
+      if (!q.dots.key) q.addDot('key', { text: 'K', c: p.c, i: p.i, label: 'Key', aria: `Key placement: ${ZONES[p.z].name}` });
+      fb.hidden = false; fb.className = 'fb ' + (zOk && hOk ? 'ok' : 'no');
+      fb.innerHTML =
+        `<p><span class="st">${zOk ? '✓' : '✗'} Zone:</span> expected ${zoneChip(p.z)}. Your placement: ${zoneChip(z)}.</p>` +
+        `<p>Suggested scores: contact ${p.c}, influence ${p.i}. Yours: contact ${sc.c}, influence ${sc.i}. Treat the suggestion as a guide, because reasonable scorers can differ by one point.</p>` +
+        `<p><span class="st">${hOk ? '✓' : '✗'} Main hazard:</span> you picked ${esc(hzSel.value ? ZONES[hzSel.value].path : 'none')}.</p>` +
+        `<p style="margin:0"><strong>Example of the main hazard:</strong> ${esc(p.hz)}.</p>`;
+      const sub = $('.sub', acc.btn); if (sub) sub.textContent = `Viewpoint: ${p.v} · checked`;
+      say(zOk ? 'Zone matches the key' : 'Zone differs from the key');
+    });
+  });
+}
+
+INITS.push(initQuad41, initRubric, initScoreForm43, initWorked, initMoveMap, initPractice);
+/* =====================================================================
+   PART 5.1: benefit tree (left to right, one benefit open at a time)
+   ===================================================================== */
+const TREE = [
+  { t: 'Economic benefit', ic: '🐷💰', subs: [
+    { t: 'Providing goods', leaves: [
+      { l: 'Food: beef cattle', s: 'Beef cattle fill an economic role by providing food.' },
+      { l: 'Non-food: silkworm for silk', s: 'Silkworms fill an economic role by providing a non-food good, silk.' }] },
+    { t: 'Providing services', leaves: [
+      { l: 'Riding and draft animals: horses', s: 'Horses fill an economic role by providing riding and draft services.' },
+      { l: 'Detection animals: dogs', s: 'Dogs fill an economic role by providing detection services.' }] }] },
+  { t: 'Social and cultural benefit', ic: '🐱🗿', subs: [
+    { t: 'Ceremony and tradition', leaves: [
+      { l: 'Animals used as offerings or in rituals, and similar uses', s: 'Animals used in ceremony and tradition fill a social and cultural role.' }] }] },
+  { t: 'Emotional benefit', ic: '🐶❤️', subs: [
+    { t: 'Living with people at home', leaves: [
+      { l: 'Companion animals: cats', s: 'Cats fill an emotional role as companion animals living with people at home.' },
+      { l: 'Exotic companion animals: snakes', s: 'Snakes fill an emotional role as exotic companion animals.' }] },
+    { t: 'Taking part in sport', leaves: [
+      { l: 'As a subject: racehorse', s: 'A racehorse takes part in sport as a subject, under the emotional benefit.' },
+      { l: 'As an object: fish caught for sport', s: 'Fish caught for sport take part as an object, under the emotional benefit.' }] }] },
+  { t: 'Scientific benefit', ic: '🐭💉', subs: [
+    { t: 'Teaching and research', leaves: [
+      { l: 'Animals for practical classes, laboratory animals and similar uses', s: 'Animals used in teaching and research fill a scientific role.' }] }] }
+];
+function initTree() {
+  const host = $('#tree'); if (!host) return;
+  const wrap = h('div', { class: 'tree' });
+  const root = h('div', { class: 't-root' }, 'Use of animals by people');
+  const ben = h('div', { class: 't-ben', role: 'group', 'aria-label': 'Four kinds of benefit' });
+  const detail = h('div', { class: 't-detail', hidden: true, 'aria-live': 'polite' });
+  const note = h('div', { class: 'fb', hidden: true, 'aria-live': 'polite' });
+  const bbtns = [];
+  TREE.forEach((b, n) => {
+    const btn = h('button', { type: 'button', class: 't-b', 'aria-expanded': 'false' },
+      h('span', { class: 'ic', 'aria-hidden': 'true' }, b.ic), h('span', {}, b.t), h('span', { class: 'chev', 'aria-hidden': 'true' }, '⌄'));
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      bbtns.forEach(x => x.setAttribute('aria-expanded', 'false'));
+      note.hidden = true; detail.innerHTML = '';
+      if (!open) { detail.hidden = true; return; }
+      btn.setAttribute('aria-expanded', 'true');
+      detail.hidden = false;
+      b.subs.forEach(sub => {
+        const ex = h('div', { class: 't-ex' });
+        sub.leaves.forEach(lf => {
+          const lb = h('button', { type: 'button', class: 't-leaf', 'aria-pressed': 'false' }, lf.l);
+          lb.addEventListener('click', () => {
+            $$('.t-leaf', detail).forEach(x => x.setAttribute('aria-pressed', 'false')); lb.setAttribute('aria-pressed', 'true');
+            note.hidden = false; note.className = 'fb'; note.textContent = lf.s; say(lf.s);
+          });
+          ex.append(lb);
+        });
+        detail.append(h('div', { class: 't-sub' }, h('div', { class: 't-sbox' }, sub.t), ex));
+      });
+    });
+    bbtns.push(btn); ben.append(btn);
+  });
+  wrap.append(root, ben, detail);
+  host.append(wrap, note);
+}
+
+/* =====================================================================
+   PART 5.3: role audit
+   ===================================================================== */
+const ROLES = ['Meat or egg production', 'Draft or ride', 'Performance', 'Companion', 'Ceremony', 'Research or teaching'];
+function initRoleAudit() {
+  const host = $('#roleaudit'); if (!host) return;
+  const card = h('div', { class: 'card' });
+  const sel = h('select', { id: 'ra-animal', 'aria-label': 'Animal' }, ['Dog', 'Horse', 'Macaque', 'Cattle', 'Rabbit'].map(a => h('option', { value: a }, a)));
+  const checks = h('fieldset', { class: 'fieldset', style: 'margin-top:14px' }, h('legend', {}, 'Roles this animal holds', h('small', {}, 'Tick every role that applies.')));
+  const seg = h('div', { class: 'seg' });
+  const cards = h('div', { class: 'stack gap' });
+  const summary = h('p', { class: 'big gap', 'aria-live': 'polite' });
+  const state = {};
+  ROLES.forEach((r, n) => {
+    const id = 'ra-r' + n;
+    const cb = h('input', { type: 'checkbox', id, value: r });
+    const lab = h('label', { for: id }, cb, r);
+    cb.addEventListener('change', () => { lab.classList.toggle('on', cb.checked); renderCards(); });
+    seg.append(lab);
+  });
+  checks.append(seg);
+  card.append(h('label', { class: 'fld', for: 'ra-animal' }, 'Animal'), sel, checks, summary, cards);
+  const gq = h('div', { class: 'gap' });
+  card.append(gq);
+  host.append(card);
+  sel.addEventListener('change', () => { $$('input[type=checkbox]', seg).forEach(c => { c.checked = false; }); $$('label', seg).forEach(l => l.classList.remove('on')); Object.keys(state).forEach(k => delete state[k]); renderCards(); });
+
+  function renderCards() {
+    const ticked = $$('input[type=checkbox]:checked', seg).map(c => c.value);
+    Object.keys(state).forEach(k => { if (!ticked.includes(k)) delete state[k]; });
+    cards.innerHTML = '';
+    ticked.forEach((r, n) => {
+      const st = state[r] = state[r] || { d: '', c: '', rate: '' };
+      const dI = h('textarea', { id: `ra-d${n}`, placeholder: 'What does this role demand from the animal?', 'aria-label': `${r}: demand on the animal` }); dI.value = st.d;
+      const cI = h('textarea', { id: `ra-c${n}`, placeholder: 'Where does that demand clash with the animal\'s needs?', 'aria-label': `${r}: clash with needs` }); cI.value = st.c;
+      dI.addEventListener('input', () => { st.d = dI.value; }); cI.addEventListener('input', () => { st.c = cI.value; });
+      const rs = h('div', { class: 'seg', role: 'radiogroup', 'aria-label': `${r}: how large is the clash?` });
+      ['Low', 'Medium', 'High'].forEach(v => {
+        const inp = h('input', { type: 'radio', name: `ra-rate${n}`, value: v }); if (st.rate === v) inp.checked = true;
+        const lab = h('label', { class: st.rate === v ? 'on' : '' }, inp, v);
+        inp.addEventListener('change', () => { st.rate = v; $$('label', rs).forEach(x => x.classList.remove('on')); lab.classList.add('on'); updSummary(); });
+        rs.append(lab);
+      });
+      cards.append(h('div', { class: 'box card' }, h('h4', {}, r),
+        h('label', { class: 'fld', for: `ra-d${n}` }, 'Demand on the animal'), dI,
+        h('label', { class: 'fld', for: `ra-c${n}`, style: 'margin-top:12px' }, 'Clash with needs'), cI,
+        h('p', { class: 'fld-t', style: 'margin-top:12px' }, 'Rate the clash from low to high'), rs));
+    });
+    updSummary();
+    renderGQ(ticked.length);
+  }
+  function updSummary() {
+    const n = Object.keys(state).length;
+    if (!n) { summary.textContent = 'Roles ticked: 0'; return; }
+    const cnt = { Low: 0, Medium: 0, High: 0 };
+    Object.values(state).forEach(s => { if (s.rate) cnt[s.rate]++; });
+    summary.textContent = `Roles ticked: ${n}. Clash ratings so far: ${cnt.High} high, ${cnt.Medium} medium, ${cnt.Low} low.`;
+  }
+  function renderGQ(n) {
+    gq.innerHTML = '';
+    if (!n) return;
+    gq.append(h('h4', {}, 'Guiding questions'));
+    gq.append(h('p', {}, `1. How many roles does this animal hold at the same time? You ticked ${n}.`));
+    ['2. Which role places the heaviest demand on the animal\'s body or mind?', '3. Do any two roles pull in opposite directions? Give one example.', '4. If the animal could choose, which role would it drop first?'].forEach((q, i) => {
+      gq.append(h('label', { class: 'fld', for: 'ra-q' + i, style: 'margin-top:10px' }, q), h('textarea', { id: 'ra-q' + i, 'aria-label': q }));
+    });
+  }
+  renderCards();
+}
+
+/* =====================================================================
+   PART 6.1: pillar triangle
+   ===================================================================== */
+function initPillars() {
+  const host = $('#pillarsvg'); if (!host) return;
+  const info = $('#pillarinfo');
+  const P = {
+    ethics: { x: 300, y: 134, name: 'Animal ethics', lines: ['Animal ethics'], q: 'How should people treat animals?', gives: 'reasons for our duties; the values behind the rules', deer: 'Is it acceptable to keep deer in an enclosure so people can see them?' },
+    science: { x: 112, y: 380, name: 'Animal welfare science', lines: ['Animal welfare', 'science'], q: 'What do animals need, and how can we tell whether an animal is faring well or badly?', gives: 'evidence about needs, behavior, health and stress; methods of assessment', deer: 'What does a chital need in food, space, shelter and social contact?' },
+    law: { x: 488, y: 380, name: 'Animal law', lines: ['Animal law'], q: 'Which human actions toward animals must be punished or required?', gives: 'enforceable standards; consequences for violations', deer: 'Which duties does the law place on the keeper?' }
+  };
+  const L = {
+    es: { a: 'ethics', b: 'science', aria: 'Influence between science and ethics', txt: ['Science informs ethics. Evidence that animals feel pain changes what people regard as acceptable.', 'Ethics shapes science. Moral concern decides which animals and which welfare problems researchers choose to study, and which states of the animal count as good or poor welfare.'] },
+    el: { a: 'ethics', b: 'law', aria: 'Influence between ethics and law', txt: ['Ethics shapes law. Laws turn widely shared values into rules.', 'Law shapes ethics. Once a practice is banned or required, it tends to be seen as wrong or normal over time, so legal standards can move what a society regards as acceptable.'] },
+    ls: { a: 'law', b: 'science', aria: 'Influence between law and science', txt: ['Law shapes science. Legal duties create demand for ways of measuring welfare, and funding for studies.', 'Science also informs law. Standards for space, transport time or stunning are often based on evidence.'] }
+  };
+  const R = 66;
+  const svg = s('svg', { class: 'pil', viewBox: '0 0 600 540', role: 'group', 'aria-label': 'Triangle of three pillars: animal ethics at the top, animal welfare science at the bottom left, animal law at the bottom right' });
+  const sels = [];
+  const clear = () => sels.forEach(g => g.classList.remove('sel'));
+  Object.keys(L).forEach(k => {
+    const l = L[k], A = P[l.a], B = P[l.b];
+    const dx = B.x - A.x, dy = B.y - A.y, len = Math.hypot(dx, dy);
+    const x1 = A.x + dx / len * (R + 6), y1 = A.y + dy / len * (R + 6), x2 = B.x - dx / len * (R + 6), y2 = B.y - dy / len * (R + 6);
+    const g = s('g', { class: 'pil-lg', tabindex: 0, role: 'button', 'aria-label': l.aria + '. Select to read.' });
+    g.append(s('line', { class: 'pil-h', x1, y1, x2, y2 }), s('line', { class: 'pil-l', x1, y1, x2, y2 }));
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const off = k === 'es' ? { x: -14, y: 0, a: 'end' } : (k === 'el' ? { x: 14, y: 0, a: 'start' } : { x: 0, y: -12, a: 'middle' });
+    g.append(s('text', { class: 'pil-lt', x: mx + off.x, y: my + off.y, 'text-anchor': off.a, stroke: '#1c1c1e', 'stroke-width': 4, 'paint-order': 'stroke' }, 'mutually influence'));
+    const fire = () => { clear(); g.classList.add('sel'); info.className = 'fb zinfo'; info.innerHTML = l.txt.map(t => `<p style="margin:0 0 6px">${esc(t)}</p>`).join(''); say(l.txt.join(' ')); };
+    g.addEventListener('click', fire);
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); } });
+    sels.push(g); svg.append(g);
+  });
+  Object.keys(P).forEach(k => {
+    const p = P[k];
+    const g = s('g', { class: 'pil-g', tabindex: 0, role: 'button', 'aria-label': `${p.name}. Select to read its core question.` });
+    g.append(s('circle', { class: 'pil-c', cx: p.x, cy: p.y, r: R }));
+    p.lines.forEach((ln, i) => g.append(s('text', { class: 'pil-t', x: p.x, y: p.y + (p.lines.length === 1 ? 5 : -2 + i * 20), 'text-anchor': 'middle' }, ln)));
+    const q = { ethics: [['How should people treat animals?'], p.x, 30, 'middle'], science: [['What do animals need, and how', 'can we tell whether an animal', 'is faring well or badly?'], p.x, 480, 'middle'], law: [['Which human actions toward', 'animals must be punished', 'or required?'], p.x, 480, 'middle'] }[k];
+    q[0].forEach((ln, i) => g.append(s('text', { class: 'pil-q', x: q[1], y: q[2] + i * 18, 'text-anchor': q[3] }, ln)));
+    const fire = () => { clear(); g.classList.add('sel'); info.className = 'fb zinfo'; info.innerHTML = `<p style="margin:0 0 6px"><strong>${esc(p.name)}</strong></p><p style="margin:0 0 6px"><strong>Core question:</strong> ${esc(p.q)}</p><p style="margin:0 0 6px"><strong>What it gives us:</strong> ${esc(p.gives)}</p><p style="margin:0"><strong>In the deer case:</strong> ${esc(p.deer)}</p>`; say(p.name); };
+    g.addEventListener('click', fire);
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); } });
+    sels.push(g); svg.append(g);
+  });
+  host.append(svg);
+}
+
+/* =====================================================================
+   PART 6.3: two societies
+   ===================================================================== */
+function initSocieties() {
+  const host = $('#societies'); if (!host) return;
+  const rows = [
+    ['Ethics', 'animals are seen as objects or commodities; cruelty is shrugged off', 'animals are seen as beings whose experiences count; cruelty is condemned'],
+    ['Science', 'little research on animal needs; little training for people who keep animals', 'active research and professional training on welfare'],
+    ['Law', 'no law, or law that is weak and rarely enforced', 'clear law with inspection, penalties and public reporting']
+  ];
+  const card = h('div', { class: 'card' });
+  const tw = h('div', { class: 'tw', style: 'margin-top:0' });
+  const t = h('table', { class: 'w2' });
+  t.innerHTML = '<thead><tr><th>Pillar</th><th>Society A (animals fare poorly)</th><th>Society B (animals fare well)</th></tr></thead>';
+  const tb = h('tbody');
+  rows.forEach((r, n) => {
+    tb.append(h('tr', {}, h('td', {}, h('strong', {}, r[0])),
+      h('td', {}, h('textarea', { 'data-k': `soc-${n}-a`, 'aria-label': `${r[0]}: Society A`, style: 'min-height:70px' })),
+      h('td', {}, h('textarea', { 'data-k': `soc-${n}-b`, 'aria-label': `${r[0]}: Society B`, style: 'min-height:70px' }))));
+  });
+  t.append(tb); tw.append(t); card.append(tw);
+  const sample = h('div', { hidden: true });
+  const st = h('table', { class: 'w2' });
+  st.innerHTML = '<thead><tr><th>Pillar</th><th>Society A (animals fare poorly)</th><th>Society B (animals fare well)</th></tr></thead>';
+  const sb = h('tbody'); rows.forEach(r => sb.append(h('tr', {}, h('td', {}, h('strong', {}, r[0])), h('td', {}, r[1]), h('td', {}, r[2]))));
+  st.append(sb);
+  sample.append(h('h4', { style: 'margin-top:18px' }, 'Sample answer'), h('div', { class: 'tw' }, st),
+    h('p', { style: 'margin:0' }, 'The sample answer shows typical contrasts. Which pillar do you believe changes first in a real society, and is the order the same everywhere? There is no settled answer.'));
+  const btn = h('button', { type: 'button', class: 'btn', 'aria-expanded': 'false', onclick() { sample.hidden = !sample.hidden; btn.setAttribute('aria-expanded', sample.hidden ? 'false' : 'true'); btn.textContent = sample.hidden ? 'Show the sample answer' : 'Hide the sample answer'; } }, 'Show the sample answer');
+  card.append(h('div', { class: 'btnrow' }, btn), sample);
+  host.append(card); persist(card);
+}
+
+/* =====================================================================
+   PART 6.4 and 8.6: optional reading (collapsed by default)
+   ===================================================================== */
+function initOptional() {
+  const hist = $('#hist');
+  if (hist) {
+    const b = h('div', {});
+    b.innerHTML = `
+      <p class="muted">Optional reading. No activity or quiz question in the module depends on it.</p>
+      <p>The expectation that people should care about animal welfare has grown over time and differs between cultures.</p>
+      <ul>
+        <li><strong>Early civilizations</strong> treated animals mainly as resources for food, clothing and labor. Most societies assumed human superiority, yet some voices urged kinder treatment. One example is <em>ahimsa</em> (non-harm), taught in Hinduism, Buddhism and Jainism for more than two thousand years.</li>
+        <li><strong>The Enlightenment (17th and 18th centuries)</strong> brought the idea that animals deserve humane treatment. Animal protection societies, welfare laws and scientific study of animal behavior and welfare followed.</li>
+        <li><strong>1964:</strong> Ruth Harrison's book <em>Animal Machines</em> criticized intensive "factory" farming for treating animals like machines.</li>
+        <li><strong>1965:</strong> the British government set up an investigation led by Francis William Rogers Brambell. His report ran to 89 pages.</li>
+        <li><strong>1967:</strong> the Farm Animal Welfare Advisory Committee was formed. In 1979 it became the Farm Animal Welfare Council, which formulated the "five freedoms" on 5 December 1979.</li>
+      </ul>
+      <h4>Selected laws</h4>
+      <div class="tw"><table class="w1"><thead><tr><th>Year</th><th>Law</th><th>Place</th></tr></thead><tbody>
+        <tr><td>1635</td><td>Act against plowing by the tail and pulling the wool off living sheep</td><td>Ireland</td></tr>
+        <tr><td>1822</td><td>Cruel Treatment of Cattle Act</td><td>United Kingdom</td></tr>
+        <tr><td>1835</td><td>Cruelty to Animals Act</td><td>United Kingdom</td></tr>
+        <tr><td>1911</td><td>Protection of Animals Act</td><td>United Kingdom</td></tr>
+        <tr><td>1960</td><td>Prevention of Cruelty to Animals Act</td><td>India</td></tr>
+        <tr><td>1966</td><td>Animal Welfare Act</td><td>United States</td></tr>
+        <tr><td>1999</td><td>Animal Welfare Act</td><td>New Zealand</td></tr>
+        <tr><td>2006</td><td>Animal Welfare Act</td><td>United Kingdom</td></tr>
+        <tr><td>2009</td><td>Law on Animal Husbandry and Animal Health</td><td>Indonesia</td></tr>
+        <tr><td>2012</td><td>Government Regulation on veterinary public health and animal welfare</td><td>Indonesia</td></tr>
+      </tbody></table></div>`;
+    hist.append(makeAcc('A short history of animal welfare', b, { sub: 'Optional reading' }).el);
+  }
+  const mot = $('#motives');
+  if (mot) {
+    const b = h('div', {});
+    b.innerHTML = `
+      <p class="muted">Optional reading. No activity or quiz question depends on it.</p>
+      <p>Kellert and Felthous (1985), cited in Lockwood and Arkow (2016), described nine motives for cruelty and extreme aggression toward animals.</p>
+      <ol>
+        <li>to control the animal, for example to shape wanted behavior or remove unwanted behavior</li>
+        <li>to take revenge on or punish the animal</li>
+        <li>to confirm a prejudice against a species or breed</li>
+        <li>to express aggression through the animal, for example by making it aggressive</li>
+        <li>to raise one's own aggressiveness or to build an aggressive image</li>
+        <li>to shock others for amusement</li>
+        <li>to take revenge on another person, such as the animal's owner</li>
+        <li>to displace hatred from a person seen as superior onto an animal seen as inferior</li>
+        <li>nonspecific sadism, with no particular reason or provocation</li>
+      </ol>`;
+    mot.append(makeAcc('Nine motives for cruelty', b, { sub: 'Optional reading' }).el);
+  }
+}
+
+/* =====================================================================
+   PART 7.2: active/passive x physical/mental click task
+   ===================================================================== */
+function initAbuse22() {
+  const host = $('#abuse22'); if (!host) return;
+  const cells = {
+    AP: { l: 'Active · Physical', items: ['injuring, hurting or torturing an animal', 'sexual activity with an animal', 'staging fights between animals', "restricting an animal's movement"] },
+    AM: { l: 'Active · Mental', items: ['instilling fear, sadness or anxiety, for example by intimidating the animal'] },
+    PP: { l: 'Passive · Physical', items: ['neglect: no access to food and water, failing to notice signs of ill health'] },
+    PM: { l: 'Passive · Mental', items: ['failing to give enough social contact, so the animal gets no affection or too little stimulation'] }
+  };
+  const cases = [
+    { t: 'Staging a fight between two animals.', k: 'AP' },
+    { t: 'Intimidating an animal so that it is afraid.', k: 'AM' },
+    { t: 'Giving an animal no access to food and water.', k: 'PP' },
+    { t: 'Failing to give an animal enough social contact.', k: 'PM' },
+    { t: "Restricting an animal's movement.", k: 'AP' }
+  ];
+  let idx = 0; const open = {};
+  const card = h('div', { class: 'card' });
+  const prompt = h('p', { class: 'big', 'aria-live': 'polite' });
+  const grid = h('div', { class: 'g22' });
+  const fb = h('div', { class: 'fb', hidden: true, 'aria-live': 'polite' });
+  const next = h('button', { type: 'button', class: 'btn', hidden: true }, 'Next case');
+  card.append(h('p', {}, 'The four cells start hidden. Read the case, then select the cell where it belongs. A correct answer opens the cell.'), prompt, grid, fb, h('div', { class: 'btnrow' }, next));
+  host.append(card);
+  const cellBtns = {};
+  grid.append(h('div', { class: 'hd corner' }), h('div', { class: 'hd' }, 'Physical abuse'), h('div', { class: 'hd' }, 'Mental abuse'));
+  [['Active', ['AP', 'AM']], ['Passive', ['PP', 'PM']]].forEach(([r, ks]) => {
+    grid.append(h('div', { class: 'hd rowh' }, r));
+    ks.forEach(k => {
+      const b = h('button', { type: 'button', class: 'cell hid', 'aria-label': `${cells[k].l}, hidden` }, h('span', { class: 'cl' }, cells[k].l), '?');
+      b.addEventListener('click', () => pick(k));
+      cellBtns[k] = b; grid.append(b);
+    });
+  });
+  function reveal(k) {
+    const b = cellBtns[k]; open[k] = true;
+    b.classList.remove('hid'); b.classList.add('good'); b.setAttribute('aria-label', cells[k].l);
+    b.innerHTML = `<span class="cl">${cells[k].l}</span><ul>${cells[k].items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`;
+  }
+  function show() {
+    if (idx >= cases.length) { prompt.textContent = 'All five cases are done.'; next.hidden = true; return; }
+    prompt.textContent = `Case ${idx + 1} of ${cases.length}: ${cases[idx].t}`;
+    fb.hidden = true; next.hidden = true;
+  }
+  function pick(k) {
+    if (idx >= cases.length || !next.hidden) return;
+    const ok = cases[idx].k === k;
+    fb.hidden = false; fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    if (ok) {
+      reveal(k);
+      fb.innerHTML = `<span class="st">✓ Correct.</span> This belongs in <strong>${cells[k].l}</strong>.`;
+      idx++; next.hidden = false; next.textContent = idx >= cases.length ? 'Finish' : 'Next case';
+      say('Correct');
+    } else {
+      fb.innerHTML = '<span class="st">✗ Not quite.</span> Ask two questions: did the harm come from something a person did (active) or failed to do (passive), and did it affect the body (physical) or the mind (mental)?';
+      say('Not quite');
+    }
+  }
+  next.addEventListener('click', show);
+  show();
+}
+
+/* =====================================================================
+   PART 7.5: classify five cases
+   ===================================================================== */
+function initClassify() {
+  const host = $('#classify'); if (!host) return;
+  const cases = [
+    { t: 'An owner leaves a dog without water all day while attending a festival.', k: { ap: ['passive'], pm: ['physical'], iu: ['unintentional'], oa: ['obvious'] },
+      show: { ap: 'passive', pm: 'physical', iu: 'usually unintentional (neglect), though knowledge is needed to judge', oa: 'obvious once discovered' } },
+    { t: 'A man pokes a caged monkey with a stick to make it screech.', k: { ap: ['active'], pm: ['mental', 'both'], iu: ['intentional'], oa: ['obvious'] },
+      show: { ap: 'active', pm: 'mental, and physical if contact is rough', iu: 'intentional', oa: 'obvious' } },
+    { t: 'A tourist hugs a slow loris for a selfie.', k: { ap: ['active'], pm: ['both'], iu: ['unintentional'], oa: ['ambiguous'] },
+      show: { ap: 'active', pm: 'physical and mental', iu: 'unintentional', oa: 'ambiguous' } },
+    { t: 'A cat is left alone indoors from dawn to night with no toys, no window and no company.', k: { ap: ['passive'], pm: ['mental'], iu: ['unintentional'], oa: ['ambiguous'] },
+      show: { ap: 'passive', pm: 'mental', iu: 'usually unintentional', oa: 'ambiguous' } },
+    { t: 'A group stages a dogfight for gambling.', k: { ap: ['active'], pm: ['both'], iu: ['intentional'], oa: ['obvious'] },
+      show: { ap: 'active', pm: 'physical and mental', iu: 'intentional', oa: 'obvious' } }
+  ];
+  const dims = [
+    { id: 'ap', name: 'Active or passive?', o: [['active', 'Active'], ['passive', 'Passive']] },
+    { id: 'pm', name: 'Physical or mental?', o: [['physical', 'Physical'], ['mental', 'Mental'], ['both', 'Both']] },
+    { id: 'iu', name: 'Intentional?', o: [['intentional', 'Intentional'], ['unintentional', 'Unintentional']] },
+    { id: 'oa', name: 'Obvious or ambiguous?', o: [['obvious', 'Obvious'], ['ambiguous', 'Ambiguous']] }
+  ];
+  let good = 0, done = 0;
+  const score = h('p', { class: 'big', 'aria-live': 'polite' });
+  cases.forEach((c, n) => {
+    const card = h('div', { class: 'box card qcard' });
+    card.append(h('span', { class: 'qn' }, `Case ${n + 1}`), h('p', { class: 'big', style: 'font-size:17px' }, c.t));
+    const wrap = h('div', { class: 'dims' });
+    dims.forEach(d => {
+      const f = h('div', { class: 'dim' }, h('p', { class: 'fld-t' }, d.name));
+      const seg = h('div', { class: 'seg', role: 'radiogroup', 'aria-label': `Case ${n + 1}: ${d.name}` });
+      d.o.forEach(([v, l]) => {
+        const inp = h('input', { type: 'radio', name: `cl${n}-${d.id}`, value: v });
+        const lab = h('label', {}, inp, l);
+        inp.addEventListener('change', () => { $$('label', seg).forEach(x => x.classList.remove('on')); lab.classList.add('on'); });
+        seg.append(lab);
+      });
+      f.append(seg); wrap.append(f);
+    });
+    const fb = h('div', { class: 'fb', hidden: true, 'aria-live': 'polite' });
+    const btn = h('button', { type: 'button', class: 'btn' }, 'Check this case');
+    btn.addEventListener('click', () => {
+      const picks = {}; let miss = false;
+      dims.forEach(d => { const r = $(`input[name="cl${n}-${d.id}"]:checked`, card); if (!r) miss = true; else picks[d.id] = r.value; });
+      if (miss) { fb.hidden = false; fb.className = 'fb'; fb.textContent = 'Choose a value on all four dimensions first.'; return; }
+      let allOk = true;
+      const lines = dims.map(d => { const ok = c.k[d.id].includes(picks[d.id]); if (!ok) allOk = false; return `<li><span class="st" style="color:var(${ok ? '--ok' : '--no'})">${ok ? '✓' : '✗'}</span> <strong>${esc(d.name)}</strong> Key: ${esc(c.show[d.id])}.</li>`; });
+      fb.hidden = false; fb.className = 'fb ' + (allOk ? 'ok' : 'no');
+      fb.innerHTML = `<p style="margin:0 0 6px"><span class="st">${allOk ? '✓ All four match the key.' : '✗ Some dimensions differ from the key.'}</span></p><ul style="margin:0;padding-left:18px">${lines.join('')}</ul>`;
+      if (!btn.dataset.done) { btn.dataset.done = '1'; done++; if (allOk) good++; score.textContent = done === cases.length ? `All five cases checked: ${good} of 5 matched the key on every dimension.` : ''; }
+      say(allOk ? 'All four match the key' : 'Some dimensions differ');
+    });
+    card.append(wrap, h('div', { class: 'btnrow' }, btn), fb);
+    host.append(card);
+  });
+  host.append(score);
+}
+
+/* =====================================================================
+   PART 8.3: 4i question path
+   ===================================================================== */
+const FOURI = [
+  { q: 'Does the person know what the animal needs?', f: 'Ignorance', r: 'Education' },
+  { q: 'Does the person have the practice to do it correctly?', f: 'Inexperience', r: 'Training' },
+  { q: 'Is the person able to do it (strength, time, money, space)?', f: 'Incompetence', r: 'Change of role, support or rehoming' },
+  { q: 'Is the person willing to do it?', f: 'Inconsideration', r: 'Sanction' }
+];
+const FOURI_CASES = [
+  { t: 'A cat owner gives paracetamol to a lethargic cat because human medicine seems safe for animals.', f: 'Ignorance' },
+  { t: 'An owner knows where to stop when trimming claws, but is not used to holding a wriggling animal and cuts too deep.', f: 'Inexperience' },
+  { t: 'An elderly person with limited strength keeps a large, very active dog, cannot walk it far, and keeps it indoors all the time.', f: 'Incompetence' },
+  { t: 'An owner leaves a dog in a closed car on a hot day, saying "just a quick shop", despite knowing the risk of heatstroke.', f: 'Inconsideration' }
+];
+function initFourI() {
+  const host = $('#fouri'); if (!host) return;
+  const card = h('div', { class: 'card' });
+  const choose = h('div', {});
+  const run = h('div', { class: 'gap', 'aria-live': 'polite' });
+  card.append(choose, run); host.append(card);
+  let chosen = null;
+  const radios = h('div', { class: 'radios', role: 'radiogroup', 'aria-label': 'Choose a case' });
+  FOURI_CASES.concat([{ t: 'A case of your own (describe it below).', own: true }]).forEach((c, n) => {
+    const inp = h('input', { type: 'radio', name: 'fi-case', value: n });
+    const lab = h('label', {}, inp, h('span', {}, c.t));
+    inp.addEventListener('change', () => { $$('label', radios).forEach(x => x.classList.remove('on')); lab.classList.add('on'); chosen = c; own.hidden = !c.own; start.disabled = false; });
+    radios.append(lab);
+  });
+  const own = h('div', { hidden: true, style: 'margin-top:10px' }, h('label', { class: 'fld', for: 'fi-own' }, 'Describe the case'), h('textarea', { id: 'fi-own', placeholder: 'What did the person do or fail to do?' }));
+  const start = h('button', { type: 'button', class: 'btn', disabled: true }, 'Start the question path');
+  choose.append(h('p', { class: 'fld-t' }, 'Pick a case'), radios, own, h('div', { class: 'btnrow' }, start));
+  start.addEventListener('click', () => walk(0, []));
+  function walk(i, log) {
+    run.innerHTML = '';
+    if (log.length) run.append(h('ul', { class: 'pathlog' }, log.map(l => h('li', {}, `✓ Yes: ${l}`))));
+    if (i >= FOURI.length) {
+      run.append(h('div', { class: 'fb' }, h('span', { class: 'st' }, 'All four answers are yes. '), 'None of the four factors explains the failure in this case. Look again at the case history.'), restart());
+      return;
+    }
+    const q = FOURI[i];
+    const yes = h('button', { type: 'button', class: 'btn' }, 'Yes');
+    const no = h('button', { type: 'button', class: 'btn sec' }, 'No');
+    yes.addEventListener('click', () => walk(i + 1, log.concat(q.q)));
+    no.addEventListener('click', () => {
+      run.innerHTML = '';
+      if (log.length) run.append(h('ul', { class: 'pathlog' }, log.map(l => h('li', {}, `✓ Yes: ${l}`))));
+      run.append(h('ul', { class: 'pathlog' }, h('li', {}, `✗ No: ${q.q}`)));
+      const fb = h('div', { class: 'fb ok' }, h('p', { style: 'margin:0 0 6px' }, h('span', { class: 'st' }, `Factor: ${q.f}.`), ` Remedy: ${q.r}.`));
+      if (chosen && !chosen.own) fb.append(h('p', { style: 'margin:0' }, `In the 4i table above, this example appears under ${chosen.f}.`));
+      run.append(fb, restart());
+      say(`Factor: ${q.f}. Remedy: ${q.r}.`);
+    });
+    run.append(h('div', { class: 'pathq' }, h('span', { class: 'qt' }, `Question ${i + 1} of 4: ${q.q}`), yes, no));
+    const fbtn = yes; setTimeout(() => fbtn.focus({ preventScroll: true }), 20);
+  }
+  function restart() { return h('div', { class: 'btnrow' }, h('button', { type: 'button', class: 'btn sec', onclick() { run.innerHTML = ''; } }, 'Clear and choose another case')); }
+}
+
+/* =====================================================================
+   PART 9.1: macaque case, one step at a time
+   ===================================================================== */
+function initMacaque() {
+  const host = $('#macaque'); if (!host) return;
+  const steps = [
+    ['Define the case', 'One juvenile macaque, a chained backyard routine, the owner\'s viewpoint.'],
+    ['Contact', 'Frequency 2 (daily), duration 1 (usually under an hour), proximity 2 (handled) = <strong>5</strong>.'],
+    ['Influence', 'Resources 2 (the family supplies everything), space 2 (the chain sets the limits), life events 2 (the family decides everything) = <strong>6</strong>.'],
+    ['Zone and hazard', `${zoneChip('custody')} The animal moved from the wild (Remote or Neighbor) into Custody. Main hazards: social deprivation, restricted movement, wrong diet, injury from the chain, handling by people who may not know the species.`],
+    ['Role audit', 'Roles: pet, entertainment for children, status. Demands: stay calm, accept handling. Clash with needs: a macaque needs a social group, climbing, foraging and space, and the demands are close to the opposite.'],
+    ['Three pillars', '<em>Science:</em> what does a macaque need, and which signs would show distress? <em>Ethics:</em> is it right to take a wild-caught primate into a family home for amusement? <em>Law:</em> does wildlife law regulate keeping or trading this species?'],
+    ['Type of abuse', 'Chaining is <strong>active physical</strong> restriction. Lack of company is <strong>passive mental</strong> neglect. Intent is probably <strong>unintentional</strong> and the case is <strong>ambiguous</strong> in the SMACC sense (keeping a baby monkey at home).'],
+    ['4i factor', 'Most likely <strong>ignorance</strong>, though the case history must be checked: if the family knows macaques need company and keeps it chained anyway, the factor is <strong>inconsideration</strong>.'],
+    ['Remedy', 'If ignorance: education and help to place the animal with a rescue center (change of role). If inconsideration: warning and sanction. A veterinarian\'s first task is to ask questions.']
+  ];
+  const blocks = [];
+  steps.forEach(([title, html], n) => {
+    const ta = h('textarea', { id: 'mq' + n, 'data-k': 'mq' + n, 'aria-label': `Step ${n + 1}: your answer`, placeholder: 'Write your own answer first' });
+    const out = h('div', { class: 'fb rvb', hidden: true, html });
+    const btn = h('button', { type: 'button', class: 'btn' }, 'Reveal the analysis');
+    const card = h('div', { class: 'box card rv' + (n ? ' locked' : '') }, h('h4', {}, `${n + 1}. ${title}`),
+      h('label', { class: 'fld', for: 'mq' + n }, 'Your answer'), ta, h('div', { class: 'btnrow' }, btn), out);
+    if (n) { card.setAttribute('inert', ''); card.setAttribute('aria-disabled', 'true'); }
+    btn.addEventListener('click', () => {
+      out.hidden = false; btn.disabled = true; btn.textContent = 'Revealed';
+      if (blocks[n + 1]) { unlockEl(blocks[n + 1]); blocks[n + 1].scrollIntoView({ block: 'nearest', behavior: 'smooth' }); say(`Step ${n + 2} unlocked`); }
+    });
+    blocks.push(card); host.append(card);
+  });
+  persist(host);
+}
+
+/* =====================================================================
+   PART 9.2: independent task (form, four questions, copy or download)
+   ===================================================================== */
+function initIndep() {
+  const host = $('#indep'); if (!host) return;
+  const sug = ['A goat sold at the roadside before Eid al-Adha', 'A horse pulling a tourist carriage in the midday heat', 'A stray dog living around a traditional market'];
+  const pick = h('div', { class: 'card' });
+  pick.append(h('p', { class: 'fld-t' }, 'Suggested cases (or write your own in Step 1)'));
+  const radios = h('div', { class: 'radios', role: 'radiogroup', 'aria-label': 'Suggested cases' });
+  let form = null;
+  sug.forEach(t => {
+    const inp = h('input', { type: 'radio', name: 'ind-case', value: t });
+    const lab = h('label', {}, inp, h('span', {}, t));
+    inp.addEventListener('change', () => { $$('label', radios).forEach(x => x.classList.remove('on')); lab.classList.add('on'); if (form) form.setDefinition(t + ', as seen by '); });
+    radios.append(lab);
+  });
+  pick.append(radios, h('p', { class: 'muted', style: 'margin:10px 0 0;font-size:14px' }, 'Choosing a case fills Step 1. Add the human viewpoint at the end of the sentence.'));
+  host.append(pick);
+  const fh = h('div', { class: 'gap' }); host.append(fh);
+  form = ScoreForm(fh, { prefix: 'sf92' });
+
+  /* questions 3 and 4 */
+  const q = h('div', { class: 'card gap' });
+  q.append(h('h4', {}, 'Questions 1 and 2'), h('p', {}, 'Question 1 (zone and evidence for each score) and Question 2 (the main welfare hazard in that zone) are answered in Steps 4 and 5 of the form above.'));
+  q.append(h('h4', { style: 'margin-top:20px' }, 'Question 3: classify one possible violation'));
+  q.append(h('label', { class: 'fld', for: 'in-viol' }, 'Describe the possible violation'), h('textarea', { id: 'in-viol', 'data-k': 'in-viol', placeholder: 'What did a person do, or fail to do?' }));
+  const mkSel = (id, label, opts) => h('div', { class: 'dim' }, h('label', { class: 'fld-t', for: id }, label), h('select', { id }, h('option', { value: '' }, 'Choose'), ...opts.map(o => h('option', { value: o }, o))));
+  q.append(h('div', { class: 'dims gap' },
+    mkSel('in-ap', 'Active or passive?', ['Active', 'Passive']), mkSel('in-pm', 'Physical or mental?', ['Physical', 'Mental', 'Both']),
+    mkSel('in-iu', 'Intentional or unintentional?', ['Intentional', 'Unintentional']), mkSel('in-oa', 'Obvious or ambiguous?', ['Obvious', 'Ambiguous'])));
+  q.append(h('h4', { style: 'margin-top:20px' }, 'Question 4: which 4i factor, and what remedy?'));
+  q.append(h('div', { class: 'dims' }, mkSel('in-f', '4i factor', ['Ignorance', 'Inexperience', 'Incompetence', 'Inconsideration']), mkSel('in-r', 'Remedy', ['Education', 'Training', 'Change of role', 'Sanction'])));
+  q.append(h('label', { class: 'fld', for: 'in-why', style: 'margin-top:12px' }, 'Your reasoning'), h('textarea', { id: 'in-why', 'data-k': 'in-why', placeholder: 'Why does this factor fit the case?' }));
+  host.append(q);
+
+  /* submission */
+  const sb = h('div', { class: 'card gap' });
+  const nameI = h('input', { type: 'text', id: 'in-name', autocomplete: 'name', placeholder: 'Your name and student number (optional)' });
+  const out = h('textarea', { id: 'in-out', readonly: true, hidden: true, style: 'min-height:220px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px', 'aria-label': 'Your compiled answers' });
+  const act = h('div', { class: 'btnrow', hidden: true });
+  const msg = h('div', { class: 'fb', hidden: true, 'aria-live': 'polite' });
+  const compile = () => {
+    const v = id => (document.getElementById(id) || {}).value || '';
+    return ['Week 1 Module: Independent task', nameI.value ? `Name: ${nameI.value}` : null, '',
+      'Questions 1 and 2: quadrant analysis and hazard', form.getText(), '',
+      'Question 3: violation', `Violation: ${v('in-viol')}`, `Active or passive: ${v('in-ap')}`, `Physical or mental: ${v('in-pm')}`, `Intentional or unintentional: ${v('in-iu')}`, `Obvious or ambiguous: ${v('in-oa')}`, '',
+      'Question 4: 4i factor', `Factor: ${v('in-f')}`, `Remedy: ${v('in-r')}`, `Reasoning: ${v('in-why')}`].filter(x => x !== null).join('\n');
+  };
+  const prep = h('button', { type: 'button', class: 'btn' }, 'Prepare my answers');
+  prep.addEventListener('click', () => { out.value = compile(); out.hidden = false; act.hidden = false; say('Answers prepared'); });
+  const copy = h('button', { type: 'button', class: 'btn sec' }, 'Copy answers');
+  copy.addEventListener('click', async () => {
+    out.value = compile();
+    let ok = false;
+    try { await navigator.clipboard.writeText(out.value); ok = true; } catch (e) { try { out.select(); ok = document.execCommand('copy'); } catch (x) { ok = false; } }
+    msg.hidden = false; msg.className = 'fb ' + (ok ? 'ok' : 'no'); msg.innerHTML = ok ? '<span class="st">✓ Copied.</span> Paste the answers where your instructor asked you to submit them.' : '<span class="st">✗ Copy failed.</span> Select the text in the box and copy it by hand.';
+  });
+  const dl = h('button', { type: 'button', class: 'btn sec' }, 'Download .txt');
+  dl.addEventListener('click', () => {
+    out.value = compile();
+    const a = h('a', { href: URL.createObjectURL(new Blob([out.value], { type: 'text/plain' })), download: 'week1-independent-task.txt' });
+    document.body.append(a); a.click(); a.remove();
+  });
+  act.append(copy, dl);
+  sb.append(h('h4', {}, 'Submit your answers'),
+    h('p', {}, 'This page does not send anything to a server. Prepare your answers, then copy them or download them as a text file and submit them through the channel your instructor gave you.'),
+    h('label', { class: 'fld', for: 'in-name' }, 'Name'), nameI, h('div', { class: 'btnrow' }, prep), h('div', { class: 'gap' }, out), act, msg);
+  host.append(sb);
+  persist(host);
+}
+
+/* =====================================================================
+   PART 9.3: five questions
+   ===================================================================== */
+function initQuiz() {
+  const host = $('#quiz'); if (!host) return;
+  const Q = [
+    { q: 'A sparrow family nests in a school roof. Staff see the birds daily and do not touch them. The birds find their own food. Which zone fits best, and why is the case borderline?',
+      opts: ['Neighbor Zone. Contact scores 3 (daily sight, no touch, brief), which lies on the line between low and high.',
+             'Custody Zone. Staff see the birds every day, so both contact and influence are high.',
+             'Remote Zone. The birds find their own food, so both scores are 0.',
+             'Neighbor Zone. Influence scores 3, which lies on the line between low and high.'],
+      a: 0, e: 'Neighbor Zone. Contact scores 3 (daily sight, no touch, brief), which lies on the line between low and high.' },
+    { q: 'Which of these changes would move a wild animal from Remote Zone to Indirect Zone?',
+      opts: ['(a) A person captures it.', '(b) A road and plantation fragment its forest.', '(c) A tourist photographs it.'],
+      a: 1, e: '(b). Influence rises without direct contact. Option (a) would raise contact as well and move the animal toward Custody Zone.' },
+    { q: 'An owner knows a dog needs exercise, knows how to give it, and is physically able to, yet does not bother. Which 4i factor is this, and what is the remedy?',
+      opts: ['Ignorance; education', 'Inexperience; training', 'Incompetence; change of role', 'Inconsideration; sanction'],
+      a: 3, e: 'Inconsideration; sanction. The owner has the knowledge, the skill and the ability, and chooses not to act.' },
+    { q: 'A person gives a cat a human fever tablet. The cat becomes ill. Which remedy would most likely prevent a repeat?',
+      opts: ['Education', 'Training', 'Change of role', 'Sanction'],
+      a: 0, e: 'Education, because the factor is ignorance.' },
+    { q: 'A student claims "this animal is in Custody Zone, so its welfare is poor." Explain the flaw.',
+      opts: ['The zone describes expected hazard exposure, not the animal\'s actual condition. Welfare must be assessed by looking at the animal.',
+             'Custody Zone animals always have good welfare, so the claim is the wrong way round.',
+             'Welfare cannot be judged for animals that people control.'],
+      a: 0, e: 'The zone describes expected hazard exposure, not the animal\'s actual condition. Welfare must be assessed by looking at the animal.' }
+  ];
+  function build() {
+    host.innerHTML = '';
+    let done = 0, good = 0;
+    const score = h('p', { class: 'big gap', 'aria-live': 'polite' });
+    const again = h('button', { type: 'button', class: 'btn sec', hidden: true, onclick: build }, 'Try the five questions again');
+    Q.forEach((it, n) => {
+      const m = buildMCQ({ q: `<span class="qn">Question ${n + 1} of 5</span><br>${esc(it.q)}`, opts: it.opts, answer: it.a, explain: esc(it.e), retry: false,
+        onAnswer(ok) { done++; if (ok) good++; if (done === Q.length) { score.textContent = `You answered ${good} of 5 correctly.`; again.hidden = false; } } });
+      host.append(h('div', { class: 'box card qcard' }, m.el));
+    });
+    host.append(score, h('div', { class: 'btnrow' }, again));
+  }
+  build();
+}
+
+INITS.push(initTree, initRoleAudit, initPillars, initSocieties, initOptional, initAbuse22, initClassify, initFourI, initMacaque, initIndep, initQuiz);
+
+/* =====================================================================
+   START
+   ===================================================================== */
+INITS.forEach(fn => { try { fn(); } catch (err) { console.error('init failed:', fn.name, err); } });
+persist();
+})();
+</script>
+</body>
+</html>
