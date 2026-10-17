@@ -758,8 +758,7 @@ function analyzeTable(tab, test) {
         o.reject = o.p < 0.05;
     }
     if (test === 'chi' && !okChi) {
-        if (size2) o.warnings.push('Ada sel dengan frekuensi harapan < 5 (terkecil ' + o.minE.toFixed(2).replace('.', ',') + '). Pada tabel 2\u00d72, gunakan uji Fisher exact.');
-        else o.warnings.push('Syarat chi-square tidak terpenuhi pada tabel ini. Gabungkan kategori yang bermakna secara biologis atau manajerial, lalu ulangi uji dengan fitur gabungkan kategori pada bagian Urutan kategori. Pada variabel ordinal, gabungkan kategori yang bersebelahan.');
+        if (!size2) o.warnings.push('Syarat chi-square tidak terpenuhi pada tabel ini. Gabungkan kategori yang bermakna secara biologis atau manajerial, lalu ulangi uji dengan fitur gabungkan kategori pada bagian Urutan kategori. Pada variabel ordinal, gabungkan kategori yang bersebelahan.');
     }
     if (test === 'fisher' && size2 && okChi) {
         o.warnings.push('Semua frekuensi harapan \u2265 5, sehingga syarat uji chi-square terpenuhi. Uji Fisher exact tetap sahih, tetapi pada tabel ini chi-square sudah memadai.');
