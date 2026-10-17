@@ -1316,7 +1316,7 @@ function residSentence(o, ef) {
     if (!rows.length) return '';
     function ph(r) { var t = []; if (r.more.length) t.push('lebih banyak unit pada ' + r.more.join(' dan ')); if (r.less.length) t.push((r.more.length ? 'dan ' : '') + 'lebih sedikit pada ' + r.less.join(' dan ')); return t.join(' '); }
     function sign(r, jj) { var f = o.flagged.filter(function (x) { return x.i === r.i && x.j === jj; })[0]; return f ? (f.z > 0 ? 1 : -1) : 0; }
-    var s = 'Penelusuran dengan residual terstandar (standardized residual) menunjukkan bahwa kelompok ' + ef(o.rl[rows[0].i]) + ' memiliki ' + ph(rows[0]) + ' daripada yang diharapkan bila tidak ada asosiasi.';
+    var s = 'Penelusuran dengan residual terstandar menunjukkan bahwa kelompok ' + ef(o.rl[rows[0].i]) + ' memiliki ' + ph(rows[0]) + ' daripada yang diharapkan bila tidak ada asosiasi.';
     for (var k = 1; k < rows.length; k++) {
         var opp = false;
         for (j = 0; j < o.c; j++) if (sign(rows[0], j) * sign(rows[k], j) < 0) opp = true;
