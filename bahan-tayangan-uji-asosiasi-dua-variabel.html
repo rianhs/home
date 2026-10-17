@@ -7,266 +7,423 @@
 <script>try{if(localStorage.getItem('tema-tayangan')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F5F5F7; --card:#FFFFFF; --ink:#1D1D1F; --ink2:#6E6E73; --ink3:#A1A1A6;
-  --line:#E5E5EA; --fill:#F2F2F7; --bar:rgba(245,245,247,.78);
-  --blue:#007AFF; --a-ink:#0062CC; --b-ink:#B25E00; --d-ink:#1E8E3E; --red-ink:#C62828;
-  --ok-bg:rgba(52,199,89,.14); --warn-bg:rgba(255,149,0,.16); --no-bg:rgba(142,142,147,.16); --bad-bg:rgba(255,59,48,.12);
-  --more-bg:rgba(0,122,255,.16);
-  --shadow:0 0 0 .5px rgba(0,0,0,.05),0 2px 14px rgba(0,0,0,.04);
+  --bg-color:#f5f5f7;--card-bg:#ffffff;--text-main:#1d1d1f;--text-muted:#6e6e73;--text-soft:#3a3a3c;
+  --accent-blue:#0071e3;--green-dark:#1e9e46;--accent-red:#ff3b30;--border-color:#d2d2d7;
+  --shadow:0 8px 24px rgba(0,0,0,.06);
+  --fill1:#f0f0f2;--fill2:#e3e3e8;--soft-bg:#f5f5f7;--input-bg:#fbfbfd;--btn-bg:#ffffff;--seg-active:#ffffff;
+  --ink3:#c7c7cc;--grid-line:#f0f0f2;--err-tx:#b3261e;--warn-tx:#8a5a00;--ok-tx:#1e7a3a;
+  --lowE-bg:#fff4e0;--lowE-tx:#8a5a00;--vlowE-bg:#ffe3e0;--vlowE-tx:#b3261e;--more-bg:#e3f0ff;
+  --bar:rgba(245,245,247,.88);
+  color-scheme:light;
 }
-:root{color-scheme:light}
 :root[data-theme="dark"]{
-  color-scheme:dark;
-  --bg:#000; --card:#1C1C1E; --ink:#F5F5F7; --ink2:#98989D; --ink3:#636366;
-  --line:#38383A; --fill:#2C2C2E; --bar:rgba(0,0,0,.7);
-  --a-ink:#64A8FF; --b-ink:#FFB340; --d-ink:#30D158; --red-ink:#FF6961;
+  --bg-color:#000000;--card-bg:#1c1c1e;--text-main:#f5f5f7;--text-muted:#98989d;--text-soft:#d1d1d6;
+  --accent-blue:#3b9bff;--green-dark:#30d158;--accent-red:#ff6961;--border-color:#38383a;
   --shadow:0 0 0 .5px rgba(255,255,255,.06);
+  --fill1:#2c2c2e;--fill2:#3a3a3c;--soft-bg:#2c2c2e;--input-bg:#2c2c2e;--btn-bg:#2c2c2e;--seg-active:#48484a;
+  --ink3:#636366;--grid-line:#38383a;--err-tx:#ff9a93;--warn-tx:#ffcc66;--ok-tx:#5ee08a;
+  --lowE-bg:#3d2f12;--lowE-tx:#ffcc66;--vlowE-bg:#432320;--vlowE-tx:#ff9a93;--more-bg:#13273d;
+  --bar:rgba(0,0,0,.78);
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
-html{scroll-padding-top:72px}
-body{
-  margin:0;background:var(--bg);color:var(--ink);
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
-  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;
-}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg-color);color:var(--text-main);font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
 button{font-family:inherit}
-:focus-visible{outline:3px solid rgba(0,122,255,.55);outline-offset:2px}
+:focus-visible{outline:3px solid rgba(0,113,227,.4);outline-offset:2px}
+b{font-weight:700}
 
-.bar{position:sticky;top:0;z-index:30;background:var(--bar);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
-  border-bottom:.5px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
-.bar-in{max-width:860px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.bar-r{display:flex;align-items:center;gap:8px}
-.theme-btn{width:36px;height:36px;flex:none;border:0;border-radius:50%;background:rgba(118,118,128,.14);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s}
-.theme-btn:active{transform:scale(.94)}
+/* Bilah atas */
+.topbar{position:sticky;top:0;z-index:30;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border-color);padding-top:env(safe-area-inset-top,0px)}
+.topbar-in{max-width:960px;margin:0 auto;padding:10px 20px 2px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:700;font-size:15px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.top-actions{display:flex;align-items:center;gap:8px;flex:none}
+.theme-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border-color);background:var(--btn-bg);color:var(--text-main);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:all .2s ease}
+.theme-btn:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
 .theme-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
 :root[data-theme="dark"] .ic-moon{display:none}
 :root:not([data-theme="dark"]) .ic-sun{display:none}
-.seg{display:inline-flex;background:rgba(118,118,128,.14);border-radius:11px;padding:2px}
-.seg button{border:0;background:transparent;color:var(--ink);font-size:14px;font-weight:500;padding:7px 14px;border-radius:9px;cursor:pointer;transition:background .2s,box-shadow .2s}
-.seg button[aria-checked="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.05);font-weight:600}
-.btn{border:0;border-radius:980px;background:var(--blue);color:#fff;font-size:14px;font-weight:600;padding:9px 18px;cursor:pointer;transition:transform .12s,opacity .2s;white-space:nowrap}
-.btn:active{transform:scale(.96)}
-.btn.sec{background:rgba(0,122,255,.12);color:var(--a-ink)}
-.btn.ghost{background:transparent;color:var(--a-ink);padding:6px 4px}
+.stepnav-wrap{position:relative;max-width:960px;margin:0 auto}
+.stepnav{display:flex;gap:4px;overflow-x:auto;padding:6px 14px 8px;scrollbar-width:none;scroll-behavior:smooth;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.stepnav::-webkit-scrollbar{display:none}
+.stepnav a{flex:none;font-size:12.5px;font-weight:600;color:var(--text-muted);text-decoration:none;padding:7px 11px;border-radius:9px;white-space:nowrap;transition:all .2s ease}
+.stepnav a b{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--fill2);color:var(--text-soft);font-size:10.5px;margin-right:6px;padding:0 4px}
+.stepnav a:hover{color:var(--text-main);background:var(--fill1)}
+.stepnav a.active{color:var(--accent-blue);background:var(--fill1)}
+.stepnav a.active b{background:var(--accent-blue);color:#fff}
+.nav-arrow{position:absolute;top:0;bottom:0;width:44px;display:none;align-items:center;border:none;padding:0;cursor:pointer;color:var(--text-muted);font-size:24px;line-height:1;font-family:inherit;z-index:1}
+.nav-arrow.left{left:0;justify-content:flex-start;padding-left:10px;background:linear-gradient(to right,var(--bg-color) 45%,transparent)}
+.nav-arrow.right{right:0;justify-content:flex-end;padding-right:10px;background:linear-gradient(to left,var(--bg-color) 45%,transparent)}
+.stepnav-wrap.can-left .nav-arrow.left,.stepnav-wrap.can-right .nav-arrow.right{display:flex}
+.nav-arrow:hover{color:var(--accent-blue)}
+.progress{height:3px;background:var(--fill2)}
+.progress i{display:block;height:100%;width:0;background:var(--accent-blue);transition:width .12s linear}
 
-.wrap{max-width:860px;margin:0 auto;padding:0 20px calc(72px + env(safe-area-inset-bottom,0px))}
-header{padding-top:36px}
-h1{font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.025em;font-weight:700;margin:0 0 10px}
-.lead{margin:0;color:var(--ink2);font-size:17px;max-width:62ch}
-h2{font-size:22px;letter-spacing:-.015em;font-weight:650;margin:44px 0 0}
-h2 + .sub{margin:4px 0 0;color:var(--ink2);font-size:15px;max-width:64ch}
-.card{background:var(--card);border-radius:22px;padding:22px;margin-top:14px;box-shadow:var(--shadow)}
-.card.muted{color:var(--ink2);text-align:center;padding:28px}
-@media (max-width:520px){.card{padding:18px;border-radius:20px}}
+/* Tombol */
+.btn{font-family:inherit;font-size:13px;font-weight:600;padding:9px 14px;border-radius:10px;cursor:pointer;border:1px solid var(--border-color);background:var(--btn-bg);color:var(--text-main);transition:all .2s ease;text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
+.btn.sm{padding:7px 12px;font-size:12.5px}
+.btn.primary{background:var(--accent-blue);border-color:var(--accent-blue);color:#fff}
+.btn.primary:hover{color:#fff;opacity:.9}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--accent-blue);padding:6px 2px}
+.btn-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
-.settings{display:grid;gap:18px;margin-top:22px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.row label,.row .lbl{font-weight:500;font-size:15px}
-.nval{font-weight:600;color:var(--a-ink)}
+/* Tata letak */
+.wrap{max-width:960px;margin:0 auto;padding:0 20px calc(64px + env(safe-area-inset-bottom,0px))}
+header{padding:34px 0 22px}
+h1{font-size:clamp(26px,4.6vw,36px);line-height:1.12;letter-spacing:-.025em;font-weight:700;margin:0 0 10px}
+.lead{margin:0;color:var(--text-muted);font-size:16.5px;max-width:64ch}
+.lead-hint{margin:12px 0 0;font-size:13px;color:var(--text-muted);max-width:66ch}
+
+.step{background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:26px 28px;margin-bottom:18px;scroll-margin-top:118px}
+.step-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.step-num{min-width:28px;height:28px;border-radius:14px;background:var(--accent-blue);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none;padding:0 6px}
+.step-title{font-size:19px;font-weight:700;letter-spacing:-.3px;flex:1;min-width:160px;margin:0}
+.chip-status{display:inline-block;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px;background:var(--fill1);color:var(--text-soft);white-space:nowrap}
+.chip-status.ok{color:var(--ok-tx)}.chip-status.warn{color:var(--warn-tx)}.chip-status.bad{color:var(--err-tx)}
+.chip-status:empty{display:none}
+.step-intro{font-size:14px;color:var(--text-muted);line-height:1.6;margin:-6px 0 20px;max-width:72ch}
+.sub{margin-top:26px}
+.step-intro + .sub,.step-head + .sub{margin-top:0}
+.sub-title{font-size:14px;font-weight:700;margin:0 0 10px}
+.hint{font-size:13px;color:var(--text-muted);margin:8px 0 0;line-height:1.6}
+.cap{font-size:13px;color:var(--text-muted);margin:12px 0 0;line-height:1.6}
+p.ip{margin:0 0 8px;font-size:14.5px}
+p.ip:last-child{margin-bottom:0}
+
+/* Kotak seragam */
+.box{background:var(--soft-bg);border:1px solid var(--border-color);border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.7}
+.box + .box{margin-top:10px}
+.concl-title{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:700;margin-bottom:8px}
+.tag{font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.6px;margin-right:6px}
+.tag-ok{color:var(--ok-tx)}.tag-warn{color:var(--warn-tx)}.tag-err{color:var(--err-tx)}.tag-info{color:var(--accent-blue)}
+.sg-name{font-size:18px;font-weight:700;margin:2px 0 6px;letter-spacing:-.2px}
+.center{text-align:center}
+
+.stat-grid{margin:0 0 6px}
+.stat-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:9px 0;border-bottom:1px solid var(--grid-line);font-size:14px}
+.stat-row:last-child{border-bottom:none}
+.stat-label{color:var(--text-muted)}
+.stat-value{font-weight:700;font-size:15px;text-align:right}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:6px}
+.tile{background:var(--soft-bg);border:1px solid var(--border-color);border-radius:12px;padding:14px 16px}
+.tile .k{font-size:12.5px;color:var(--text-muted);min-height:2.6em}
+.tile .v{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.tile .s{font-size:12.5px;color:var(--text-muted);margin-top:4px}
+
+.tbl-wrap{overflow-x:auto}
+table.dt{border-collapse:collapse;width:100%;font-size:13.5px}
+table.dt th,table.dt td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--grid-line);white-space:nowrap}
+table.dt thead th{color:var(--text-muted);font-weight:600;font-size:12.5px}
+table.dt tbody th{text-align:left;font-weight:600;white-space:normal}
+table.dt tr.hlrow td,table.dt tr.hlrow th{background:var(--soft-bg);font-weight:700}
+table.dt tr.tot td,table.dt tr.tot th{border-top:1px solid var(--border-color);font-weight:700}
+table.dt td.cellsub{line-height:1.25}
+table.dt .subv{display:block;font-size:11.5px;color:var(--text-muted);font-weight:500}
+table.dt td.lowE{background:var(--lowE-bg);color:var(--lowE-tx);font-weight:700}
+table.dt td.vlowE{background:var(--vlowE-bg);color:var(--vlowE-tx);font-weight:700}
+table.dt td.rp{background:var(--more-bg);color:var(--accent-blue);font-weight:700}
+table.dt td.rn{background:var(--lowE-bg);color:var(--lowE-tx);font-weight:700}
+table.dt td small{display:block;font-size:11px;font-weight:500}
+table.map td,table.map th{white-space:normal;text-align:left;vertical-align:top}
+.gdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.idx{display:inline-block;min-width:16px;color:var(--ink3);font-weight:700;margin-right:4px}
+.arw{border:0;background:var(--fill2);color:var(--text-main);border-radius:7px;width:24px;height:24px;font-size:10px;cursor:pointer;margin-left:4px;vertical-align:middle;padding:0;line-height:1}
+.arw:disabled{opacity:.35;cursor:default}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
+.cols > div{min-width:0}
+.cols th,.cols td{white-space:normal}
+
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text-muted);margin-bottom:12px}
+.legend .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.chart-wrap{width:100%;overflow-x:auto;margin:10px 0 6px}
+.chart-wrap svg{display:block}
+.verdict-status{text-align:center;font-size:32px;font-weight:800;letter-spacing:-.8px;margin:14px 0 6px;line-height:1.15}
+.verdict-status.reject{color:var(--accent-red)}
+.verdict-status.fail{color:var(--green-dark)}
+.verdict-sub{text-align:center;font-size:13.5px;color:var(--text-soft);margin:0 0 16px}
+.res-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.res-name{font-weight:700;font-size:16px}
+ul.odds{margin:4px 0 14px;padding-left:20px;font-size:14px;line-height:1.7}
+.swapbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+
+/* Segmen, geser, sakelar */
+.seg2{display:inline-flex;background:var(--fill2);border-radius:11px;padding:3px;flex-wrap:wrap}
+.seg2 button{border:0;background:transparent;color:var(--text-main);font-size:13px;font-weight:600;padding:8px 16px;border-radius:8px;cursor:pointer;transition:all .2s ease}
+.seg2 button[aria-checked="true"]{background:var(--seg-active);box-shadow:0 2px 6px rgba(0,0,0,.1);color:var(--accent-blue)}
+.field-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.lbl{font-weight:600;font-size:14px}
+.nval{font-weight:700;color:var(--accent-blue)}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:6px 0 0}
-input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--line)}
-input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--line)}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--fill2)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--fill2)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;margin-top:-11px;box-shadow:0 1px 4px rgba(0,0,0,.3),0 0 0 .5px rgba(0,0,0,.08)}
 input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:0;box-shadow:0 1px 4px rgba(0,0,0,.3)}
 .switch{position:relative;width:51px;height:31px;flex:none}
 .switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:2}
-.switch i{position:absolute;inset:0;background:rgba(120,120,128,.32);border-radius:16px;transition:background .25s}
+.switch i{position:absolute;inset:0;background:var(--fill2);border-radius:16px;transition:background .25s}
 .switch i::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:transform .25s}
-.switch input:checked + i{background:#34C759}
+.switch input:checked + i{background:#34c759}
 .switch input:checked + i::after{transform:translateX(20px)}
-.switch input:focus-visible + i{outline:3px solid rgba(0,122,255,.55);outline-offset:2px}
+.switch input:focus-visible + i{outline:3px solid rgba(0,113,227,.4);outline-offset:2px}
 
-.hyp{display:grid;gap:12px}
-.hyp-r{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start}
-.hyp-k{font-weight:700;font-size:14px;background:var(--fill);border-radius:10px;padding:3px 0;text-align:center}
-.hyp-r p{margin:0;font-size:15.5px;max-width:68ch}
-.notat{background:var(--fill);border-radius:16px;padding:14px 16px;font-size:15px}
-.notat .lg{font-size:13px;color:var(--ink2);margin-top:6px}
+/* Kartu skenario */
+.scn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:12px 0}
+.scn-card{text-align:left;background:var(--soft-bg);border:1px solid var(--border-color);border-radius:12px;padding:14px 16px;cursor:pointer;color:var(--text-main);font-size:13px;line-height:1.5;display:flex;flex-direction:column;gap:4px;transition:all .2s ease}
+.scn-card:hover{border-color:var(--accent-blue)}
+.scn-card[aria-pressed="true"]{border-color:var(--accent-blue);box-shadow:0 0 0 2px var(--accent-blue) inset;background:var(--card-bg)}
+.scn-t{font-weight:700;font-size:14px;line-height:1.35}
+.scn-l{color:var(--text-muted);font-size:12.5px}
+.scn-l b{color:var(--text-soft)}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--fill2);color:var(--text-soft)}
 
-.pops{display:flex;gap:12px;justify-content:center;align-items:flex-start}
+/* Tiga pertanyaan, pohon keputusan, pilihan uji */
+.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.cards3 .box + .box{margin-top:0}
+.qn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:11px;background:var(--accent-blue);color:#fff;font-size:12px;font-weight:700;margin-right:8px}
+.cards3 p{margin:6px 0 0;font-size:13.5px;color:var(--text-soft);line-height:1.6}
+.trail{margin:0 0 12px;padding-left:20px;font-size:13.5px;color:var(--text-muted);line-height:1.7}
+.trail b{color:var(--text-main)}
+.opts,.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:10px}
+.opt,.choice{border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);border-radius:12px;padding:13px 16px;text-align:left;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s ease;line-height:1.45}
+.opt:hover,.choice:hover{border-color:var(--accent-blue);background:var(--fill1)}
+.choice small{display:block;font-weight:400;color:var(--text-muted);font-size:12.5px;margin-top:2px}
+
+/* Akordeon dengan ikon chevron */
+details.inline{margin-top:10px;border:1px solid var(--border-color);border-radius:12px;padding:12px 16px;background:var(--soft-bg)}
+details.inline:first-of-type{margin-top:0}
+details summary{cursor:pointer;font-weight:700;font-size:13.5px;color:var(--text-main);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"\2304";font-size:20px;line-height:1;color:var(--text-muted);transition:transform .2s ease}
+details[open] > summary::after{transform:rotate(180deg)}
+details.inline > div,details.inline > p{margin:12px 0 0;font-size:13.5px;color:var(--text-soft);line-height:1.7}
+
+.sel{font-family:inherit;font-size:13px;font-weight:600;padding:9px 12px;border-radius:10px;border:1px solid var(--border-color);background:var(--btn-bg);color:var(--text-main);max-width:100%;cursor:pointer}
+.sel:hover{border-color:var(--accent-blue)}
+.stat-row.two{align-items:flex-start}
+.statsub{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-top:3px}
+/* Tooltip glosarium */
+.gl{border-bottom:1.5px dotted var(--text-muted);cursor:help}
+.gl:focus-visible{outline-offset:1px;border-radius:3px}
+#tip{position:fixed;z-index:100;max-width:290px;background:var(--text-main);color:var(--card-bg);padding:9px 12px;border-radius:10px;font-size:12.5px;line-height:1.55;font-weight:500;pointer-events:none;opacity:0;transition:opacity .12s;box-shadow:0 6px 20px rgba(0,0,0,.25);left:0;top:0}
+#tip.on{opacity:1}
+
+/* Ilustrasi populasi */
+.pops{display:flex;gap:12px;justify-content:center}
 .pop-col{flex:1 1 0;max-width:290px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.pop-title{font-weight:600;font-size:15px;margin-bottom:8px}
 .pop-big{width:min(100%,210px);height:auto}
 .pop-small{width:min(62%,128px);height:auto;animation:pop .35s ease-out}
 .pop-arrow{width:22px;height:34px;margin:6px 0;color:var(--ink3)}
-.pop-sub{font-size:13px;color:var(--ink2)}
+.pop-sub{font-size:13px;color:var(--text-muted)}
 @keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
 
-.tbl{width:100%;border-collapse:collapse;font-size:15px}
-.tbl th{font-weight:500;color:var(--ink2);font-size:13px;text-align:right;padding:0 0 10px 12px}
-.tbl th:first-child,.tbl td:first-child{text-align:left;padding-left:0}
-.tbl td{text-align:right;padding:10px 0 10px 12px;border-top:.5px solid var(--line)}
-.tbl td:first-child{color:var(--ink2)}
-.tbl .gname{display:inline-flex;align-items:center;gap:6px;color:var(--ink);font-weight:600}
-.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
-.cap{font-size:13px;color:var(--ink2);margin:12px 0 0}
-.tblwrap{overflow-x:auto}
-.idx{display:inline-block;min-width:16px;color:var(--ink3);font-weight:600;margin-right:4px}
-.swapbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-.arw{border:0;background:rgba(118,118,128,.14);color:var(--ink);border-radius:8px;width:26px;height:26px;font-size:11px;cursor:pointer;margin-left:4px;vertical-align:middle;padding:0;line-height:1}
-.arw:disabled{opacity:.3;cursor:default}
+footer{margin-top:26px;font-size:12.5px;color:var(--text-muted);max-width:70ch;line-height:1.7}
 
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;font-weight:500;margin-bottom:8px}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
-.chart{width:100%}
-.chart svg{display:block;width:100%;height:auto;overflow:visible}
-.vsub{font-weight:600;font-size:15px;margin:22px 0 8px}
-
-.chip{display:inline-block;border-radius:980px;padding:3px 11px;font-size:13px;font-weight:600;white-space:nowrap}
-.chip.ok{background:var(--ok-bg);color:var(--d-ink)}
-.chip.warn{background:var(--warn-bg);color:var(--b-ink)}
-.chip.no{background:var(--no-bg);color:var(--ink2)}
-.chip.bad{background:var(--bad-bg);color:var(--red-ink)}
-.asm{display:grid;gap:0}
-.asm-r{display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:center;padding:12px 0;border-top:.5px solid var(--line)}
-.asm-r:first-child{border-top:0;padding-top:0}
-.asm-n{font-weight:600;font-size:15px}
-.asm-s{grid-column:1;font-size:13px;color:var(--ink2)}
-.asm-r .chip{grid-row:1 / span 2;grid-column:2}
-.note{font-size:13px;color:var(--ink2);margin:14px 0 0;max-width:66ch}
-
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-@media (max-width:560px){.choices{grid-template-columns:1fr}}
-.choice{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:14px 16px;text-align:left;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
-.choice small{display:block;font-weight:400;color:var(--ink2);font-size:13px;margin-top:2px}
-.choice:hover{background:var(--fill)}
-.choice:active{transform:scale(.985)}
-.hint{color:var(--ink2);font-size:15px;margin:0}
-.fb{border-radius:16px;padding:14px 16px;font-size:15px;margin:0 0 12px}
-.fb.ok{background:var(--ok-bg)} .fb.warn{background:var(--warn-bg)}
-.rec{background:var(--fill);border-radius:16px;padding:16px 18px}
-.rec .k{font-size:13px;color:var(--ink2)}
-.rec .v{font-size:22px;font-weight:650;letter-spacing:-.01em;margin:2px 0 6px}
-.rec p{margin:0;font-size:15px}
-details{margin-top:14px}
-summary{cursor:pointer;color:var(--a-ink);font-weight:500;font-size:14px}
-details p{font-size:14px;color:var(--ink2);margin:8px 0 0;max-width:66ch}
-
-.res-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.res-name{font-weight:650;font-size:17px}
-.res-stat{color:var(--ink2);font-size:14px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media (max-width:640px){.grid3{grid-template-columns:1fr}}
-.tile{background:var(--fill);border-radius:16px;padding:14px 16px}
-.tile .k{font-size:13px;color:var(--ink2);min-height:2.6em}
-.tile .v{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
-.tile .s{font-size:13px;color:var(--ink2);margin-top:4px}
-.interp{margin-top:16px;border-top:.5px solid var(--line);padding-top:16px}
-.interp .k{font-size:13px;color:var(--ink2);margin-bottom:4px}
-.interp p{margin:0 0 10px;font-size:15.5px;max-width:68ch}
-.cmp td:last-child{font-weight:600}
-.truth-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:.5px solid var(--line);font-size:15px}
-.truth-row:first-of-type{border-top:0}
-.truth-row span:first-child{color:var(--ink2)}
-.truth-row span:last-child{text-align:right;font-weight:600}
-.verdict{margin-top:14px}
-footer{margin-top:40px;font-size:13px;color:var(--ink2);max-width:66ch}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-
-.gridn{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
-.tbl td.tot{font-weight:600}
-.tbl td.lt5{background:var(--warn-bg)}
-.tbl td.lt1{background:var(--bad-bg)}
-.tbl td.rp{background:var(--more-bg);color:var(--a-ink);font-weight:700}
-.tbl td.rn{background:var(--warn-bg);color:var(--b-ink);font-weight:700}
-.tbl td small{display:block;font-size:11px;font-weight:500}
-.tbl tr.hlrow td{background:var(--fill);color:var(--ink);font-weight:700}
-.odds{margin:6px 0 14px;padding-left:20px;font-size:15px}
-.odds li{margin:2px 0}
-.tbl th,.tbl td{white-space:nowrap}
-.tbl th:first-child,.tbl td:first-child{white-space:normal}
-.plain p{margin:0 0 6px;font-size:15px;color:var(--ink)}
+@media (max-width:640px){
+  .topbar-in{padding:8px 14px 0}
+  .wrap{padding:0 12px 56px}
+  .step{padding:22px 16px;scroll-margin-top:112px}
+  .brand{font-size:13.5px}
+  .verdict-status{font-size:26px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}.stepnav{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 
-<div class="bar">
-  <div class="bar-in">
-    <div class="seg" role="radiogroup" aria-label="Ukuran tabel kontingensi">
-      <button role="radio" aria-checked="true" data-act="design" data-v="g22">Tabel 2×2</button>
-      <button role="radio" aria-checked="false" data-act="design" data-v="big">Tabel lebih besar</button>
-    </div>
-    <div class="bar-r">
-      <button class="btn" data-act="resample">Tarik ulang sampel</button>
-      <button class="theme-btn" id="themebtn" data-act="theme" role="switch" aria-checked="false" aria-label="Mode gelap" title="Ganti mode terang atau gelap">
+<div class="topbar" id="topbar">
+  <div class="topbar-in">
+    <div class="brand">Uji asosiasi dua variabel kategoris</div>
+    <div class="top-actions">
+      <button type="button" class="btn primary sm" data-act="resample">Tarik ulang sampel</button>
+      <button type="button" class="theme-btn" id="themebtn" data-act="theme" role="switch" aria-checked="false" aria-label="Mode gelap" title="Ganti mode terang atau gelap">
         <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>
         <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       </button>
     </div>
   </div>
+  <div class="stepnav-wrap" id="stepnav-wrap">
+    <button type="button" class="nav-arrow left" id="nav-left" aria-label="Geser ke tahap sebelumnya">&lsaquo;</button>
+    <nav class="stepnav" id="stepnav" aria-label="Tahap belajar"></nav>
+    <button type="button" class="nav-arrow right" id="nav-right" aria-label="Geser ke tahap berikutnya">&rsaquo;</button>
+  </div>
+  <div class="progress"><i id="prog"></i></div>
 </div>
 
 <main class="wrap">
   <header>
     <h1>Uji asosiasi dua variabel kategoris</h1>
-    <p class="lead">Tarik sampel dari populasi yang belum kamu ketahui, periksa tabel kontingensinya, pilih ujinya, lalu putuskan apakah bukti dari sampel cukup kuat untuk menyatakan ada asosiasi.</p>
+    <p class="lead">Halaman ini berisi panduan untuk melakukan uji chi-square dan uji eksak Fisher</p>
+    <p class="lead-hint">Catatan: Istilah dengan garis bawah putus-putus punya penjelasan singkat. Arahkan kursor atau ketuk istilahnya.</p>
   </header>
 
-  <section class="card settings" aria-label="Pengaturan">
-    <div>
-      <div class="row"><label for="nrange" id="nlabel">Ukuran sampel</label><span class="nval" id="nval">n = 60</span></div>
-      <input type="range" id="nrange" min="20" max="200" step="5" value="60">
+  <!-- Kapan memakai uji ini -->
+  <section class="step" id="st-when" data-nav="Kapan dipakai">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Kapan memakai uji ini</h2><span class="chip-status"></span></div>
+    <p class="step-intro">Tahap ini membantu untuk memutuskan apakah uji asosiasi dua variabel kategoris tepat untuk pertanyaan penelitianmu, atau apakah uji lain lebih sesuai.</p>
+
+    <div class="sub">
+      <div class="sub-title">Tiga pertanyaan penuntun</div>
+      <div class="cards3">
+        <div class="box"><b><span class="qn">1</span>Apakah unit pengamatan bersifat independen?</b><p>Kita memiliki sekumpulan unit, dan setiap unit tidak saling memengaruhi satu sama lain (<span class="gl" tabindex="0" data-g="independen">independen</span>).</p></div>
+        <div class="box"><b><span class="qn">2</span>Apa data yang diukur dari setiap unit?</b><p>Dua variabel yang berskala kategoris, baik <span class="gl" tabindex="0" data-g="nominal">nominal</span> maupun <span class="gl" tabindex="0" data-g="ordinal">ordinal</span>. Variabel numeris tidak masuk ke uji ini, kecuali dikelompokkan menjadi kategori.</p></div>
+        <div class="box"><b><span class="qn">3</span>Apa tujuannya?</b><p>Memeriksa apakah ada <span class="gl" tabindex="0" data-g="asosiasi">asosiasi</span> antara variabel pertama dan variabel kedua.</p></div>
+      </div>
+      <div class="box" style="margin-top:10px">Bila ketiga pertanyaan dijawab ya, kamu berada di halaman yang tepat. Lanjutkan ke tahap berikutnya.</div>
+      <div class="box">Pada kondisi ini, setiap unit dapat dikelompokkan menurut variabel A dan variabel B. Tujuan kita adalah memeriksa apakah variabel A dan B saling berasosiasi.</div>
     </div>
-    <div class="row">
-      <span class="lbl">Tebak ujinya dulu</span>
-      <label class="switch"><input type="checkbox" id="guessmode" checked aria-label="Tebak ujinya dulu"><i></i></label>
-    </div>
-    <div class="row">
-      <span class="lbl">Ganti populasi dengan skenario acak yang baru</span>
-      <button class="btn sec" data-act="newpop">Populasi baru</button>
+
+    <div class="sub">
+      <div class="box"><div class="concl-title">Fokus belajar</div>Statistik uji dan nilai p dihitung oleh perangkat lunak, sehingga hitungan manual tidak perlu kamu kuasai. Kompetensi yang dilatih di sini adalah memahami logika statistika, memilih uji statistika yang tepat, memeriksa syaratnya, menafsirkan angka yang dihasilkan, lalu membenarkan (menjustifikasi) kesimpulan.</div>
     </div>
   </section>
 
-  <h2>Populasi dan sampel</h2>
-  <p class="sub" id="illu-sub"></p>
-  <div class="card" id="illu"></div>
+  <!-- Skenario -->
+  <section class="step" id="st-scn" data-nav="Skenario">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Skenario dan pengaturan</h2><span class="chip-status" id="chip-scn"></span></div>
+    <p class="step-intro">Pilih konteks data yang akan dianalisis. Kekuatan hubungan pada populasi diacak dan disembunyikan sampai kamu membuka tahap ke-14 (angka sebenarnya pada populasi).</p>
 
-  <h2>Hipotesis</h2>
-  <p class="sub">H0 adalah anggapan awal yang diuji. H1 adalah kemungkinan yang berlaku bila H0 ditolak.</p>
-  <div class="card" id="hyp"></div>
+    <div class="sub">
+      <div class="sub-title">Ukuran tabel</div>
+      <div class="seg2" role="radiogroup" aria-label="Ukuran tabel">
+        <button type="button" role="radio" aria-checked="false" data-act="filter" data-v="g22">Tabel 2×2</button>
+        <button type="button" role="radio" aria-checked="false" data-act="filter" data-v="big">Tabel lebih besar dari 2×2</button>
+        <button type="button" role="radio" aria-checked="true" data-act="filter" data-v="all">Semua</button>
+      </div>
+      <div class="sub-title" style="margin-top:18px">Cara memilih skenario</div>
+      <div class="btn-row">
+        <div class="seg2" role="radiogroup" aria-label="Cara memilih skenario">
+          <button type="button" role="radio" aria-checked="true" data-act="mode" data-v="random">Acak</button>
+          <button type="button" role="radio" aria-checked="false" data-act="mode" data-v="pick">Pilih sendiri</button>
+        </div>
+        <button type="button" class="btn" id="row-random" data-act="newpop">Skenario acak baru</button>
+        <span class="btn-row" id="row-pick" hidden>
+          <select id="scn-select" class="sel" aria-label="Pilih skenario"></select>
+          <button type="button" class="btn" data-act="newpop">Populasi baru dengan skenario ini</button>
+        </span>
+      </div>
+    </div>
 
-  <h2>Data deskriptif</h2>
-  <p class="sub" id="desc-sub"></p>
-  <div class="card" id="desc"></div>
+    <div class="sub" id="scn-sum"></div>
 
-  <h2>Sebaran data</h2>
-  <p class="sub">Batang dengan komposisi yang mirip menandakan asosiasi lemah. Komposisi yang berbeda menandakan asosiasi kuat.</p>
-  <div class="card" id="viz"></div>
+    <div class="sub">
+      <div class="field-row"><label for="nrange" class="lbl">Ukuran sampel (jumlah unit)</label><span class="nval" id="nval">n = 60</span></div>
+      <input type="range" id="nrange" min="20" max="200" step="5" value="60">
+      <p class="hint">Sampel kecil membuat frekuensi harapan kecil dan uji kurang kuat. Geser untuk menarik sampel baru.</p>
+    </div>
+    <div class="sub">
+      <div class="field-row"><span class="lbl">Tebak ujinya dulu</span><label class="switch"><input type="checkbox" id="guessmode" checked aria-label="Tebak ujinya dulu"><i></i></label></div>
+      <p class="hint">Bila opsi ini aktif, hasil uji baru terbuka setelah kamu memilih langkah pada tahap ke-7 (Pilih uji).</p>
+    </div>
+  </section>
 
-  <h2>Pemeriksaan asumsi</h2>
-  <p class="sub">Sel yang berwarna menandakan frekuensi harapan kecil, yang dapat membuat uji kurang andal.</p>
-  <div class="card" id="assump"></div>
+  <!-- Populasi dan sampel -->
+  <section class="step" id="st-pop" data-nav="Sampel">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Populasi dan sampel</h2><span class="chip-status" id="chip-pop"></span></div>
+    <p class="step-intro" id="pop-intro"></p>
+    <div id="pop-body"></div>
+  </section>
 
-  <h2>Pilih uji</h2>
-  <p class="sub">Pilih uji yang syaratnya terpenuhi oleh tabel ini.</p>
-  <div class="card" id="choose"></div>
+  <!-- Hipotesis -->
+  <section class="step" id="st-hyp" data-nav="Hipotesis">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Rumusan hipotesis</h2><span class="chip-status"></span></div>
+    <p class="step-intro"><span class="gl" tabindex="0" data-g="H0">H<sub>0</sub></span> adalah anggapan awal yang diuji. <span class="gl" tabindex="0" data-g="H1">H<sub>1</sub></span> adalah kemungkinan yang berlaku bila H<sub>0</sub> ditolak. Hipotesis berlaku untuk populasi, sedangkan data yang kita lihat berasal dari sampel.</p>
+    <div id="hyp-body"></div>
+  </section>
 
-  <div id="results"></div>
+  <!-- Deskriptif -->
+  <section class="step" id="st-desc" data-nav="Deskriptif">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Statistika deskriptif</h2><span class="chip-status" id="chip-desc"></span></div>
+    <p class="step-intro" id="desc-intro"></p>
+    <div id="desc-body"></div>
+  </section>
 
-  <footer>Seluruh perhitungan berjalan di peramban. Uji chi-square memakai statistik Pearson tanpa koreksi kontinuitas, sama dengan pengaturan bawaan Jamovi. Uji Fisher exact tersedia untuk tabel 2×2 dan nilai p-nya dua arah. Sampel ditarik acak sederhana dari populasi 1.000 unit, sehingga total baris dan kolom ikut berubah dari satu penarikan ke penarikan lain. Taraf signifikansi tetap 0,05.</footer>
+  <!-- Asumsi -->
+  <section class="step" id="st-asm" data-nav="Asumsi">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Pemeriksaan asumsi</h2><span class="chip-status" id="chip-asm"></span></div>
+    <p class="step-intro">Tahap ini memeriksa apakah data memenuhi syarat uji statistika tertentu.</p>
+    <div id="asm-body"></div>
+  </section>
+
+  <!-- Pilih uji -->
+  <section class="step" id="st-pick" data-nav="Pilih uji">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Pilih uji</h2><span class="chip-status" id="chip-pick"></span></div>
+    <p class="step-intro">Pilih uji statistika sesuai dengan pemenuhan asumsi. Alasan pemilihan lebih penting daripada hitungannya.</p>
+    <div id="pick-body"></div>
+  </section>
+
+  <!-- Hasil uji -->
+  <section class="step" id="st-test" data-nav="Hasil uji">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Hasil uji</h2><span class="chip-status" id="chip-test"></span></div>
+    <p class="step-intro">Tahap ini menguji apakah kedua variabel berasosiasi. <span class="gl" tabindex="0" data-g="nilai p">Nilai p</span> dibandingkan dengan <span class="gl" tabindex="0" data-g="alfa">&alpha;</span> = 0,05.</p>
+    <div id="test-body"></div>
+  </section>
+
+  <!-- Ukuran efek -->
+  <section class="step" id="st-eff" data-nav="Ukuran efek">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Ukuran efek</h2><span class="chip-status" id="chip-eff"></span></div>
+    <p class="step-intro">Nilai p menunjukkan ada tidaknya asosiasi, sedangkan <span class="gl" tabindex="0" data-g="ukuran efek">ukuran efek</span> menunjukkan seberapa kuat asosiasi itu.</p>
+    <div id="eff-body"></div>
+  </section>
+
+  <!-- Selisih proporsi / penelusuran sel -->
+  <section class="step" id="st-post" data-nav="Selisih">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title" id="post-title">Selisih proporsi</h2><span class="chip-status" id="chip-post"></span></div>
+    <p class="step-intro" id="post-intro"></p>
+    <div id="post-body"></div>
+  </section>
+
+  <!-- Odds ratio -->
+  <section class="step" id="st-or" data-nav="Odds ratio">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Odds ratio</h2><span class="chip-status" id="chip-or"></span></div>
+    <p class="step-intro">Tahap ini menunjukkan besar dan arah asosiasi pada tabel 2×2 lewat <span class="gl" tabindex="0" data-g="odds ratio">odds ratio</span> dengan <span class="gl" tabindex="0" data-g="CI">CI 95%</span>.</p>
+    <div id="or-body"></div>
+  </section>
+
+  <!-- Kesimpulan -->
+  <section class="step" id="st-concl" data-nav="Kesimpulan">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Kesimpulan</h2><span class="chip-status"></span></div>
+    <p class="step-intro">Hasil dirangkum dalam dua versi: kalimat siap pakai untuk laporan ilmiah dan penjelasan tanpa angka statistika untuk pembaca awam.</p>
+    <div id="concl-body"></div>
+  </section>
+
+  <!-- Lintas sampel -->
+  <section class="step" id="st-multi" data-nav="Lintas sampel">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Nilai p lintas penarikan sampel</h2><span class="chip-status" id="chip-multi"></span></div>
+    <p class="step-intro">Sampel yang berbeda dari populasi yang sama dapat memberi keputusan yang berbeda. Tiap kali sampel ditarik ulang, nilai p ikut berubah dan keputusannya kadang berbalik.</p>
+    <div id="multi-body"></div>
+  </section>
+
+  <!-- Kebenaran populasi -->
+  <section class="step" id="st-truth" data-nav="Populasi sebenarnya">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Kebenaran populasi</h2><span class="chip-status" id="chip-truth"></span></div>
+    <p class="step-intro">Ini keadaan populasi yang sebenarnya. Buka untuk memeriksa apakah keputusan dan estimasi dari sampel sudah tepat atau keliru.</p>
+    <div id="truth-body"></div>
+  </section>
+
+  <footer>Seluruh perhitungan berjalan di peramban. Uji chi-square memakai statistik Pearson tanpa koreksi kontinuitas. Uji eksak Fisher tersedia untuk tabel 2×2 dan nilai p-nya dua arah. Sampel ditarik acak sederhana dari populasi 1.000 unit, sehingga total baris dan kolom ikut berubah dari satu penarikan ke penarikan lain. Taraf signifikansi tetap 0,05.</footer>
 </main>
 
+<div id="tip" role="tooltip"></div>
 <script>
 (function(){
 'use strict';
-
-/* Tema: terang bawaan, saklar ke gelap. Penyimpanan dibungkus try/catch karena bisa tidak tersedia. */
-let theme=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';
 function applyTheme(t){
-  document.documentElement.setAttribute('data-theme',t);
-  const b=document.getElementById('themebtn');
-  if(b)b.setAttribute('aria-checked',t==='dark'?'true':'false');
+  if(t==='dark')document.documentElement.setAttribute('data-theme','dark');else document.documentElement.removeAttribute('data-theme');
+  const b=document.getElementById('themebtn');if(b)b.setAttribute('aria-checked',t==='dark'?'true':'false');
 }
 function toggleTheme(){
-  theme=theme==='dark'?'light':'dark';applyTheme(theme);
-  try{localStorage.setItem('tema-tayangan',theme);}catch(_){}
+  const d=document.documentElement.getAttribute('data-theme')==='dark',t=d?'light':'dark';
+  applyTheme(t);try{localStorage.setItem('tema-tayangan',t);}catch(e){}
+  if(typeof drawCharts==='function'&&typeof state!=='undefined'&&state.an)drawCharts();
 }
-applyTheme(theme);
-
+applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light');
 /*STATS-START*/
 const S=(function(){
 var MAX_ROWS = 250, MAX_CAT = 6;
@@ -500,63 +657,109 @@ function analyzeTable(tab, test) {
 return {analyzeTable:analyzeTable,critChi:critChi,pdfChi:pdfChi,categoryV:categoryV,vThresholds:vThresholds,fisher2x2:fisher2x2,chisqRightTail:chisqRightTail};
 })();
 /*STATS-END*/
-
-/* ===== Aplikasi ===== */
+/* ===== Konstanta dan format ===== */
 const ALPHA=0.05,NPOP=1000,KDOT=240;
-const COL={a:'#007AFF',b:'#FF9500',d:'#34C759',grey:'#8E8E93'};
-/* Palet kategori kolom (ungu, teal, merah muda) dibedakan dari warna keputusan (biru, jingga, hijau, merah). */
-const PAL=['#8E5BD6','#1B97A8','#D6477F'];
-/* dir: arah yang dikunci. Pada 2x2, dir = 1 berarti baris pertama memiliki proporsi kolom pertama lebih tinggi.
-   Pada tabel besar, dir = -1 berarti baris pertama condong ke kolom pertama. dir kosong berarti arah diacak. */
-const CTX_22=[
-  {rowName:'Sistem kandang',rows:['Kandang terbuka','Kandang tertutup'],colName:'Kejadian mastitis',cols:['Mastitis','Tidak mastitis'],unit:'sapi perah',verb:'dipelihara di',dir:1},
-  {rowName:'Status vaksinasi',rows:['Tidak divaksin','Divaksin'],colName:'Kejadian penyakit',cols:['Sakit','Sehat'],unit:'ternak',verb:'berstatus',dir:1},
-  {rowName:'Jenis kelamin',rows:['Jantan','Betina'],colName:'Hasil pemeriksaan cacing',cols:['Positif cacingan','Negatif cacingan'],unit:'sapi',verb:'berjenis kelamin'},
-  {rowName:'Sumber air minum',rows:['Sumur','PDAM'],colName:'Hasil kultur Salmonella',cols:['Positif Salmonella','Negatif Salmonella'],unit:'peternakan',verb:'memakai',dir:1}
+const PALETTE=['#0071e3','#8e5bd6','#1b97a8','#d6477f','#9c6b3f','#6b7a8f'];
+const FONT="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const SUB0='<tspan baseline-shift="sub" font-size="9">0</tspan>';
+
+const fmtCache={};
+function fmt(x,d){
+  if(x===null||x===undefined||typeof x!=='number'||isNaN(x))return '–';
+  if(x===Infinity)return 'tak terhingga';
+  if(x===-Infinity)return '−tak terhingga';
+  if(!fmtCache[d])fmtCache[d]=new Intl.NumberFormat('id-ID',{minimumFractionDigits:d,maximumFractionDigits:d});
+  let s=fmtCache[d].format(x);
+  if(/^-0(,0+)?$/.test(s))s=s.slice(1);
+  return s.replace('-','−');
+}
+function fmtSmart(x,maxD){
+  maxD=maxD===undefined?2:maxD;
+  if(x===null||x===undefined||!isFinite(x))return '–';
+  const f=Math.pow(10,maxD),rounded=Math.round(x*f)/f;let d=0;
+  for(let k=0;k<=maxD;k++){const fk=Math.pow(10,k);if(Math.abs(Math.round(rounded*fk)/fk-rounded)<1e-9){d=k;break;}}
+  return fmt(rounded,d);
+}
+function fmtP(p){if(!isFinite(p))return '–';if(p<0.0005)return '< 0,001';return fmt(p,3);}
+const pTxt=p=>p<0.0005?'nilai p < 0,001':'nilai p = '+fmt(p,3);
+const pShort=p=>p<0.0005?'p < 0,001':'p = '+fmt(p,3);
+const fmtInt=n=>fmt(n,0);
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const rr=v=>Math.round(v*100)/100;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function wpick(items){let t=0;items.forEach(i=>t+=i[1]);let r=Math.random()*t;for(const i of items){r-=i[1];if(r<=0)return i[0];}return items[0][0];}
+const shortName=(s,n)=>String(s).length>n?String(s).slice(0,n-1)+'…':String(s);
+const lcFirst=s=>/^[A-Z][a-z]/.test(s)?s.charAt(0).toLowerCase()+s.slice(1):s;
+function joinList(a){return a.length<=2?a.join(' dan '):a.slice(0,-1).join(', ')+', dan '+a[a.length-1];}
+const $=s=>document.querySelector(s);
+const $$=s=>Array.prototype.slice.call(document.querySelectorAll(s));
+
+/* ===== Glosarium (tooltip) ===== */
+const GL={
+'tabel kontingensi':'Tabel jumlah unit untuk setiap kombinasi kategori dua variabel. Baris memuat kategori variabel pertama, kolom memuat kategori variabel kedua.',
+'frekuensi teramati':'Jumlah unit yang benar-benar ditemukan di sampel pada tiap sel tabel.',
+'frekuensi harapan':'Frekuensi yang ditemukan jika benar-benar tidak ada asosiasi. Nilai di tiap sel = total baris × total kolom ÷ N, yaitu isi tabel bila komposisi kolom sama di setiap baris (seperti batang gabungan pada grafik proporsi).',
+'asosiasi':'Hubungan antara dua variabel: komposisi kategori satu variabel berbeda menurut kategori variabel lain. Asosiasi tidak membuktikan sebab-akibat.',
+'independen':'Setiap unit pengamatan berdiri sendiri: masuk ke satu sel dan tidak memengaruhi unit lain.',
+'H0':'Hipotesis nol: anggapan awal bahwa tidak ada asosiasi antara dua variabel.',
+'H1':'Hipotesis alternatif: ada asosiasi antara dua variabel. Berlaku bila H0 ditolak.',
+'nilai p':'Peluang memperoleh data sampel seperti ini atau lebih ekstrem bila H0 benar. Nilai p kecil berarti data sulit dijelaskan oleh kebetulan.',
+'alfa':'Taraf signifikansi: batas nilai p untuk menolak H0. Di sini 0,05.',
+'derajat bebas':'Banyaknya nilai yang bebas bervariasi. Pada tabel kontingensi: (jumlah baris − 1) × (jumlah kolom − 1).',
+'galat tipe I':'Menolak H0 padahal H0 benar (positif palsu). Peluangnya dikendalikan oleh α.',
+'galat tipe II':'Gagal menolak H0 padahal H0 salah (negatif palsu). Lebih mungkin terjadi pada sampel kecil.',
+'power':'Peluang uji menolak H0 ketika H0 memang salah. Naik bila sampel lebih besar atau efek lebih kuat.',
+'CI':'Interval kepercayaan 95%: rentang nilai populasi yang sejalan dengan data sampel. Bila penarikan diulang berkali-kali, sekitar 95% CI menangkap nilai populasi.',
+'odds':'Perbandingan jumlah unit yang mengalami kejadian terhadap yang tidak mengalami kejadian dalam satu kelompok.',
+'odds ratio':'Rasio dua odds. Nilai 1 berarti tidak ada asosiasi, di atas 1 berarti odds kelompok pertama lebih tinggi, di bawah 1 berarti lebih rendah.',
+'selisih proporsi':'Selisih proporsi kejadian antara dua kelompok, dinyatakan dalam poin persentase. Nilai 0 berarti tidak ada selisih.',
+'poin persentase':'Satuan untuk selisih dua persentase. Selisih antara 40% dan 25% adalah 15 poin persentase.',
+'residual terstandar':'Selisih frekuensi teramati dan harapan dalam satuan simpangan baku. Nilai di atas 2 atau di bawah −2 dianggap menonjol.',
+'ukuran efek':'Ukuran kuat hubungan. Berbeda dari nilai p, ukuran efek tidak bergantung pada besar sampel.',
+'phi':'Ukuran efek untuk tabel 2×2. Dibaca dalam nilai mutlak, dari 0 (tidak ada hubungan) sampai 1.',
+"Cramér's V":'Ukuran efek untuk tabel yang lebih besar dari 2×2, bernilai 0 sampai 1.',
+'galat sampling':'Perbedaan antara hasil sampel dan keadaan populasi yang muncul karena kita mengamati sebagian unit.',
+'chi-square':'Uji yang membandingkan frekuensi teramati dengan frekuensi harapan. Memakai aproksimasi distribusi chi-square, sehingga memerlukan frekuensi harapan yang cukup besar.',
+'Fisher exact':'Uji yang menghitung peluang eksak dari semua kemungkinan isi tabel 2×2. Tidak memerlukan frekuensi harapan besar.',
+'ordinal':'Kategori yang memiliki urutan alami, misalnya kurus, sedang, gemuk.',
+'nominal':'Kategori tanpa urutan alami, misalnya jantan dan betina, atau nama wilayah.',
+'sampel':'Sebagian unit yang ditarik dari populasi dan benar-benar kita amati.',
+'populasi':'Seluruh unit yang menjadi sasaran kesimpulan. Di tayangan ini populasi berisi 1.000 unit.'
+};
+const G=(k,l)=>'<span class="gl" tabindex="0" data-g="'+String(k).replace(/"/g,'&quot;')+'">'+(l||k)+'</span>';
+
+/* ===== Skenario ===== */
+const SCN=[
+ {id:'kandang',rowName:'Sistem kandang',rows:['Kandang terbuka','Kandang tertutup'],colName:'Kejadian mastitis',cols:['Mastitis','Tidak mastitis'],unit:'sapi perah',verb:'dipelihara di',dir:1},
+ {id:'vaksin',rowName:'Status vaksinasi',rows:['Tidak divaksin','Divaksin'],colName:'Kejadian penyakit',cols:['Sakit','Sehat'],unit:'ternak',verb:'berstatus',dir:1},
+ {id:'kelamin',rowName:'Jenis kelamin',rows:['Jantan','Betina'],colName:'Hasil pemeriksaan cacing',cols:['Positif cacingan','Negatif cacingan'],unit:'sapi',verb:'berjenis kelamin'},
+ {id:'air',rowName:'Sumber air minum',rows:['Sumur','PDAM'],colName:'Hasil kultur Salmonella',cols:['Positif Salmonella','Negatif Salmonella'],unit:'peternakan',verb:'memakai',dir:1},
+ {id:'pakan',rowName:'Jenis pakan',rows:['Pakan A','Pakan B','Pakan C'],colName:'Kondisi tubuh',cols:['Kurus','Sedang','Gemuk'],unit:'sapi',verb:'diberi',dir:-1,ordCol:true},
+ {id:'bangsa',rowName:'Bangsa sapi',rows:['Sapi Bali','Sapi PO','Sapi Brahman'],colName:'Status fasciolosis',cols:['Positif fasciolosis','Negatif fasciolosis'],unit:'sapi',verb:'berbangsa'},
+ {id:'wilayah',rowName:'Wilayah peternakan',rows:['Makassar','Maros','Gowa','Takalar'],colName:'Hasil uji brucellosis',cols:['Positif brucellosis','Negatif brucellosis'],unit:'ternak',verb:'dipelihara di',lcRows:false},
+ {id:'pelihara',rowName:'Sistem pemeliharaan',rows:['Intensif','Semi-intensif','Ekstensif'],colName:'Kualitas kulit dan rambut',cols:['Baik','Cukup','Buruk'],unit:'sapi',verb:'dipelihara secara',dir:-1,ordRow:true,ordCol:true}
 ];
-const CTX_BIG=[
-  {rowName:'Jenis pakan',rows:['Pakan A','Pakan B','Pakan C'],colName:'Kondisi tubuh',cols:['Kurus','Sedang','Gemuk'],unit:'sapi',verb:'diberi',dir:-1,ordCol:true},
-  {rowName:'Bangsa sapi',rows:['Sapi Bali','Sapi PO','Sapi Brahman'],colName:'Status fasciolosis',cols:['Positif fasciolosis','Negatif fasciolosis'],unit:'sapi',verb:'berbangsa'},
-  {rowName:'Wilayah peternakan',rows:['Makassar','Maros','Gowa','Takalar'],colName:'Hasil uji brucellosis',cols:['Positif brucellosis','Negatif brucellosis'],unit:'ternak',verb:'dipelihara di',lcRows:false},
-  {rowName:'Sistem pemeliharaan',rows:['Intensif','Semi-intensif','Ekstensif'],colName:'Kualitas kulit dan rambut',cols:['Baik','Cukup','Buruk'],unit:'sapi',verb:'dipelihara secara',dir:-1,ordRow:true,ordCol:true}
-];
+const is22Ctx=c=>c.rows.length===2&&c.cols.length===2;
 const ROWPROP={2:[[.5,.5],[.3,.7],[.6,.4],[.2,.8]],3:[[.4,.4,.2],[.3,.3,.4],[.5,.3,.2]],4:[[.3,.3,.2,.2],[.4,.3,.2,.1],[.2,.3,.3,.2]]};
 const TESTS=[
   {id:'chi',name:'Uji chi-square (Pearson)',des:'any',sub:'Membandingkan frekuensi teramati dengan harapan'},
   {id:'fisher',name:'Uji Fisher exact',des:'g22',sub:'Peluang eksak, khusus tabel 2×2'},
   {id:'merge',name:'Gabungkan kategori dahulu',des:'big',sub:'Bila frekuensi harapan terlalu kecil pada tabel besar'}
 ];
-const tname=id=>id==='merge'?'Gabungkan kategori, lalu ulangi uji chi-square':TESTS.find(t=>t.id===id).name;
+const tname=id=>id==='merge'?'Gabungkan kategori, lalu ulangi uji chi-square':TESTS.filter(t=>t.id===id)[0].name;
 
-const state={design:'g22',n:60,guessMode:true,pop:null,sample:null,an:null,guess:null,revealed:false,history:[],rowOrder:[],colOrder:[]};
 
-const $=s=>document.querySelector(s);
-const fmt=(x,d)=>{
-  if(d===undefined)d=2;
-  if(x===Infinity)return 'tak terhingga';
-  if(x===-Infinity)return '−tak terhingga';
-  if(x===null||x===undefined||!isFinite(x))return '-';
-  let s=x.toFixed(d);if(parseFloat(s)===0)s=(0).toFixed(d);
-  return s.replace('-','−').replace('.',',');
-};
-const fmtP=p=>p<0.001?'< 0,001':fmt(p,3);
-const fmtPeq=p=>p<0.001?'< 0,001':'= '+fmt(p,3);
-const fmtInt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-function wpick(items){let t=0;items.forEach(i=>t+=i[1]);let r=Math.random()*t;for(const i of items){r-=i[1];if(r<=0)return i[0];}return items[0][0];}
-const r1=v=>Math.round(v*10)/10;
-const shortName=(s,n)=>s.length>n?s.slice(0,n-1)+'…':s;
-const lcFirst=s=>/^[A-Z][a-z]/.test(s)?s.charAt(0).toLowerCase()+s.slice(1):s;
+/* ===== Keadaan ===== */
+const state={mode:'random',filter:'all',ctxId:null,n:60,guessMode:true,pop:null,sample:null,an:null,guess:null,revealed:false,history:[],rowOrder:[],colOrder:[],sim:null};
+const locked=()=>state.guessMode&&state.guess===null;
 const lr=s=>state.pop.ctx.lcRows===false?s:lcFirst(s);
-function joinList(a){return a.length<=2?a.join(' dan '):a.slice(0,-1).join(', ')+', dan '+a[a.length-1];}
-const catCol=(o,j)=>PAL[o.colIdx[j]%PAL.length];
 
-/* ----- Populasi dan sampel ----- */
+/* ===== Populasi dan sampel ===== */
 function sunflower(K,R){const pts=[];for(let i=0;i<K;i++){const r=R*Math.sqrt((i+0.5)/K),t=i*2.399963229728653;pts.push([r*Math.cos(t),r*Math.sin(t)]);}return pts;}
 const logistic=x=>1/(1+Math.exp(-x));
 const logit=p=>Math.log(p/(1-p));
-function makePop(design){
-  const ctx=pick(design==='g22'?CTX_22:CTX_BIG),r=ctx.rows.length,c=ctx.cols.length;
+function makePop(ctx){
+  const r=ctx.rows.length,c=ctx.cols.length;
   const rowN=pick(ROWPROP[r]).map(p=>Math.round(p*NPOP));
   const sign=ctx.dir||(Math.random()<0.5?-1:1);
   const strength=wpick(c===2?[[0,3],[0.59,2],[1.1,2],[1.8,2]]:[[0,3],[0.5,2],[0.9,2],[1.5,2]]);
@@ -577,47 +780,60 @@ function makePop(design){
   }
   const subjects=[];
   popN.forEach((row,i)=>row.forEach((k,j)=>{for(let t=0;t<k;t++)subjects.push([i,j]);}));
-  return {design,ctx,r,c,rowN,popN,subjects,strength,h0true:strength===0,layout:sunflower(KDOT,92)};
+  return {ctx:ctx,r:r,c:c,rowN:rowN,popN:popN,subjects:subjects,strength:strength,h0true:strength===0,layout:sunflower(KDOT,92)};
 }
 function sampleIdx(N,n){
   const idx=Array.from({length:N},(_,i)=>i);
   for(let i=0;i<n;i++){const j=i+Math.floor(Math.random()*(N-i));const t=idx[i];idx[i]=idx[j];idx[j]=t;}
   return idx.slice(0,n);
 }
-function drawSample(){
-  const p=state.pop,n=state.n;let cnt,ok,tries=0;
+function drawCounts(n){
+  const p=state.pop;let cnt,ok,tries=0;
   do{
     cnt=Array.from({length:p.r},()=>new Array(p.c).fill(0));
     sampleIdx(NPOP,n).forEach(i=>{const s=p.subjects[i];cnt[s[0]][s[1]]++;});
     ok=cnt.every(row=>row.some(v=>v>0));
     for(let j=0;j<p.c&&ok;j++)if(cnt.every(row=>row[j]===0))ok=false;
   }while(!ok&&++tries<300);
-  state.sample={n:cnt,hl:sampleIdx(KDOT,Math.max(1,Math.round(n*KDOT/NPOP)))};
+  return cnt;
+}
+function drawSample(){
+  const n=state.n;
+  state.sample={n:drawCounts(n),hl:sampleIdx(KDOT,Math.max(1,Math.round(n*KDOT/NPOP)))};
   state.an=analyze();
   state.guess=null;
-  state.history.push({p:getResult(state.an.rec).p,n});
+  state.history.push({p:getResult(state.an.rec).p,n:n});
   if(state.history.length>30)state.history.shift();
 }
 
-/* ----- Analisis ----- */
+/* ===== Analisis ===== */
 function analyzeCounts(cnt){
   const c=state.pop.ctx,ro=state.rowOrder,co=state.colOrder;
   const o=S.analyzeTable({rl:ro.map(i=>c.rows[i]),cl:co.map(j=>c.cols[j]),n:ro.map(i=>co.map(j=>cnt[i][j])),rowName:c.rowName,colName:c.colName},'chi');
-  o.colIdx=co.slice();o.rowIdx=ro.slice();
+  o.colorIdx=co.slice();
   return o;
 }
+function recOf(o){return o.size2?(o.minE>=5?'chi':'fisher'):(o.okChi?'chi':'merge');}
 function analyze(){
   const o=analyzeCounts(state.sample.n);
-  const size2=o.size2;
-  const rec=size2?(o.minE>=5?'chi':'fisher'):(o.okChi?'chi':'merge');
   const tests={chi:{p:o.pChi}};
-  if(size2)tests.fisher={p:o.fisher.p};
-  return {o:o,size2:size2,rec:rec,tests:tests};
+  if(o.size2)tests.fisher={p:o.fisher.p};
+  return {o:o,size2:o.size2,rec:recOf(o),tests:tests};
 }
-function refresh(){state.an=analyze();renderAll();}
-function ciTxt(lo,hi,d){return fmt(lo,d)+' sampai '+fmt(hi,d);}
 function orPrim(o,isF){return isF?o.orFisher:o.orWald;}
 function orIncl(q){return (isFinite(q.lo)&&isFinite(q.hi)&&q.lo<=1&&q.hi>=1)||(q.lo===0&&q.hi>=1)||(isFinite(q.lo)&&q.lo<=1&&q.hi===Infinity);}
+function ciS(lo,hi,d){return fmt(lo,d)+' sampai '+fmt(hi,d);}
+function ciTxt(lo,hi,d){
+  if(lo===undefined||hi===undefined||(isNaN(lo)&&isNaN(hi)))return 'tidak tersedia';
+  return fmt(lo,d===undefined?2:d)+' s.d. '+fmt(hi,d===undefined?2:d);
+}
+function getResult(id){
+  const an=state.an,o=an.o,isF=id==='fisher',flag=id==='merge';
+  const p=isF?o.fisher.p:o.pChi;
+  return {id:id,isF:isF,flag:flag,p:p,title:isF?'Uji Fisher exact':(flag?'Uji chi-square (syarat belum terpenuhi)':'Uji chi-square'),sentence:conclusion(o,isF,p,flag),lay:layText(o,isF,p,flag)};
+}
+
+/* ===== Teks hasil ===== */
 function propList(o){
   const parts=[];
   if(o.c===2){
@@ -630,7 +846,6 @@ function propList(o){
   }
   return 'Persentase baris: '+parts.join('; ')+'.';
 }
-/* Versi ilmiah: memuat angka z */
 function residSentence(o){
   const rows=[];
   for(let i=0;i<o.r;i++){
@@ -639,7 +854,7 @@ function residSentence(o){
     if(more.length||less.length)rows.push({i:i,more:more,less:less});
   }
   const ph=r=>{const t=[];if(r.more.length)t.push('lebih banyak unit pada '+r.more.join(' dan '));if(r.less.length)t.push((r.more.length?'dan ':'')+'lebih sedikit pada '+r.less.join(' dan '));return t.join(' ');};
-  const sign=(r,j)=>{const f=o.flagged.find(x=>x.i===r.i&&x.j===j);return f?Math.sign(f.z):0;};
+  const sign=(r,j)=>{const f=o.flagged.filter(x=>x.i===r.i&&x.j===j)[0];return f?(f.z>0?1:-1):0;};
   let s='Penelusuran dengan residual terstandar (standardized residual) menunjukkan bahwa kelompok '+lr(o.rl[rows[0].i])+' memiliki '+ph(rows[0])+' daripada yang diharapkan bila tidak ada asosiasi.';
   for(let k=1;k<rows.length;k++){
     let opp=false;for(let j=0;j<o.c;j++)if(sign(rows[0],j)*sign(rows[k],j)<0)opp=true;
@@ -647,7 +862,6 @@ function residSentence(o){
   }
   return s;
 }
-/* Versi awam: tanpa angka z */
 function residPlain(o){
   const out=[];
   for(let i=0;i<o.r;i++){
@@ -661,16 +875,15 @@ function residPlain(o){
   }
   return out;
 }
-/* Interpretasi untuk laporan ilmiah */
 function conclusion(o,isF,p,flag){
   const rej=p<ALPHA,A=lcFirst(o.rowName),B=lcFirst(o.colName);
   let s=flag?'Syarat chi-square belum terpenuhi, sehingga hasil ini belum layak dilaporkan. ':'';
-  s+=(isF?'Uji Fisher exact ':'Uji chi-square ')+(rej?'menunjukkan':'tidak menunjukkan')+' asosiasi antara '+A+' dan '+B+', dengan '+(isF?'':'χ²('+o.df+', N = '+o.N+') = '+fmt(o.chi2,2)+' dan ')+'nilai p '+fmtPeq(p)+'. ';
+  s+=(isF?'Uji Fisher exact ':'Uji chi-square ')+(rej?'menunjukkan':'tidak menunjukkan')+' asosiasi antara '+A+' dan '+B+', dengan '+(isF?'':'χ²('+o.df+', N = '+o.N+') = '+fmt(o.chi2,2)+' dan ')+pTxt(p)+'. ';
   if(o.size2){
     s+=propList(o)+' ';
     const d=o.diff,q=orPrim(o,isF);
-    s+='Selisih proporsi ('+lr(o.rl[0])+' − '+lr(o.rl[1])+') = '+fmt(d.diff,1)+' poin persentase (CI 95% '+ciTxt(d.lo,d.hi,1)+'). ';
-    s+='Odds ratio ('+lr(o.rl[0])+' dibanding '+lr(o.rl[1])+') = '+fmt(q.est,2)+(isNaN(q.lo)?' (CI tidak dapat dihitung karena ada sel bernilai 0)':' (CI 95% '+ciTxt(q.lo,q.hi,2)+')');
+    s+='Selisih proporsi ('+lr(o.rl[0])+' − '+lr(o.rl[1])+') = '+fmt(d.diff,1)+' poin persentase (CI 95% '+ciS(d.lo,d.hi,1)+'). ';
+    s+='Odds ratio ('+lr(o.rl[0])+' dibanding '+lr(o.rl[1])+') = '+fmt(q.est,2)+(isNaN(q.lo)?' (CI tidak dapat dihitung karena ada sel bernilai 0)':' (CI 95% '+ciS(q.lo,q.hi,2)+')');
     if(isFinite(q.est)&&q.est>0)s+=', artinya odds '+lcFirst(o.cl[0])+' pada '+lr(o.rl[0])+' sekitar '+fmt(q.est,1)+' kali odds pada '+lr(o.rl[1]);
     if(!isNaN(q.lo)&&orIncl(q))s+=', tetapi CI mencakup 1';
     s+='. ';
@@ -683,332 +896,197 @@ function conclusion(o,isF,p,flag){
   if(!rej)s+=' Bukti dari sampel belum cukup kuat untuk menyatakan ada asosiasi. Namun, hal ini tidak membuktikan bahwa asosiasi tidak ada.';
   return s;
 }
-/* Interpretasi dalam bahasa awam, merujuk kembali ke populasi */
 function layText(o,isF,p,flag){
   const rej=p<ALPHA,A=lcFirst(o.rowName),B=lcFirst(o.colName);
   let s=flag?'Catatan: syarat uji belum terpenuhi, jadi hasil ini belum layak dilaporkan. ':'';
   s+='Kita menarik '+fmtInt(o.N)+' unit secara acak dari populasi '+fmtInt(NPOP)+' unit. ';
   if(o.size2){
     s+='Pada sampel ini, proporsi '+lcFirst(o.cl[0])+' pada '+lr(o.rl[0])+' sebesar '+fmt(o.rowPct[0][0],1)+'%, sedangkan pada '+lr(o.rl[1])+' sebesar '+fmt(o.rowPct[1][0],1)+'%. ';
-    s+=rej?'Selisih ini terlalu besar untuk dianggap kebetulan (p '+fmtPeq(p)+'). ':'Selisih ini masih bisa dijelaskan oleh faktor kebetulan akibat pengambilan sampel (p '+fmtPeq(p)+'). ';
+    s+=rej?'Selisih ini terlalu besar untuk dianggap kebetulan ('+pShort(p)+'). ':'Selisih ini masih bisa dijelaskan oleh faktor kebetulan akibat pengambilan sampel ('+pShort(p)+'). ';
+  }else if(rej){
+    s+='Pada sampel ini, komposisi '+B+' tampak berbeda di antara berbagai '+A+'. ';
+    const pl=residPlain(o);if(pl.length)s+=pl.join(' ')+' ';
+    s+='Perbedaan ini terlalu besar untuk dianggap kebetulan ('+pShort(p)+'). ';
   }else{
-    if(rej){
-      s+='Pada sampel ini, komposisi '+B+' tampak berbeda di antara berbagai '+A+'. ';
-      const pl=residPlain(o);if(pl.length)s+=pl.join(' ')+' ';
-      s+='Perbedaan ini terlalu besar untuk dianggap kebetulan (p '+fmtPeq(p)+'). ';
-    }else{
-      s+='Pada sampel ini, perbedaan komposisi '+B+' di antara berbagai '+A+' masih bisa dijelaskan oleh faktor kebetulan akibat pengambilan sampel (p '+fmtPeq(p)+'). ';
-    }
+    s+='Pada sampel ini, perbedaan komposisi '+B+' di antara berbagai '+A+' masih bisa dijelaskan oleh faktor kebetulan akibat pengambilan sampel ('+pShort(p)+'). ';
   }
   if(rej)s+='Karena sampel diambil secara acak, kita menduga bahwa ada asosiasi antara '+A+' dan '+B+' pada populasi '+fmtInt(NPOP)+' unit, dengan kekuatan hubungan '+o.effCat+'.';
-  else s+='Data dari sampel belum cukup kuat untuk menyimpulkan bahwa ada asosiasi pada populasi '+fmtInt(NPOP)+' unit. Hal ini tidak berarti bahwa asosiasi pasti tidak ada. Kekuatan hubungan pada sampel tergolong '+o.effCat+'.';
+  else s+='Data dari sampel belum cukup kuat untuk menyimpulkan bahwa ada asosiasi pada populasi '+fmtInt(NPOP)+' unit. Bisa jadi sebenarnya ada asosiasi pada populasi, tetapi tidak terdeteksi oleh sampel ini. Kekuatan hubungan pada sampel tergolong '+o.effCat+'.';
   return s;
-}
-function getResult(id){
-  const an=state.an,o=an.o,isF=id==='fisher',flag=id==='merge';
-  const p=isF?o.fisher.p:o.pChi;
-  const title=isF?'Uji Fisher exact':(flag?'Uji chi-square (syarat belum terpenuhi)':'Uji chi-square');
-  const stat=isF?'tanpa statistik uji; p eksak dua arah':'χ² = '+fmt(o.chi2,2)+'; db = '+o.df;
-  return {id:id,title:title,stat:stat,p:p,flag:flag,isF:isF,sentence:conclusion(o,isF,p,flag),lay:layText(o,isF,p,flag)};
 }
 function recReason(){
   const an=state.an,o=an.o;
   if(an.size2){
-    if(an.rec==='chi')return 'Semua frekuensi harapan bernilai 5 atau lebih (terkecil '+fmt(o.minE,2)+'), sehingga syarat uji chi-square terpenuhi.';
-    return 'Frekuensi harapan terkecil '+fmt(o.minE,2)+' kurang dari 5, sehingga aproksimasi chi-square kurang andal. Pada tabel 2×2 dipakai uji Fisher exact.';
+    if(an.rec==='chi')return 'Semua frekuensi harapan bernilai 5 atau lebih (nilai terkecil adalah '+fmt(o.minE,2)+') sehingga syarat uji chi-square terpenuhi. Uji eksak Fisher tetap sah dipakai.';
+    return 'Frekuensi harapan terkecil '+fmt(o.minE,2)+' (kurang dari 5) sehingga aproksimasi chi-square kurang andal. Pada kondisi ini, kita memakai uji Fisher exact.';
   }
   if(an.rec==='chi')return 'Semua sel memiliki frekuensi harapan 1 atau lebih, dan sel dengan frekuensi harapan di bawah 5 berjumlah '+o.lt5+' dari '+(o.r*o.c)+' sel ('+fmt(o.pctLt5,1)+'%), tidak melebihi 20%. Syarat uji chi-square terpenuhi.';
   const why=[];
   if(o.lt1>0)why.push('ada '+o.lt1+' sel dengan frekuensi harapan di bawah 1');
   if(o.pctLt5>20)why.push(fmt(o.pctLt5,1)+'% sel memiliki frekuensi harapan di bawah 5, melebihi batas 20%');
-  return 'Syarat chi-square tidak terpenuhi: '+why.join(' dan ')+'. Gabungkan kategori yang bermakna secara biologis (pada variabel ordinal, yang digabung adalah kategori yang bersebelahan), lalu ulangi uji. Di tayangan ini kamu juga bisa menaikkan n atau menarik ulang sampel.';
+  return 'Syarat chi-square tidak terpenuhi: '+why.join(' dan ')+'. Gabungkan kategori yang bermakna secara biologis (pada variabel ordinal, yang digabung adalah kategori yang bersebelahan), lalu ulangi uji. Di tayangan ini kamu bisa menaikkan n atau menarik ulang sampel.';
 }
 
-/* ----- Render teks ----- */
-function legend(items){return '<div class="legend">'+items.map(i=>'<span><i style="background:'+i[1]+'"></i>'+i[0]+'</span>').join('')+'</div>';}
-function renderBar(){
-  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-checked',b.dataset.v===state.design?'true':'false'));
-  $('#nlabel').textContent='Ukuran sampel (jumlah unit)';
-  $('#nval').textContent='n = '+state.n;
+/* ===== Interpretasi: pada sampel dan pada populasi ===== */
+function interpBox(samp,pop){
+  return '<div class="box"><div class="concl-title">Interpretasi</div><p class="ip"><b>Pada sampel.</b> '+samp+'</p><p class="ip"><b>Pada populasi.</b> '+pop+'</p></div>';
 }
-function renderHyp(){
-  const o=state.an.o,c=state.pop.ctx,two=o.c===2;
-  const rowsTxt=joinList(o.rl.map(lr));
-  const pair='antara '+lcFirst(o.rowName)+' dan '+lcFirst(o.colName);
-  const grp=c.unit+' yang '+c.verb+' '+rowsTxt;
-  const what=two?'proporsi '+lcFirst(o.cl[0]):'sebaran '+lcFirst(o.colName);
-  let nt,lg;
-  if(two&&o.r===2){
-    nt='H<sub>0</sub>: π<sub>1</sub> = π<sub>2</sub> &nbsp;&nbsp; H<sub>1</sub>: π<sub>1</sub> ≠ π<sub>2</sub>';
-    lg='π<sub>1</sub> dan π<sub>2</sub> adalah proporsi '+lcFirst(o.cl[0])+' di populasi pada kelompok 1 ('+lr(o.rl[0])+') dan kelompok 2 ('+lr(o.rl[1])+').';
-  }else if(two){
-    const eq=o.rl.map((_,i)=>'π<sub>'+(i+1)+'</sub>').join(' = ');
-    nt='H<sub>0</sub>: '+eq+' &nbsp;&nbsp; H<sub>1</sub>: sedikitnya satu π berbeda';
-    lg='π<sub>i</sub> adalah proporsi '+lcFirst(o.cl[0])+' di populasi pada kelompok ke-i.';
+function pInterp(o,r){
+  const p=r.p,sig=p<ALPHA;
+  const pct=p<0.001?'kurang dari 0,1%':fmt(p*100,1)+'%';
+  const what=r.isF?'tabel yang sama jarangnya atau lebih jarang daripada tabel teramati':'penyimpangan dari frekuensi harapan sebesar ini atau lebih besar';
+  let samp='Nilai p '+(p<0.0005?'< 0,001':'= '+fmt(p,3))+'. Bila tidak ada asosiasi pada populasi, peluang untuk memperoleh sampel dengan '+what+' adalah '+pct+'. ';
+  samp+=sig?'Peluang ini lebih kecil daripada α (0,05), sehingga data sulit dijelaskan oleh faktor kebetulan.':'Peluang ini tidak lebih kecil daripada α (0,05), sehingga data masih bisa dijelaskan oleh faktor kebetulan.';
+  let pop;
+  if(sig)pop='Keputusannya tolak H<sub>0</sub>. Ada bukti bahwa asosiasi juga ada pada populasi '+fmtInt(NPOP)+' unit. Bila H<sub>0</sub> sebenarnya benar, keputusan ini adalah '+G('galat tipe I')+' (peluangnya sekitar 5%). Nilai p tidak menunjukkan seberapa kuat hubungannya, jadi baca juga ukuran efek.';
+  else pop='Keputusannya gagal menolak H<sub>0</sub>: bukti dari sampel belum cukup untuk menyatakan ada asosiasi pada populasi. Ini tidak membuktikan bahwa asosiasi tidak ada. Bila asosiasi sebenarnya ada, keputusan ini adalah '+G('galat tipe II')+', dan sampel yang lebih besar meningkatkan '+G('power')+' uji untuk mendeteksinya.';
+  return interpBox(samp,pop);
+}
+function effInterp(o,sig){
+  const small=(o.effCat==='sangat kecil'||o.effCat==='kecil'),big=(o.effCat==='sedang'||o.effCat==='besar');
+  const nm=o.size2?'Phi':'Cramér’s V';
+  const samp=nm+' = '+fmt(o.V,2)+' tergolong efek '+o.effCat+'. Nilainya berkisar dari 0 (kedua variabel tidak berhubungan) sampai 1 (hubungan sempurna), sehingga '+(small?'hubungan pada sampel ini lemah.':o.effCat==='sedang'?'hubungan pada sampel ini cukup terlihat.':'hubungan pada sampel ini kuat.');
+  let pop='Nilai ini adalah estimasi dari sampel, sedangkan ukuran efek pada populasi bisa lebih besar atau lebih kecil. ';
+  if(sig&&small)pop+='H<sub>0</sub> ditolak tetapi efeknya kecil: asosiasi terdeteksi, namun kekuatannya terbatas. Hal ini lazim terjadi pada sampel yang besar.';
+  else if(!sig&&big)pop+='H<sub>0</sub> tidak ditolak padahal efek pada sampel tergolong '+o.effCat+'. Kemungkinan n terlalu kecil untuk mendeteksinya (power rendah), jadi coba naikkan n.';
+  else if(sig)pop+='H<sub>0</sub> ditolak dan efeknya tergolong '+o.effCat+', sehingga asosiasi pada populasi layak dianggap bermakna.';
+  else pop+='H<sub>0</sub> tidak ditolak dan efek pada sampel kecil, sehingga bukti asosiasi pada populasi lemah.';
+  return interpBox(samp,pop);
+}
+function diffInterp(o){
+  const d=o.diff,incl=(d.lo<=0&&d.hi>=0);
+  const g1=lr(o.rl[0]),g2=lr(o.rl[1]),kat=lcFirst(o.cl[0]);
+  let samp,pop;
+  if(Math.abs(d.diff)<0.05)samp='Proporsi '+kat+' pada '+g1+' ('+fmt(d.p1,1)+'%) sama dengan proporsi pada '+g2+' ('+fmt(d.p2,1)+'%).';
+  else{const up=d.diff>0;samp='Proporsi '+kat+' pada '+(up?g1:g2)+' ('+fmt(up?d.p1:d.p2,1)+'%) lebih tinggi '+fmt(Math.abs(d.diff),1)+' '+G('poin persentase')+' daripada proporsi pada '+(up?g2:g1)+' ('+fmt(up?d.p2:d.p1,1)+'%).';}
+  if(incl)pop='Selisih proporsi belum dapat diperkirakan dengan jelas. Rentang CI 95% ('+ciS(d.lo,d.hi,1)+' poin persentase) melewati 0, sehingga belum bisa dipastikan kelompok mana yang proporsinya lebih tinggi. Proporsi '+kat+' pada '+g1+' bisa lebih tinggi, sama, atau lebih rendah daripada pada '+g2+'.';
+  else{const hiG=d.diff>0?g1:g2,loG=d.diff>0?g2:g1;pop='Selisih proporsi diperkirakan berada pada rentang '+ciS(d.lo,d.hi,1)+' poin persentase. Rentang ini tidak melewati 0, sehingga proporsi '+kat+' pada '+hiG+' dapat dikatakan lebih tinggi daripada pada '+loG+'.';}
+  return interpBox(samp,pop);
+}
+function orInterp(o,isF){
+  const ow=o.orWald,g1=lr(o.rl[0]),g2=lr(o.rl[1]),kat=lcFirst(o.cl[0]);
+  const prim=orPrim(o,isF),incl=orIncl(prim),noCI=(isNaN(prim.lo)||isNaN(prim.hi)),e=ow.est;
+  let samp,pop;
+  if(isFinite(e)&&e>0){
+    if(Math.abs(e-1)<0.005)samp='OR sebesar '+fmt(e,2)+' artinya odds untuk mengalami '+kat+' pada kelompok '+g1+' sama dengan odds pada kelompok '+g2+'.';
+    else if(e>1)samp='OR sebesar '+fmt(e,2)+' artinya odds untuk mengalami '+kat+' pada kelompok '+g1+' adalah '+fmt(e,2)+' kali lebih tinggi dibandingkan kelompok '+g2+'.';
+    else samp='OR sebesar '+fmt(e,2)+' artinya odds untuk mengalami '+kat+' pada kelompok '+g1+' adalah '+fmt(e,2)+' kali odds pada kelompok '+g2+', atau lebih rendah dibandingkan kelompok '+g2+'.';
+  }else samp='OR sampel tidak dapat diartikan sebagai kelipatan karena ada sel bernilai 0.';
+  if(noCI)pop='CI tidak dapat dihitung karena ada sel bernilai 0, sehingga interpretasi pada populasi belum dapat dibuat.';
+  else if(incl)pop='Odds ratio belum dapat diperkirakan dengan jelas. Rentang CI 95% ('+ciS(prim.lo,prim.hi,2)+') melewati 1, sehingga belum bisa dipastikan apakah odds untuk mengalami '+kat+' pada kelompok '+g1+' lebih tinggi, sama, atau lebih rendah dibandingkan kelompok '+g2+'.';
+  else pop='Odds ratio diperkirakan berada pada rentang '+ciS(prim.lo,prim.hi,2)+'. Rentang ini tidak melewati 1, sehingga odds untuk mengalami '+kat+' pada kelompok '+g1+' dapat dikatakan '+(prim.est>1?'lebih tinggi':'lebih rendah')+' dibandingkan kelompok '+g2+'.';
+  pop+=' Odds ratio berbeda dari risiko relatif, terutama bila proporsinya tinggi.';
+  return interpBox(samp,pop);
+}
+function residInterp(o,sig){
+  const pl=residPlain(o);let samp,pop;
+  if(!sig){
+    samp='Uji tidak menolak H<sub>0</sub>, sehingga sel yang menonjol (bila ada) tidak ditafsirkan. Tabel ditampilkan sebagai informasi.';
+    pop='Karena H<sub>0</sub> tidak ditolak, pola antar sel belum dapat dianggap berlaku pada populasi.';
+  }else if(pl.length){
+    samp=pl.join(' ');
+    pop='Sel yang menonjol adalah kandidat penyumbang asosiasi pada populasi. Karena banyak sel diperiksa sekaligus, sebagian sorotan dapat muncul karena kebetulan, jadi baca sebagai petunjuk dan bukan bukti pasti.';
   }else{
-    nt='H<sub>0</sub>: kedua variabel saling bebas &nbsp;&nbsp; H<sub>1</sub>: kedua variabel berasosiasi';
-    lg='Saling bebas berarti sebaran '+lcFirst(o.colName)+' sama pada setiap kelompok '+lcFirst(o.rowName)+'.';
+    samp='Tidak ada sel dengan nilai mutlak z di atas 2. Asosiasi tersebar tipis di banyak sel.';
+    pop='Penelusuran sel belum menunjuk kategori tertentu sebagai penyumbang utama asosiasi pada populasi.';
   }
-  $('#hyp').innerHTML='<div class="hyp"><div class="hyp-r"><span class="hyp-k">H<sub>0</sub></span><p>Tidak ada asosiasi '+pair+' ('+what+' sama pada '+grp+').</p></div>'+
-    '<div class="hyp-r"><span class="hyp-k">H<sub>1</sub></span><p>Ada asosiasi '+pair+' ('+what+' berbeda pada '+grp+').</p></div>'+
-    '<div class="notat">'+nt+'<div class="lg">'+lg+'</div></div></div>'+
-    '<p class="cap">Taraf signifikansi α = 0,05. Hipotesis berlaku untuk populasi, sedangkan data yang kita lihat berasal dari sampel.</p>';
-}
-function bigCircle(color,layout,hl){
-  const set=new Set(hl);let s='<svg class="pop-big" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="97" fill="'+color+'" fill-opacity=".08" stroke="'+color+'" stroke-opacity=".55" stroke-width="1.5"/>';
-  layout.forEach((p,i)=>{
-    const x=(100+p[0]).toFixed(1),y=(100+p[1]).toFixed(1);
-    s+=set.has(i)?'<circle cx="'+x+'" cy="'+y+'" r="4.3" fill="'+color+'"/>':'<circle cx="'+x+'" cy="'+y+'" r="2.4" fill="'+color+'" fill-opacity=".32"/>';
-  });
-  return s+'</svg>';
-}
-function smallCircle(color,n){
-  const R=54,rd=Math.max(1.3,Math.min(6,0.62*R/Math.sqrt(n))),pts=sunflower(n,R-rd-2);
-  let s='<svg class="pop-small" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="57" fill="'+color+'" fill-opacity=".1" stroke="'+color+'" stroke-width="1.5"/>';
-  pts.forEach(p=>{s+='<circle cx="'+(60+p[0]).toFixed(1)+'" cy="'+(60+p[1]).toFixed(1)+'" r="'+rd.toFixed(1)+'" fill="'+color+'"/>';});
-  return s+'</svg>';
-}
-const ARROW='<svg class="pop-arrow" viewBox="0 0 22 34" aria-hidden="true"><path d="M11 2v26M4 21l7 8 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-function renderIllu(){
-  const p=state.pop,s=state.sample,n=state.n,c=p.ctx,g='#8E8E93';
-  $('#illu-sub').textContent='Titik terang adalah unit yang terpilih menjadi sampel. Kita hanya melihat sampel, tetapi ingin menyimpulkan keadaan populasi. Satu populasi berisi '+fmtInt(NPOP)+' unit, dan tiap unit punya dua variabel kategoris. Populasi digambar dengan '+KDOT+' titik, jadi proporsi titik terang mengikuti proporsi sampel.';
-  $('#illu').innerHTML='<div class="pops"><div class="pop-col"><div class="pop-title">Populasi unit</div>'+bigCircle(g,p.layout,s.hl)+'<div class="pop-sub">Populasi, N = '+fmtInt(NPOP)+' unit</div>'+ARROW+smallCircle(g,n)+'<div class="pop-sub">Sampel acak, n = '+n+' unit</div></div></div><p class="cap" style="text-align:center">Tiap unit dikelompokkan menurut '+lcFirst(c.rowName)+' ('+c.rows.map(lr).join(', ')+') dan '+lcFirst(c.colName)+' ('+c.cols.map(lcFirst).join(', ')+').</p>';
-}
-function headCells(o,withTotal){
-  return o.cl.map((l,j)=>'<th><span class="gname"><i class="dot" style="background:'+catCol(o,j)+'"></i>'+l+'</span></th>').join('')+(withTotal?'<th>Total</th>':'');
-}
-function rowLbl(o,i){return '<span class="idx">'+(i+1)+'</span>'+o.rl[i];}
-function arw(act,i,d,sym,lab,dis){
-  return '<button class="arw" data-act="'+act+'" data-i="'+i+'" data-d="'+d+'" aria-label="Pindahkan '+(act==='mvrow'?'baris':'kolom')+' ke '+lab+'"'+(dis?' disabled':'')+'>'+sym+'</button>';
-}
-function obsTable(o,sw){
-  const big=sw&&!o.size2;
-  let h='<div class="tblwrap"><table class="tbl"><thead><tr><th>'+o.rowName+'</th>';
-  h+=o.cl.map((l,j)=>'<th><span class="gname"><i class="dot" style="background:'+catCol(o,j)+'"></i>'+l+'</span>'+(big?arw('mvcol',j,-1,'◀','kiri',j===0)+arw('mvcol',j,1,'▶','kanan',j===o.c-1):'')+'</th>').join('')+'<th>Total</th></tr></thead><tbody>';
-  for(let i=0;i<o.r;i++)h+='<tr><td>'+rowLbl(o,i)+(big?arw('mvrow',i,-1,'▲','atas',i===0)+arw('mvrow',i,1,'▼','bawah',i===o.r-1):'')+'</td>'+o.n[i].map(v=>'<td>'+v+'</td>').join('')+'<td class="tot">'+o.rowTot[i]+'</td></tr>';
-  h+='<tr><td>Total</td>'+o.colTot.map(v=>'<td class="tot">'+v+'</td>').join('')+'<td class="tot">'+o.N+'</td></tr></tbody></table></div>';
-  return h;
-}
-function ordChanged(){
-  const c=state.pop.ctx;
-  return (c.ordRow&&state.rowOrder.some((v,i)=>v!==i))||(c.ordCol&&state.colOrder.some((v,i)=>v!==i));
-}
-function renderDesc(){
-  const o=state.an.o;
-  let sub='Bandingkan persentase antarbaris pada kolom yang sama. ';
-  sub+=o.size2?'Tombol tukar mengubah urutan baris dan kolom. Tanda selisih proporsi dan odds ratio ikut berubah, sedangkan nilai p dan ukuran efek tetap.':'Panah pada tabel memindahkan urutan baris dan kolom. Nilai χ², nilai p, dan ukuran efek tidak bergantung pada urutan.';
-  $('#desc-sub').textContent=sub;
-  let h='';
-  if(o.size2)h+='<div class="swapbar"><button class="btn sec" data-act="swaprow">⇅ Tukar baris</button><button class="btn sec" data-act="swapcol">⇄ Tukar kolom</button></div>';
-  h+='<div class="vsub" style="margin-top:0">Tabel kontingensi (frekuensi teramati)</div>'+obsTable(o,true);
-  if(ordChanged())h+='<p class="cap">Salah satu variabel berskala ordinal. Menukar urutan kategori tidak mengubah hasil uji chi-square, tetapi pola menjadi lebih sulit dibaca karena urutan alaminya terganggu.</p>';
-  h+='<div class="vsub">Persentase dalam baris</div><div class="tblwrap"><table class="tbl"><thead><tr><th>'+o.rowName+'</th>'+headCells(o,false)+'</tr></thead><tbody>';
-  for(let i=0;i<o.r;i++)h+='<tr><td>'+rowLbl(o,i)+' (n = '+o.rowTot[i]+')</td>'+o.rowPct[i].map(v=>'<td>'+fmt(v,1)+'%</td>').join('')+'</tr>';
-  h+='</tbody></table></div><p class="cap">Setiap baris dijumlahkan menjadi 100%. Warna titik pada judul kolom tetap melekat pada kategorinya, sekalipun urutan kolom ditukar.</p>';
-  $('#desc').innerHTML=h;
-}
-function renderViz(){
-  const o=state.an.o;
-  let h=legend(o.cl.map((l,j)=>[l,catCol(o,j)]))+'<div class="chart" data-chart="stack"></div>';
-  h+='<p class="cap">Tiap batang menunjukkan komposisi '+lcFirst(o.colName)+' dalam satu baris, sehingga semua batang berpanjang sama (100%) dan panjangnya tidak mencerminkan jumlah unit. Jumlah unit tiap baris (n) tertulis di sebelah kiri batang.</p>';
-  $('#viz').innerHTML=h;
-}
-function chipFor(ok,okTxt,badTxt){return ok?'<span class="chip ok">'+okTxt+'</span>':'<span class="chip warn">'+badTxt+'</span>';}
-function renderAssump(){
-  const an=state.an,o=an.o;
-  let h='<div class="vsub" style="margin-top:0">Frekuensi harapan jika tidak ada asosiasi</div><div class="tblwrap"><table class="tbl"><thead><tr><th>'+o.rowName+'</th>'+headCells(o,false)+'</tr></thead><tbody>';
-  for(let i=0;i<o.r;i++)h+='<tr><td>'+rowLbl(o,i)+'</td>'+o.E[i].map(e=>'<td class="'+(e<1?'lt1':e<5?'lt5':'')+'">'+fmt(e,2)+'</td>').join('')+'</tr>';
-  h+='</tbody></table></div><p class="cap">Frekuensi harapan = total baris × total kolom ÷ N. Sel berlatar oranye memiliki frekuensi harapan di bawah 5 dan sel berlatar merah muda di bawah 1.</p>';
-  h+='<div class="asm" style="margin-top:16px">';
-  if(an.size2){
-    h+='<div class="asm-r"><div class="asm-n">Semua frekuensi harapan ≥ 5</div>'+chipFor(o.minE>=5,'Terpenuhi','Tidak terpenuhi')+'<div class="asm-s">Frekuensi harapan terkecil = '+fmt(o.minE,2)+'</div></div>';
-  }else{
-    h+='<div class="asm-r"><div class="asm-n">Semua sel memiliki frekuensi harapan ≥ 1</div>'+chipFor(o.lt1===0,'Terpenuhi','Tidak terpenuhi')+'<div class="asm-s">Jumlah sel dengan frekuensi harapan < 1 = '+o.lt1+'</div></div>';
-    h+='<div class="asm-r"><div class="asm-n">Sel dengan frekuensi harapan < 5 tidak lebih dari 20%</div>'+chipFor(o.pctLt5<=20,'Terpenuhi','Tidak terpenuhi')+'<div class="asm-s">'+o.lt5+' dari '+(o.r*o.c)+' sel ('+fmt(o.pctLt5,1)+'%)</div></div>';
-  }
-  h+='</div><p class="note">Syarat chi-square dinilai dari frekuensi harapan, bukan dari frekuensi teramati. Pada n kecil, frekuensi harapan mudah menjadi kecil. Menaikkan n atau menggabungkan kategori yang bermakna secara biologis memperbaiki keadaan ini.</p>';
-  $('#assump').innerHTML=h;
-}
-function renderChoose(){
-  const an=state.an,el=$('#choose'),ok=an.size2;
-  const intro=ok?'Kedua variabel masing-masing punya dua kategori, jadi tabelnya 2×2.':'Tabel kontingensi ini lebih besar dari 2×2 ('+an.o.r+' baris × '+an.o.c+' kolom).';
-  if(state.guessMode&&state.guess===null){
-    el.innerHTML='<p class="hint">'+intro+' Berdasarkan tabel dan hasil pemeriksaan asumsi di atas, langkah mana yang kamu pilih?</p><div class="choices">'+TESTS.filter(t=>t.des==='any'||t.des===state.design).map(t=>'<button class="choice" data-act="guess" data-id="'+t.id+'">'+t.name+'<small>'+t.sub+'</small></button>').join('')+'</div><p style="margin:14px 0 0"><button class="btn ghost" data-act="skip">Tampilkan jawaban tanpa menebak</button></p>';
-    return;
-  }
-  let h='';
-  if(state.guessMode&&state.guess!=='skip'){
-    const g=TESTS.find(t=>t.id===state.guess);
-    if(g.id===an.rec)h+='<div class="fb ok"><b>Tepat.</b> Kamu memilih '+g.name+'.</div>';
-    else if(g.id==='fisher'&&!ok)h+='<div class="fb warn"><b>Belum tepat.</b> Uji Fisher exact di Jamovi dan di kalkulator pekan ini tersedia khusus untuk tabel 2×2, sedangkan tabel ini '+an.o.r+'×'+an.o.c+'. '+intro+'</div>';
-    else if(g.id==='merge'&&ok)h+='<div class="fb warn"><b>Belum tepat.</b> Tabel 2×2 tidak bisa digabung lagi. Bila ada frekuensi harapan di bawah 5, pilihannya uji Fisher exact.</div>';
-    else h+='<div class="fb warn"><b>Belum tepat.</b> Kamu memilih '+g.name+'. Berdasarkan frekuensi harapan, langkah yang dianjurkan berbeda.</div>';
-  }
-  h+='<div class="rec"><div class="k">Langkah yang dianjurkan</div><div class="v">'+tname(an.rec)+'</div><p>'+recReason()+'</p></div>';
-  h+='<details><summary>Catatan tentang aturan pemilihan uji</summary><p>Aturan di sini dipakai untuk latihan. Pada tabel 2×2, chi-square dipakai bila semua frekuensi harapan bernilai 5 atau lebih, dan Fisher exact bila ada yang di bawah 5. Pada tabel yang lebih besar, chi-square dipakai bila semua sel memiliki frekuensi harapan 1 atau lebih dan sel dengan frekuensi harapan di bawah 5 tidak lebih dari 20%. Sumber lain memakai batas yang sedikit berbeda, dan ada juga yang menyarankan Fisher exact lebih sering. Bila sel perlu digabung, pertimbangan biologis menentukan penggabungannya, bukan angka semata.</p></details>';
-  el.innerHTML=h;
-}
-function residTable(o){
-  let h='<div class="tblwrap"><table class="tbl"><thead><tr><th>'+o.rowName+'</th>'+headCells(o,false)+'</tr></thead><tbody>';
-  for(let i=0;i<o.r;i++)h+='<tr><td>'+rowLbl(o,i)+'</td>'+o.R[i].map(z=>{
-    const cls=z>2?'rp':z<-2?'rn':'';
-    return '<td class="'+cls+'">'+fmt(z,2)+(z>2?'<small>lebih banyak</small>':z<-2?'<small>lebih sedikit</small>':'')+'</td>';
-  }).join('')+'</tr>';
-  return h+'</tbody></table></div>';
-}
-function effTable(o){
-  const t=o.thr;
-  const rows=[['sangat kecil','< '+fmt(t[0],2)],['kecil',fmt(t[0],2)+' sampai < '+fmt(t[1],2)],['sedang',fmt(t[1],2)+' sampai < '+fmt(t[2],2)],['besar','≥ '+fmt(t[2],2)]];
-  let h='<div class="tblwrap"><table class="tbl"><thead><tr><th>Kategori ukuran efek</th><th>Rentang '+(o.size2?'phi':'V')+'</th></tr></thead><tbody>';
-  rows.forEach(r=>{h+='<tr'+(r[0]===o.effCat?' class="hlrow"':'')+'><td>'+r[0].charAt(0).toUpperCase()+r[0].slice(1)+(r[0]===o.effCat?' (hasil ini)':'')+'</td><td>'+r[1]+'</td></tr>';});
-  return h+'</tbody></table></div><p class="note" style="margin-top:8px">Batas klasifikasi adalah 0,10; 0,30; dan 0,50 dibagi akar k, dengan k = nilai terkecil antara (jumlah baris − 1) dan (jumlah kolom − 1). Pada tabel ini k = '+o.k+'.</p>';
-}
-function renderResults(){
-  const el=$('#results');
-  if(state.guessMode&&state.guess===null){el.innerHTML='<h2>Hasil uji</h2><p class="sub">Nilai p di bawah 0,05 berarti H0 ditolak. Baca juga ukuran efeknya.</p><div class="card muted">Pilih satu langkah di atas untuk membuka hasilnya.</div>';return;}
-  const an=state.an,o=an.o,r=getResult(an.rec),sig=r.p<ALPHA;
-  let h='<h2>Hasil uji</h2><p class="sub">Nilai p di bawah 0,05 berarti H0 ditolak. Baca juga ukuran efeknya.</p><div class="card">';
-  if(r.flag)h+='<div class="fb warn">Syarat chi-square belum terpenuhi pada tabel ini. Hasil di bawah ditampilkan sebagai gambaran dan belum layak dilaporkan. Gabungkan kategori yang bermakna, atau naikkan n.</div>';
-  h+='<div class="res-head"><span class="res-name">'+r.title+'</span><span class="res-stat">'+r.stat+'</span></div><div class="gridn">';
-  h+='<div class="tile"><div class="k">Nilai p</div><div class="v">'+fmtP(r.p)+'</div><div class="s">'+(sig?'<span class="chip ok">Tolak H0</span>':'<span class="chip no">Gagal menolak H0</span>')+'</div></div>';
-  if(an.size2){
-    const d=o.diff,q=orPrim(o,r.isF);
-    h+='<div class="tile"><div class="k">Selisih proporsi '+lcFirst(o.cl[0])+', poin persentase ('+lr(o.rl[0])+' − '+lr(o.rl[1])+')</div><div class="v">'+fmt(d.diff,1)+'</div><div class="s">CI 95% (Wald): '+ciTxt(d.lo,d.hi,1)+'</div></div>';
-    h+='<div class="tile"><div class="k">Odds ratio ('+lr(o.rl[0])+' dibanding '+lr(o.rl[1])+')</div><div class="v">'+fmt(q.est,2)+'</div><div class="s">'+(isNaN(q.lo)?'CI tidak tersedia (ada sel bernilai 0)':'CI 95% ('+(r.isF?'exact':'Wald')+'): '+ciTxt(q.lo,q.hi,2))+'</div></div>';
-  }
-  h+='<div class="tile"><div class="k">'+o.effName+(an.size2?'':' (k = '+o.k+')')+'</div><div class="v">'+fmt(o.V,2)+'</div><div class="s">Efek '+o.effCat+'</div></div>';
-  if(!an.size2)h+='<div class="tile"><div class="k">Sel dengan |residual| > 2</div><div class="v">'+o.flagged.length+'</div><div class="s">dibaca bila p < 0,05</div></div>';
-  h+='</div>';
-  h+='<div class="vsub">'+(r.isF?'Distribusi peluang di bawah H0 (Fisher exact)':'Statistik uji dan daerah penolakan H0')+'</div><div class="chart" data-chart="test"></div>';
-  h+='<p class="note" style="margin-top:4px">'+(r.isF?'Grafik menunjukkan peluang tiap kemungkinan isi sel baris 1 kolom 1 bila H0 benar dan semua total baris dan kolom tetap. Nilai p adalah jumlah peluang batang merah.':'Daerah merah adalah daerah penolakan H0 pada α = 0,05. Titik menandai nilai χ² dari sampel ini: bila titik berada di daerah merah, H0 ditolak.')+'</p>';
-  if(an.size2){
-    const q=orPrim(o,r.isF);
-    h+='<div class="vsub">Selisih proporsi dan CI 95%</div><div class="chart" data-chart="diff"></div>';
-    const od=i=>o.n[i][1]===0?(o.n[i][0]===0?NaN:Infinity):o.n[i][0]/o.n[i][1];
-    const sm=o.orWald.est;
-    h+='<div class="vsub">Odds ratio dan CI 95% (skala logaritmik)</div>';
-    h+='<p class="note" style="margin-top:0">Odds adalah jumlah unit dengan '+lcFirst(o.cl[0])+' dibagi jumlah unit dengan '+lcFirst(o.cl[1])+' dalam satu kelompok.</p>';
-    h+='<ul class="odds"><li>Odds untuk '+lr(o.rl[0])+' = '+o.n[0][0]+'/'+o.n[0][1]+' = '+fmt(od(0),2)+'</li><li>Odds untuk '+lr(o.rl[1])+' = '+o.n[1][0]+'/'+o.n[1][1]+' = '+fmt(od(1),2)+'</li><li>Odds ratio = '+fmt(od(0),2)+'/'+fmt(od(1),2)+' = '+fmt(sm,2)+'</li></ul>';
-    if(r.isF)h+='<p class="note" style="margin-top:-6px">Odds ratio di atas dihitung dari tabel sampel. Uji Fisher exact memakai estimasi bersyarat ('+fmt(q.est,2)+'), sehingga angkanya sedikit berbeda dan dipakai pada grafik di bawah.</p>';
-    h+='<div class="chart" data-chart="or"></div>';
-    h+='<p class="note" style="margin-top:4px">Garis putus-putus menandai keadaan tanpa asosiasi menurut H0 (selisih 0 dan odds ratio 1). Bila CI tidak memotong garis, arah asosiasi jelas. Odds ratio memakai CI '+(r.isF?'exact dari estimasi bersyarat (Fisher)':'Wald dari odds ratio sampel')+'.'+(q.est===Infinity||q.est===0?' Salah satu sel bernilai 0, sehingga estimasi berada di batas dan CI terbuka di satu sisi.':'')+'</p>';
-  }else{
-    h+='<div class="vsub">Residual terstandar (standardized residual)</div><p class="note" style="margin-top:0">Sel berwarna menunjukkan kategori yang lebih banyak (biru) atau lebih sedikit (jingga) dari yang diharapkan bila tidak ada asosiasi. Angka di dalam sel adalah nilai z.</p>'+residTable(o);
-    h+='<p class="note">Residual dibaca bila hasil uji bernilai p < 0,05'+(sig?'.':'. Pada tabel ini H0 tidak ditolak, jadi tabel ini ditampilkan sebagai informasi.')+' Dengan banyak sel, sorotan dibaca sebagai petunjuk.</p>';
-    if(sig&&o.flagged.length){const pl=residPlain(o);h+='<div class="plain" style="margin-top:12px">'+pl.map(x=>'<p>'+x+'</p>').join('')+'</div>';}
-    h+='<details><summary>Apa arti angka z?</summary><p>Nilai z menyatakan selisih antara frekuensi teramati dan frekuensi harapan dalam satuan simpangan baku. Nilai di atas 2 berarti sel berisi lebih banyak unit daripada yang diharapkan, dan nilai di bawah −2 berarti lebih sedikit. Nilai di antara −2 dan 2 dianggap masih wajar akibat kebetulan.</p></details>';
-  }
-  h+='<div class="vsub">Klasifikasi ukuran efek ('+o.effName+')</div>'+effTable(o);
-  h+='<div class="interp"><div class="k">Interpretasi untuk laporan ilmiah</div><p id="interp-sci">'+r.sentence+'</p><button class="btn sec" data-act="copy" data-target="interp-sci" data-label="Salin versi ilmiah">Salin versi ilmiah</button></div>';
-  h+='<div class="interp"><div class="k">Interpretasi dalam bahasa awam</div><p id="interp-lay">'+r.lay+'</p><button class="btn sec" data-act="copy" data-target="interp-lay" data-label="Salin versi awam">Salin versi awam</button></div>';
-  const ids=an.size2?['chi','fisher']:['chi'];
-  h+='<details><summary>Bandingkan semua uji pada data yang sama</summary><div class="tblwrap" style="margin-top:10px"><table class="tbl cmp"><thead><tr><th>Uji</th><th>Nilai p</th></tr></thead><tbody>'+ids.map(id=>'<tr><td>'+TESTS.find(t=>t.id===id).name+(id===an.rec?' (dianjurkan)':'')+'</td><td>'+fmtP(an.tests[id].p)+'</td></tr>').join('')+'</tbody></table></div></details>';
-  h+='</div>';
-  const hs=state.history,nsig=hs.filter(x=>x.p<ALPHA).length;
-  h+='<h2>Nilai p lintas penarikan sampel</h2><p class="sub">Sampel yang berbeda dari populasi yang sama dapat memberi keputusan yang berbeda. Tiap kali sampel ditarik ulang, nilai p ikut berubah dan keputusannya kadang berbalik.</p><div class="card"><div class="chart" data-chart="hist"></div><p class="cap">'+nsig+' dari '+hs.length+' penarikan menghasilkan p < 0,05 (titik biru), diukur dengan langkah yang dianjurkan pada setiap penarikan. Titik dengan cincin adalah penarikan terbaru.</p></div>';
-  const p=state.pop;
-  if(!state.revealed){
-    h+='<div class="card muted" style="margin-top:26px">Sudah menentukan kesimpulan? Bandingkan dengan keadaan populasi yang sebenarnya.<div style="margin-top:14px"><button class="btn" data-act="reveal">Buka kebenaran populasi</button></div></div>';
-  }else{
-    const po=analyzeCounts(p.popN);let v,cls;
-    if(sig&&!p.h0true){v='Keputusan benar. Asosiasi memang ada di populasi dan berhasil terdeteksi oleh sampel ini.';cls='ok';}
-    else if(sig&&p.h0true){v='Positif palsu (galat tipe I). H0 sebenarnya benar, tetapi sampel ini kebetulan menghasilkan p < 0,05.';cls='warn';}
-    else if(!sig&&!p.h0true){v='Negatif palsu (galat tipe II). Asosiasi ada di populasi, tetapi sampel ini belum cukup kuat untuk mendeteksinya. Coba naikkan n atau tarik ulang sampel.';cls='warn';}
-    else{v='Keputusan benar. H0 benar dan tidak ditolak.';cls='ok';}
-    h+='<h2>Kebenaran populasi</h2><p class="sub">Ini keadaan sebenarnya, untuk memeriksa apakah keputusan dari sampel tepat.</p><div class="card">';
-    if(po.size2){
-      h+='<div class="truth-row"><span>Selisih proporsi '+lcFirst(po.cl[0])+' di populasi ('+lr(po.rl[0])+' − '+lr(po.rl[1])+')</span><span>'+fmt(po.diff.diff,1)+' poin persentase</span></div>';
-      h+='<div class="truth-row"><span>Odds ratio populasi ('+lr(po.rl[0])+' dibanding '+lr(po.rl[1])+')</span><span>'+fmt(po.orWald.est,2)+'</span></div>';
-    }
-    h+='<div class="truth-row"><span>Ukuran efek populasi ('+po.effName+')</span><span>'+fmt(po.V,2)+' ('+po.effCat+')</span></div>';
-    h+='<div class="truth-row"><span>H0 (tidak ada asosiasi)</span><span>'+(p.h0true?'benar':'salah')+'</span></div>';
-    h+='<div class="vsub">Tabel populasi ('+fmtInt(NPOP)+' unit)</div>'+obsTable(po,false);
-    h+='<div class="fb '+cls+' verdict">'+v+'</div><p class="note">Perbedaan antara tabel sampel dan tabel populasi disebut galat sampling. Tabel populasi dipakai sebagai acuan keadaan sebenarnya.</p></div>';
-  }
-  el.innerHTML=h;
+  return interpBox(samp,pop);
 }
 
-/* ----- Grafik ----- */
+/* ===== Primitif SVG ===== */
+function chartWidth(el){const w=el.clientWidth;return Math.max(280,w>0?w:680);}
+function svgOpen(W,H,label){return '<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+label+'">';}
+function ln(x1,y1,x2,y2,stroke,w,extra){return '<line x1="'+rr(x1)+'" y1="'+rr(y1)+'" x2="'+rr(x2)+'" y2="'+rr(y2)+'" stroke="'+stroke+'" stroke-width="'+w+'"'+(extra||'')+'/>';}
+function tx(x,y,s,o){
+  o=o||{};
+  const size=o.size||12,weight=o.weight||400,fill=o.fill||'var(--text-main)',anchor=o.anchor||'middle';
+  const base=' x="'+rr(x)+'" y="'+rr(y)+'" font-family="'+FONT+'" font-size="'+size+'" font-weight="'+weight+'" text-anchor="'+anchor+'"';
+  let out='';
+  if(o.halo)out+='<text'+base+' fill="var(--card-bg)" stroke="var(--card-bg)" stroke-width="4" stroke-linejoin="round">'+s+'</text>';
+  return out+'<text'+base+' fill="'+fill+'">'+s+'</text>';
+}
+function circ(cx,cy,r,fill,stroke,sw){return '<circle cx="'+rr(cx)+'" cy="'+rr(cy)+'" r="'+r+'" fill="'+fill+'"'+(stroke?' stroke="'+stroke+'" stroke-width="'+sw+'"':'')+'/>';}
 function niceStep(raw){
   if(!(raw>0))return 1;
-  const p=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/p;
+  const p=Math.pow(10,Math.floor(Math.log(raw)/Math.LN10)),f=raw/p;
   return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p;
 }
-function txt(x,y,str,o){
-  o=o||{};
-  return '<text x="'+r1(x)+'" y="'+r1(y)+'" font-size="'+(o.size||11)+'" font-weight="'+(o.weight||400)+'" text-anchor="'+(o.anchor||'middle')+'" fill="'+(o.fill||'var(--ink2)')+'"'+(o.halo?' stroke="var(--card)" stroke-width="4" stroke-linejoin="round" paint-order="stroke"':'')+'>'+str+'</text>';
-}
-function line(x1,y1,x2,y2,stroke,w,extra){return '<line x1="'+r1(x1)+'" y1="'+r1(y1)+'" x2="'+r1(x2)+'" y2="'+r1(y2)+'" stroke="'+stroke+'" stroke-width="'+w+'"'+(extra||'')+'/>';}
-function stackChart(W){
-  const o=state.an.o,r=o.r,c=o.c,bh=34,gap=16,ml=Math.round(Math.min(170,Math.max(104,W*0.28))),mr=14,mt=8,mb=30;
-  const H=mt+r*(bh+gap)-gap+mb,pw=W-ml-mr;
-  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Persentase tiap kategori kolom dalam setiap baris">';
-  for(let i=0;i<r;i++){
-    const y=mt+i*(bh+gap);let x=ml;
-    s+=txt(ml-8,y+bh/2-1,(i+1)+'. '+shortName(o.rl[i],ml<130?14:22),{size:12,weight:600,anchor:'end',fill:'var(--ink)'});
-    s+=txt(ml-8,y+bh/2+13,'n = '+o.rowTot[i],{size:11,anchor:'end'});
-    for(let j=0;j<c;j++){
-      const w=o.rowPct[i][j]/100*pw;
-      if(w>0){
-        s+='<rect x="'+r1(x)+'" y="'+r1(y)+'" width="'+r1(w)+'" height="'+bh+'" fill="'+catCol(o,j)+'" fill-opacity="0.9"/>';
-        if(w>40)s+=txt(x+w/2,y+bh/2+4.5,fmt(o.rowPct[i][j],1)+'%',{size:12,weight:700,fill:'#fff'});
-      }
-      x+=w;
-    }
-  }
-  const ay=H-mb+6;
-  s+=line(ml,ay,ml+pw,ay,'var(--line)',1);
-  [0,25,50,75,100].forEach(t=>{const xx=ml+t/100*pw;s+=line(xx,ay,xx,ay+4,'var(--ink3)',1)+txt(xx,ay+17,t+'%');});
-  return s+'</svg>';
-}
-function chiChart(W){
-  const o=state.an.o,H=250,ml=16,mr=16,mt=58,mb=56,ph=H-mt-mb,df=o.df,crit=S.critChi(df),stat=o.chi2,rej=o.pChi<ALPHA;
+function rotY(s,x,y){return s.replace(/<text /g,'<text transform="rotate(-90 '+x+' '+rr(y)+')" ');}
+
+function drawChiCurve(el,cfg){
+  const W=chartWidth(el),H=250,ml=16,mr=16,mt=58,mb=56,ph=H-mt-mb,df=cfg.df,crit=cfg.crit,stat=cfg.stat;
   const hi=Math.max(crit*1.55,stat*1.12,crit+3),lo=0,mode=Math.max(df-2,0);
   const yMax=S.pdfChi(df===1?0.2:(mode===0?0:mode),df),pdf=x=>S.pdfChi(x,df);
-  const sx=x=>ml+(x-lo)/(hi-lo)*(W-ml-mr),sy=y=>mt+(1-Math.min(Math.max(y,0),yMax)/yMax)*ph;
-  const baseY=sy(0),xStart=df===1?0.05:0;
-  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Kurva chi-square dengan daerah penolakan">';
-  let d='';for(let i=0;i<=80;i++){const x=crit+(hi-crit)*i/80;d+=(i?'L':'M')+r1(sx(x))+' '+r1(sy(pdf(x)))+' ';}
-  s+='<path d="'+d+'L'+r1(sx(hi))+' '+r1(baseY)+' L'+r1(sx(crit))+' '+r1(baseY)+' Z" fill="#FF3B30" fill-opacity="0.18"/>';
-  d='';for(let i=0;i<=160;i++){const x=xStart+(hi-xStart)*i/160;d+=(i?'L':'M')+r1(sx(x))+' '+r1(sy(pdf(x)))+' ';}
-  s+='<path d="'+d+'" fill="none" stroke="'+COL.a+'" stroke-width="2.5" stroke-linejoin="round"/>';
-  s+=line(sx(lo),baseY,sx(hi),baseY,'var(--line)',1);
-  s+=line(sx(crit),baseY,sx(crit),sy(pdf(crit)),'#FF3B30',1.4,' stroke-dasharray="4 3"');
-  s+=txt(sx(crit),baseY+20,fmt(crit,2),{size:11.5,weight:700,fill:'var(--red-ink)',halo:true});
-  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
-  s+=txt(clamp(sx((crit+hi)/2),34,W-34),24,'tolak H0',{size:12,weight:700,fill:'var(--red-ink)',halo:true});
-  s+=txt(clamp(sx(crit/2),44,W-44),24,'gagal tolak H0',{size:12,weight:700,fill:'var(--a-ink)',halo:true});
-  const xs=sx(stat),ys=sy(pdf(stat)),col=rej?'#FF3B30':COL.a;
-  s+=line(xs,baseY,xs,ys,col,2)+'<circle cx="'+r1(xs)+'" cy="'+r1(ys)+'" r="5.5" fill="'+col+'" stroke="var(--card)" stroke-width="2"/>';
-  s+=txt(clamp(xs,40,W-40),baseY+38,'χ² = '+fmt(stat,2),{size:12.5,weight:800,fill:rej?'var(--red-ink)':'var(--a-ink)',halo:true});
-  return s+'</svg>';
+  const sx=x=>ml+(x-lo)/(hi-lo)*(W-ml-mr),sy=y=>mt+(1-clamp(y,0,yMax)/yMax)*ph;
+  const baseY=sy(0),labelY=24,critRowY=baseY+20,statRowY=baseY+38,xStart=df===1?0.05:0;
+  let s=svgOpen(W,H,'Kurva distribusi chi-square dengan daerah kritis'),d='M'+rr(sx(crit))+' '+rr(sy(pdf(crit)))+' ',i;
+  for(i=1;i<=80;i++){const xa=crit+(hi-crit)*i/80;d+='L'+rr(sx(xa))+' '+rr(sy(pdf(xa)))+' ';}
+  d+='L'+rr(sx(hi))+' '+rr(baseY)+' L'+rr(sx(crit))+' '+rr(baseY)+' Z';
+  s+='<path d="'+d+'" fill="#ff3b30" fill-opacity="0.16"/>';
+  d='';
+  for(i=0;i<=200;i++){const x=xStart+(hi-xStart)*i/200;d+=(i===0?'M':'L')+rr(sx(x))+' '+rr(sy(pdf(x)))+' ';}
+  s+='<path d="'+d+'" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linejoin="round"/>';
+  s+=ln(sx(lo),baseY,sx(hi),baseY,'var(--ink3)',1);
+  s+=ln(sx(crit),baseY,sx(crit),sy(pdf(crit)),'#ff3b30',1.4,' stroke-dasharray="4 3"');
+  s+=tx(sx(crit),critRowY,fmt(crit,2),{size:11.5,weight:700,fill:'var(--err-tx)',halo:true});
+  s+=tx(clamp(sx((crit+hi)/2),34,W-34),labelY,'tolak H'+SUB0,{size:12,weight:700,fill:'#ff3b30',halo:true});
+  s+=tx(clamp(sx(crit/2),44,W-44),labelY,'gagal tolak H'+SUB0,{size:12,weight:700,fill:'#0071e3',halo:true});
+  const xs=sx(stat),ys=sy(pdf(stat)),col=cfg.reject?'#ff3b30':'#0071e3';
+  s+=ln(xs,baseY,xs,ys,col,2)+circ(xs,ys,5.5,col,'var(--card-bg)',2);
+  s+=tx(clamp(xs,40,W-40),statRowY,'χ² = '+fmt(stat,2),{size:12.5,weight:800,fill:col,halo:true});
+  el.innerHTML=s+'</svg>';
 }
-function fisherChart(W){
-  const f=state.an.o.fisher,H=250,ml=44,mr=16,mt=30,mb=48,lo=f.support[0],dens=f.dens;
-  let mx=0;dens.forEach(v=>{if(v>mx)mx=v;});
+function drawFisherDist(el,f){
+  const W=chartWidth(el),H=250,ml=44,mr=16,mt=30,mb=48,lo=f.support[0],dens=f.dens;
+  let mx=0,i;for(i=0;i<dens.length;i++)if(dens[i]>mx)mx=dens[i];
   let first=0,last=dens.length-1;const cut=mx*1e-4;
   while(first<f.obs-lo&&dens[first]<cut)first++;
   while(last>f.obs-lo&&dens[last]<cut)last--;
   const cnt=last-first+1,yTop=mx*1.12,ystep=niceStep(yTop/4),sw=(W-ml-mr)/cnt,sy=v=>mt+(1-v/yTop)*(H-mt-mb);
-  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Distribusi peluang hipergeometrik di bawah H0">';
-  s+=line(ml,mt,ml,H-mb,'var(--line)',1)+line(ml,H-mb,W-mr,H-mb,'var(--line)',1);
-  for(let t=0;t<=yTop+1e-12;t+=ystep)s+=line(ml,sy(t),W-mr,sy(t),'var(--line)',.5)+txt(ml-6,sy(t)+3.5,fmt(t,ystep<0.01?3:2).replace(/0+$/,'').replace(/,$/,''),{size:10,anchor:'end'});
-  for(let i=first;i<=last;i++){
+  let s=svgOpen(W,H,'Distribusi hipergeometrik di bawah H0');
+  s+=ln(ml,mt,ml,H-mb,'var(--border-color)',1)+ln(ml,H-mb,W-mr,H-mb,'var(--border-color)',1);
+  for(let t=0;t<=yTop+1e-12;t+=ystep)s+=ln(ml,sy(t),W-mr,sy(t),'var(--grid-line)',1)+tx(ml-6,sy(t)+3.5,fmtSmart(t,3),{size:10,fill:'var(--text-muted)',anchor:'end'});
+  for(i=first;i<=last;i++){
     const x0=ml+(i-first)*sw,h=(H-mb)-sy(dens[i]),red=dens[i]<=f.thr;
-    s+='<rect x="'+r1(x0+0.5)+'" y="'+r1(sy(dens[i]))+'" width="'+r1(Math.max(1,sw-1))+'" height="'+r1(Math.max(0,h))+'" fill="'+(red?'#FF3B30':COL.a)+'" fill-opacity="'+(red?0.65:0.45)+'"/>';
+    s+='<rect x="'+rr(x0+0.5)+'" y="'+rr(sy(dens[i]))+'" width="'+rr(Math.max(1,sw-1))+'" height="'+rr(Math.max(0,h))+'" fill="'+(red?'#ff3b30':'#0071e3')+'" fill-opacity="'+(red?0.6:0.45)+'"/>';
   }
   const stride=Math.max(1,Math.ceil(cnt/12));
-  for(let i=first;i<=last;i+=stride)s+=txt(ml+(i-first+0.5)*sw,H-mb+14,String(lo+i),{size:10});
-  const oi=f.obs-lo,ox=ml+(oi-first+0.5)*sw,oy=sy(dens[oi])-4;
-  s+=line(ox,oy,ox,mt-6,'var(--ink)',1.6)+'<circle cx="'+r1(ox)+'" cy="'+r1(oy)+'" r="4" fill="var(--ink)" stroke="var(--card)" stroke-width="1.5"/>';
-  s+=txt(Math.min(W-50,Math.max(50,ox)),mt-10,'teramati = '+f.obs,{size:12,weight:800,fill:'var(--ink)',halo:true});
-  s+=txt((ml+W-mr)/2,H-6,'Jumlah pada sel baris 1, kolom 1 bila H0 benar',{size:10.5});
-  return s+'</svg>';
+  for(i=first;i<=last;i+=stride)s+=tx(ml+(i-first+0.5)*sw,H-mb+14,String(lo+i),{size:10,fill:'var(--text-muted)'});
+  const oi=f.obs-lo,ox=ml+(oi-first+0.5)*sw;
+  s+=ln(ox,sy(dens[oi])-4,ox,mt-6,'var(--text-main)',1.6)+circ(ox,sy(dens[oi])-4,4,'var(--text-main)','var(--card-bg)',1.5);
+  s+=tx(clamp(ox,50,W-50),mt-10,'teramati = '+f.obs,{size:12,weight:800,halo:true});
+  s+=tx((ml+W-mr)/2,H-6,'Jumlah pada sel baris 1, kolom 1 jika H'+SUB0+' benar',{size:10.5,fill:'var(--text-muted)'});
+  s+=rotY(tx(10,(mt+H-mb)/2,'Peluang',{size:10.5,fill:'var(--text-muted)'}),10,(mt+H-mb)/2);
+  el.innerHTML=s+'</svg>';
 }
-function forest(W,p){
-  W=Math.min(660,W);
-  const H=150,ml=26,mr=26,mt=38,mb=44,log=p.log,est=p.est,lo=p.lo,hi=p.hi,ref=p.ref;
-  const T=log?Math.log:(v=>v);
+function drawStacked(el,o){
+  const W=chartWidth(el),c=o.c,bh=34,gap=14,ml=Math.min(170,Math.max(104,Math.round(W*0.26))),mr=14,mt=12,mb=30,ex=10;
+  const bars=[];
+  for(let i=0;i<o.r;i++)bars.push({lab:(i+1)+'. '+shortName(o.rl[i],ml<130?14:20),n:o.rowTot[i],pct:o.rowPct[i],tot:false});
+  bars.push({lab:'Semua unit',n:o.N,pct:o.colTot.map(v=>v/o.N*100),tot:true});
+  const H=mt+bars.length*(bh+gap)-gap+ex+mb,pw=W-ml-mr;
+  let s=svgOpen(W,H,'Persentase tiap kategori kolom dalam setiap baris dan pada seluruh unit');
+  bars.forEach((b,k)=>{
+    const y=mt+k*(bh+gap)+(b.tot?ex:0);let x=ml;
+    s+=tx(ml-8,y+bh/2-2,b.lab,{size:12,weight:600,anchor:'end',fill:b.tot?'var(--text-muted)':'var(--text-main)'});
+    s+=tx(ml-8,y+bh/2+12,'n = '+b.n,{size:10.5,fill:'var(--text-muted)',anchor:'end'});
+    for(let j=0;j<c;j++){
+      const w=b.pct[j]/100*pw;
+      if(w>0){
+        s+='<rect x="'+rr(x)+'" y="'+rr(y)+'" width="'+rr(w)+'" height="'+bh+'" fill="'+PALETTE[o.colorIdx[j]%PALETTE.length]+'" fill-opacity="'+(b.tot?0.5:0.85)+'"/>';
+        if(w>38)s+=tx(x+w/2,y+bh/2+4.5,fmt(b.pct[j],1)+'%',{size:12,weight:700,fill:'#ffffff'});
+      }
+      x+=w;
+    }
+  });
+  const ay=H-mb+6;
+  s+=ln(ml,ay,ml+pw,ay,'var(--border-color)',1);
+  [0,25,50,75,100].forEach(t=>{const xx=ml+t/100*pw;s+=ln(xx,ay,xx,ay+4,'var(--border-color)',1)+tx(xx,ay+16,t+'%',{size:10.5,fill:'var(--text-muted)'});});
+  el.innerHTML=s+'</svg>';
+}
+function drawForest(el,p){
+  const W=Math.min(720,chartWidth(el)),H=150,ml=26,mr=26,mt=38,mb=44,log=p.log,est=p.est,lo=p.lo,hi=p.hi,ref=p.ref;
+  const T=log?v=>Math.log(v):v=>v;
   const loOpen=!isFinite(lo)||(log&&lo<=0),hiOpen=!isFinite(hi);
   const vals=[ref];
   if(isFinite(est)&&(!log||est>0))vals.push(est);
@@ -1019,76 +1097,462 @@ function forest(W,p){
   else{const pad=(vmax-vmin)*0.12||1;amin=vmin-pad;amax=vmax+pad;}
   const sx=v=>ml+(T(v)-T(amin))/(T(amax)-T(amin))*(W-ml-mr),axY=H-mb,cy=(mt+axY)/2+2;
   const excl=(!loOpen&&!hiOpen)?(lo>ref||hi<ref):(loOpen&&!hiOpen?hi<ref:(!loOpen&&hiOpen?lo>ref:false));
-  const col=excl?COL.a:COL.grey;
-  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Estimasi dan CI 95% terhadap garis acuan">';
-  s+=line(ml,axY,W-mr,axY,'var(--line)',1);
+  const col=excl?'#ff3b30':'#0071e3';
+  let s=svgOpen(W,H,'Estimasi dan CI 95%');
+  s+=ln(ml,axY,W-mr,axY,'var(--border-color)',1);
   let ticks=[];
   if(log){
-    const e0=Math.floor(Math.log10(amin)),e1=Math.ceil(Math.log10(amax));
+    const e0=Math.floor(Math.log(amin)/Math.LN10),e1=Math.ceil(Math.log(amax)/Math.LN10);
     for(let e=e0;e<=e1;e++)[1,2,5].forEach(m=>{const v=m*Math.pow(10,e);if(v>=amin&&v<=amax)ticks.push(v);});
-    if(ticks.length>8)ticks=ticks.filter(v=>Math.abs(Math.log10(v)-Math.round(Math.log10(v)))<1e-9||v===1);
+    if(ticks.length>8)ticks=ticks.filter(v=>Math.abs(Math.log(v)/Math.LN10-Math.round(Math.log(v)/Math.LN10))<1e-9||v===1);
   }else{
     const step=niceStep((amax-amin)/6);
     for(let t=Math.ceil(amin/step-1e-9)*step;t<=amax+1e-9;t+=step)ticks.push(Math.abs(t)<1e-9?0:t);
   }
-  const tdec=v=>{const a=Math.abs(v);return log?(a>=10?0:a>=1?1:2):(Math.abs(v-Math.round(v))<1e-9?0:1);};
-  ticks.forEach(v=>{s+=line(sx(v),axY,sx(v),axY+4,'var(--ink3)',1)+txt(sx(v),axY+17,fmt(v,tdec(v)));});
-  s+=line(sx(ref),mt-8,sx(ref),axY,'var(--ink2)',1.5,' stroke-dasharray="5 4"');
-  s+=txt(Math.min(W-70,Math.max(70,sx(ref))),mt-14,p.refText,{size:11.5,weight:700,fill:'var(--ink2)',halo:true});
+  ticks.forEach(v=>{s+=ln(sx(v),axY,sx(v),axY+4,'var(--border-color)',1)+tx(sx(v),axY+17,fmtSmart(v,log?3:1),{size:10.5,fill:'var(--text-muted)'});});
+  s+=ln(sx(ref),mt-8,sx(ref),axY,'var(--text-muted)',1.5,' stroke-dasharray="5 4"');
+  s+=tx(clamp(sx(ref),70,W-70),mt-14,p.refText,{size:11.5,weight:700,fill:'var(--text-muted)',halo:true});
   const xl=loOpen?ml:sx(lo),xh=hiOpen?W-mr:sx(hi);
-  s+='<line x1="'+r1(xl)+'" x2="'+r1(xh)+'" y1="'+r1(cy)+'" y2="'+r1(cy)+'" stroke="'+col+'" stroke-width="10" stroke-linecap="round" stroke-opacity=".45"/>';
-  if(loOpen)s+='<path d="M'+r1(ml+8)+' '+r1(cy-6)+' L'+r1(ml)+' '+r1(cy)+' L'+r1(ml+8)+' '+r1(cy+6)+'" fill="none" stroke="'+col+'" stroke-width="2.5"/>';
-  if(hiOpen)s+='<path d="M'+r1(W-mr-8)+' '+r1(cy-6)+' L'+r1(W-mr)+' '+r1(cy)+' L'+r1(W-mr-8)+' '+r1(cy+6)+'" fill="none" stroke="'+col+'" stroke-width="2.5"/>';
+  s+=ln(xl,cy,xh,cy,col,3);
+  if(!loOpen)s+=ln(xl,cy-7,xl,cy+7,col,3);else s+='<path d="M'+rr(ml+8)+' '+rr(cy-6)+' L'+rr(ml)+' '+rr(cy)+' L'+rr(ml+8)+' '+rr(cy+6)+'" fill="none" stroke="'+col+'" stroke-width="3"/>';
+  if(!hiOpen)s+=ln(xh,cy-7,xh,cy+7,col,3);else s+='<path d="M'+rr(W-mr-8)+' '+rr(cy-6)+' L'+rr(W-mr)+' '+rr(cy)+' L'+rr(W-mr-8)+' '+rr(cy+6)+'" fill="none" stroke="'+col+'" stroke-width="3"/>';
   if(isFinite(est)&&(!log||est>0)){
-    s+='<circle cx="'+r1(sx(est))+'" cy="'+r1(cy)+'" r="8" fill="#fff" stroke="'+col+'" stroke-width="3"/>';
-    s+=txt(Math.min(W-30,Math.max(30,sx(est))),cy-16,fmt(est,2),{size:12.5,weight:800,fill:excl?'var(--a-ink)':'var(--ink2)',halo:true});
+    s+=circ(sx(est),cy,6.5,col,'var(--card-bg)',2);
+    s+=tx(clamp(sx(est),30,W-30),cy-14,fmt(est,log?2:1),{size:12.5,weight:800,fill:col,halo:true});
   }
-  if(!loOpen)s+=txt(Math.min(W-24,Math.max(24,xl)),cy+26,fmt(lo,2),{size:11,weight:600,halo:true});
-  if(!hiOpen)s+=txt(Math.min(W-24,Math.max(24,xh)),cy+26,fmt(hi,2),{size:11,weight:600,halo:true});
+  if(!loOpen)s+=tx(clamp(xl,24,W-24),cy+24,fmt(lo,log?2:1),{size:11,weight:600,fill:col,halo:true});
+  if(!hiOpen)s+=tx(clamp(xh,24,W-24),cy+24,fmt(hi,log?2:1),{size:11,weight:600,fill:col,halo:true});
+  el.innerHTML=s+'</svg>';
+}
+function drawHistory(el,hs){
+  const W=chartWidth(el),H=150,ml=36,mr=14,mt=14,mb=26,n=hs.length;
+  const x=i=>ml+(n===1?(W-ml-mr)/2:i/(n-1)*(W-ml-mr)),y=p=>mt+(1-p)*(H-mt-mb);
+  let s=svgOpen(W,H,'Riwayat nilai p pada penarikan sampel berturut-turut');
+  [0,0.5,1].forEach(v=>{s+=ln(ml,y(v),W-mr,y(v),'var(--grid-line)',1)+tx(ml-6,y(v)+4,fmt(v,1),{size:10.5,fill:'var(--text-muted)',anchor:'end'});});
+  s+=ln(ml,y(0.05),W-mr,y(0.05),'#ff9500',1.2,' stroke-dasharray="4 3"')+tx(W-mr,y(0.05)-4,'0,05',{size:10.5,fill:'var(--warn-tx)',anchor:'end'});
+  hs.forEach((h,i)=>{
+    const col=h.p<ALPHA?'#0071e3':'#8e8e93';
+    if(i===n-1)s+=circ(x(i),y(h.p),8,'none',col,1.6);
+    s+=circ(x(i),y(h.p),4.5,col);
+  });
+  s+=tx(ml,H-6,'penarikan pertama',{size:10.5,fill:'var(--text-muted)',anchor:'start'})+tx(W-mr,H-6,'terbaru',{size:10.5,fill:'var(--text-muted)',anchor:'end'});
+  el.innerHTML=s+'</svg>';
+}
+function drawSimHist(el,sim){
+  const W=chartWidth(el),H=230,ml=44,mr=14,mt=18,mb=44,B=20,bins=new Array(B).fill(0);
+  sim.ps.forEach(p=>{bins[Math.min(B-1,Math.floor(p/0.05))]++;});
+  const mx=Math.max.apply(null,bins),yTop=Math.max(5,mx)*1.1,ystep=niceStep(yTop/4),pw=W-ml-mr,bw=pw/B;
+  const sy=v=>mt+(1-v/yTop)*(H-mt-mb);
+  let s=svgOpen(W,H,'Sebaran nilai p dari 100 sampel');
+  s+=ln(ml,mt,ml,H-mb,'var(--border-color)',1)+ln(ml,H-mb,W-mr,H-mb,'var(--border-color)',1);
+  for(let t=0;t<=yTop+1e-9;t+=ystep)s+=ln(ml,sy(t),W-mr,sy(t),'var(--grid-line)',1)+tx(ml-6,sy(t)+3.5,fmtSmart(t,1),{size:10,fill:'var(--text-muted)',anchor:'end'});
+  bins.forEach((v,i)=>{
+    const red=i===0;
+    s+='<rect x="'+rr(ml+i*bw+1)+'" y="'+rr(sy(v))+'" width="'+rr(Math.max(1,bw-2))+'" height="'+rr(Math.max(0,(H-mb)-sy(v)))+'" fill="'+(red?'#ff3b30':'#0071e3')+'" fill-opacity="'+(red?0.65:0.45)+'"/>';
+    if(v>0)s+=tx(ml+i*bw+bw/2,sy(v)-4,String(v),{size:10,fill:'var(--text-muted)'});
+  });
+  [0,0.25,0.5,0.75,1].forEach(t=>{const xx=ml+t*pw;s+=ln(xx,H-mb,xx,H-mb+4,'var(--border-color)',1)+tx(xx,H-mb+16,fmt(t,2),{size:10,fill:'var(--text-muted)'});});
+  s+=tx(ml+pw/2,H-6,'Nilai p (tiap batang selebar 0,05)',{size:10.5,fill:'var(--text-muted)'});
+  s+=rotY(tx(11,(mt+H-mb)/2,'Jumlah sampel',{size:10.5,fill:'var(--text-muted)'}),11,(mt+H-mb)/2);
+  el.innerHTML=s+'</svg>';
+}
+
+/* ===== Tooltip glosarium ===== */
+const tip=document.getElementById('tip');let tipEl=null;
+function placeTip(el){
+  const r=el.getBoundingClientRect(),tw=tip.offsetWidth,th=tip.offsetHeight;
+  let x=r.left+r.width/2-tw/2;x=Math.max(8,Math.min(window.innerWidth-tw-8,x));
+  let y=r.bottom+8;if(y+th>window.innerHeight-8)y=r.top-th-8;
+  tip.style.left=x+'px';tip.style.top=Math.max(8,y)+'px';
+}
+function showTip(el){const t=GL[el.getAttribute('data-g')];if(!t)return;tip.textContent=t;tip.classList.add('on');tipEl=el;placeTip(el);}
+function hideTip(){tip.classList.remove('on');tipEl=null;}
+const glOf=e=>e.target&&e.target.closest?e.target.closest('.gl'):null;
+document.addEventListener('mouseover',e=>{const g=glOf(e);if(g)showTip(g);});
+document.addEventListener('mouseout',e=>{const g=glOf(e);if(g&&!g.contains(e.relatedTarget))hideTip();});
+document.addEventListener('focusin',e=>{const g=glOf(e);if(g)showTip(g);});
+document.addEventListener('focusout',e=>{if(glOf(e))hideTip();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')hideTip();});
+window.addEventListener('scroll',hideTip,{passive:true});
+
+/* ===== Potongan HTML bersama ===== */
+function statRow(label,value){return '<div class="stat-row"><span class="stat-label">'+label+'</span><span class="stat-value">'+value+'</span></div>';}
+function statRow2(label,value,sub){return '<div class="stat-row two"><span class="stat-label">'+label+'</span><span class="stat-value">'+value+'<span class="statsub">'+sub+'</span></span></div>';}
+function noteHtml(kind,label,text){return '<span class="tag tag-'+kind+'">'+label+'</span>'+text;}
+function chipHtml(kind,text){return '<span class="chip-status '+kind+'">'+text+'</span>';}
+function setChip(id,text,kind){const e=$('#'+id);if(!e)return;e.textContent=text||'';e.className='chip-status'+(kind?' '+kind:'');}
+function lockedHtml(){return '<div class="box">Tahap ini terbuka setelah kamu memilih satu langkah pada tahap <a href="#st-pick" style="color:var(--accent-blue);font-weight:600;text-decoration:none">Pilih uji</a>. Kamu juga bisa mematikan mode tebak pada bagian skenario.</div>';}
+function colHead(o,j){return '<th><span class="gdot" style="background:'+PALETTE[o.colorIdx[j]%PALETTE.length]+'"></span>'+o.cl[j]+'</th>';}
+function corner(o){return '<th style="text-align:left">'+o.rowName+'</th>';}
+function arw(act,i,d,sym,lab,dis){return '<button type="button" class="arw" data-act="'+act+'" data-i="'+i+'" data-d="'+d+'" aria-label="Pindahkan '+(act==='mvrow'?'baris':'kolom')+' ke '+lab+'"'+(dis?' disabled':'')+'>'+sym+'</button>';}
+function obsTable(o,sw){
+  const big=sw&&!o.size2;
+  let h='<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">'+o.rowName+'</th>',i,j;
+  for(j=0;j<o.c;j++)h+='<th><span class="gdot" style="background:'+PALETTE[o.colorIdx[j]%PALETTE.length]+'"></span>'+o.cl[j]+(big?arw('mvcol',j,-1,'◀','kiri',j===0)+arw('mvcol',j,1,'▶','kanan',j===o.c-1):'')+'</th>';
+  h+='<th>Total</th></tr></thead><tbody>';
+  for(i=0;i<o.r;i++){
+    h+='<tr><th scope="row"><span class="idx">'+(i+1)+'</span>'+o.rl[i]+(big?arw('mvrow',i,-1,'▲','atas',i===0)+arw('mvrow',i,1,'▼','bawah',i===o.r-1):'')+'</th>';
+    for(j=0;j<o.c;j++)h+='<td class="cellsub">'+o.n[i][j]+'<span class="subv">'+fmt(o.rowPct[i][j],1)+'%</span></td>';
+    h+='<td class="cellsub">'+o.rowTot[i]+'<span class="subv">100%</span></td></tr>';
+  }
+  h+='<tr class="tot"><th scope="row">Total</th>';
+  for(j=0;j<o.c;j++)h+='<td class="cellsub">'+o.colTot[j]+'<span class="subv">'+fmt(o.colTot[j]/o.N*100,1)+'%</span></td>';
+  return h+'<td class="cellsub">'+o.N+'</td></tr></tbody></table></div>';
+}
+function matTable(o,cell,tot){
+  let h='<div class="tbl-wrap"><table class="dt"><thead><tr>'+corner(o),i,j;
+  for(j=0;j<o.c;j++)h+=colHead(o,j);
+  h+=(tot?'<th>Total</th>':'')+'</tr></thead><tbody>';
+  for(i=0;i<o.r;i++){
+    h+='<tr><th scope="row"><span class="idx">'+(i+1)+'</span>'+o.rl[i]+'</th>';
+    for(j=0;j<o.c;j++){const c=cell(i,j);h+='<td class="'+(c.cls||'')+'">'+c.html+'</td>';}
+    if(tot)h+='<td>'+fmt(o.rowTot[i],1)+'</td>';
+    h+='</tr>';
+  }
+  if(tot){h+='<tr class="tot"><th scope="row">Total</th>';for(j=0;j<o.c;j++)h+='<td>'+fmt(o.colTot[j],1)+'</td>';h+='<td>'+fmt(o.N,1)+'</td></tr>';}
+  return h+'</tbody></table></div>';
+}
+function resTable(o){
+  let h='<div class="tbl-wrap"><table class="dt"><thead><tr>'+corner(o),i,j;
+  for(j=0;j<o.c;j++)h+=colHead(o,j);
+  h+='</tr></thead><tbody>';
+  for(i=0;i<o.r;i++){
+    h+='<tr><th scope="row"><span class="idx">'+(i+1)+'</span>'+o.rl[i]+'</th>';
+    for(j=0;j<o.c;j++){const z=o.R[i][j],cls=z>2?'rp':z<-2?'rn':'';h+='<td class="'+cls+'">'+fmt(z,2)+(z>2?'<small>lebih banyak</small>':z<-2?'<small>lebih sedikit</small>':'')+'</td>';}
+    h+='</tr>';
+  }
+  return h+'</tbody></table></div>';
+}
+function effTable(o){
+  const t=o.thr;
+  const rows=[['Sangat kecil','sangat kecil','< '+fmt(t[0],2)],['Kecil','kecil',fmt(t[0],2)+' sampai < '+fmt(t[1],2)],['Sedang','sedang',fmt(t[1],2)+' sampai < '+fmt(t[2],2)],['Besar','besar','≥ '+fmt(t[2],2)]];
+  let h='<div class="sub-title" style="margin-top:16px">Klasifikasi ukuran efek ('+o.effName+')</div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">Kategori</th><th>Rentang '+(o.size2?'phi':'V')+'</th></tr></thead><tbody>';
+  rows.forEach(r=>{const on=r[1]===o.effCat;h+='<tr'+(on?' class="hlrow"':'')+'><th scope="row">'+r[0]+(on?' (hasil ini)':'')+'</th><td>'+r[2]+'</td></tr>';});
+  return h+'</tbody></table></div><p class="hint">Batas klasifikasi adalah 0,10; 0,30; dan 0,50 dibagi akar k, dengan k = nilai terkecil antara (jumlah baris − 1) dan (jumlah kolom − 1). Pada tabel ini k = '+o.k+'. Kategori dibaca sebagai panduan kasar.</p>';
+}
+function legendHtml(o){return '<div class="legend">'+o.cl.map((l,j)=>'<span><span class="sw" style="background:'+PALETTE[o.colorIdx[j]%PALETTE.length]+';opacity:.85"></span>'+l+'</span>').join('')+'</div>';}
+
+
+/* ===== Tahap: skenario, populasi, hipotesis, deskriptif, asumsi, pilih uji ===== */
+function chooseCtx(){
+  if(state.mode==='pick'&&state.ctxId)return SCN.filter(s=>s.id===state.ctxId)[0];
+  const pool=SCN.filter(s=>state.filter==='all'||(state.filter==='g22')===is22Ctx(s));
+  const alt=pool.filter(s=>!state.pop||s!==state.pop.ctx);
+  return pick(alt.length?alt:pool);
+}
+function renderScenario(){
+  const c=state.pop.ctx;
+  $$('[data-act="mode"]').forEach(b=>b.setAttribute('aria-checked',b.dataset.v===state.mode?'true':'false'));
+  $$('[data-act="filter"]').forEach(b=>b.setAttribute('aria-checked',b.dataset.v===state.filter?'true':'false'));
+  $('#row-random').hidden=state.mode!=='random';
+  $('#row-pick').hidden=state.mode!=='pick';
+  if(state.mode==='pick'){
+    const pool=SCN.filter(s=>state.filter==='all'||(state.filter==='g22')===is22Ctx(s));
+    $('#scn-select').innerHTML=pool.map(s=>'<option value="'+s.id+'"'+(s===c?' selected':'')+'>'+s.rowName+' dan '+lcFirst(s.colName)+' ('+s.rows.length+' × '+s.cols.length+')</option>').join('');
+  }
+  $('#scn-sum').innerHTML='<div class="box"><div class="concl-title">Skenario aktif</div>'+statRow('Variabel baris',c.rowName+' ('+c.rows.join(', ')+')')+statRow('Variabel kolom',c.colName+' ('+c.cols.join(', ')+')')+statRow('Unit pengamatan',c.unit)+statRow('Ukuran tabel',c.rows.length+' × '+c.cols.length)+'</div>';
+  setChip('chip-scn',c.rows.length+' × '+c.cols.length+(state.mode==='pick'?' · dipilih':' · acak'));
+}
+const ARROW='<svg class="pop-arrow" viewBox="0 0 22 34" aria-hidden="true"><path d="M11 2v26M4 21l7 8 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function bigCircle(color,layout,hl){
+  const set=new Set(hl);let s='<svg class="pop-big" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="97" fill="'+color+'" fill-opacity=".08" stroke="'+color+'" stroke-opacity=".55" stroke-width="1.5"/>';
+  layout.forEach((p,i)=>{const x=(100+p[0]).toFixed(1),y=(100+p[1]).toFixed(1);s+=set.has(i)?'<circle cx="'+x+'" cy="'+y+'" r="4.3" fill="'+color+'"/>':'<circle cx="'+x+'" cy="'+y+'" r="2.4" fill="'+color+'" fill-opacity=".32"/>';});
   return s+'</svg>';
 }
-function histChart(W,hs){
-  const m={l:34,r:10,t:10,b:22},H=140,n=hs.length,x=i=>m.l+(n===1?(W-m.l-m.r)/2:i/(n-1)*(W-m.l-m.r)),y=p=>m.t+(1-p)*(H-m.t-m.b);
-  let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Riwayat nilai p">';
-  [0,0.5,1].forEach(v=>{s+='<line x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+r1(y(v))+'" y2="'+r1(y(v))+'" stroke="var(--line)"/><text x="'+(m.l-6)+'" y="'+r1(y(v)+4)+'" text-anchor="end" font-size="11" fill="var(--ink2)">'+fmt(v,1)+'</text>';});
-  s+='<line x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+r1(y(0.05))+'" y2="'+r1(y(0.05))+'" stroke="'+COL.b+'" stroke-dasharray="4 3"/><text x="'+(W-m.r)+'" y="'+r1(y(0.05)-4)+'" text-anchor="end" font-size="11" fill="var(--b-ink)">0,05</text>';
-  hs.forEach((h,i)=>{const sig=h.p<ALPHA,col=sig?COL.a:COL.grey;if(i===n-1)s+='<circle cx="'+r1(x(i))+'" cy="'+r1(y(h.p))+'" r="8" fill="none" stroke="'+col+'" stroke-width="1.6"/>';s+='<circle cx="'+r1(x(i))+'" cy="'+r1(y(h.p))+'" r="4.5" fill="'+col+'"/>';});
-  s+='<text x="'+m.l+'" y="'+(H-4)+'" font-size="11" fill="var(--ink2)">penarikan pertama</text><text x="'+(W-m.r)+'" y="'+(H-4)+'" text-anchor="end" font-size="11" fill="var(--ink2)">terbaru</text>';
+function smallCircle(color,n){
+  const R=54,rd=Math.max(1.3,Math.min(6,0.62*R/Math.sqrt(n))),pts=sunflower(n,R-rd-2);
+  let s='<svg class="pop-small" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="57" fill="'+color+'" fill-opacity=".1" stroke="'+color+'" stroke-width="1.5"/>';
+  pts.forEach(p=>{s+='<circle cx="'+(60+p[0]).toFixed(1)+'" cy="'+(60+p[1]).toFixed(1)+'" r="'+rd.toFixed(1)+'" fill="'+color+'"/>';});
   return s+'</svg>';
 }
+function renderPop(){
+  const s=state.sample,n=state.n,c=state.pop.ctx,g='#8e8e93';
+  $('#pop-intro').innerHTML='Titik terang adalah unit yang terpilih menjadi '+G('sampel','sampel')+'. Kita hanya melihat sampel, tetapi ingin menyimpulkan keadaan '+G('populasi','populasi')+'. Satu populasi berisi '+fmtInt(NPOP)+' unit dan tiap unit punya dua variabel kategoris. Populasi digambar dengan '+KDOT+' titik, jadi proporsi titik terang mengikuti proporsi sampel.';
+  $('#pop-body').innerHTML='<div class="pops"><div class="pop-col">'+bigCircle(g,state.pop.layout,s.hl)+'<div class="pop-sub">Populasi, N = '+fmtInt(NPOP)+' unit</div>'+ARROW+smallCircle(g,n)+'<div class="pop-sub">Sampel acak, n = '+n+' unit</div></div></div><p class="cap center">Tiap unit dikelompokkan menurut '+lcFirst(c.rowName)+' ('+c.rows.map(lr).join(', ')+') dan '+lcFirst(c.colName)+' ('+c.cols.map(lcFirst).join(', ')+').</p>';
+  setChip('chip-pop','n = '+n);
+}
+function hypNotes(o){
+  const two=o.c===2;
+  let n0,n1,lg;
+  if(two&&o.r===2){
+    n0='H<sub>0</sub>: π<sub>1</sub> = π<sub>2</sub>';n1='H<sub>1</sub>: π<sub>1</sub> ≠ π<sub>2</sub>';
+    lg='π<sub>1</sub> dan π<sub>2</sub> adalah proporsi '+lcFirst(o.cl[0])+' pada populasi pada kelompok 1 ('+lr(o.rl[0])+') dan kelompok 2 ('+lr(o.rl[1])+').';
+  }else if(two){
+    n0='H<sub>0</sub>: '+o.rl.map((_,i)=>'π<sub>'+(i+1)+'</sub>').join(' = ');n1='H<sub>1</sub>: sedikitnya satu π berbeda';
+    lg='π<sub>i</sub> adalah proporsi '+lcFirst(o.cl[0])+' pada populasi pada kelompok ke-i.';
+  }else{
+    n0='H<sub>0</sub>: kedua variabel saling bebas';n1='H<sub>1</sub>: kedua variabel berasosiasi';
+    lg='Saling bebas berarti sebaran '+lcFirst(o.colName)+' sama pada setiap kelompok '+lcFirst(o.rowName)+'.';
+  }
+  return '<div class="box"><div class="concl-title">Notasi hipotesis</div><p class="ip">'+n0+'</p><p class="ip">'+n1+'</p><p class="ip" style="color:var(--text-muted);font-size:13px">'+lg+'</p></div>';
+}
+function renderHyp(){
+  const o=state.an.o,c=state.pop.ctx,two=o.c===2;
+  const rowsTxt=joinList(o.rl.map(lr)),pair='antara '+lcFirst(o.rowName)+' dan '+lcFirst(o.colName);
+  const grp=c.unit+' yang '+c.verb+' '+rowsTxt;
+  const what=two?'proporsi '+lcFirst(o.cl[0]):'sebaran '+lcFirst(o.colName);
+  $('#hyp-body').innerHTML='<div class="box"><p class="ip"><b>H<sub>0</sub></b>: Tidak ada '+G('asosiasi')+' '+pair+' ('+what+' sama pada '+grp+').</p><p class="ip"><b>H<sub>1</sub></b>: Ada asosiasi '+pair+' ('+what+' berbeda pada '+grp+').</p></div>'+
+    '<p class="cap">Taraf signifikansi '+G('alfa','α')+' = 0,05.</p>';
+}
+function ordChanged(){const c=state.pop.ctx;return (c.ordRow&&state.rowOrder.some((v,i)=>v!==i))||(c.ordCol&&state.colOrder.some((v,i)=>v!==i));}
+function renderDesc(){
+  const o=state.an.o;
+  $('#desc-intro').innerHTML='Tahap ini meringkas data dalam '+G('tabel kontingensi')+' dan grafik proporsi. Bandingkan persentase antarbaris pada kolom yang sama. '+(o.size2?'Tombol tukar mengubah urutan baris dan kolom. Tanda selisih proporsi dan odds ratio ikut berubah, sedangkan nilai p dan ukuran efek tetap.':'Panah pada tabel memindahkan urutan baris dan kolom. Nilai χ², nilai p, dan ukuran efek tidak bergantung pada urutan.');
+  let h='<div class="sub">';
+  if(o.size2)h+='<div class="swapbar"><button type="button" class="btn sm" data-act="swaprow">⇅ Tukar baris</button><button type="button" class="btn sm" data-act="swapcol">⇄ Tukar kolom</button></div>';
+  h+='<div class="sub-title">'+G('frekuensi teramati','Frekuensi teramati')+'</div>'+obsTable(o,true);
+  h+='<p class="hint">Angka kecil di bawah jumlah adalah persentase baris, yaitu proporsi tiap kolom di dalam baris itu.</p>';
+  if(ordChanged())h+='<p class="hint">Salah satu variabel berskala '+G('ordinal')+'. Menukar urutan kategori tidak mengubah hasil uji chi-square, tetapi pola menjadi lebih sulit dibaca karena urutan alaminya terganggu.</p>';
+  h+='</div><div class="sub"><div class="sub-title">Proporsi tiap kelompok</div>'+legendHtml(o)+'<div class="chart-wrap"><div data-chart="stack"></div></div>';
+  h+='<p class="hint" style="margin-top:0">Tiap batang menunjukkan komposisi '+lcFirst(o.colName)+' dalam satu baris, sehingga semua batang berpanjang sama (100%). Batang paling bawah adalah komposisi gabungan seluruh unit. Bila batang suatu baris mirip dengan batang gabungan, baris itu tidak menyimpang dari keadaan tanpa asosiasi. Jumlah unit tiap baris (n) tertulis di sebelah kiri batang.</p></div>';
+  $('#desc-body').innerHTML=h;
+  setChip('chip-desc',o.r+' × '+o.c+' · N = '+o.N);
+}
+function renderAsm(){
+  const an=state.an,o=an.o;
+  let h='<div class="sub"><div class="sub-title">'+G('independen','Independensi')+'</div><div class="box">Sampel ditarik acak sederhana dari populasi, sehingga tiap unit hanya masuk satu sel dan tidak saling memengaruhi. Asumsi ini dipenuhi lewat desain pengambilan data dan tidak diuji secara statistika. Jika unit-unit berada dalam satu klaster (misalnya satu kandang atau satu peternakan), mereka dapat saling memengaruhi sehingga asumsi ini perlu dipertimbangkan.</div></div>';
+  h+='<div class="sub"><div class="sub-title">Tabel frekuensi teramati dan '+G('frekuensi harapan','frekuensi harapan')+'</div><div class="cols">';
+  h+='<div><div class="hint" style="margin:0 0 6px"><b>Frekuensi teramati (O)</b></div>'+matTable(o,(i,j)=>({html:String(o.n[i][j])}),true)+'</div>';
+  h+='<div><div class="hint" style="margin:0 0 6px"><b>Frekuensi harapan (E)</b> jika tidak ada asosiasi</div>'+matTable(o,(i,j)=>{const e=o.E[i][j];return {html:fmt(e,2),cls:e<1?'vlowE':e<5?'lowE':''};},true)+'</div>';
+  h+='<div><div class="hint" style="margin:0 0 6px"><b>Selisih (O − E)</b></div>'+matTable(o,(i,j)=>{const d=o.n[i][j]-o.E[i][j];return {html:(d>0.005?'+':'')+fmt(d,2)};},false)+'</div>';
+  h+='</div><div class="legend" style="margin:12px 0 0"><span><span class="sw" style="background:var(--lowE-bg);border:1px solid var(--lowE-tx)"></span>Frekuensi harapan &lt; 5</span><span><span class="sw" style="background:var(--vlowE-bg);border:1px solid var(--vlowE-tx)"></span>Frekuensi harapan &lt; 1</span></div><p class="hint">'+(o.size2?'Syarat uji chi-square yaitu semua sel pada tabel frekuensi harapan memiliki nilai ≥ 5. Jika syarat ini tidak terpenuhi, gunakan uji eksak Fisher. Pada n kecil, frekuensi harapan mudah menjadi kecil. Menaikkan n dapat memperbaiki keadaan ini.':'Syarat uji chi-square pada tabel yang lebih besar yaitu semua sel pada tabel frekuensi harapan bernilai ≥ 1, dan sel yang bernilai &lt; 5 tidak lebih dari 20%. Jika syarat ini tidak terpenuhi, gabungkan kategori yang bermakna secara biologis. Pada n kecil, frekuensi harapan mudah menjadi kecil. Menaikkan n dapat memperbaiki keadaan ini.')+'</p></div>';
+  h+='<div class="sub"><div class="sub-title">Ringkasan syarat uji (berdasarkan frekuensi harapan)</div><div class="stat-grid">';
+  h+=statRow('Pola pengukuran','Independen (unit berbeda)')+statRow('Ukuran tabel kontingensi',o.r+' × '+o.c+(o.size2?' (tabel 2×2)':' (lebih besar dari 2×2)'))+statRow('Frekuensi harapan terkecil',fmt(o.minE,2));
+  if(o.size2)h+=statRow('Apakah semua frekuensi harapan bernilai ≥ 5?',o.minE>=5?chipHtml('ok','Ya'):chipHtml('warn','Tidak'));
+  else h+=statRow2('Apakah semua sel bernilai ≥ 1?',o.lt1===0?chipHtml('ok','Ya'):chipHtml('warn','Tidak'),'(jumlah sel &lt; 1 sebanyak '+o.lt1+' sel)')+statRow2('Apakah sel bernilai &lt; 5 tidak lebih dari 20%?',o.pctLt5<=20?chipHtml('ok','Ya'):chipHtml('warn','Tidak'),'('+o.lt5+' dari '+(o.r*o.c)+' sel ['+fmt(o.pctLt5,2)+'%] memiliki nilai &lt; 5)');
+  h+='</div><div class="box">'+(o.okChi?noteHtml('ok','Terpenuhi','Syarat uji chi-square terpenuhi.'):noteHtml('warn','Belum terpenuhi',o.size2?'Ada sel dengan frekuensi harapan < 5. Pada tabel 2×2, uji Fisher exact menjadi pilihan.':'Gabungkan kategori yang bermakna secara biologis, atau naikkan n, lalu ulangi pemeriksaan.'))+'</div>';
+  h+='</div>';
+  $('#asm-body').innerHTML=h;
+  setChip('chip-asm',o.okChi?'Syarat terpenuhi':'Syarat belum terpenuhi',o.okChi?'ok':'warn');
+}
+function renderPick(){
+  const an=state.an,el=$('#pick-body'),ok=an.size2;
+  const intro=ok?'Kedua variabel masing-masing punya dua kategori, jadi tabelnya 2×2.':'Tabel kontingensi ini lebih besar dari 2×2 ('+an.o.r+' baris × '+an.o.c+' kolom).';
+  if(locked()){
+    el.innerHTML='<p class="hint" style="margin-top:0">'+intro+' Berdasarkan tabel dan pemeriksaan asumsi di atas, langkah mana yang kamu pilih?</p><div class="choices">'+TESTS.filter(t=>t.des==='any'||t.des===(ok?'g22':'big')).map(t=>'<button type="button" class="choice" data-act="guess" data-id="'+t.id+'">'+t.name+'<small>'+t.sub+'</small></button>').join('')+'</div><p style="margin:12px 0 0"><button type="button" class="btn ghost" data-act="skip">Tampilkan jawaban tanpa menebak</button></p>';
+    setChip('chip-pick','');return;
+  }
+  let h='',chip='',kind='';
+  if(state.guessMode&&state.guess&&state.guess!=='skip'){
+    const g=TESTS.filter(t=>t.id===state.guess)[0];
+    if(g.id===an.rec){h+='<div class="box">'+noteHtml('ok','Tepat','Kamu memilih '+g.name+'.')+'</div>';chip='Tepat';kind='ok';}
+    else if(g.id==='fisher'&&ok&&an.rec==='chi'){h+='<div class="box">'+noteHtml('info','Sah, tetapi bukan yang dianjurkan','Uji Fisher exact tetap sah pada tabel ini. Karena semua frekuensi harapan ≥ 5, uji chi-square sudah memadai.')+'</div>';chip='Sah';kind='ok';}
+    else if(g.id==='fisher'&&!ok){h+='<div class="box">'+noteHtml('warn','Belum tepat','Pada materi ini uji Fisher exact dipakai untuk tabel 2×2, sedangkan tabel ini '+an.o.r+'×'+an.o.c+'. '+intro)+'</div>';chip='Belum tepat';kind='warn';}
+    else if(g.id==='merge'&&ok){h+='<div class="box">'+noteHtml('warn','Belum tepat','Tabel 2×2 tidak bisa digabung lagi. Bila ada frekuensi harapan di bawah 5, pilihannya uji Fisher exact.')+'</div>';chip='Belum tepat';kind='warn';}
+    else{h+='<div class="box">'+noteHtml('warn','Belum tepat','Kamu memilih '+g.name+'. Berdasarkan frekuensi harapan, langkah yang dianjurkan berbeda.')+'</div>';chip='Belum tepat';kind='warn';}
+  }
+  h+='<div class="box"><div class="concl-title">Langkah yang dianjurkan</div><div class="sg-name">'+tname(an.rec)+'</div><p class="ip">'+recReason()+'</p></div>';
+  h+=hypNotes(an.o);
+  h+='<details class="inline" style="margin-top:10px"><summary>Catatan tentang aturan pemilihan uji</summary><p>Aturan di sini dipakai untuk latihan. Pada tabel 2×2, chi-square dipakai bila semua frekuensi harapan bernilai 5 atau lebih, dan Fisher exact bila ada yang di bawah 5. Pada tabel yang lebih besar, chi-square dipakai bila semua sel memiliki frekuensi harapan 1 atau lebih dan sel dengan frekuensi harapan di bawah 5 tidak lebih dari 20%. Sumber lain memakai batas yang sedikit berbeda, dan ada juga yang menyarankan Fisher exact lebih sering. Bila sel perlu digabung, pertimbangan biologis menentukan penggabungannya, bukan angka semata.</p></details>';
+  el.innerHTML=h;
+  setChip('chip-pick',chip,kind);
+}
+
+/* ===== Tahap terkunci sampai tebakan ===== */
+function renderTest(){
+  const el=$('#test-body');
+  if(locked()){el.innerHTML=lockedHtml();setChip('chip-test','');return;}
+  const an=state.an,o=an.o,r=getResult(an.rec),sig=r.p<ALPHA,isF=r.isF;
+  let h='';
+  if(r.flag)h+='<div class="box" style="margin-bottom:14px">'+noteHtml('warn','Perhatian','Syarat chi-square belum terpenuhi pada tabel ini. Hasil di bawah ditampilkan sebagai gambaran dan belum layak dilaporkan. Gabungkan kategori yang bermakna, atau naikkan n.')+'</div>';
+  h+='<div class="res-head"><span class="res-name">'+r.title+' · α = 0,05</span></div><div class="stat-grid">';
+  if(isF)h+=statRow('Statistik uji','tidak ada (Fisher exact)')+statRow('Nilai p (dua arah)',fmtP(r.p));
+  else h+=statRow('Statistik uji','χ² (Pearson)')+statRow('Nilai χ²',fmt(o.chi2,2))+statRow(G('derajat bebas','Derajat bebas')+' (df)',String(o.df))+statRow('Nilai p',fmtP(r.p));
+  h+='</div><p class="cap" style="margin-top:4px">Nilai p ('+fmtP(r.p)+') '+(sig?'lebih kecil daripada':'sama dengan atau lebih besar daripada')+' α (0,05).'+(isF?'':' Nilai kritis pada α = 0,05 adalah '+fmt(S.critChi(o.df),2)+'.')+'</p>';
+  h+='<div class="chart-wrap"><div data-chart="test"></div></div>';
+  h+=isF?'<div class="legend"><span><span class="sw" style="background:#ff3b30;opacity:.6"></span>Tabel yang sama jarangnya atau lebih jarang daripada tabel teramati (jumlah peluangnya adalah nilai p)</span><span><span class="sw" style="background:#0071e3;opacity:.45"></span>Tabel yang lebih sering</span><span><span class="sw" style="background:var(--text-main)"></span>Tabel teramati</span></div><p class="hint" style="margin-top:0">Fisher exact tidak memiliki statistik uji dan daerah kritis. Grafik menunjukkan peluang tiap kemungkinan isi sel baris 1, kolom 1 jika H<sub>0</sub> benar dan semua total baris dan kolom tetap. Nilai p adalah jumlah peluang batang merah.</p>'
+    :'<div class="legend"><span><span class="sw" style="background:#ff3b30;opacity:.35"></span>Daerah kritis (penolakan H<sub>0</sub>)</span><span><span class="sw" style="background:#ff3b30"></span>Nilai kritis (garis putus-putus)</span><span><span class="sw" style="background:#0071e3"></span>Nilai statistik uji</span></div><p class="hint" style="margin-top:0">Kurva chi-square dengan df = '+o.df+'. Bila titik berada di daerah merah, H<sub>0</sub> ditolak.</p>';
+  h+='<div class="verdict-status '+(sig?'reject':'fail')+'">'+(sig?'Tolak H<sub>0</sub>':'Gagal menolak H<sub>0</sub>')+'</div><p class="verdict-sub">'+(sig?'Ada bukti asosiasi antara '+lcFirst(o.rowName)+' dan '+lcFirst(o.colName)+'.':'Bukti belum cukup untuk menyatakan ada asosiasi antara '+lcFirst(o.rowName)+' dan '+lcFirst(o.colName)+'.')+'</p>';
+  h+=pInterp(o,r);
+  const ids=an.size2?['chi','fisher']:['chi'];
+  h+='<details class="inline" style="margin-top:14px"><summary>Bandingkan semua uji pada data yang sama</summary><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">Uji</th><th>Nilai p</th></tr></thead><tbody>'+ids.map(id=>'<tr><th scope="row">'+TESTS.filter(t=>t.id===id)[0].name+(id===an.rec?' (dianjurkan)':'')+'</th><td>'+fmtP(an.tests[id].p)+'</td></tr>').join('')+'</tbody></table></div></details>';
+  el.innerHTML=h;
+  setChip('chip-test',sig?'Tolak H0':'Gagal menolak H0',sig?'bad':'ok');
+}
+function renderEff(){
+  const el=$('#eff-body');
+  if(locked()){el.innerHTML=lockedHtml();setChip('chip-eff','');return;}
+  const an=state.an,o=an.o,r=getResult(an.rec),sig=r.p<ALPHA;
+  let h='<div class="stat-grid">'+statRow('Nama ukuran efek',o.size2?G('phi','Phi (φ)'):G("Cramér's V","Cramér's V"))+statRow('Nilai',fmt(o.V,3));
+  if(!o.size2)h+=statRow('Nilai k = min(baris − 1, kolom − 1)',String(o.k));
+  h+=statRow('Kategori ukuran efek',o.effCat)+'</div>'+effTable(o)+'<div style="margin-top:14px">'+effInterp(o,sig)+'</div>';
+  el.innerHTML=h;
+  setChip('chip-eff','Efek '+o.effCat);
+}
+function renderPost(){
+  const an=state.an,o=an.o,el=$('#post-body'),sec=$('#st-post');
+  if(an.size2){
+    $('#post-title').innerHTML=G('selisih proporsi','Selisih proporsi');sec.dataset.nav='Selisih';
+    $('#post-intro').textContent='Tahap ini menunjukkan besar dan arah asosiasi pada tabel 2×2 lewat selisih proporsi dengan CI 95%.';
+  }else{
+    $('#post-title').innerHTML='Penelusuran sel ('+G('residual terstandar','residual terstandar')+')';sec.dataset.nav='Penelusuran';
+    $('#post-intro').textContent='Tahap ini menunjukkan sel mana yang berkontribusi pada asosiasi. Hasilnya dibaca bila uji menolak H₀.';
+  }
+  if(locked()){el.innerHTML=lockedHtml();setChip('chip-post','');return;}
+  const r=getResult(an.rec),sig=r.p<ALPHA;
+  if(an.size2){
+    const d=o.diff,in0=(d.lo<=0&&d.hi>=0);
+    el.innerHTML='<div class="stat-grid">'+statRow('Proporsi '+o.cl[0]+' pada '+o.rl[0],fmt(d.p1,1)+'% ('+o.n[0][0]+'/'+o.rowTot[0]+')')+statRow('Proporsi '+o.cl[0]+' pada '+o.rl[1],fmt(d.p2,1)+'% ('+o.n[1][0]+'/'+o.rowTot[1]+')')+statRow('Selisih proporsi ('+o.rl[0]+' − '+o.rl[1]+')',fmt(d.diff,1)+' poin persentase')+statRow(G('CI','CI 95%')+' (Wald)',ciTxt(d.lo,d.hi,1))+statRow('Apakah CI mencakup 0?',in0?'Ya':'Tidak')+'</div><div class="chart-wrap"><div data-chart="diff"></div></div><div style="margin-top:6px">'+diffInterp(o)+'</div>';
+    setChip('chip-post',in0?'CI selisih mencakup 0':'CI selisih tidak mencakup 0',in0?'ok':'bad');
+  }else{
+    el.innerHTML=resTable(o)+'<p class="hint">Sel berwarna menunjukkan kategori yang lebih banyak (biru) atau lebih sedikit (jingga) dari yang diharapkan bila tidak ada asosiasi. Angka di dalam sel adalah nilai z. Nilai di atas 2 atau di bawah −2 dianggap menonjol. Residual dibaca bila uji menolak H<sub>0</sub>, dan dengan banyak sel sorotan dibaca sebagai petunjuk.</p><div style="margin-top:14px">'+residInterp(o,sig)+'</div>';
+    setChip('chip-post',sig?(o.flagged.length?o.flagged.length+' sel menonjol':'Tidak ada sel menonjol'):'Tidak ditafsirkan',sig?(o.flagged.length?'bad':'warn'):'');
+  }
+}
+function renderOR(){
+  const an=state.an,o=an.o,sec=$('#st-or');
+  sec.hidden=!an.size2;
+  if(!an.size2){$('#or-body').innerHTML='';setChip('chip-or','');return;}
+  if(locked()){$('#or-body').innerHTML=lockedHtml();setChip('chip-or','');return;}
+  const r=getResult(an.rec),isF=r.isF,ow=o.orWald,of=o.orFisher;
+  const od=i=>o.n[i][1]===0?(o.n[i][0]===0?NaN:Infinity):o.n[i][0]/o.n[i][1];
+  let om=statRow('Odds ratio sampel ('+lr(o.rl[0])+' dibanding '+lr(o.rl[1])+')',fmt(ow.est,2))+statRow('CI 95% (Wald)',ow.anyZero?'tidak tersedia (ada sel bernilai 0)':ciTxt(ow.lo,ow.hi,2));
+  if(isF)om+=statRow('Estimasi odds ratio bersyarat (Fisher)',fmt(of.est,2))+statRow('CI 95% (exact)',ciTxt(of.lo,of.hi,2));
+  const prim=orPrim(o,isF),incl=orIncl(prim),noCI=(isNaN(prim.lo)||isNaN(prim.hi));
+  om+=statRow('Apakah CI mencakup 1?',noCI?'tidak tersedia':(incl?'Ya':'Tidak'));
+  $('#or-body').innerHTML='<p class="hint" style="margin-top:0">'+G('odds','Odds')+' adalah jumlah unit dengan '+lcFirst(o.cl[0])+' dibagi jumlah unit dengan '+lcFirst(o.cl[1])+' dalam satu kelompok.</p><ul class="odds"><li>Odds untuk '+lr(o.rl[0])+' = '+o.n[0][0]+'/'+o.n[0][1]+' = '+fmt(od(0),2)+'</li><li>Odds untuk '+lr(o.rl[1])+' = '+o.n[1][0]+'/'+o.n[1][1]+' = '+fmt(od(1),2)+'</li><li>Odds ratio = '+fmt(od(0),2)+'/'+fmt(od(1),2)+' = '+fmt(ow.est,2)+'</li></ul><div class="stat-grid">'+om+'</div><div class="chart-wrap"><div data-chart="or"></div></div><p class="hint" style="margin-top:0">'+(isF?'Grafik memakai estimasi bersyarat dan CI exact.':'Grafik memakai odds ratio sampel dan CI Wald.')+' Garis putus-putus menandai keadaan tanpa asosiasi (odds ratio 1).</p><div style="margin-top:10px">'+orInterp(o,isF)+'</div>';
+  setChip('chip-or',noCI?'CI odds ratio tidak tersedia':(incl?'CI odds ratio mencakup 1':'CI odds ratio tidak mencakup 1'),noCI?'warn':(incl?'ok':'bad'));
+}
+function renderConcl(){
+  const el=$('#concl-body');
+  if(locked()){el.innerHTML=lockedHtml();return;}
+  const r=getResult(state.an.rec);
+  el.innerHTML='<div class="box"><div class="concl-title">Kesimpulan statistika (untuk laporan ilmiah)</div><div id="concl-sci">'+r.sentence+'</div><div class="btn-row" style="margin-top:12px"><button type="button" class="btn" data-act="copy" data-target="concl-sci" data-label="Salin versi ilmiah">Salin versi ilmiah</button></div></div><div class="box"><div class="concl-title">Kesimpulan untuk orang awam</div><div id="concl-lay">'+r.lay+'</div><div class="btn-row" style="margin-top:12px"><button type="button" class="btn" data-act="copy" data-target="concl-lay" data-label="Salin versi awam">Salin versi awam</button></div></div>';
+}
+
+/* ===== Simulasi dan riwayat ===== */
+function runSim(){
+  const ps=[];let nChi=0,nFis=0,nBad=0;
+  for(let k=0;k<100;k++){
+    const o=analyzeCounts(drawCounts(state.n)),rec=recOf(o);
+    if(rec==='fisher'){ps.push(o.fisher.p);nFis++;}else{ps.push(o.pChi);if(rec==='merge')nBad++;else nChi++;}
+  }
+  state.sim={n:state.n,ps:ps,nChi:nChi,nFis:nFis,nBad:nBad,ctx:state.pop.ctx};
+}
+function simSummary(){
+  const sm=state.sim,rej=sm.ps.filter(p=>p<ALPHA).length;
+  let h='<div class="tiles"><div class="tile"><div class="k">Sampel yang menolak H<sub>0</sub> (p < 0,05)</div><div class="v">'+rej+' dari 100</div><div class="s">n = '+sm.n+' pada tiap sampel</div></div><div class="tile"><div class="k">Uji yang dipakai pada tiap sampel</div><div class="v" style="font-size:16px;line-height:1.5">Chi-square: '+sm.nChi+'<br>Fisher exact: '+sm.nFis+'<br>Syarat belum terpenuhi: '+sm.nBad+'</div><div class="s">mengikuti langkah yang dianjurkan</div></div></div>';
+  h+='<div class="chart-wrap"><div data-chart="sim"></div></div>';
+  let txt;
+  if(!state.revealed)txt='Nilai p bervariasi antar sampel dan sebagian sampel menolak H<sub>0</sub> sedangkan sebagian lain tidak. Buka kebenaran populasi pada tahap terakhir untuk melihat arti persentase ini.';
+  else if(state.pop.h0true)txt='Pada populasi ini H<sub>0</sub> benar (tidak ada asosiasi). Sampel yang menolak H<sub>0</sub> adalah '+G('galat tipe I','galat tipe I'
+)+', dan jumlahnya seharusnya mendekati 5 dari 100 ('+rej+' pada simulasi ini). Angkanya berubah tiap simulasi karena sampel ditarik acak.';
+  else txt='Pada populasi ini H<sub>0</sub> salah (asosiasi ada). Persentase sampel yang menolak H<sub>0</sub> ('+rej+'%) menggambarkan '+G('power','power')+' uji pada n = '+sm.n+'. Sampel yang gagal menolak H<sub>0</sub> ('+(100-rej)+' dari 100) adalah '+G('galat tipe II','galat tipe II')+'. Naikkan n lalu simulasikan lagi untuk melihat power meningkat.';
+  return h+'<div class="box"><div class="concl-title">Arti simulasi ini</div><p class="ip">'+txt+'</p></div>';
+}
+function renderMulti(){
+  const el=$('#multi-body');
+  if(locked()){el.innerHTML=lockedHtml();setChip('chip-multi','');return;}
+  const hs=state.history,nsig=hs.filter(x=>x.p<ALPHA).length;
+  let h='<div class="sub"><div class="sub-title">Penarikan berturut-turut</div><div class="chart-wrap"><div data-chart="hist"></div></div><p class="hint" style="margin-top:0">'+nsig+' dari '+hs.length+' penarikan menghasilkan p < 0,05 (titik biru), diukur dengan langkah yang dianjurkan pada tiap penarikan. Titik dengan cincin adalah penarikan terbaru. Tombol Tarik ulang sampel di bagian atas menambah titik baru.</p></div>';
+  h+='<div class="sub"><div class="sub-title">Simulasi 100 sampel sekaligus</div><p class="hint" style="margin-top:0">Menarik 100 sampel dari populasi yang sama dengan n yang sedang dipilih, lalu menampilkan sebaran nilai p-nya.</p><div class="btn-row" style="margin:10px 0"><button type="button" class="btn primary" data-act="sim">Tarik 100 sampel</button></div><div id="sim-out">'+(state.sim?simSummary():'')+'</div></div>';
+  el.innerHTML=h;
+  setChip('chip-multi',nsig+' dari '+hs.length+' menolak H0');
+}
+
+/* ===== Kebenaran populasi ===== */
+function renderTruth(){
+  const el=$('#truth-body'),p=state.pop;
+  if(locked()){el.innerHTML=lockedHtml();setChip('chip-truth','');return;}
+  if(!state.revealed){el.innerHTML='<div class="box center">Sudah menentukan kesimpulan? Bandingkan dengan keadaan populasi yang sebenarnya.<div style="margin-top:14px"><button type="button" class="btn primary" data-act="reveal">Buka kebenaran populasi</button></div></div>';setChip('chip-truth','');return;}
+  const an=state.an,o=an.o,r=getResult(an.rec),sig=r.p<ALPHA,po=analyzeCounts(p.popN);
+  let h='<div class="sub"><div class="sub-title">Tabel populasi ('+fmtInt(NPOP)+' unit)</div>'+obsTable(po,false)+'</div>';
+  h+='<div class="sub"><div class="sub-title">Estimasi sampel dibanding nilai populasi</div>';
+  const yn=ok=>ok?chipHtml('ok','Ya'):chipHtml('bad','Tidak');
+  if(po.size2){
+    const d=o.diff,q=orPrim(o,r.isF);
+    const dOk=d.lo<=po.diff.diff&&po.diff.diff<=d.hi,oOk=!isNaN(q.lo)&&isFinite(po.orWald.est)&&q.lo<=po.orWald.est&&po.orWald.est<=q.hi;
+    h+='<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">Ukuran</th><th>Estimasi sampel</th><th>CI 95% sampel</th><th>Nilai populasi</th><th>CI menangkap nilai populasi?</th></tr></thead><tbody>'+
+      '<tr><th scope="row">Selisih proporsi (poin persentase)</th><td>'+fmt(d.diff,1)+'</td><td>'+ciTxt(d.lo,d.hi,1)+'</td><td>'+fmt(po.diff.diff,1)+'</td><td>'+yn(dOk)+'</td></tr>'+
+      '<tr><th scope="row">Odds ratio</th><td>'+fmt(q.est,2)+'</td><td>'+(isNaN(q.lo)?'tidak tersedia':ciTxt(q.lo,q.hi,2))+'</td><td>'+fmt(po.orWald.est,2)+'</td><td>'+(isNaN(q.lo)?'–':yn(oOk))+'</td></tr>'+
+      '<tr><th scope="row">'+o.effName+'</th><td>'+fmt(o.V,2)+'</td><td>–</td><td>'+fmt(po.V,2)+'</td><td>–</td></tr></tbody></table></div>';
+    h+='<p class="hint">CI 95% disusun agar, bila penarikan sampel diulang berkali-kali, sekitar 95% CI menangkap nilai populasi. CI dari satu sampel bisa meleset (sekitar 1 dari 20). Tarik ulang sampel beberapa kali dan perhatikan seberapa sering CI meleset.</p>';
+  }else{
+    h+='<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">Ukuran</th><th>Sampel</th><th>Populasi</th></tr></thead><tbody><tr><th scope="row">'+o.effName+' (k = '+o.k+')</th><td>'+fmt(o.V,2)+' ('+o.effCat+')</td><td>'+fmt(po.V,2)+' ('+po.effCat+')</td></tr></tbody></table></div>';
+    if(o.flagged.length){
+      h+='<div class="sub-title" style="margin-top:16px">Sel yang menonjol di sampel</div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">Sel</th><th>z sampel</th><th>z populasi</th><th>Arah sama dengan populasi?</th></tr></thead><tbody>'+
+        o.flagged.map(x=>{const zp=po.R[x.i][x.j];const same=!p.h0true&&Math.abs(zp)>2&&(zp>0)===(x.z>0);return '<tr><th scope="row">'+o.rl[x.i]+' × '+o.cl[x.j]+'</th><td>'+fmt(x.z,2)+'</td><td>'+fmt(zp,2)+'</td><td>'+(same?chipHtml('ok','Ya'):chipHtml('bad','Tidak'))+'</td></tr>';}).join('')+'</tbody></table></div>';
+      h+='<p class="hint">'+(p.h0true?'Pada populasi tidak ada asosiasi, sehingga sel yang menonjol di sampel muncul karena kebetulan.':'Sel dianggap searah bila z populasi juga melewati batas 2 dengan tanda yang sama. Sorotan di sampel adalah petunjuk, dan sebagian bisa meleset karena banyak sel diperiksa sekaligus.')+'</p>';
+    }else h+='<p class="hint">Tidak ada sel yang menonjol di sampel ini.</p>';
+  }
+  h+='</div><div class="sub"><div class="stat-grid">'+statRow('Ukuran efek populasi ('+po.effName+')',fmt(po.V,2)+' ('+po.effCat+')')+statRow('H<sub>0</sub> (tidak ada asosiasi)',p.h0true?'benar':'salah')+'</div>';
+  let v,kind;
+  if(sig&&!p.h0true){v='Keputusan benar. Asosiasi memang ada pada populasi dan berhasil terdeteksi oleh sampel ini.';kind='ok';}
+  else if(sig&&p.h0true){v='Positif palsu (galat tipe I). H<sub>0</sub> sebenarnya benar, tetapi sampel ini kebetulan menghasilkan p < 0,05.';kind='warn';}
+  else if(!sig&&!p.h0true){v='Negatif palsu (galat tipe II). Asosiasi ada pada populasi, tetapi sampel ini belum cukup kuat untuk mendeteksinya. Coba naikkan n atau tarik ulang sampel.';kind='warn';}
+  else{v='Keputusan benar. H<sub>0</sub> benar dan tidak ditolak.';kind='ok';}
+  h+='<div class="box" style="margin-top:10px">'+noteHtml(kind,kind==='ok'?'Keputusan':'Galat',v)+'</div><p class="hint">Perbedaan antara tabel sampel dan tabel populasi disebut '+G('galat sampling')+'. Tabel populasi dipakai sebagai acuan keadaan sebenarnya.</p></div>';
+  el.innerHTML=h;
+  setChip('chip-truth',p.h0true?'H0 benar':'H0 salah',p.h0true?'ok':'warn');
+}
+function renderGated(){renderTest();renderEff();renderPost();renderOR();renderConcl();renderMulti();renderTruth();}
+
+/* ===== Navigasi tahap ===== */
+let activeId=null;
+function renumber(){
+  let k=0,h='';
+  $$('section.step[data-nav]').forEach(s=>{
+    if(s.hidden)return;k++;
+    const n=s.querySelector('.step-num');if(n)n.textContent=k;
+    h+='<a href="#'+s.id+'"'+(s.id===activeId?' class="active"':'')+'><b>'+k+'</b>'+s.dataset.nav+'</a>';
+  });
+  $('#stepnav').innerHTML=h;
+  updateNavArrows();
+}
+function updateNavArrows(){
+  const n=$('#stepnav'),w=$('#stepnav-wrap');if(!n||!w)return;
+  const max=n.scrollWidth-n.clientWidth;
+  w.classList.toggle('can-left',n.scrollLeft>4);
+  w.classList.toggle('can-right',n.scrollLeft<max-4);
+}
+function centerNavLink(a){const n=$('#stepnav');if(!n||!a||!n.scrollTo)return;n.scrollTo({left:a.offsetLeft-(n.clientWidth-a.offsetWidth)/2,behavior:'smooth'});}
+function updateProgress(){
+  const h=document.documentElement,max=h.scrollHeight-h.clientHeight,p=max>0?h.scrollTop/max:0;
+  $('#prog').style.width=(clamp(p,0,1)*100).toFixed(1)+'%';
+}
+
+/* ===== Grafik ===== */
 function drawCharts(){
-  const an=state.an,o=an.o,r=getResult(an.rec);
-  document.querySelectorAll('[data-chart]').forEach(el=>{
-    const W=Math.max(260,Math.floor(el.clientWidth||el.parentElement.clientWidth||640)),k=el.dataset.chart;
-    if(k==='stack')el.innerHTML=stackChart(W);
-    else if(k==='test')el.innerHTML=r.isF?fisherChart(W):chiChart(W);
-    else if(k==='diff')el.innerHTML=forest(W,{est:o.diff.diff,lo:o.diff.lo,hi:o.diff.hi,ref:0,log:false,refText:'0 (tidak ada selisih)'});
-    else if(k==='or'){
-      const q=orPrim(o,r.isF);
-      el.innerHTML=isNaN(q.lo)||isNaN(q.hi)?'<p class="hint">CI tidak dapat dihitung karena ada sel bernilai 0.</p>':forest(W,{est:q.est,lo:q.lo,hi:q.hi,ref:1,log:true,refText:'1 (tidak ada asosiasi)'});
+  const an=state.an,o=an.o;
+  $$('[data-chart]').forEach(el=>{
+    const k=el.dataset.chart;
+    if(k==='stack')drawStacked(el,o);
+    else if(k==='test'){const r=getResult(an.rec);if(r.isF)drawFisherDist(el,o.fisher);else drawChiCurve(el,{df:o.df,crit:S.critChi(o.df),stat:o.chi2,reject:o.pChi<ALPHA});}
+    else if(k==='diff'&&o.size2)drawForest(el,{est:o.diff.diff,lo:o.diff.lo,hi:o.diff.hi,ref:0,log:false,refText:'0 (tidak ada selisih)'});
+    else if(k==='or'&&o.size2){
+      const q=orPrim(o,getResult(an.rec).isF);
+      if(isNaN(q.lo)||isNaN(q.hi))el.innerHTML='<p class="hint">CI tidak dapat dihitung karena ada sel bernilai 0.</p>';
+      else drawForest(el,{est:q.est,lo:q.lo,hi:q.hi,ref:1,log:true,refText:'1 (tidak ada asosiasi)'});
     }
-    else if(k==='hist')el.innerHTML=histChart(W,state.history);
+    else if(k==='hist')drawHistory(el,state.history);
+    else if(k==='sim'&&state.sim)drawSimHist(el,state.sim);
   });
 }
 
-/* ----- Alur ----- */
-function renderAll(){renderBar();renderHyp();renderIllu();renderDesc();renderViz();renderAssump();renderChoose();renderResults();drawCharts();}
-function renderGuess(){renderChoose();renderResults();drawCharts();}
+/* ===== Alur ===== */
+function renderAll(){renderScenario();renderPop();renderHyp();renderDesc();renderAsm();renderPick();renderGated();renumber();drawCharts();}
+function renderGuess(){renderPick();renderGated();renumber();drawCharts();}
+function refresh(){state.an=analyze();renderAll();}
 function newPop(){
-  state.pop=makePop(state.design);
-  state.rowOrder=state.pop.ctx.rows.map((_,i)=>i);
-  state.colOrder=state.pop.ctx.cols.map((_,i)=>i);
-  state.history=[];state.revealed=false;drawSample();renderAll();
+  const ctx=chooseCtx();
+  state.pop=makePop(ctx);
+  state.rowOrder=ctx.rows.map((_,i)=>i);
+  state.colOrder=ctx.cols.map((_,i)=>i);
+  state.history=[];state.revealed=false;state.sim=null;
+  drawSample();renderAll();
 }
 function resample(){drawSample();renderAll();}
 
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-act]');if(!t)return;
+  const t=e.target.closest?e.target.closest('[data-act]'):null;
+  if(!glOf(e))hideTip();
+  if(!t)return;
   const a=t.dataset.act;
-  if(a==='design'){if(state.design!==t.dataset.v){state.design=t.dataset.v;newPop();}}
+  if(a==='theme')toggleTheme();
   else if(a==='resample')resample();
-  else if(a==='theme')toggleTheme();
   else if(a==='newpop')newPop();
+  else if(a==='mode'){state.mode=t.dataset.v;if(state.mode==='pick')state.ctxId=state.pop.ctx.id;renderScenario();}
+  else if(a==='filter'){state.filter=t.dataset.v;const okNow=state.filter==='all'||(state.filter==='g22')===is22Ctx(state.pop.ctx);if(okNow)renderScenario();else{if(state.mode==='pick'){const pool=SCN.filter(s=>state.filter==='all'||(state.filter==='g22')===is22Ctx(s));state.ctxId=pool[0].id;}newPop();}}
   else if(a==='swaprow'){state.rowOrder.reverse();refresh();}
   else if(a==='swapcol'){state.colOrder.reverse();refresh();}
   else if(a==='mvrow'||a==='mvcol'){
@@ -1098,7 +1562,8 @@ document.addEventListener('click',e=>{
   }
   else if(a==='guess'){state.guess=t.dataset.id;renderGuess();}
   else if(a==='skip'){state.guess='skip';renderGuess();}
-  else if(a==='reveal'){state.revealed=true;renderGuess();}
+  else if(a==='reveal'){state.revealed=true;renderTruth();renderMulti();drawCharts();}
+  else if(a==='sim'){runSim();renderMulti();drawCharts();}
   else if(a==='copy'){
     const src=document.getElementById(t.dataset.target),txtv=src?src.textContent:'',orig=t.dataset.label||t.textContent;
     const done=()=>{t.textContent='Tersalin';setTimeout(()=>{t.textContent=orig;},1600);};
@@ -1110,9 +1575,28 @@ const nr=$('#nrange');
 nr.addEventListener('input',()=>{state.n=+nr.value;$('#nval').textContent='n = '+state.n;});
 nr.addEventListener('change',()=>{state.n=+nr.value;resample();});
 $('#guessmode').addEventListener('change',e=>{state.guessMode=e.target.checked;if(!state.guessMode)state.guess=null;renderGuess();});
-let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(drawCharts,120);});
+$('#scn-select').addEventListener('change',e=>{state.ctxId=e.target.value;state.mode='pick';newPop();});
+$('#nav-left').addEventListener('click',()=>{const n=$('#stepnav');n.scrollBy({left:-n.clientWidth*0.6,behavior:'smooth'});});
+$('#nav-right').addEventListener('click',()=>{const n=$('#stepnav');n.scrollBy({left:n.clientWidth*0.6,behavior:'smooth'});});
+$('#stepnav').addEventListener('scroll',updateNavArrows,{passive:true});
+window.addEventListener('scroll',updateProgress,{passive:true});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{updateNavArrows();updateProgress();drawCharts();},120);});
+
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        activeId=en.target.id;
+        $$('#stepnav a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+activeId));
+        centerNavLink($('#stepnav a[href="#'+activeId+'"]'));
+      }
+    });
+  },{rootMargin:'-18% 0px -68% 0px'});
+  $$('section.step[data-nav]').forEach(s=>io.observe(s));
+}
 
 newPop();
+updateProgress();
 })();
 </script>
 </body>
