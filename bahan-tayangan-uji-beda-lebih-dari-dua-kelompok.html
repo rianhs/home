@@ -364,7 +364,7 @@ table.dt td.left{text-align:left}
 
   <section class="step" id="st-post" data-nav="Uji lanjutan">
     <div class="step-head"><span class="step-num"></span><h2 class="step-title" id="post-title">Uji lanjutan (post-hoc)</h2><span class="chip-status" id="chip-post"></span></div>
-    <p class="step-intro">Tahap ini menunjukkan pasangan kelompok mana yang berbeda melalui <span class="gl" tabindex="0" data-g="uji lanjutan">uji lanjutan</span>. Hasilnya dibaca bila uji pada tahap Hasil uji menolak H<sub>0</sub>.</p>
+    <p class="step-intro">Tahap ini menunjukkan pasangan kelompok mana yang berbeda melalui <span class="gl" tabindex="0" data-g="uji lanjutan">uji lanjutan</span>. Hasilnya dibaca bila uji pada tahap Hasil uji menolak H<sub>0</sub>. Tabel juga memuat ukuran efek tiap pasangan: <span class="gl" tabindex="0" data-g="d">Cohen&#39;s d</span> (uji anova satu arah dan uji anova Welch) atau <span class="gl" tabindex="0" data-g="rb">rank-biserial</span> (uji Kruskal-Wallis).</p>
     <div id="post-body"></div>
   </section>
 
@@ -386,7 +386,7 @@ table.dt td.left{text-align:left}
     <div id="truth-body"></div>
   </section>
 
-  <footer>Seluruh perhitungan berjalan di peramban. Normalitas diuji dengan Shapiro-Wilk (algoritma Royston) pada tiap kelompok, dan kesetaraan varians dengan uji Levene berpusat rata-rata. Uji lanjutan mengikuti uji yang dipilih: Tukey HSD (anova satu arah), Games-Howell (anova Welch), dan Dunn dengan koreksi Holm atau Bonferroni (Kruskal-Wallis). Ukuran efek memakai eta-squared (anova) dan epsilon-squared (Kruskal-Wallis), dengan batas 0,01; 0,06; dan 0,14. Sampel ditarik acak sederhana dari populasi 1.000 unit, sehingga ukuran tiap kelompok ikut berubah dari satu penarikan ke penarikan lain. Taraf signifikansi tetap 0,05. Aturan pemilihan uji adalah patokan latihan dan tidak menggantikan pertimbangan biologis.</footer>
+  <footer>Seluruh perhitungan berjalan di peramban. Normalitas diuji dengan Shapiro-Wilk (algoritma Royston) pada tiap kelompok, dan kesetaraan varians dengan uji Levene berpusat rata-rata. Uji lanjutan mengikuti uji yang dipilih: Tukey HSD (anova satu arah), Games-Howell (anova Welch), dan DSCF atau Dunn dengan koreksi Bonferroni atau Holm (Kruskal-Wallis, bawaan DSCF). Tabel uji lanjutan memuat ukuran efek tiap pasangan: Cohen&#39;s d (anova dan anova Welch) atau rank-biserial (Kruskal-Wallis). Ukuran efek memakai eta-squared (anova) dan epsilon-squared (Kruskal-Wallis), dengan batas 0,01; 0,06; dan 0,14. Sampel ditarik acak sederhana dari populasi 1.000 unit, sehingga ukuran tiap kelompok ikut berubah dari satu penarikan ke penarikan lain. Taraf signifikansi tetap 0,05. Aturan pemilihan uji adalah patokan latihan dan tidak menggantikan pertimbangan biologis.</footer>
 </main>
 
 <div id="tip" role="tooltip"></div>
@@ -842,24 +842,47 @@ function adjustP(ps, method) {
 }
 
 /* ---------- Uji lanjutan ---------- */
+function categoryD(d) { var a = Math.abs(d); return a < 0.2 ? 'sangat kecil' : a < 0.5 ? 'kecil' : a < 0.8 ? 'sedang' : 'besar'; }
+function categoryRB(r) { var a = Math.abs(r); return a < 0.147 ? 'sangat kecil' : a < 0.33 ? 'kecil' : a < 0.474 ? 'sedang' : 'besar'; }
+/* rank-biserial (sama dengan Cliff's delta) dari peringkat di dalam pasangan; positif bila kelompok pertama cenderung lebih tinggi */
+function rbPair(gi, gj) {
+    var ni = gi.length, nj = gj.length, N = ni + nj, rk = rankAvg(gi.concat(gj)), Ri = 0, a;
+    for (a = 0; a < ni; a++) Ri += rk.r[a];
+    return (2 * Ri - ni * (N + 1)) / (ni * nj);
+}
 function tukeyHSD(groups, an) {
-    var k = groups.length, df = an.df2, qc = qtukey(0.95, k, df), pairs = [], i, j;
+    var k = groups.length, df = an.df2, qc = qtukey(0.95, k, df), pairs = [], i, j, sp = Math.sqrt(an.msw);
     for (i = 0; i < k - 1; i++) for (j = i + 1; j < k; j++) {
         var diff = an.means[i] - an.means[j], se = Math.sqrt(an.msw / 2 * (1 / an.ns[i] + 1 / an.ns[j])), q = Math.abs(diff) / se, p = tukeyRightTail(q, k, df);
-        pairs.push({ i: i, j: j, diff: diff, se: se, stat: q, df: df, p: p, lo: diff - qc * se, hi: diff + qc * se, sig: p < 0.05 });
+        pairs.push({ i: i, j: j, diff: diff, se: se, stat: q, df: df, p: p, lo: diff - qc * se, hi: diff + qc * se, d: diff / sp, sig: p < 0.05 });
     }
-    return { method: 'tukey', name: 'Tukey HSD', statName: 'q', hasCI: true, pairs: pairs };
+    return { method: 'tukey', name: 'Tukey HSD', statName: 'q', hasCI: true, hasD: true, pairs: pairs };
 }
 function gamesHowell(groups) {
-    var k = groups.length, pairs = [], i, j, ms = [], vs = [];
-    for (i = 0; i < k; i++) { ms.push(mean(groups[i])); vs.push(Math.pow(sdev(groups[i]), 2) / groups[i].length); }
+    var k = groups.length, pairs = [], i, j, ms = [], vs = [], v2 = [];
+    for (i = 0; i < k; i++) { ms.push(mean(groups[i])); v2.push(Math.pow(sdev(groups[i]), 2)); vs.push(v2[i] / groups[i].length); }
     for (i = 0; i < k - 1; i++) for (j = i + 1; j < k; j++) {
         var diff = ms[i] - ms[j], se = Math.sqrt((vs[i] + vs[j]) / 2), q = Math.abs(diff) / se;
         var df = Math.pow(vs[i] + vs[j], 2) / (vs[i] * vs[i] / (groups[i].length - 1) + vs[j] * vs[j] / (groups[j].length - 1));
         var p = tukeyRightTail(q, k, df), qc = qtukey(0.95, k, df);
-        pairs.push({ i: i, j: j, diff: diff, se: se, stat: q, df: df, p: p, lo: diff - qc * se, hi: diff + qc * se, sig: p < 0.05 });
+        pairs.push({ i: i, j: j, diff: diff, se: se, stat: q, df: df, p: p, lo: diff - qc * se, hi: diff + qc * se, d: diff / Math.sqrt((v2[i] + v2[j]) / 2), sig: p < 0.05 });
     }
-    return { method: 'gh', name: 'Games-Howell', statName: 'q', hasCI: true, pairs: pairs };
+    return { method: 'gh', name: 'Games-Howell', statName: 'q', hasCI: true, hasD: true, pairs: pairs };
+}
+/* DSCF (Dwass-Steel-Critchlow-Fligner): peringkat dihitung ulang di dalam tiap pasangan,
+   nilai p dari distribusi studentized range dengan df tak terhingga (seperti dscfAllPairsTest di PMCMRplus) */
+function dscfTest(groups) {
+    var k = groups.length, pairs = [], i, j, a;
+    for (i = 0; i < k - 1; i++) for (j = i + 1; j < k; j++) {
+        var ni = groups[i].length, nj = groups[j].length, N = ni + nj;
+        var rk = rankAvg(groups[i].concat(groups[j])), Ri = 0, Rj = 0;
+        for (a = 0; a < ni; a++) Ri += rk.r[a];
+        for (a = ni; a < N; a++) Rj += rk.r[a];
+        var ts = tieSum(rk.ties), S = Math.sqrt(ni * nj / 12 * ((N + 1) - ts / (N * (N - 1))));
+        var W = (Ri - ni * (N + 1) / 2) / S, p = tukeyRightTail(Math.SQRT2 * Math.abs(W), k, Infinity);
+        pairs.push({ i: i, j: j, diff: Ri / ni - Rj / nj, se: null, stat: W, df: null, p: p, rb: (2 * Ri - ni * (N + 1)) / (ni * nj), sig: p < 0.05 });
+    }
+    return { method: 'dscf', name: 'DSCF (Dwass-Steel-Critchlow-Fligner)', statName: 'W', hasCI: false, hasD: false, hasRB: true, pairs: pairs };
 }
 function dunnTest(kw, groups, adjMethod) {
     var k = groups.length, N = kw.N, pairs = [], raws = [], i, j;
@@ -867,12 +890,12 @@ function dunnTest(kw, groups, adjMethod) {
     for (i = 0; i < k - 1; i++) for (j = i + 1; j < k; j++) {
         var diff = kw.meanRanks[i] - kw.meanRanks[j], se = Math.sqrt(base * (1 / groups[i].length + 1 / groups[j].length)), z = diff / se;
         var p = Math.min(1, 2 * normTail(Math.abs(z)));
-        pairs.push({ i: i, j: j, diff: diff, se: se, stat: z, df: null, p: p });
+        pairs.push({ i: i, j: j, diff: diff, se: se, stat: z, df: null, p: p, rb: rbPair(groups[i], groups[j]) });
         raws.push(p);
     }
     var adj = adjustP(raws, adjMethod);
     pairs.forEach(function (pr, q) { pr.pRaw = pr.p; pr.p = adj[q]; pr.sig = adj[q] < 0.05; });
-    return { method: 'dunn', name: 'Dunn (koreksi ' + (adjMethod === 'bonferroni' ? 'Bonferroni' : 'Holm') + ')', adjName: adjMethod === 'bonferroni' ? 'Bonferroni' : 'Holm', statName: 'z', hasCI: false, pairs: pairs };
+    return { method: 'dunn', name: 'Dunn (koreksi ' + (adjMethod === 'bonferroni' ? 'Bonferroni' : 'Holm') + ')', adjName: adjMethod === 'bonferroni' ? 'Bonferroni' : 'Holm', statName: 'z', hasCI: false, hasD: false, hasRB: true, pairs: pairs };
 }
 
 /* ---------- Kategori ukuran efek ---------- */
@@ -998,8 +1021,8 @@ function parseInput(t1, t2, maxRows) {
 }
 
 /* ---------- Analisis lengkap ---------- */
-/* data: {names, groups}; test: 'anova' | 'welch' | 'kw'; adj: 'holm' | 'bonferroni' */
-function analyze(data, test, adj) {
+/* data: {names, groups}; test: 'anova' | 'welch' | 'kw'; adj: 'bonferroni' | 'holm' (khusus Dunn); phKw: 'dscf' | 'dunn' */
+function analyze(data, test, adj, phKw) {
     var out = { test: test, error: null, warnings: [] }, k = data.names.length, groups = data.groups, names = data.names, i, N = 0;
     out.k = k; out.names = names; out.groups = groups;
     out.nSizes = groups.map(function (g) { return g.length; });
@@ -1031,7 +1054,7 @@ function analyze(data, test, adj) {
     } else {
         R = kruskalWallis(groups);
         if (R.error) { out.error = R.error; return out; }
-        ph = dunnTest(R, groups, adj || 'holm');
+        ph = (phKw === 'dunn') ? dunnTest(R, groups, adj || 'bonferroni') : dscfTest(groups);
         out.dist = 'chi'; out.stat = R.stat; out.df1 = R.df; out.crit = critChi(R.df);
     }
     out.an = an; out.res = R; out.ph = ph; out.reject = R.p < 0.05;
@@ -1235,25 +1258,50 @@ function effTable(o) {
 }
 function pairLabel(o, pr) { return o.names[pr.i] + ' \u2212 ' + o.names[pr.j]; }
 function postTable(o) {
-    var ph = o.ph, dunn = ph.method === 'dunn', h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Pasangan</th>';
-    h += '<th>' + (dunn ? 'Selisih rerata peringkat' : 'Selisih rerata') + '</th><th>SE</th><th>' + ph.statName + '</th>';
-    if (!dunn) h += '<th>df</th>';
-    if (dunn) h += '<th>Nilai p mentah</th><th>Nilai p (' + ph.adjName + ')</th>'; else h += '<th>Nilai p</th><th>CI 95%</th>';
+    var ph = o.ph, m = ph.method, dunn = m === 'dunn', dscf = m === 'dscf', h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Pasangan</th>';
+    h += '<th>' + (dunn ? 'Selisih rerata peringkat' : dscf ? 'Selisih rerata peringkat dalam pasangan' : 'Selisih rerata') + '</th>';
+    if (!dscf) h += '<th>SE</th>';
+    h += '<th>' + ph.statName + '</th>';
+    if (!dunn && !dscf) h += '<th>df</th>';
+    if (dunn) h += '<th>Nilai p mentah</th><th>Nilai p (' + ph.adjName + ')</th>'; else h += '<th>Nilai p</th>';
+    if (ph.hasCI) h += '<th>CI 95%</th>';
+    if (ph.hasD) h += '<th>Cohen&#39;s d</th>';
+    if (ph.hasRB) h += '<th>Rank-biserial (r<sub>rb</sub>)</th>';
     h += '<th>Keputusan</th></tr></thead><tbody>';
     ph.pairs.forEach(function (pr) {
-        h += '<tr' + (pr.sig ? ' class="hlrow"' : '') + '><th scope="row">' + esc(pairLabel(o, pr)) + '</th><td>' + fmt(pr.diff, 2) + '</td><td>' + fmt(pr.se, 2) + '</td><td>' + fmt(pr.stat, 2) + '</td>';
-        if (!dunn) h += '<td>' + dfTxt(pr.df) + '</td>';
-        if (dunn) h += '<td>' + fmtP(pr.pRaw) + '</td><td>' + fmtP(pr.p) + '</td>'; else h += '<td>' + fmtP(pr.p) + '</td><td>' + ciS(pr.lo, pr.hi, 2) + '</td>';
+        h += '<tr' + (pr.sig ? ' class="hlrow"' : '') + '><th scope="row">' + esc(pairLabel(o, pr)) + '</th><td>' + fmt(pr.diff, 2) + '</td>';
+        if (!dscf) h += '<td>' + fmt(pr.se, 2) + '</td>';
+        h += '<td>' + fmt(pr.stat, 2) + '</td>';
+        if (!dunn && !dscf) h += '<td>' + dfTxt(pr.df) + '</td>';
+        if (dunn) h += '<td>' + fmtP(pr.pRaw) + '</td><td>' + fmtP(pr.p) + '</td>'; else h += '<td>' + fmtP(pr.p) + '</td>';
+        if (ph.hasCI) h += '<td>' + ciS(pr.lo, pr.hi, 2) + '</td>';
+        if (ph.hasD) h += '<td>' + fmt(pr.d, 2) + ' (' + categoryD(pr.d) + ')</td>';
+        if (ph.hasRB) h += '<td>' + fmt(pr.rb, 2) + ' (' + categoryRB(pr.rb) + ')</td>';
         h += '<td>' + (pr.sig ? 'Berbeda nyata' : 'Tidak berbeda nyata') + '</td></tr>';
     });
     return h + '</tbody></table></div>';
 }
 function postTSV(o) {
-    var ph = o.ph, dunn = ph.method === 'dunn', out = [];
-    out.push(['Pasangan', dunn ? 'Selisih rerata peringkat' : 'Selisih rerata', 'SE', ph.statName].concat(dunn ? ['p mentah', 'p terkoreksi'] : ['df', 'p', 'CI 95%'], ['Keputusan']).join('\t'));
+    var ph = o.ph, m = ph.method, dunn = m === 'dunn', dscf = m === 'dscf', out = [], head;
+    head = ['Pasangan', dunn ? 'Selisih rerata peringkat' : dscf ? 'Selisih rerata peringkat dalam pasangan' : 'Selisih rerata'];
+    if (!dscf) head.push('SE');
+    head.push(ph.statName);
+    if (!dunn && !dscf) head.push('df');
+    if (dunn) head.push('p mentah', 'p terkoreksi'); else head.push('p');
+    if (ph.hasCI) head.push('CI 95%');
+    if (ph.hasD) head.push("Cohen's d", 'Kategori d');
+    if (ph.hasRB) head.push('Rank-biserial', 'Kategori rank-biserial');
+    head.push('Keputusan');
+    out.push(head.join('\t'));
     ph.pairs.forEach(function (pr) {
-        var row = [pairLabel(o, pr), fmt(pr.diff, 2), fmt(pr.se, 2), fmt(pr.stat, 2)];
-        if (dunn) row.push(fmtP(pr.pRaw), fmtP(pr.p)); else row.push(dfTxt(pr.df), fmtP(pr.p), ciS(pr.lo, pr.hi, 2));
+        var row = [pairLabel(o, pr), fmt(pr.diff, 2)];
+        if (!dscf) row.push(fmt(pr.se, 2));
+        row.push(fmt(pr.stat, 2));
+        if (!dunn && !dscf) row.push(dfTxt(pr.df));
+        if (dunn) row.push(fmtP(pr.pRaw), fmtP(pr.p)); else row.push(fmtP(pr.p));
+        if (ph.hasCI) row.push(ciS(pr.lo, pr.hi, 2));
+        if (ph.hasD) row.push(fmt(pr.d, 2), categoryD(pr.d));
+        if (ph.hasRB) row.push(fmt(pr.rb, 2), categoryRB(pr.rb));
         row.push(pr.sig ? 'Berbeda nyata' : 'Tidak berbeda nyata');
         out.push(row.join('\t'));
     });
@@ -1382,19 +1430,19 @@ function condInfo(o) {
 }
 
 /* ---------- Hipotesis dan kesimpulan ---------- */
+function numWord(k) { return { 2: 'kedua', 3: 'ketiga', 4: 'keempat', 5: 'kelima', 6: 'keenam' }[k] || 'semua'; }
+function popPhrase(o) { var p = String(o.popName || '').trim(); return 'populasi ' + (p || 'asal sampel'); }
 function hypothesisHtml(o) {
-    var V = esc(lcFirst(o.vName)), names = o.names.map(esc), out = {};
+    var V = esc(lcFirst(o.vName)), G = esc(lcFirst(o.gName)), names = o.names.map(esc), P = esc(popPhrase(o)), kw = o.test === 'kw', out = {};
     var mu = function (s) { return o.names.map(function (n) { return s + '<sub>' + esc(n) + '</sub>'; }).join(' = '); };
-    if (o.test === 'kw') {
-        out.h0 = '<b>' + H0() + '</b>: Tidak ada perbedaan ' + V + ' di antara kelompok ' + joinList(names) + ' (median semua kelompok sama).';
-        out.h1 = '<b>H<sub>1</sub></b>: Sedikitnya satu kelompok memiliki ' + V + ' yang berbeda (median tidak sama pada semua kelompok).';
+    out.h0 = '<b>' + H0() + '</b>: Tidak ada perbedaan ' + V + ' antara ' + numWord(o.k) + ' kelompok ' + G + ' (' + joinList(names) + ') pada ' + P + (kw ? ' (median semua kelompok sama)' : '') + '.';
+    out.h1 = '<b>H<sub>1</sub></b>: Paling tidak satu kelompok ' + G + ' memiliki ' + V + ' yang berbeda dari kelompok lain pada ' + P + (kw ? ' (median tidak sama pada semua kelompok)' : '') + '.';
+    if (kw) {
         out.n0 = '<b>' + H0() + '</b>: ' + mu('median');
-        out.n1 = '<b>H<sub>1</sub></b>: sedikitnya satu median berbeda';
+        out.n1 = '<b>H<sub>1</sub></b>: sedikitnya satu median berbeda. Tafsiran sebagai perbedaan median berlaku bila bentuk sebaran antarkelompok mirip.';
     } else {
-        out.h0 = '<b>' + H0() + '</b>: Tidak ada perbedaan rerata ' + V + ' di antara kelompok ' + joinList(names) + '.';
-        out.h1 = '<b>H<sub>1</sub></b>: Sedikitnya satu kelompok memiliki rerata ' + V + ' yang berbeda.';
-        out.n0 = '<b>' + H0() + '</b>: ' + mu('\u03bc');
-        out.n1 = '<b>H<sub>1</sub></b>: sedikitnya satu \u03bc berbeda';
+        out.n0 = '<b>' + H0() + '</b>: ' + mu('μ');
+        out.n1 = '<b>H<sub>1</sub></b>: sedikitnya satu μ berbeda (μ adalah rerata ' + V + ' di populasi)';
     }
     return out;
 }
@@ -1405,8 +1453,9 @@ function groupDesc(o) {
 function postSig(o) { return o.ph.pairs.filter(function (p) { return p.sig; }); }
 function pairSci(o, pr) {
     var ph = o.ph, a = o.names[pr.i], b = o.names[pr.j];
-    if (ph.method === 'dunn') return a + ' dan ' + b + ' (selisih rerata peringkat = ' + fmt(pr.diff, 2) + ', ' + pShort(pr.p).replace('p', 'p terkoreksi') + ')';
-    return a + ' dan ' + b + ' (selisih = ' + fmt(pr.diff, 2) + ', CI 95% ' + ciS(pr.lo, pr.hi, 2) + ', ' + pShort(pr.p) + ')';
+    if (ph.method === 'dunn') return a + ' dan ' + b + ' (selisih rerata peringkat = ' + fmt(pr.diff, 2) + ', ' + pShort(pr.p).replace('p', 'p terkoreksi') + ', r\u1d63\u1d66 = ' + fmt(pr.rb, 2) + ', efek ' + categoryRB(pr.rb) + ')';
+    if (ph.method === 'dscf') return a + ' dan ' + b + ' (W = ' + fmt(pr.stat, 2) + ', ' + pShort(pr.p) + ', r\u1d63\u1d66 = ' + fmt(pr.rb, 2) + ', efek ' + categoryRB(pr.rb) + ')';
+    return a + ' dan ' + b + ' (selisih = ' + fmt(pr.diff, 2) + ', CI 95% ' + ciS(pr.lo, pr.hi, 2) + ', ' + pShort(pr.p) + ', d = ' + fmt(pr.d, 2) + ', efek ' + categoryD(pr.d) + ')';
 }
 function conclusionText(o) {
     var t = o.test, R = o.res, rej = o.reject, V = lcFirst(o.vName), e = o.effect, s = '';
@@ -1433,27 +1482,81 @@ function conclusionText(o) {
     }
     return s;
 }
-function layText(o) {
-    var t = o.test, R = o.res, rej = o.reject, V = lcFirst(o.vName), cat = o.effect.category, p = pShort(R.p), par = t !== 'kw', s = '';
-    if (!condInfo(o).ok) s += 'Catatan: syarat uji belum terpenuhi, jadi hasil ini belum layak dilaporkan. ';
-    var kind = par ? 'rerata' : 'nilai tengah (median)';
-    s += 'Data ini berasal dari ' + o.N + ' unit pengamatan yang terbagi dalam ' + o.k + ' kelompok, yang kita anggap sebagai sampel dari populasinya. ';
-    s += 'Pada sampel ini, ' + kind + ' ' + V + ' tiap kelompok adalah ' + o.rows.map(function (r) { return r.name + ' ' + fmt(par ? r.mean : r.median, 2); }).join(', ') + '. ';
-    if (rej) {
-        s += 'Perbedaan antarkelompok ini terlalu besar untuk dianggap kebetulan (' + p + '). Jika sampel ini mewakili populasinya, kita menduga sedikitnya satu kelompok berbeda dari kelompok lain pada populasi tersebut, dengan kekuatan perbedaan ' + cat + '. ';
-        var sig = postSig(o);
-        if (!sig.length) s += 'Setelah dibandingkan pasangan demi pasangan, belum ada pasangan kelompok yang perbedaannya cukup jelas, karena pembandingan banyak pasangan sekaligus memakai kriteria yang lebih ketat.';
-        else {
-            s += 'Untuk mengetahui kelompok mana yang berbeda, dilakukan pembandingan pasangan demi pasangan. ';
-            s += sig.map(function (pr) {
-                var hi = pr.diff > 0 ? o.names[pr.i] : o.names[pr.j], lo = pr.diff > 0 ? o.names[pr.j] : o.names[pr.i];
-                return 'Kelompok ' + hi + ' ' + (par ? 'memiliki rerata' : 'cenderung bernilai') + ' lebih tinggi daripada kelompok ' + lo;
-            }).join('. ') + '.';
-            if (sig.length < o.ph.pairs.length) s += ' Pasangan kelompok lainnya tidak menunjukkan perbedaan yang jelas.';
-        }
-    } else {
-        s += 'Perbedaan antarkelompok ini masih bisa dijelaskan oleh faktor kebetulan akibat pengambilan sampel (' + p + '). Data dari sampel belum cukup kuat untuk menyimpulkan ada perbedaan pada populasi. Bisa jadi sebenarnya ada perbedaan pada populasi, tetapi tidak terdeteksi oleh sampel ini. Kekuatan perbedaan pada sampel tergolong ' + cat + '.';
+function splitVar(o) {
+    var n = String(o.vName || '').trim(), m = n.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+    if (m && m[1]) return { base: m[1], unit: o.unit || m[2] };
+    return { base: n, unit: o.unit || '' };
+}
+/* pembulatan untuk pembaca awam: 2 angka bermakna, ditambah bila dua kelompok berbeda jadi tampak sama */
+function layNums(vals, cl) {
+    var sd, out, i, j, ok;
+    for (sd = 2; sd <= 4; sd++) {
+        out = vals.map(function (v) {
+            var a = Math.abs(v), dec = a > 0 ? Math.max(0, sd - 1 - Math.floor(Math.log(a) / Math.LN10 + 1e-12)) : 1;
+            return fmtSmart(Math.round(v * Math.pow(10, dec)) / Math.pow(10, dec), dec);
+        });
+        ok = true;
+        for (i = 0; i < vals.length && ok; i++) for (j = i + 1; j < vals.length; j++) if (cl[i] !== cl[j] && vals[i] !== vals[j] && out[i] === out[j]) { ok = false; break; }
+        if (ok) break;
     }
+    return out;
+}
+function layText(o) {
+    var t = o.test, R = o.res, rej = o.reject, par = t !== 'kw', k = o.k, s = '', i;
+    var sv = splitVar(o), V = lcFirst(sv.base), G = lcFirst(o.gName), P = popPhrase(o), u = sv.unit ? ' ' + sv.unit : '';
+    var cen = o.rows.map(function (r) { return par ? r.mean : r.median; });
+    var key = par ? cen : R.meanRanks, ord = [];
+    for (i = 0; i < k; i++) ord.push(i);
+    ord.sort(function (a, b) { return key[a] - key[b]; });
+    var sigMap = {};
+    o.ph.pairs.forEach(function (pr) { sigMap[pr.i + '-' + pr.j] = sigMap[pr.j + '-' + pr.i] = pr.sig; });
+    var nSig = postSig(o).length;
+    var lo = 0, hi = 0;
+    for (i = 1; i < k; i++) { if (cen[i] < cen[lo]) lo = i; if (cen[i] > cen[hi]) hi = i; }
+    var causal = 'Penyebab perbedaan tidak bisa dipastikan dari data ini, karena faktor lain di luar ' + G + ' mungkin ikut berperan.';
+    if (!condInfo(o).ok) s += 'Catatan: syarat uji belum terpenuhi, jadi hasil ini belum layak dilaporkan. ';
+    if (!rej) {
+        var q0 = layNums([cen[lo], cen[hi]], [0, 1]);
+        s += 'Pada sampel ini, ' + (par ? 'rerata ' : 'nilai tengah ') + V + ' berkisar dari sekitar ' + q0[0] + u + ' (kelompok ' + o.names[lo] + ') sampai sekitar ' + q0[1] + u + ' (kelompok ' + o.names[hi] + '). ';
+        s += 'Perbedaan sebesar itu masih mungkin terjadi karena kebetulan, sehingga data belum cukup untuk menyimpulkan ada perbedaan pada ' + P + '. ';
+        s += 'Ini tidak berarti perbedaan pasti tidak ada. Sampel yang lebih besar dapat membantu mendeteksinya.';
+        return s;
+    }
+    s += 'Pada ' + P + ', ' + V + ' berbeda menurut ' + G + '. ';
+    if (!nSig) {
+        var q1 = layNums([cen[lo], cen[hi]], [0, 1]);
+        s += (par ? 'Rerata' : 'Nilai tengah') + ' terendah ada pada kelompok ' + o.names[lo] + ' (sekitar ' + q1[0] + u + ') dan tertinggi pada kelompok ' + o.names[hi] + ' (sekitar ' + q1[1] + u + '). ';
+        s += 'Perbedaan ini kecil kemungkinannya terjadi karena kebetulan. Namun, setelah dibandingkan pasangan demi pasangan, belum ada pasangan kelompok yang cukup jelas berbeda, karena pembandingan banyak pasangan sekaligus memakai kriteria yang lebih ketat. ';
+        s += causal;
+        return s;
+    }
+    /* kelompok yang tidak berbeda nyata satu sama lain digabung (urut dari nilai terendah) */
+    var clusters = [], clId = new Array(k);
+    ord.forEach(function (g) {
+        var cur = clusters[clusters.length - 1];
+        if (cur && cur.every(function (m) { return !sigMap[m + '-' + g]; })) cur.push(g); else clusters.push([g]);
+    });
+    clusters.forEach(function (c, q) { c.forEach(function (g) { clId[g] = q; }); });
+    var strs = layNums(cen, clId);
+    var dsc = function (c) {
+        if (c.length === 1) return 'kelompok ' + o.names[c[0]] + ' (sekitar ' + strs[c[0]] + u + ')';
+        var vs = c.map(function (g) { return strs[g]; }), same = vs.every(function (x) { return x === vs[0]; });
+        return 'kelompok ' + joinList(c.map(function (g) { return o.names[g]; })) + ' (' + (same ? 'masing-masing sekitar ' + vs[0] : 'sekitar ' + joinList(vs)) + u + '), yang setara satu sama lain';
+    };
+    var nm0 = par ? 'Nilai' : 'Nilai tengah';
+    clusters.forEach(function (c, q) {
+        if (q === 0) s += nm0 + ' terendah ada pada ' + dsc(c) + '. ';
+        else if (q === clusters.length - 1) s += nm0 + ' tertinggi ada pada ' + dsc(c) + '. ';
+        else s += 'Disusul ' + dsc(c) + '. ';
+    });
+    var dq = layNums([cen[hi] - cen[lo]], [0])[0];
+    if (cen[hi] - cen[lo] > 0) s += 'Selisih terbesar ' + (par ? '' : 'antarnilai tengah ') + 'sekitar ' + dq + u + '. ';
+    var blur = false, a, b;
+    for (a = 0; a < k; a++) for (b = a + 1; b < k; b++) if (clId[a] !== clId[b] && !sigMap[a + '-' + b]) blur = true;
+    if (blur) s += 'Sebagian kelompok yang nilainya berdekatan belum dapat dibedakan dengan jelas. ';
+    s += 'Perbedaan ini kecil kemungkinannya terjadi karena kebetulan. ';
+    if (o.effect.category === 'sangat kecil' || o.effect.category === 'kecil') s += 'Meski demikian, kekuatan perbedaannya tergolong ' + o.effect.category + '. ';
+    s += causal;
     return s;
 }
 
@@ -1509,6 +1612,9 @@ const GL={
 'm-tukey':'Uji Tukey HSD membandingkan semua pasangan kelompok sekaligus sambil mengendalikan peluang kesalahan tipe I secara keseluruhan. Uji ini lazim dipakai setelah uji anova satu arah dan memakai kuadrat tengah dalam kelompok gabungan.',
 'm-gh':'Uji Games-Howell membandingkan semua pasangan kelompok tanpa mengandaikan varians setara, sehingga cocok dipakai setelah uji anova Welch. CI 95% sudah disesuaikan untuk banyak perbandingan.',
 'm-dunn':'Uji Dunn membandingkan rerata peringkat tiap pasangan kelompok. Nilai p dikoreksi (Holm atau Bonferroni) untuk mengendalikan kesalahan tipe I akibat banyak perbandingan. Uji ini lazim dipakai setelah Kruskal-Wallis.',
+'m-dscf':'Uji DSCF (Dwass-Steel-Critchlow-Fligner) membandingkan semua pasangan kelompok dengan peringkat yang dihitung ulang di dalam tiap pasangan. Nilai p memakai distribusi studentized range, sehingga kesalahan tipe I untuk seluruh pasangan sudah terkendali. Ini uji lanjutan bawaan setelah Kruskal-Wallis.',
+'d':"Cohen's d: selisih rerata dua kelompok dibagi simpangan baku gabungan. Dibaca dari nilai mutlaknya: 0,2 kecil, 0,5 sedang, 0,8 besar.",
+'rb':"Rank-biserial (r_rb): ukuran efek untuk dua kelompok berbasis peringkat, berkisar \u22121 sampai 1. (r_rb + 1) / 2 adalah peluang nilai acak dari kelompok pertama lebih besar daripada kelompok kedua (nilai kembar dihitung setengah).",
 'uji lanjutan':'Perbandingan pasangan kelompok setelah uji omnibus menolak H0, dengan koreksi untuk banyak perbandingan.',
 'normalitas':'Asumsi bahwa data tiap kelompok berasal dari sebaran normal (lonceng simetris).',
 'varians':'Ukuran sebaran data (kuadrat simpangan baku). Asumsi anova klasik: varians sama di semua kelompok.',
@@ -1531,19 +1637,19 @@ const G=(k,l)=>'<span class="gl" tabindex="0" data-g="'+String(k).replace(/"/g,'
 
 /* ===== Skenario ===== */
 const SCN=[
- {id:'pakan',gName:'Jenis pakan',groups:['Pakan A','Pakan B','Pakan C'],vName:'Pertambahan bobot badan harian',unit:'kg/hari',unitObs:'sapi',verb:'diberi',mu:0.85,sd:0.18,dec:2},
- {id:'bangsa',gName:'Bangsa sapi',groups:['Sapi Bali','Sapi PO','Sapi Brahman','Sapi Simmental'],vName:'Bobot lahir pedet',unit:'kg',unitObs:'pedet',verb:'berasal dari',mu:20,sd:3,dec:1},
- {id:'susu',gName:'Wilayah peternakan',groups:['Makassar','Maros','Gowa','Takalar'],vName:'Produksi susu harian',unit:'liter/hari',unitObs:'sapi perah',verb:'dipelihara di',mu:12,sd:2.5,dec:1},
- {id:'hb',gName:'Kelompok umur',groups:['Muda','Dewasa','Tua'],vName:'Kadar hemoglobin',unit:'g/dL',unitObs:'anjing',verb:'berada pada kelompok umur',mu:14,sd:1.6,dec:1,ord:true},
- {id:'cfu',gName:'Jenis disinfektan',groups:['Kontrol','Disinfektan A','Disinfektan B','Disinfektan C'],vName:'Jumlah koloni bakteri',unit:'CFU/cm\u00b2',unitObs:'permukaan kandang',verb:'diberi perlakuan',mu:300,dec:0,skew:true,dir:-1},
- {id:'cacing',gName:'Program obat cacing',groups:['Tanpa obat','Dosis rendah','Dosis tinggi'],vName:'Jumlah telur cacing per gram tinja',unit:'EPG',unitObs:'kambing',verb:'mendapat',mu:450,dec:0,skew:true,dir:-1},
- {id:'pelihara',gName:'Sistem pemeliharaan',groups:['Intensif','Semi-intensif','Ekstensif'],vName:'Bobot badan akhir',unit:'kg',unitObs:'sapi',verb:'dipelihara secara',mu:320,sd:45,dec:0,ord:true},
- {id:'simpan',gName:'Lama penyimpanan daging',groups:['Hari 0','Hari 3','Hari 6','Hari 9','Hari 12'],vName:'pH daging',unit:'',unitObs:'sampel daging',verb:'disimpan sampai',mu:5.7,sd:0.25,dec:2,ord:true}
+ {id:'pakan',popn:'sapi potong di peternakan rakyat',gName:'Jenis pakan',groups:['Pakan A','Pakan B','Pakan C'],vName:'Pertambahan bobot badan harian',unit:'kg/hari',unitObs:'sapi',verb:'diberi',mu:0.85,sd:0.18,dec:2},
+ {id:'bangsa',popn:'pedet sapi di peternakan rakyat',gName:'Bangsa sapi',groups:['Sapi Bali','Sapi PO','Sapi Brahman','Sapi Simmental'],vName:'Bobot lahir pedet',unit:'kg',unitObs:'pedet',verb:'berasal dari',mu:20,sd:3,dec:1},
+ {id:'susu',popn:'sapi perah di Sulawesi Selatan',gName:'Wilayah peternakan',groups:['Makassar','Maros','Gowa','Takalar'],vName:'Produksi susu harian',unit:'liter/hari',unitObs:'sapi perah',verb:'dipelihara di',mu:12,sd:2.5,dec:1},
+ {id:'hb',popn:'anjing peliharaan di perkotaan',gName:'Kelompok umur',groups:['Muda','Dewasa','Tua'],vName:'Kadar hemoglobin',unit:'g/dL',unitObs:'anjing',verb:'berada pada kelompok umur',mu:14,sd:1.6,dec:1,ord:true},
+ {id:'cfu',popn:'permukaan kandang di peternakan sapi',gName:'Jenis disinfektan',groups:['Kontrol','Disinfektan A','Disinfektan B','Disinfektan C'],vName:'Jumlah koloni bakteri',unit:'CFU/cm\u00b2',unitObs:'permukaan kandang',verb:'diberi perlakuan',mu:300,dec:0,skew:true,dir:-1},
+ {id:'cacing',popn:'kambing di peternakan rakyat',gName:'Program obat cacing',groups:['Tanpa obat','Dosis rendah','Dosis tinggi'],vName:'Jumlah telur cacing per gram tinja',unit:'EPG',unitObs:'kambing',verb:'mendapat',mu:450,dec:0,skew:true,dir:-1},
+ {id:'pelihara',popn:'sapi potong di Sulawesi Selatan',gName:'Sistem pemeliharaan',groups:['Intensif','Semi-intensif','Ekstensif'],vName:'Bobot badan akhir',unit:'kg',unitObs:'sapi',verb:'dipelihara secara',mu:320,sd:45,dec:0,ord:true},
+ {id:'simpan',popn:'sampel daging sapi di pasar tradisional',gName:'Lama penyimpanan daging',groups:['Hari 0','Hari 3','Hari 6','Hari 9','Hari 12'],vName:'pH daging',unit:'',unitObs:'sampel daging',verb:'disimpan sampai',mu:5.7,sd:0.25,dec:2,ord:true}
 ];
 const PROP={3:[[.34,.33,.33],[.5,.3,.2],[.4,.4,.2]],4:[[.25,.25,.25,.25],[.4,.3,.2,.1],[.3,.3,.2,.2]],5:[[.2,.2,.2,.2,.2],[.3,.25,.2,.15,.1]]};
 
 /* ===== Keadaan ===== */
-const state={mode:'random',filter:'all',ctxId:null,n:60,guessMode:false,pop:null,sample:null,an:null,guess:null,revealed:false,history:[],order:[],sim:null,adj:'holm'};
+const state={mode:'random',filter:'all',ctxId:null,n:60,guessMode:false,pop:null,sample:null,an:null,guess:null,revealed:false,history:[],order:[],sim:null,adj:'bonferroni',phKw:'dscf'};
 const locked=()=>state.guessMode&&state.guess===null;
 const ctxK=c=>c.groups.length;
 const inFilter=c=>state.filter==='all'||(state.filter==='k3'?ctxK(c)===3:ctxK(c)>=4);
@@ -1604,8 +1710,8 @@ function quickP(groups,rec){
 }
 function analyzeSample(){
   const data=dataOf(state.sample.groups),rec=quickRec(data.groups);
-  const o=analyze(data,rec,state.adj);
-  if(!o.error){o.vName=state.pop.ctx.vName;o.gName=state.pop.ctx.gName;}
+  const o=analyze(data,rec,state.adj,state.phKw);
+  if(!o.error){o.vName=state.pop.ctx.vName;o.gName=state.pop.ctx.gName;o.popName=state.pop.ctx.popn;o.unit=state.pop.ctx.unit;}
   const a=anova1(data.groups),w=welchAnova(data.groups),k=kruskalWallis(data.groups);
   return {o:o,rec:rec,tests:{anova:a.error?NaN:a.p,welch:w.error?NaN:w.p,kw:k.error?NaN:k.p},p:o.error?1:o.res.p};
 }
@@ -1660,10 +1766,12 @@ function postInterp(o){
   }else{
     samp=sig.map(pr=>{
       const hi=pr.diff>0?o.names[pr.i]:o.names[pr.j],lo=pr.diff>0?o.names[pr.j]:o.names[pr.i];
-      return 'Kelompok '+esc(hi)+' memiliki '+(par?'rerata':'rerata peringkat')+' lebih tinggi daripada kelompok '+esc(lo)+' (selisih = '+fmt(Math.abs(pr.diff),2)+').';
+      return 'Kelompok '+esc(hi)+' memiliki '+(par?'rerata':'rerata peringkat')+' lebih tinggi daripada kelompok '+esc(lo)+' (selisih = '+fmt(Math.abs(pr.diff),2)+(ph.hasD?'; Cohen\'s d = '+fmt(Math.abs(pr.d),2)+', efek '+categoryD(pr.d):'')+(ph.hasRB?'; r<sub>rb</sub> = '+fmt(Math.abs(pr.rb),2)+', efek '+categoryRB(pr.rb):'')+').';
     }).join(' ');
     if(sig.length<ph.pairs.length)samp+=' Pasangan lainnya tidak berbeda nyata.';
-    pop=ph.hasCI?'CI 95% selisih pada pasangan yang ditandai tidak melewati 0, sehingga arah perbedaan pada populasi dapat dikatakan sama dengan arah di sampel. CI ini sudah disesuaikan untuk banyak perbandingan.':'Nilai p pasangan sudah dikoreksi dengan metode '+ph.adjName+' untuk banyak perbandingan, sehingga pasangan yang ditandai layak dianggap berbeda pada populasi. Uji Dunn tidak menghasilkan CI, jadi besar selisih dibaca dari ukuran efek dan data deskriptif.';
+    if(ph.hasCI)pop='CI 95% selisih pada pasangan yang ditandai tidak melewati 0, sehingga arah perbedaan pada populasi dapat dikatakan sama dengan arah di sampel. CI ini sudah disesuaikan untuk banyak perbandingan. Cohen\'s d menunjukkan besar selisih tiap pasangan dalam satuan simpangan baku, dan perlu dibaca bersama nilai p karena p kecil pada sampel besar dapat menyertai d yang kecil.';
+    else if(ph.method==='dscf')pop='Nilai p DSCF sudah mengendalikan kesalahan tipe I untuk seluruh pasangan, sehingga pasangan yang ditandai layak dianggap berbeda pada populasi. DSCF tidak menghasilkan CI, jadi arah perbedaan dibaca dari tanda selisih rerata peringkat dalam pasangan. Besar selisih tiap pasangan dibaca dari r<sub>rb</sub>.';
+    else pop='Nilai p pasangan sudah dikoreksi dengan metode '+ph.adjName+' untuk banyak perbandingan, sehingga pasangan yang ditandai layak dianggap berbeda pada populasi. Uji Dunn tidak menghasilkan CI, jadi besar selisih dibaca dari r<sub>rb</sub> dan data deskriptif.';
   }
   return interpBox(samp,pop);
 }
@@ -1733,10 +1841,9 @@ function renderPop(){
   setChip('chip-pop','n = '+n);
 }
 function renderHyp(){
-  const o=state.an.o,c=state.pop.ctx,V=lcFirst(c.vName);
-  const grp=c.unitObs+' yang '+c.verb+' '+joinList(o.names.map(esc));
-  $('#hyp-body').innerHTML='<div class="box"><p class="ip"><b>H<sub>0</sub></b>: Tidak ada perbedaan '+V+' di antara '+grp+'.</p><p class="ip"><b>H<sub>1</sub></b>: Sedikitnya satu kelompok memiliki '+V+' yang berbeda.</p></div>'+
-    '<p class="cap">Taraf signifikansi '+G('alfa','\u03b1')+' = 0,05.</p>';
+  const o=state.an.o,c=state.pop.ctx,V=esc(lcFirst(c.vName)+(c.unit?' ('+c.unit+')':'')),GN=esc(lcFirst(c.gName)),P=esc(popPhrase(o));
+  $('#hyp-body').innerHTML='<div class="box"><p class="ip"><b>H<sub>0</sub></b>: Tidak ada perbedaan '+V+' antara '+numWord(o.k)+' kelompok '+GN+' ('+joinList(o.names.map(esc))+') pada '+P+'.</p><p class="ip"><b>H<sub>1</sub></b>: Paling tidak satu kelompok '+GN+' memiliki '+V+' yang berbeda dari kelompok lain pada '+P+'.</p></div>'+
+    '<p class="cap">Taraf signifikansi '+G('alfa','α')+' = 0,05.</p>';
 }
 function orderChips(o){
   let h='<div class="chips">';
@@ -1836,6 +1943,7 @@ function renderEff(){
   let h='<div class="stat-grid">'+statRow('Nama ukuran efek',par?G('eta',o.effect.name):G('epsilon',o.effect.name))+statRow('Nilai',fmt(o.effect.value,3));
   if(par)h+=statRow('Omega-squared (\u03c9\u00b2)',fmt(R.omega2,3));
   h+=statRow('Kategori ukuran efek',o.effect.category)+'</div>'+effTable(o);
+  h+='<p class="hint">Ukuran efek di atas berlaku untuk seluruh kelompok (uji omnibus). Ukuran efek tiap pasangan ada di tahap Uji lanjutan, pada tabel uji lanjutan ('+(par?'Cohen&#39;s d':'rank-biserial')+').</p>';
   if(o.test==='welch')h+='<p class="hint">Pada uji anova Welch, \u03b7\u00b2 dan \u03c9\u00b2 dihitung dari dekomposisi jumlah kuadrat klasik dan merupakan perkiraan kasar bila varians tidak setara.</p>';
   h+='<div style="margin-top:14px">'+effInterp(o)+'</div>';
   el.innerHTML=h;
@@ -1847,8 +1955,9 @@ function renderPost(){
   const o=state.an.o,ph=o.ph,sig=postSig(o);
   $('#post-title').innerHTML='Uji lanjutan (post-hoc) \u00b7 '+G('m-'+ph.method,esc(ph.name));
   let body='';
-  if(ph.method==='dunn')body+='<div class="sub"><div class="sub-title">Koreksi nilai p</div><div class="seg2" role="radiogroup" aria-label="Koreksi nilai p"><button type="button" role="radio" aria-checked="'+(state.adj==='holm')+'" data-act="adj" data-v="holm">Holm</button><button type="button" role="radio" aria-checked="'+(state.adj==='bonferroni')+'" data-act="adj" data-v="bonferroni">Bonferroni</button></div><p class="hint">Keduanya mengendalikan peluang kesalahan tipe I untuk seluruh pasangan sekaligus. Bonferroni mengalikan tiap nilai p dengan jumlah pasangan. Holm mengurutkan nilai p lalu mengalikannya dengan faktor yang makin kecil, sehingga selalu menolak semua pasangan yang ditolak Bonferroni dan kadang lebih banyak.</p></div>';
-  body+='<div class="sub"><div class="sub-title">Perbandingan berpasangan</div>'+postTable(o)+'<div class="btn-row" style="margin-top:8px"><button type="button" class="btn sm" data-act="copypost">Salin tabel uji lanjutan</button></div><p class="hint">Baris yang diberi latar menandai pasangan yang berbeda nyata pada \u03b1 = 0,05. Selisih dihitung sebagai kelompok pertama dikurangi kelompok kedua pada setiap pasangan.'+(ph.hasCI?'':' Uji Dunn tidak menghasilkan CI. Arah perbedaan dibaca dari tanda selisih rerata peringkat.')+'</p></div>';
+  if(o.test==='kw')body+='<div class="sub"><div class="sub-title">Metode uji lanjutan</div><div class="seg2" role="radiogroup" aria-label="Metode uji lanjutan"><button type="button" role="radio" aria-checked="'+(state.phKw==='dscf')+'" data-act="phkw" data-v="dscf">DSCF</button><button type="button" role="radio" aria-checked="'+(state.phKw==='dunn')+'" data-act="phkw" data-v="dunn">Dunn</button></div><p class="hint">DSCF adalah uji lanjutan bawaan setelah Kruskal-Wallis. Peringkat dihitung ulang di dalam tiap pasangan dan nilai p memakai distribusi studentized range, sehingga tidak memerlukan koreksi tambahan. Dunn memakai peringkat keseluruhan dan memerlukan koreksi nilai p.</p></div>';
+  if(ph.method==='dunn')body+='<div class="sub"><div class="sub-title">Koreksi nilai p</div><div class="seg2" role="radiogroup" aria-label="Koreksi nilai p"><button type="button" role="radio" aria-checked="'+(state.adj==='bonferroni')+'" data-act="adj" data-v="bonferroni">Bonferroni</button><button type="button" role="radio" aria-checked="'+(state.adj==='holm')+'" data-act="adj" data-v="holm">Holm</button></div><p class="hint">Bonferroni (bawaan) mengalikan tiap nilai p dengan jumlah pasangan. Holm mengurutkan nilai p lalu mengalikannya dengan faktor yang makin kecil, sehingga selalu menolak semua pasangan yang ditolak Bonferroni dan kadang lebih banyak. Keduanya mengendalikan peluang kesalahan tipe I untuk seluruh pasangan sekaligus.</p></div>';
+  body+='<div class="sub"><div class="sub-title">Perbandingan berpasangan</div>'+postTable(o)+'<div class="btn-row" style="margin-top:8px"><button type="button" class="btn sm" data-act="copypost">Salin tabel uji lanjutan</button></div><p class="hint">Baris yang diberi latar menandai pasangan yang berbeda nyata pada \u03b1 = 0,05. Selisih dihitung sebagai kelompok pertama dikurangi kelompok kedua pada setiap pasangan.'+(ph.hasCI?'':(ph.method==='dscf'?' Selisih pada DSCF adalah selisih rerata peringkat yang dihitung ulang di dalam pasangan itu.':'')+' Uji Dunn dan DSCF tidak menghasilkan CI. Arah perbedaan dibaca dari tanda selisih rerata peringkat.')+(ph.hasD?' '+G('d',"Cohen's d")+' adalah selisih rerata dibagi simpangan baku gabungan, yaitu '+(ph.method==='tukey'?'akar kuadrat tengah dalam kelompok (seluruh kelompok)':'akar rerata varians kedua kelompok pada pasangan itu')+'. Klasifikasi |d|: kurang dari 0,2 sangat kecil; 0,2 sampai kurang dari 0,5 kecil; 0,5 sampai kurang dari 0,8 sedang; 0,8 atau lebih besar.':'')+(ph.hasRB?' '+G('rb','Rank-biserial')+' (r<sub>rb</sub>) dihitung dari peringkat di dalam pasangan dan bernilai \u22121 sampai 1. Nilai positif berarti kelompok pertama cenderung bernilai lebih tinggi. Klasifikasi |r<sub>rb</sub>|: kurang dari 0,147 sangat kecil; 0,147 sampai kurang dari 0,33 kecil; 0,33 sampai kurang dari 0,474 sedang; 0,474 atau lebih besar besar.':'')+'</p></div>';
   if(ph.hasCI)body+='<div class="sub"><div class="sub-title">Selisih rerata dan '+G('CI','CI 95%')+' tiap pasangan</div><div class="chart-wrap"><div data-chart="post"></div></div><p class="hint" style="margin-top:0">Merah berarti CI tidak mencakup 0 (berbeda nyata), biru berarti CI mencakup 0 (tidak berbeda nyata).</p></div>';
   if(o.reject){
     el.innerHTML=body+'<div style="margin-top:14px">'+postInterp(o)+'</div>';
@@ -2032,6 +2141,7 @@ document.addEventListener('click',e=>{
     const tmp=state.order[i];state.order[i]=state.order[j];state.order[j]=tmp;refresh();
   }
   else if(a==='adj'){state.adj=t.dataset.v;refresh();}
+  else if(a==='phkw'){state.phKw=t.dataset.v;refresh();}
   else if(a==='guess'){state.guess=t.dataset.id;renderGuess();}
   else if(a==='skip'){state.guess='skip';renderGuess();}
   else if(a==='reveal'){state.revealed=true;renderTruth();renderMulti();drawCharts();}
