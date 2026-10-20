@@ -628,7 +628,7 @@ function refresh(){
   $("#prog").textContent=done+" dari "+total+" baris terisi";
   /* judul dokumen untuk nama berkas PDF */
   var nm=$("#nama").value.trim();
-  document.title="Lembar jawaban Jamovi"+(nomor?" - Soal "+nomor:"")+(nm?" - "+nm:"");
+  document.title="Templat isian uji beda lebih dari dua kelompok numeris"+(nomor?" - Soal "+nomor:"")+(nm?" - "+nm:"");
   autosize();
 }
 function autosize(){$$("textarea").forEach(function(t){t.style.height="auto";t.style.height=(t.scrollHeight+2)+"px"})}
