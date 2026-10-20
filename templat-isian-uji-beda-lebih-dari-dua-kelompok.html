@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Templat isian uji beda lebih dari dua kelompok numeris</title>
+<style>
+:root{
+  --bg:#f4f5f3; --surface:#ffffff; --ink:#1d2321; --muted:#5b6662; --line:#d5dad7;
+  --brand:#14625a; --brand-ink:#ffffff; --brand-soft:#e6f1ef; --warn:#8a5a00; --warn-soft:#fbf3e0;
+  --ok:#14625a; --radius:10px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 80px}
+h1{font-size:1.5rem;line-height:1.25;margin:28px 0 4px}
+h2,h3{margin:0}
+.sub{color:var(--muted);margin:0 0 18px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.pad{padding:16px}
+
+/* toolbar */
+.toolbar{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0;margin-bottom:8px}
+.toolbar .box{padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.btn{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px;border-radius:8px;cursor:pointer}
+.btn:hover{background:var(--brand-soft)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn.danger:hover{background:#fbeaea}
+.prog{margin-left:auto;font-size:.9rem;color:var(--muted)}
+.syms{display:flex;flex-wrap:wrap;gap:4px;align-items:center;width:100%}
+.syms span.t{font-size:.8rem;color:var(--muted);margin-right:4px}
+.sym{font:inherit;font-size:.9rem;min-width:34px;padding:3px 7px;border:1px solid var(--line);background:var(--surface);border-radius:6px;cursor:pointer}
+.sym:hover{background:var(--brand-soft)}
+.banner{background:var(--warn-soft);border:1px solid #e6cf9b;color:var(--warn);border-radius:var(--radius);padding:10px 14px;margin:8px 0;font-size:.92rem}
+.banner[hidden]{display:none}
+
+/* head fields */
+.head{display:grid;grid-template-columns:2fr 2fr 1fr;gap:12px;margin-bottom:12px}
+.head label,.lab{display:block;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:3px}
+input[type=text],input[type=number],select,textarea{width:100%;font:inherit;color:var(--ink);background:#fff;border:1px solid #b9c1bd;border-radius:8px;padding:8px 10px}
+textarea{resize:vertical;min-height:44px;overflow:hidden}
+input:focus,select:focus,textarea:focus,.up:focus-visible,.btn:focus-visible,.sym:focus-visible,summary:focus-visible,.tip:focus-visible{outline:3px solid #7fb8b0;outline-offset:1px}
+:disabled{background:#f1f2f1}
+
+/* rows */
+.rows{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.row{display:grid;grid-template-columns:150px 1fr;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.c-k{padding:14px;background:#fafbfa;border-right:1px solid var(--line)}
+.c-k .no{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:6px}
+.mark{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:1.5px solid #9aa5a1;font-size:.82rem;color:var(--muted);background:#fff;flex:none}
+.row.done .mark{background:var(--ok);border-color:var(--ok);color:#fff}
+.row.skip .mark{background:#e9ebea;color:#7a8480}
+.c-k h3{font-size:.98rem;line-height:1.3;overflow-wrap:anywhere;hyphens:auto}
+.c-k .note{font-size:.8rem;color:var(--muted);margin:6px 0 0}
+.c-i{padding:14px;min-width:0}
+.body>*+*{margin-top:12px}
+.lockmsg{display:none;font-size:.9rem;color:var(--muted);background:#f1f2f1;border:1px dashed #b9c1bd;border-radius:8px;padding:8px 12px;margin-bottom:10px}
+.row.locked .lockmsg{display:block}
+.row.locked .body{opacity:.45}
+
+/* guide */
+details.guide{border:1px solid var(--line);border-radius:8px;background:#fafbfa;margin-bottom:12px}
+details.guide summary{padding:8px 12px;font-size:.92rem;color:var(--brand)}
+.gbody{padding:2px 14px 12px;font-size:.92rem}
+.gbody ol,.gbody ul{margin:.3em 0 .6em;padding-left:1.3em}
+.gbody h4{margin:.8em 0 .2em;font-size:.9rem}
+.gbody .sub2{font-weight:600;margin:.8em 0 .1em}
+ul.chk{list-style:none;padding-left:.2em!important}
+ul.chk li::before{content:"\2611";margin-right:.45em;color:var(--brand)}
+.gbody .alt{border-top:1px dashed var(--line);margin-top:10px;padding-top:6px}
+
+/* options */
+.opts{display:flex;flex-direction:column;gap:6px}
+.optw{display:flex;align-items:center;gap:6px}
+label.opt{display:flex;align-items:center;gap:9px;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;flex:1;min-width:0}
+label.opt:hover{background:var(--brand-soft)}
+label.opt input{width:18px;height:18px;accent-color:var(--brand);flex:none;margin:0}
+.optw.sel label.opt{border-color:var(--brand);background:var(--brand-soft)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fld .lab{display:flex;align-items:center;gap:6px}
+.tip{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid #9aa5a1;background:#fff;color:var(--muted);font:600 .75rem/1 Georgia,serif;font-style:italic;cursor:help;padding:0}
+.tip:hover,.tip:focus{background:var(--brand);color:#fff;border-color:var(--brand)}
+#tt{position:fixed;z-index:50;max-width:290px;background:#1d2321;color:#fff;font-size:.85rem;line-height:1.45;padding:8px 11px;border-radius:8px;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#tt[hidden]{display:none}
+.need-fam{font-size:.9rem;color:var(--muted);background:#f1f2f1;border:1px dashed #b9c1bd;border-radius:8px;padding:8px 12px}
+
+/* upload */
+.up{border:1.5px dashed #9aa5a1;border-radius:var(--radius);background:#fafbfa;padding:12px;text-align:center}
+.up .cap{display:block;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:6px;text-align:left}
+.up.has{border-style:solid;border-color:var(--line);background:#fff;text-align:left}
+.up img{display:block;max-width:100%;height:auto;border:1px solid var(--line);border-radius:6px}
+.up .acts{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.up .hint{font-size:.82rem;color:var(--muted);margin-top:6px}
+.up.drag{background:var(--brand-soft);border-color:var(--brand)}
+.up input[type=file]{display:none}
+.noimg{display:none}
+
+.foot{font-size:.85rem;color:var(--muted);margin-top:22px}
+
+@media (max-width:700px){
+  .head{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr}
+  .c-k{border-right:0;border-bottom:1px solid var(--line)}
+  .pair{grid-template-columns:1fr}
+  .prog{margin-left:0;width:100%}
+}
+
+/* cetak */
+@page{size:A4;margin:12mm}
+@media print{
+  body{background:#fff;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{max-width:none;padding:0}
+  .toolbar,details.guide,.tip,#tt,.banner,.foot,.up .acts,.up .hint,.note{display:none!important}
+  h1{margin-top:0;font-size:16pt}
+  .sub{margin-bottom:8px}
+  .box,.row{border-color:#999;border-radius:4px}
+  .rows{gap:8px;margin-top:8px}
+  .row{break-inside:auto;grid-template-columns:130px 1fr}
+  .c-k h3{font-size:10.5pt}
+  .c-k{background:#f3f3f3;border-color:#999}
+  .mark{border-color:#555;color:#000;background:#fff}
+  .row.done .mark,.row.skip .mark{background:#fff;color:#000;border-color:#555}
+  input:not([type=radio]):not([type=checkbox]),select,textarea{border:0!important;border-bottom:1px solid #bbb!important;border-radius:0!important;padding:2px 0;background:transparent;-webkit-appearance:none;appearance:none}
+  label.opt input{display:none}
+  label.opt::before{content:"\2610";font-size:13pt;line-height:1;margin-right:6px}
+  .optw.sel label.opt::before{content:"\2611"}
+  textarea{overflow:visible;resize:none}
+  select{background-image:none}
+  .head{gap:8px}
+  .optw:not(.sel){display:none!important}
+  label.opt{border:0;padding:2px 0;background:none}
+  .optw.sel label.opt{background:none}
+  .opts{gap:2px}
+  .up{border:0;padding:0;background:none;text-align:left}
+  .up.has{border:0}
+  .up:not(.has) .empty{display:none}
+  .up:not(.has)::after{content:"(gambar tidak diunggah)";font-style:italic;color:#666;font-size:10pt}
+  .up img{max-height:120mm;width:auto;max-width:100%;break-inside:avoid}
+  .row.locked .body{display:none}
+  .row.locked .lockmsg{display:block;border:0;background:none;padding:0;font-style:italic;color:#444}
+  .need-fam{display:none}
+  .row.locked{opacity:1}
+  :disabled{background:transparent}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Templat isian uji beda lebih dari dua kelompok numeris</h1>
+<p class="sub">Isi langsung di halaman ini. Setelah selesai, klik Cetak atau simpan PDF, lalu pilih "Simpan sebagai PDF".</p>
+
+<div class="toolbar" id="toolbar">
+  <div class="box">
+    <button class="btn primary" id="btnPrint" type="button">Cetak atau simpan PDF</button>
+    <button class="btn" id="btnOpen" type="button">Buka semua panduan</button>
+    <button class="btn" id="btnClose" type="button">Tutup semua panduan</button>
+    <button class="btn danger" id="btnReset" type="button">Kosongkan lembar ini</button>
+    <span class="prog" id="prog" aria-live="polite"></span>
+    <div class="syms" id="syms"><span class="t">Simbol (klik untuk menyisipkan ke kotak teks aktif):</span></div>
+  </div>
+</div>
+
+<div class="banner" id="warn" hidden>Penyimpanan otomatis di peramban penuh atau tidak tersedia. Cetak atau simpan PDF sebelum menutup halaman agar pekerjaan tidak hilang.</div>
+
+<section id="head" class="head" aria-label="Identitas">
+  <div><label for="nama">Nama atau nama kelompok</label><input type="text" id="nama" data-k="nama" autocomplete="off"></div>
+  <div><label for="jenis">Jenis soal</label>
+    <select id="jenis" data-k="jenis">
+      <option value="">Pilih</option>
+      <option>Latihan soal (tugas kelompok)</option>
+      <option>Tugas individu</option>
+    </select></div>
+  <div><label for="nomor">Nomor soal</label><input type="number" id="nomor" data-k="nomor" min="1" step="1" inputmode="numeric"></div>
+</section>
+
+<main class="rows" id="sheet">
+
+<!-- 1 -->
+<section class="row" data-row="1">
+  <div class="c-k"><div class="no"><span class="mark">1</span></div><h3>Rumusan kalimat hipotesis</h3><p class="note">Uji dua arah dengan α = 0,05</p></div>
+  <div class="c-i"><div class="body">
+    <div class="fld"><label class="lab" for="r1h0">Kalimat H₀</label><textarea id="r1h0" data-k="r1h0" rows="2"></textarea></div>
+    <div class="fld"><label class="lab" for="r1h1">Kalimat H₁</label><textarea id="r1h1" data-k="r1h1" rows="2"></textarea></div>
+  </div></div>
+</section>
+
+<!-- 2 -->
+<section class="row" data-row="2">
+  <div class="c-k"><div class="no"><span class="mark">2</span></div><h3>Ringkasan data (analisis deskriptif)</h3></div>
+  <div class="c-i">
+    <details class="guide"><summary>Panduan Jamovi <span class="chev" aria-hidden="true">⌄</span></summary><div class="gbody">
+      <ol>
+        <li>Klik tab <b>Analyses → Exploration → Descriptives</b>.</li>
+        <li>Masukkan variabel numeris ke kotak <b>Variables</b> dan variabel kategoris ke kotak <b>Split by</b>.</li>
+        <li>Pada menu dropdown, ubah <b>Variables across columns</b> menjadi <b>Variables across rows</b>.</li>
+        <li>Pada panel <b>Statistics</b>, tercentang opsi berikut dan matikan opsi lain:</li>
+      </ol>
+      <div class="sub2">Sample Size</div><ul class="chk"><li>N</li></ul>
+      <div class="sub2">Central Tendency</div><ul class="chk"><li>Mean</li><li>Median</li></ul>
+      <div class="sub2">Dispersion</div><ul class="chk"><li>Std. deviation</li><li>Minimum</li><li>Maximum</li></ul>
+      <p>Ambil tangkapan layar tabel Descriptives yang terbentuk, lalu unggah di bawah ini.</p>
+    </div></details>
+    <div class="body"><div class="up" data-k="r2img" data-cap="Tabel Descriptives" tabindex="0"></div></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="row" data-row="3">
+  <div class="c-k"><div class="no"><span class="mark">3</span></div><h3>Visualisasi data deskriptif</h3></div>
+  <div class="c-i">
+    <details class="guide"><summary>Panduan Jamovi <span class="chev" aria-hidden="true">⌄</span></summary><div class="gbody">
+      <p>Masih di menu Descriptives. Pada panel <b>Plots</b>, tercentang opsi berikut dan matikan opsi lain:</p>
+      <div class="sub2">Histograms</div><ul class="chk"><li>Histogram</li><li>Density</li></ul>
+      <div class="sub2">Box Plots</div><ul class="chk"><li>Box plot</li><li>Label outliers</li><li>Data: Jittered</li><li>Mean</li></ul>
+      <p>Ambil tangkapan layar Plots yang terbentuk, lalu unggah di bawah ini.</p>
+    </div></details>
+    <div class="body"><div class="up" data-k="r3img" data-cap="Plots (histogram dan box plot)" tabindex="0"></div></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="row" data-row="4">
+  <div class="c-k"><div class="no"><span class="mark">4</span></div><h3>Uji normalitas</h3></div>
+  <div class="c-i">
+    <details class="guide"><summary>Panduan Jamovi <span class="chev" aria-hidden="true">⌄</span></summary><div class="gbody">
+      <p>Masih di menu Descriptives. Pada panel <b>Statistics</b>, tercentang opsi berikut dan matikan opsi lain:</p>
+      <div class="sub2">Sample Size</div><ul class="chk"><li>N</li></ul>
+      <div class="sub2">Normality</div><ul class="chk"><li>Shapiro-Wilk</li></ul>
+      <p>Ambil tangkapan layar tabel Descriptives yang terbentuk, lalu unggah di bawah ini. Bacalah nilai p Shapiro-Wilk pada setiap kelompok.</p>
+    </div></details>
+    <div class="body">
+      <div class="up" data-k="r4img" data-cap="Tabel Descriptives (Shapiro-Wilk)" tabindex="0"></div>
+      <div class="fld"><div class="lab">Kesimpulan (pilih opsi yang sesuai)
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Data dinyatakan normal pada suatu kelompok bila nilai p Shapiro-Wilk lebih besar dari 0,05. Normal di semua kelompok berarti setiap kelompok memenuhi syarat itu.">i</button></div>
+        <div class="opts" data-k="r4"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="row" data-row="5" data-lock="5">
+  <div class="c-k"><div class="no"><span class="mark">5</span></div><h3>Uji kesetaraan varians antar&shy;kelompok</h3><p class="note">Baris ini hanya bisa diisi jika data terdistribusi normal di semua kelompok.</p></div>
+  <div class="c-i">
+    <div class="lockmsg"></div>
+    <details class="guide"><summary>Panduan Jamovi <span class="chev" aria-hidden="true">⌄</span></summary><div class="gbody">
+      <ol>
+        <li>Klik tab <b>Analyses → ANOVA → One-Way Anova</b>.</li>
+        <li>Masukkan variabel numeris ke kotak <b>Dependent Variables</b> dan variabel kategoris ke kotak <b>Grouping Variable</b>.</li>
+        <li>Pada panel utama, tercentang opsi berikut dan matikan opsi lain:</li>
+      </ol>
+      <div class="sub2">Assumption Checks</div><ul class="chk"><li>Homogeneity test</li><li>Normality test</li><li>Q-Q Plot</li></ul>
+      <p>Ambil tangkapan layar tabel pada Assumption Checks dan diagram Q-Q Plot, lalu unggah di bawah ini.</p>
+    </div></details>
+    <div class="body">
+      <div class="up" data-k="r5img1" data-cap="Tabel Assumption Checks" tabindex="0"></div>
+      <div class="up" data-k="r5img2" data-cap="Diagram Q-Q Plot" tabindex="0"></div>
+      <div class="pair">
+        <div class="fld"><div class="lab">Normalitas data
+          <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dilihat dari uji normalitas pada tabel Assumption Checks (nilai p lebih besar dari 0,05 berarti normal) dan dari sebaran titik pada Q-Q Plot terhadap garis diagonal.">i</button></div>
+          <div class="opts" data-k="r5norm"></div></div>
+        <div class="fld"><div class="lab">Homogenitas (kesetaraan) varians
+          <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dilihat dari Homogeneity test (Levene). Nilai p lebih besar dari 0,05 berarti varians setara. Nilai p 0,05 atau kurang berarti varians tidak setara.">i</button></div>
+          <div class="opts" data-k="r5var"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="row" data-row="6">
+  <div class="c-k"><div class="no"><span class="mark">6</span></div><h3>Jenis uji statistika</h3></div>
+  <div class="c-i"><div class="body">
+    <div class="fld"><div class="lab">Pilih opsi yang sesuai</div><div class="opts" data-k="r6"></div></div>
+    <div class="fld"><label class="lab" for="r6a">Alasan</label><textarea id="r6a" data-k="r6a" rows="3"></textarea></div>
+  </div></div>
+</section>
+
+<!-- 7 -->
+<section class="row" data-row="7">
+  <div class="c-k"><div class="no"><span class="mark">7</span></div><h3>Notasi hipotesis</h3><p class="note">Gunakan μ untuk ANOVA Fisher dan ANOVA Welch, dan median untuk Kruskal-Wallis. Tombol simbol ada di bagian atas halaman.</p></div>
+  <div class="c-i"><div class="body">
+    <div class="fld"><label class="lab" for="r7h0">Notasi H₀</label><input type="text" id="r7h0" data-k="r7h0" autocomplete="off"></div>
+    <div class="fld"><label class="lab" for="r7h1">Notasi H₁</label><input type="text" id="r7h1" data-k="r7h1" autocomplete="off"></div>
+  </div></div>
+</section>
+
+<!-- 8 -->
+<section class="row" data-row="8">
+  <div class="c-k"><div class="no"><span class="mark">8</span></div><h3>Hasil uji statistika (statistik uji)</h3></div>
+  <div class="c-i">
+    <details class="guide"><summary>Panduan Jamovi <span class="chev" aria-hidden="true">⌄</span></summary><div class="gbody">
+      <h4>Jika menggunakan uji ANOVA</h4>
+      <ol>
+        <li>Masih di menu One-Way ANOVA, centang opsi <b>Variances</b> yang sesuai (lihat pilihan di bawah panduan ini).</li>
+      </ol>
+      <div class="alt"><h4>Jika menggunakan uji Kruskal-Wallis</h4>
+      <ol>
+        <li>Klik tab <b>Analyses → ANOVA → Non-Parametric → One-Way ANOVA: Kruskal-Wallis</b>.</li>
+        <li>Masukkan variabel numeris ke kotak <b>Dependent Variables</b> dan variabel kategoris ke kotak <b>Grouping Variable</b>.</li>
+      </ol></div>
+      <p>Apa pun jenis uji yang dipilih, ambil tangkapan layar tabel yang terbentuk, lalu unggah di bawah ini.</p>
+    </div></details>
+    <div class="body">
+      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 6 terlebih dahulu.</div>
+      <div class="fld" data-fam="anova" hidden><div class="lab">Variances yang dicentang di Jamovi
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Pilih satu sesuai uji pada baris 6. Welch's (Don't assume equal) untuk varians tidak setara. Fisher's (Assume equal) untuk varians setara.">i</button></div>
+        <div class="opts" data-k="r8var"></div></div>
+      <div class="up" data-k="r8img" data-cap="Tabel hasil uji statistika" tabindex="0"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="row" data-row="9">
+  <div class="c-k"><div class="no"><span class="mark">9</span></div><h3>Keputusan pada α = 0,05</h3></div>
+  <div class="c-i"><div class="body">
+    <div class="fld"><div class="lab">Pilih opsi yang sesuai
+      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Bandingkan nilai p uji statistika (baris 8) dengan α = 0,05. Nilai p kurang dari atau sama dengan α berarti tolak H₀. Nilai p lebih besar dari α berarti gagal tolak H₀.">i</button></div>
+      <div class="opts" data-k="r9"></div></div>
+    <div class="fld"><label class="lab" for="r9a">Alasan</label><textarea id="r9a" data-k="r9a" rows="3"></textarea></div>
+  </div></div>
+</section>
+
+<!-- 10 -->
+<section class="row" data-row="10">
+  <div class="c-k"><div class="no"><span class="mark">10</span></div><h3>Ukuran efek uji omnibus</h3></div>
+  <div class="c-i">
+    <details class="guide"><summary>Panduan Jamovi <span class="chev" aria-hidden="true">⌄</span></summary><div class="gbody">
+      <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch)</h4>
+      <ol>
+        <li>Klik tab <b>Analyses → ANOVA → ANOVA</b>.</li>
+        <li>Masukkan variabel numeris ke kotak <b>Dependent Variable</b> dan variabel kategoris ke kotak <b>Fixed Factors</b>.</li>
+        <li>Pada <b>Effect Size</b>, centang opsi yang sesuai (lihat pilihan di bawah panduan ini).</li>
+      </ol>
+      <div class="alt"><h4>Jika menggunakan uji Kruskal-Wallis</h4>
+      <ol>
+        <li>Masih di menu One-Way ANOVA (Non-parametric), centang opsi berikut:</li>
+      </ol>
+      <div class="sub2">Effect Size</div><ul class="chk"><li>ε²</li></ul></div>
+    </div></details>
+    <div class="body">
+      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 6 terlebih dahulu.</div>
+      <div class="fld" data-fam="anova" hidden><div class="lab">Effect Size yang dicentang di Jamovi
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="η² dan partial η² bernilai sama pada ANOVA satu arah. ω² adalah penaksir populasi yang lebih kecil bias. Boleh mencentang lebih dari satu, lalu laporkan salah satu di bawah.">i</button></div>
+        <div class="opts" data-k="r10es"></div></div>
+      <div class="pair">
+        <div class="fld"><label class="lab" for="r10j">Jenis ukuran efek</label>
+          <select id="r10j" data-k="r10j"><option value="">Pilih</option><option>η²</option><option>partial η²</option><option>ω²</option><option>ε²</option></select></div>
+        <div class="fld"><label class="lab" for="r10n">Nilai ukuran efek</label><input type="text" id="r10n" data-k="r10n" inputmode="decimal" autocomplete="off" placeholder="contoh: 0,123"></div>
+      </div>
+      <div class="fld"><div class="lab"><label for="r10k" style="margin:0">Kategori ukuran efek</label>
+        <button type="button" class="tip" aria-label="Klasifikasi" data-tip="Acuan umum (Cohen) untuk η², ω², dan ε²: kurang dari 0,01 diabaikan; 0,01 sampai kurang dari 0,06 kecil; 0,06 sampai kurang dari 0,14 sedang; 0,14 atau lebih besar.">i</button></div>
+        <select id="r10k" data-k="r10k"><option value="">Pilih</option><option>Diabaikan (&lt; 0,01)</option><option>Kecil (0,01 sampai &lt; 0,06)</option><option>Sedang (0,06 sampai &lt; 0,14)</option><option>Besar (≥ 0,14)</option></select></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="row" data-row="11" data-lock="11">
+  <div class="c-k"><div class="no"><span class="mark">11</span></div><h3>Uji lanjutan (post-hoc)</h3><p class="note">Baris ini hanya bisa diisi jika keputusan adalah tolak H₀.</p></div>
+  <div class="c-i">
+    <div class="lockmsg"></div>
+    <details class="guide"><summary>Panduan Jamovi <span class="chev" aria-hidden="true">⌄</span></summary><div class="gbody">
+      <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch)</h4>
+      <ol>
+        <li>Buka panel <b>Post-Hoc Tests</b>, lalu centang opsi yang sesuai (lihat pilihan di bawah panduan ini).</li>
+        <li>Pastikan opsi ini tercentang:</li>
+      </ol>
+      <div class="sub2">Statistics</div><ul class="chk"><li>Mean difference</li><li>Report significance</li><li>Flag significant comparisons</li></ul>
+      <div class="alt"><h4>Jika menggunakan uji Kruskal-Wallis</h4>
+      <ol><li>Masih di menu One-Way ANOVA (Non-parametric), centang opsi pada <b>Post Hoc Tests</b> (lihat pilihan di bawah panduan ini).</li></ol></div>
+      <p>Apa pun jenis uji lanjutan yang dipilih, ambil tangkapan layar tabel yang terbentuk, lalu unggah di bawah ini.</p>
+    </div></details>
+    <div class="body">
+      <div class="fld" data-fam="anova" hidden><div class="lab">Post-Hoc Tests yang dicentang di Jamovi
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Pilih satu. Gunakan Games-Howell bila varians tidak setara dan Tukey bila varians setara. None berarti tanpa uji lanjutan.">i</button></div>
+        <div class="opts" data-k="r11ph"></div></div>
+      <div class="fld" data-fam="kw" hidden><div class="lab">Post Hoc Tests yang dicentang di Jamovi
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Keduanya adalah uji lanjutan untuk Kruskal-Wallis dan boleh dicentang bersama. Laporkan satu yang dipakai untuk kesimpulan.">i</button></div>
+        <div class="opts" data-k="r11kw"></div></div>
+      <div class="up" data-k="r11img" data-cap="Tabel uji lanjutan" tabindex="0"></div>
+      <div class="fld"><div class="lab">Kesimpulan uji lanjutan</div></div>
+      <div class="fld"><label class="lab" for="r11s">Pasangan kelompok yang berbeda secara signifikan</label><textarea id="r11s" data-k="r11s" rows="2"></textarea></div>
+      <div class="fld"><label class="lab" for="r11n">Pasangan kelompok yang tidak berbeda secara signifikan</label><textarea id="r11n" data-k="r11n" rows="2"></textarea></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="row" data-row="12" data-lock="12">
+  <div class="c-k"><div class="no"><span class="mark">12</span></div><h3>Ukuran efek untuk pasangan kelompok pada uji lanjutan</h3><p class="note">Baris ini hanya bisa diisi jika keputusan adalah tolak H₀.</p></div>
+  <div class="c-i">
+    <div class="lockmsg"></div>
+    <details class="guide"><summary>Panduan Jamovi <span class="chev" aria-hidden="true">⌄</span></summary><div class="gbody">
+      <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch)</h4>
+      <ol>
+        <li>Masih di menu ANOVA, buka panel <b>Post Hoc Tests</b>. Pindahkan variabel kategoris dari kotak kiri ke kotak kanan.</li>
+        <li>Pilih opsi <b>Correction</b> yang sesuai (lihat pilihan di bawah panduan ini).</li>
+        <li>Pastikan opsi ini tercentang:</li>
+      </ol>
+      <div class="sub2">Effect Size</div><ul class="chk"><li>Cohen's d</li></ul>
+      <div class="alt"><h4>Jika menggunakan uji Kruskal-Wallis</h4><p>Opsi ini tidak tersedia di Jamovi.</p></div>
+    </div></details>
+    <div class="body">
+      <div class="fld"><div class="lab">Correction yang dipilih di Jamovi
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Koreksi dipakai karena ada banyak perbandingan pasangan sekaligus. Bonferroni dan Holm cocok untuk kasus umum, dan Holm sedikit lebih berdaya. Tukey untuk varians setara. Scheffe paling konservatif. No correction tidak dianjurkan.">i</button></div>
+        <div class="opts" data-k="r12c"></div></div>
+      <div class="fld"><div class="lab">Kesimpulan ukuran efek pada pasangan kelompok
+        <button type="button" class="tip" aria-label="Klasifikasi" data-tip="Acuan umum Cohen's d (nilai mutlak): sekitar 0,2 kecil; sekitar 0,5 sedang; sekitar 0,8 atau lebih besar.">i</button></div></div>
+      <div class="fld"><label class="lab" for="r12s">Pasangan kelompok yang berbeda secara signifikan (sebutkan nilai d dan kategorinya)</label><textarea id="r12s" data-k="r12s" rows="3"></textarea></div>
+      <div class="fld"><label class="lab" for="r12n">Pasangan kelompok yang tidak berbeda secara signifikan (sebutkan nilai d dan kategorinya)</label><textarea id="r12n" data-k="r12n" rows="2"></textarea></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="row" data-row="13">
+  <div class="c-k"><div class="no"><span class="mark">13</span></div><h3>Kesimpulan statistika</h3></div>
+  <div class="c-i"><div class="body"><textarea id="r13" data-k="r13" rows="5" aria-label="Kesimpulan statistika"></textarea></div></div>
+</section>
+
+<!-- 14 -->
+<section class="row" data-row="14">
+  <div class="c-k"><div class="no"><span class="mark">14</span></div><h3>Kesimpulan dengan bahasa awam</h3></div>
+  <div class="c-i"><div class="body"><textarea id="r14" data-k="r14" rows="5" aria-label="Kesimpulan dengan bahasa awam"></textarea></div></div>
+</section>
+
+</main>
+
+<p class="foot">Pekerjaan tersimpan otomatis di peramban pada perangkat ini dan tidak dikirim ke server mana pun. Tiap nomor soal punya lembar sendiri. Gambar yang diunggah ikut tercetak ke PDF.</p>
+</div>
+
+<div id="tt" role="tooltip" hidden></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+/* ---------- opsi ---------- */
+var OPTS={
+  r4:{items:[["normal","normal di semua kelompok"],["tidak","tidak normal pada sedikitnya satu kelompok"]]},
+  r5norm:{items:[["normal","terdistribusi normal"],["tidak","tidak terdistribusi normal"]]},
+  r5var:{items:[["setara","varians setara"],["tidak","varians tidak setara"]]},
+  r6:{items:[
+    ["fisher","ANOVA satu arah (Fisher)","Dipakai bila data normal di semua kelompok dan varians setara."],
+    ["welch","ANOVA Welch","Dipakai bila data normal di semua kelompok tetapi varians tidak setara."],
+    ["kw","Uji Kruskal-Wallis","Dipakai bila data tidak normal pada sedikitnya satu kelompok. Uji ini membandingkan median (peringkat) dan tidak mensyaratkan normalitas."]]},
+  r8var:{items:[
+    ["welch","Don't assume equal (Welch's)","Pilih bila uji pada baris 6 adalah ANOVA Welch."],
+    ["fisher","Assume equal (Fisher's)","Pilih bila uji pada baris 6 adalah ANOVA satu arah (Fisher)."]]},
+  r9:{items:[["tolak","Tolak H₀"],["gagal","Gagal tolak H₀"]]},
+  r10es:{multi:1,items:[
+    ["eta","η²","Proporsi seluruh variasi data yang dijelaskan oleh perbedaan kelompok."],
+    ["peta","partial η²","Pada ANOVA satu arah nilainya sama dengan η² karena hanya ada satu faktor."],
+    ["omega","ω²","Penaksir ukuran efek di populasi. Biasanya sedikit lebih kecil dari η² karena mengoreksi bias sampel."]]},
+  r11ph:{items:[
+    ["none","None","Tanpa uji lanjutan. Tidak dipakai bila keputusan adalah tolak H₀."],
+    ["gh","Games-Howell (unequal variances)","Dipakai bila varians tidak setara."],
+    ["tukey","Tukey (equal variances)","Dipakai bila varians setara."]]},
+  r11kw:{multi:1,items:[
+    ["dscf","DSCF pairwise comparisons","Dwass-Steel-Critchlow-Fligner: membandingkan tiap pasangan kelompok dengan peringkat di dalam pasangan itu."],
+    ["dunn","Dunn's pairwise comparisons","Membandingkan rata-rata peringkat tiap pasangan dari peringkat seluruh data, dengan koreksi Bonferroni atau Holm."]]},
+  r12c:{items:[
+    ["none","No correction","Tanpa koreksi. Risiko kesalahan tipe I naik karena banyak pasangan dibandingkan sekaligus."],
+    ["tukey","Tukey","Untuk semua pasangan bila varians setara."],
+    ["scheffe","Scheffe","Paling konservatif, cocok untuk kontras yang kompleks."],
+    ["bonf","Bonferroni","Konservatif dan sederhana. Cocok untuk jumlah pasangan yang sedikit."],
+    ["holm","Holm","Mengendalikan kesalahan tipe I seperti Bonferroni dengan daya sedikit lebih besar."]]}
+};
+
+/* ---------- simbol ---------- */
+var SYM=["H₀","H₁","μ","α","μ₁","μ₂","μ₃","μ₄","₀","₁","₂","₃","₄","≠","≤","≥","η²","ω²","ε²","χ²"];
+var syms=$("#syms");
+SYM.forEach(function(s){
+  var b=document.createElement("button");b.type="button";b.className="sym";b.textContent=s;b.setAttribute("aria-label","Sisipkan "+s);
+  b.addEventListener("mousedown",function(e){e.preventDefault()});
+  b.addEventListener("click",function(){ins(s)});
+  syms.appendChild(b);
+});
+var lastText=null;
+document.addEventListener("focusin",function(e){var t=e.target;if(t&&(t.tagName==="TEXTAREA"||(t.tagName==="INPUT"&&t.type==="text")))lastText=t});
+function ins(t){
+  var e=lastText;if(!e||e.disabled||!document.body.contains(e)){return}
+  var s=e.selectionStart,en=e.selectionEnd;e.focus();
+  e.setRangeText(t,s,en,"end");
+  e.dispatchEvent(new Event("input",{bubbles:true}));
+}
+
+/* ---------- bangun opsi ---------- */
+var uid=0;
+$$(".opts").forEach(function(box){
+  var k=box.dataset.k,cfg=OPTS[k];if(!cfg)return;
+  if(cfg.multi)box.dataset.multi="1";
+  cfg.items.forEach(function(it){
+    uid++;
+    var w=document.createElement("span");w.className="optw";
+    var l=document.createElement("label");l.className="opt";
+    var i=document.createElement("input");i.type=cfg.multi?"checkbox":"radio";i.name=k;i.value=it[0];i.id="o"+uid;
+    var sp=document.createElement("span");sp.textContent=it[1];
+    l.appendChild(i);l.appendChild(sp);w.appendChild(l);
+    if(it[2]){var b=document.createElement("button");b.type="button";b.className="tip";b.textContent="i";b.setAttribute("aria-label","Penjelasan "+it[1]);b.dataset.tip=it[2];w.appendChild(b)}
+    box.appendChild(w);
+  });
+});
+
+/* ---------- tooltip ---------- */
+var tt=$("#tt"),ttOwner=null;
+function showTip(b){
+  tt.textContent=b.dataset.tip;tt.hidden=false;ttOwner=b;
+  var r=b.getBoundingClientRect(),w=tt.offsetWidth,h=tt.offsetHeight;
+  var x=Math.min(Math.max(8,r.left+r.width/2-w/2),window.innerWidth-w-8);
+  var y=r.bottom+8;if(y+h>window.innerHeight-8)y=Math.max(8,r.top-h-8);
+  tt.style.left=x+"px";tt.style.top=y+"px";
+}
+function hideTip(){tt.hidden=true;ttOwner=null}
+document.addEventListener("mouseover",function(e){var b=e.target.closest&&e.target.closest(".tip");if(b)showTip(b)});
+document.addEventListener("mouseout",function(e){var b=e.target.closest&&e.target.closest(".tip");if(b)hideTip()});
+document.addEventListener("focusin",function(e){var b=e.target.closest&&e.target.closest(".tip");if(b)showTip(b)});
+document.addEventListener("focusout",function(e){if(e.target.closest&&e.target.closest(".tip"))hideTip()});
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest(".tip");if(b){e.preventDefault();ttOwner===b?hideTip():showTip(b)}else hideTip()});
+window.addEventListener("scroll",hideTip,{passive:true});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")hideTip()});
+
+/* ---------- unggah gambar ---------- */
+function fileToData(file,cb){
+  if(!file||file.type.indexOf("image/")!==0){alert("Berkas harus berupa gambar (PNG, JPG, atau sejenisnya).");return}
+  var fr=new FileReader();
+  fr.onload=function(){
+    var img=new Image();
+    img.onload=function(){
+      var MAX=1600,sc=Math.min(1,MAX/img.width),w=Math.round(img.width*sc),h=Math.round(img.height*sc);
+      var c=document.createElement("canvas");c.width=w;c.height=h;
+      var g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,w,h);g.drawImage(img,0,0,w,h);
+      var d=c.toDataURL("image/png");
+      if(d.length>700000)d=c.toDataURL("image/jpeg",0.88);
+      cb(d);
+    };
+    img.onerror=function(){alert("Gambar tidak dapat dibaca. Coba berkas lain.")};
+    img.src=fr.result;
+  };
+  fr.readAsDataURL(file);
+}
+function renderUp(el){
+  el.innerHTML="";
+  var cap=document.createElement("span");cap.className="cap";cap.textContent=el.dataset.cap||"Gambar";el.appendChild(cap);
+  var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.setAttribute("aria-label","Pilih berkas gambar");
+  fi.addEventListener("change",function(){fileToData(fi.files[0],function(d){setImg(el,d)});fi.value=""});
+  el.appendChild(fi);
+  if(el._img){
+    el.classList.add("has");
+    var im=document.createElement("img");im.src=el._img;im.alt=el.dataset.cap||"Gambar unggahan";el.appendChild(im);
+    var a=document.createElement("div");a.className="acts";
+    var b1=document.createElement("button");b1.type="button";b1.className="btn";b1.textContent="Ganti gambar";b1.onclick=function(){fi.click()};
+    var b2=document.createElement("button");b2.type="button";b2.className="btn danger";b2.textContent="Hapus gambar";b2.onclick=function(){setImg(el,"")};
+    a.appendChild(b1);a.appendChild(b2);el.appendChild(a);
+  }else{
+    el.classList.remove("has");
+    var e=document.createElement("div");e.className="empty";
+    var b=document.createElement("button");b.type="button";b.className="btn primary";b.textContent="Unggah gambar";b.onclick=function(){fi.click()};
+    var hint=document.createElement("div");hint.className="hint";hint.textContent="Atau seret gambar ke kotak ini, atau klik kotak lalu tekan Ctrl+V (Cmd+V di Mac) untuk menempel tangkapan layar.";
+    e.appendChild(b);e.appendChild(hint);el.appendChild(e);
+  }
+}
+function setImg(el,d){el._img=d;renderUp(el);changed()}
+$$(".up").forEach(function(el){
+  el._img="";renderUp(el);
+  el.addEventListener("dragover",function(e){e.preventDefault();el.classList.add("drag")});
+  el.addEventListener("dragleave",function(){el.classList.remove("drag")});
+  el.addEventListener("drop",function(e){e.preventDefault();el.classList.remove("drag");var f=e.dataTransfer.files[0];if(f)fileToData(f,function(d){setImg(el,d)})});
+  el.addEventListener("paste",function(e){
+    var items=(e.clipboardData||{}).items||[];
+    for(var i=0;i<items.length;i++){if(items[i].type.indexOf("image/")===0){e.preventDefault();fileToData(items[i].getAsFile(),function(d){setImg(el,d)});return}}
+  });
+});
+
+/* ---------- nilai bidang ---------- */
+function getVal(el){
+  if(el.classList.contains("opts")){var c=$$("input:checked",el).map(function(i){return i.value});return el.dataset.multi?c:(c[0]||"")}
+  if(el.classList.contains("up"))return el._img||"";
+  return el.value;
+}
+function setVal(el,v){
+  if(el.classList.contains("opts")){var a=[].concat(v||[]);$$("input",el).forEach(function(i){i.checked=a.indexOf(i.value)>-1})}
+  else if(el.classList.contains("up")){el._img=v||"";renderUp(el)}
+  else el.value=v||"";
+}
+function filled(v){return Array.isArray(v)?v.length>0:String(v).trim()!==""}
+function V(k){var el=$('#sheet [data-k="'+k+'"]');return el?getVal(el):""}
+function fam(){var t=V("r6");return t==="kw"?"kw":(t?"anova":"")}
+function getSheet(){var o={};$$("#sheet [data-k]").forEach(function(el){var v=getVal(el);if(filled(v))o[el.dataset.k]=v});return o}
+function setSheet(o){o=o||{};$$("#sheet [data-k]").forEach(function(el){setVal(el,o[el.dataset.k])})}
+function getHead(){var o={};$$("#head [data-k]").forEach(function(el){o[el.dataset.k]=el.value});return o}
+
+/* ---------- aturan kunci ---------- */
+var LOCK={
+  "5":function(){var v=V("r4");if(!v)return "Isi kesimpulan normalitas pada baris 4 terlebih dahulu.";if(v!=="normal")return "Baris ini tidak diisi karena data tidak normal pada sedikitnya satu kelompok.";return ""},
+  "11":function(){if(!fam())return "Pilih jenis uji statistika pada baris 6 terlebih dahulu.";var d=V("r9");if(!d)return "Isi keputusan pada baris 9 terlebih dahulu.";if(d!=="tolak")return "Baris ini tidak diisi karena keputusan adalah gagal tolak H₀.";return ""},
+  "12":function(){if(!fam())return "Pilih jenis uji statistika pada baris 6 terlebih dahulu.";if(fam()==="kw")return "Baris ini tidak diisi karena ukuran efek per pasangan tidak tersedia di Jamovi untuk Kruskal-Wallis.";var d=V("r9");if(!d)return "Isi keputusan pada baris 9 terlebih dahulu.";if(d!=="tolak")return "Baris ini tidak diisi karena keputusan adalah gagal tolak H₀.";return ""}
+};
+
+/* ---------- refresh ---------- */
+function refresh(){
+  var f=fam(),nomor=$("#nomor").value.trim();
+  /* cabang */
+  $$("[data-fam]").forEach(function(el){el.hidden=(el.dataset.fam!==f)});
+  $$("[data-needfam]").forEach(function(el){el.hidden=(f!=="")});
+  /* opsi terpilih */
+  $$(".optw").forEach(function(w){var i=$("input",w);w.classList.toggle("sel",!!(i&&i.checked))});
+  /* kunci dan penanda */
+  var total=0,done=0;
+  $$(".row").forEach(function(row){
+    var n=row.dataset.row,msg=LOCK[n]?LOCK[n]():"",body=$(".body",row);
+    row.classList.toggle("locked",!!msg);
+    var lm=$(".lockmsg",row);if(lm)lm.textContent=msg;
+    if(body){if(msg)body.setAttribute("inert","");else body.removeAttribute("inert")}
+    row.classList.remove("done","skip");
+    if(msg){row.classList.add("skip");return}
+    var ok=true;
+    if($("[data-needfam]:not([hidden])",row))ok=false;
+    $$("[data-k]",row).forEach(function(el){if(el.closest("[hidden]"))return;if(!filled(getVal(el)))ok=false});
+    total++;if(ok){done++;row.classList.add("done")}
+  });
+  $("#prog").textContent=done+" dari "+total+" baris terisi";
+  /* judul dokumen untuk nama berkas PDF */
+  var nm=$("#nama").value.trim();
+  document.title="Lembar jawaban Jamovi"+(nomor?" - Soal "+nomor:"")+(nm?" - "+nm:"");
+  autosize();
+}
+function autosize(){$$("textarea").forEach(function(t){t.style.height="auto";t.style.height=(t.scrollHeight+2)+"px"})}
+
+/* ---------- simpan ---------- */
+var KEY="lj-jamovi-v1:"+location.pathname,ST={head:{},sheets:{}},cur="0",tm=null;
+function curKey(){return $("#nomor").value.trim()||"0"}
+function persist(){
+  ST.head=getHead();ST.sheets[cur]=getSheet();
+  try{localStorage.setItem(KEY,JSON.stringify(ST));$("#warn").hidden=true}catch(e){$("#warn").hidden=false}
+}
+function changed(){refresh();clearTimeout(tm);tm=setTimeout(persist,350)}
+function switchSheet(){
+  var nu=curKey();if(nu===cur)return;
+  ST.sheets[cur]=getSheet();
+  var old=cur;cur=nu;
+  setSheet(ST.sheets[nu]||(old==="0"?ST.sheets[old]:{}));
+}
+document.addEventListener("input",function(e){
+  if(e.target.id==="nomor")switchSheet();
+  changed();
+});
+document.addEventListener("change",function(e){
+  if(e.target.id==="nomor")switchSheet();
+  changed();
+});
+
+/* ---------- tombol ---------- */
+$("#btnPrint").onclick=function(){
+  $$("details.guide").forEach(function(d){d.open=false});
+  refresh();persist();window.print();
+};
+$("#btnOpen").onclick=function(){$$("details.guide").forEach(function(d){d.open=true})};
+$("#btnClose").onclick=function(){$$("details.guide").forEach(function(d){d.open=false})};
+$("#btnReset").onclick=function(){
+  if(!confirm("Semua isian dan gambar pada lembar soal ini akan dihapus. Lanjutkan?"))return;
+  setSheet({});delete ST.sheets[cur];persist();refresh();
+};
+window.addEventListener("beforeprint",function(){autosize()});
+
+/* ---------- muat ---------- */
+try{var raw=localStorage.getItem(KEY);if(raw)ST=JSON.parse(raw)||ST}catch(e){}
+ST.head=ST.head||{};ST.sheets=ST.sheets||{};
+$$("#head [data-k]").forEach(function(el){if(ST.head[el.dataset.k]!=null)el.value=ST.head[el.dataset.k]});
+cur=curKey();
+setSheet(ST.sheets[cur]);
+refresh();
+})();
+</script>
+</body>
+</html>
