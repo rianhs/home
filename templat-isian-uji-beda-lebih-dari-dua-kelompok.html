@@ -111,11 +111,11 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
 .tip{flex:none;width:22px;height:22px;border-radius:50%;border:0;background:var(--fill2);color:var(--muted);font:600 .74rem/1 var(--font);cursor:help;padding:0}
 .tip:hover,.tip:focus{background:var(--blue);color:#fff}
 #tt{position:fixed;z-index:50;max-width:300px;background:rgba(28,28,30,.96);color:#fff;font-size:.85rem;line-height:1.45;padding:9px 12px;border-radius:var(--rs);pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.22)}
-.msg{font-size:.86rem;color:var(--warn);background:var(--warn-soft);border-radius:var(--rs);padding:8px 12px;margin-top:8px}
 
 /* legenda kategori */
 .legend{padding:12px 14px;font-size:.88rem;margin-top:10px}
-.legend .lg-t{font-weight:600;margin-bottom:6px}
+.legend summary{font-weight:600;color:var(--blue);cursor:pointer}
+.legend table{margin-top:8px}
 .legend table{border-collapse:collapse;width:100%}
 .legend td{padding:4px 0;vertical-align:top;border-top:1px solid var(--line)}
 .legend tr:first-child td{border-top:0}
@@ -133,6 +133,7 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
 .up.drag{background:var(--blue-soft);border-color:var(--blue)}
 .up input[type=file]{display:none}
 
+.pv{display:none}
 .foot{font-size:.85rem;color:var(--muted);margin-top:24px}
 
 @media (max-width:700px){
@@ -150,12 +151,14 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
 @media print{
   body{background:#fff;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .wrap{max-width:none;padding:0}
-  .toolbar,details.guide,.tip,#tt,.banner,.foot,.up .acts,.up .hint,.note,.msg,.legend,.info,.need-fam{display:none!important}
+  .toolbar,details.guide,.tip,#tt,.banner,.foot,.up .acts,.up .hint,.note,.legend,.info,.need-fam{display:none!important}
   h1{margin-top:0;font-size:16pt}
   .sub{margin-bottom:8px}
   .box,.row{border-color:#999;border-radius:4px}
   .rows{gap:8px;margin-top:8px}
-  .row{break-inside:auto;grid-template-columns:130px 1fr}
+  .row{break-inside:avoid;page-break-inside:avoid;grid-template-columns:130px 1fr}
+  .fld,.optw,.up,.sect,.c-k h3{break-inside:avoid;page-break-inside:avoid}
+  .sect,.lab,.c-k .no{break-after:avoid;page-break-after:avoid}
   .c-k h3{font-size:10.5pt}
   .c-k{background:#f3f3f3;border-color:#999}
   .mark,.row.done .mark,.row.skip .mark{border:1.5px solid #555;color:#000;background:#fff}
@@ -165,7 +168,8 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
   label.opt input{display:none}
   label.opt::before{content:"\2610";font-size:13pt;line-height:1;margin-right:6px}
   .optw.sel label.opt::before{content:"\2611"}
-  textarea{overflow:visible;resize:none}
+  textarea,input[type=text]{display:none!important}
+  .pv{display:block!important;white-space:pre-wrap;overflow-wrap:anywhere;border-bottom:1px solid #bbb;min-height:1.7em;padding:2px 0}
   .head{gap:8px}
   .optw:not(.sel){display:none!important}
   label.opt,.optw.sel label.opt{border:0;padding:2px 0;background:none}
@@ -173,7 +177,7 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
   .up,.up.has{border:0;padding:0;background:none;text-align:left}
   .up:not(.has) .empty{display:none}
   .up:not(.has)::after{content:"(gambar tidak diunggah)";font-style:italic;color:#666;font-size:10pt}
-  .up img{max-height:120mm;width:auto;max-width:100%;break-inside:avoid;border-radius:0}
+  .up img{max-height:100mm;width:auto;max-width:100%;break-inside:avoid;border-radius:0}
   .lockmsg{border:0;background:none;padding:0;font-style:italic;color:#444}
   :disabled{background:transparent}
 }
@@ -199,7 +203,7 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
 <div class="banner" id="warn" hidden>Penyimpanan otomatis di peramban penuh atau tidak tersedia. Cetak atau simpan PDF sebelum menutup halaman agar pekerjaan tidak hilang.</div>
 
 <section id="head" class="head" aria-label="Identitas">
-  <div><label for="nama">Nama atau nama kelompok</label><input type="text" id="nama" data-k="nama" autocomplete="off"></div>
+  <div><label for="nama">Nama mahasiswa atau kelompok</label><input type="text" id="nama" data-k="nama" autocomplete="off"></div>
   <div><label for="jenis">Jenis soal</label>
     <select id="jenis" data-k="jenis">
       <option value="">Pilih</option>
@@ -345,11 +349,10 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
     </div></details>
     <div class="body">
       <div class="testbar" data-testbar></div>
-      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 6 terlebih dahulu. Opsi Jamovi yang sesuai akan tampil di sini: panel Variances untuk ANOVA, atau tanpa opsi tambahan untuk Kruskal-Wallis.</div>
+      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 6 terlebih dahulu.</div>
       <div class="fld" data-fam="anova" hidden><div class="lab">Variances yang dicentang di Jamovi
         <button type="button" class="tip" aria-label="Penjelasan" data-tip="Pilih satu sesuai uji pada baris 6. Don’t assume equal (Welch’s) untuk ANOVA Welch, yaitu bila varians tidak setara. Assume equal (Fisher’s) untuk ANOVA satu arah Fisher, yaitu bila varians setara.">i</button></div>
-        <div class="opts" data-k="r8var"></div>
-        <div class="msg" data-msg="r8" hidden></div></div>
+        <div class="opts" data-k="r8var"></div></div>
       <div class="info" data-fam="kw" hidden><b>Kruskal-Wallis:</b> tidak ada opsi yang perlu dicentang di langkah ini. Jalankan analisisnya, lalu unggah tabel hasilnya.</div>
       <div class="up" data-k="r8img" data-cap="Tabel hasil uji statistika" tabindex="0"></div>
     </div>
@@ -369,9 +372,8 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
 
 <!-- 10 -->
 <section class="row" data-row="10">
-  <div class="c-k"><div class="no"><span class="mark">10</span></div><h3>Ukuran efek uji omnibus</h3></div>
+  <div class="c-k"><div class="no"><span class="mark">10</span></div><h3>Ukuran efek uji omnibus <button type="button" class="tip" aria-label="Penjelasan uji omnibus" data-tip="Uji omnibus menguji seluruh kelompok sekaligus: apakah sedikitnya ada satu kelompok yang berbeda dari yang lain. Uji ini belum menunjukkan kelompok mana yang berbeda (itu tugas uji lanjutan). Yang termasuk uji omnibus pada lembar ini: ANOVA Fisher, ANOVA Welch, dan Kruskal-Wallis.">i</button></h3></div>
   <div class="c-i">
-    <div class="info" style="margin-bottom:14px"><b>Apa itu uji omnibus?</b> Uji omnibus menilai seluruh kelompok sekaligus: apakah sedikitnya ada satu kelompok yang berbeda dari yang lain. Uji ini belum menunjukkan kelompok mana yang berbeda (itu tugas uji lanjutan di baris 11). Pada lembar ini, uji omnibus mencakup ANOVA Fisher, ANOVA Welch, dan Kruskal-Wallis. Ukuran efek omnibus menyatakan besar perbedaan secara keseluruhan.</div>
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
       <div class="br" data-b="anova">
         <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch) <span class="badge">Sesuai baris 6</span></h4>
@@ -394,30 +396,26 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
     </div></details>
     <div class="body">
       <div class="testbar" data-testbar></div>
-      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 6 terlebih dahulu. Opsi Effect Size yang sesuai akan tampil di sini: η², partial η², dan ω² untuk ANOVA, atau ε² untuk Kruskal-Wallis.</div>
+      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 6 terlebih dahulu.</div>
       <div class="fld" data-fam="anova" hidden><div class="lab">Effect Size yang dicentang di Jamovi (menu ANOVA)
         <button type="button" class="tip" aria-label="Penjelasan" data-tip="Boleh mencentang lebih dari satu, lalu pilih satu yang dilaporkan pada Jenis ukuran efek. Ukuran efek diambil dari menu ANOVA (model klasik), baik untuk ANOVA Fisher maupun ANOVA Welch.">i</button></div>
         <div class="opts" data-k="r10es"></div></div>
       <div class="fld" data-fam="kw" hidden><div class="lab">Effect Size yang dicentang di Jamovi (Kruskal-Wallis)
         <button type="button" class="tip" aria-label="Penjelasan" data-tip="Kruskal-Wallis menyediakan ε² sebagai ukuran efek omnibus.">i</button></div>
         <div class="opts" data-k="r10ek"></div></div>
-      <div class="pair" data-fam="any" hidden>
-        <div class="fld"><label class="lab" for="r10j">Jenis ukuran efek</label>
-          <select id="r10j" data-k="r10j"><option value="">Pilih</option></select></div>
-        <div class="fld"><label class="lab" for="r10n">Nilai ukuran efek</label><input type="text" id="r10n" data-k="r10n" inputmode="decimal" autocomplete="off" placeholder="contoh: 0,123"></div>
-      </div>
+      <div class="up" data-fam="any" data-k="r10img" data-cap="Tabel ukuran efek" tabindex="0" hidden></div>
       <div class="fld" data-fam="any" hidden><label class="lab" for="r10k">Kategori ukuran efek</label>
         <select id="r10k" data-k="r10k"><option value="">Pilih</option><option>Diabaikan (&lt; 0,01)</option><option>Kecil (0,01 sampai &lt; 0,06)</option><option>Sedang (0,06 sampai &lt; 0,14)</option><option>Besar (≥ 0,14)</option></select>
-        <div class="legend">
-          <div class="lg-t">Cara menentukan kategori (η², partial η², ω², dan ε²)</div>
+        <details class="legend">
+          <summary>Cara menentukan kategori</summary>
           <table>
             <tr><td>Diabaikan</td><td>kurang dari 0,01</td><td>Perbedaan kelompok menjelaskan kurang dari 1% variasi data.</td></tr>
             <tr><td>Kecil</td><td>0,01 sampai kurang dari 0,06</td><td>Menjelaskan 1% sampai kurang dari 6% variasi data.</td></tr>
             <tr><td>Sedang</td><td>0,06 sampai kurang dari 0,14</td><td>Menjelaskan 6% sampai kurang dari 14% variasi data.</td></tr>
             <tr><td>Besar</td><td>0,14 atau lebih</td><td>Menjelaskan 14% variasi data atau lebih.</td></tr>
           </table>
-          <p>Nilai ukuran efek dibaca dari tabel hasil di Jamovi. Batas di atas adalah acuan umum (Cohen), bukan batas mutlak. Untuk ε², nilainya dibaca sebagai proporsi variasi peringkat data.</p>
-        </div>
+          <p>Berlaku untuk η², partial η², ω², dan ε². Batas ini adalah acuan umum (Cohen), bukan batas mutlak.</p>
+        </details>
       </div>
     </div>
   </div>
@@ -453,8 +451,7 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
       <div class="testbar" data-testbar></div>
       <div class="fld" data-fam="anova" hidden><div class="lab">Post-Hoc Tests yang dicentang di Jamovi
         <button type="button" class="tip" aria-label="Penjelasan" data-tip="Pilih satu. Gunakan Games-Howell bila varians tidak setara (pasangan dengan ANOVA Welch) dan Tukey bila varians setara (pasangan dengan ANOVA Fisher). None berarti tanpa uji lanjutan.">i</button></div>
-        <div class="opts" data-k="r11ph"></div>
-        <div class="msg" data-msg="r11" hidden></div></div>
+        <div class="opts" data-k="r11ph"></div></div>
       <div class="fld" data-fam="kw" hidden><div class="lab">Post Hoc Tests yang dicentang di Jamovi
         <button type="button" class="tip" aria-label="Penjelasan" data-tip="Keduanya adalah uji lanjutan untuk Kruskal-Wallis dan boleh dicentang bersama. Laporkan satu yang dipakai untuk kesimpulan.">i</button></div>
         <div class="opts" data-k="r11kw"></div></div>
@@ -492,19 +489,18 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
       <div class="testbar" data-testbar></div>
       <div class="fld"><div class="lab">Correction yang dipilih di Jamovi
         <button type="button" class="tip" aria-label="Penjelasan" data-tip="Koreksi dipakai karena ada banyak perbandingan pasangan sekaligus. Bonferroni dan Holm cocok untuk kasus umum, dan Holm sedikit lebih berdaya. Tukey untuk varians setara. Scheffe paling konservatif. No correction tidak dianjurkan. Perbandingan pasangan di menu ANOVA memakai galat gabungan, jadi tafsirkan dengan hati-hati bila varians tidak setara.">i</button></div>
-        <div class="opts" data-k="r12c"></div>
-        <div class="msg" data-msg="r12" hidden></div></div>
+        <div class="opts" data-k="r12c"></div></div>
       <p class="sect">Kesimpulan ukuran efek pada pasangan kelompok</p>
-      <div class="legend" style="margin-top:0">
-        <div class="lg-t">Cara menentukan kategori Cohen’s d (gunakan nilai mutlak)</div>
+      <details class="legend" style="margin-top:0">
+        <summary>Cara menentukan kategori Cohen’s d</summary>
         <table>
           <tr><td>Diabaikan</td><td>kurang dari 0,2</td><td>Selisih rata-rata kurang dari 0,2 simpangan baku.</td></tr>
           <tr><td>Kecil</td><td>0,2 sampai kurang dari 0,5</td><td>Selisih sekitar 0,2 sampai 0,5 simpangan baku.</td></tr>
           <tr><td>Sedang</td><td>0,5 sampai kurang dari 0,8</td><td>Selisih sekitar 0,5 sampai 0,8 simpangan baku.</td></tr>
           <tr><td>Besar</td><td>0,8 atau lebih</td><td>Selisih 0,8 simpangan baku atau lebih.</td></tr>
         </table>
-        <p>Batas di atas adalah acuan umum (Cohen), bukan batas mutlak.</p>
-      </div>
+        <p>Gunakan nilai mutlak d. Batas ini adalah acuan umum (Cohen), bukan batas mutlak.</p>
+      </details>
       <div class="fld"><label class="lab" for="r12s">Pasangan kelompok yang berbeda secara signifikan (sebutkan nilai d dan kategorinya)</label><textarea id="r12s" data-k="r12s" rows="3"></textarea></div>
       <div class="fld"><label class="lab" for="r12n">Pasangan kelompok yang tidak berbeda secara signifikan (sebutkan nilai d dan kategorinya)</label><textarea id="r12n" data-k="r12n" rows="2"></textarea></div>
     </div>
@@ -539,7 +535,7 @@ var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelect
 /* ---------- opsi ---------- */
 var NAME={fisher:"ANOVA satu arah (Fisher)",welch:"ANOVA Welch",kw:"Uji Kruskal-Wallis"};
 var OPTS={
-  r4:{items:[["normal","normal di semua kelompok"],["tidak","tidak normal pada sedikitnya satu kelompok"]]},
+  r4:{items:[["normal","data terdistribusi normal di semua kelompok"],["tidak","data tidak terdistribusi normal pada sedikitnya satu kelompok"]]},
   r5norm:{items:[["normal","terdistribusi normal"],["tidak","tidak terdistribusi normal"]]},
   r5var:{items:[["setara","varians setara"],["tidak","varians tidak setara"]]},
   r6:{items:[
@@ -570,7 +566,6 @@ var OPTS={
     ["bonf","Bonferroni","Konservatif dan sederhana. Cocok untuk jumlah pasangan yang sedikit."],
     ["holm","Holm","Mengendalikan kesalahan tipe I seperti Bonferroni dengan daya sedikit lebih besar."]]}
 };
-var ES_LABEL={eta:"η²",peta:"partial η²",omega:"ω²",eps:"ε²"};
 
 /* ---------- simbol ---------- */
 var SYM=["H₀","H₁","μ","Md","α","μ₁","μ₂","μ₃","μ₄","Md₁","Md₂","Md₃","Md₄","₀","₁","₂","₃","₄","≠","≤","≥","η²","ω²","ε²"];
@@ -693,7 +688,6 @@ function setVal(el,v){
   if(el.classList.contains("opts")){var a=[].concat(v||[]);$$("input",el).forEach(function(i){i.checked=a.indexOf(i.value)>-1})}
   else if(el.classList.contains("up")){el._img=v||"";renderUp(el)}
   else{
-    if(el.id==="r10j")syncES();
     el.value=v||"";
     if(el.tagName==="SELECT"&&el.selectedIndex<0)el.selectedIndex=0;
   }
@@ -705,24 +699,6 @@ function getSheet(){var o={};$$("#sheet [data-k]").forEach(function(el){var v=ge
 function setSheet(o){o=o||{};$$("#sheet [data-k]").forEach(function(el){setVal(el,o[el.dataset.k])})}
 function getHead(){var o={};$$("#head [data-k]").forEach(function(el){o[el.dataset.k]=el.value});return o}
 
-/* ---------- jenis ukuran efek mengikuti centang di Jamovi ---------- */
-function syncES(){
-  var sel=$("#r10j"),f=fam(),keys=[];
-  if(f){var box=$('.opts[data-k="'+(f==="kw"?"r10ek":"r10es")+'"]');keys=$$("input:checked",box).map(function(i){return i.value})}
-  var sig=f+"|"+keys.join(",");
-  if(sel.dataset.sig===sig)return;
-  var cur=sel.value,labels=keys.map(function(k){return ES_LABEL[k]});
-  sel.innerHTML="";
-  var p=document.createElement("option");p.value="";
-  p.textContent=!f?"Pilih uji pada baris 6 dahulu":(labels.length?"Pilih":"Centang Effect Size di atas dahulu");
-  sel.appendChild(p);
-  labels.forEach(function(l){var o=document.createElement("option");o.value=l;o.textContent=l;sel.appendChild(o)});
-  sel.value=labels.indexOf(cur)>-1?cur:"";
-  if(sel.selectedIndex<0)sel.selectedIndex=0;
-  sel.disabled=!labels.length;
-  sel.dataset.sig=sig;
-}
-
 /* ---------- aturan kunci ---------- */
 var LOCK={
   "5":function(){var v=V("r4");if(!v)return "Isi kesimpulan normalitas pada baris 4 terlebih dahulu.";if(v!=="normal")return "Baris ini tidak diisi karena data tidak normal pada sedikitnya satu kelompok.";return ""},
@@ -730,22 +706,6 @@ var LOCK={
   "12":function(){if(!fam())return "Pilih jenis uji statistika pada baris 6 terlebih dahulu.";if(fam()==="kw")return "Baris ini tidak diisi karena ukuran efek per pasangan tidak tersedia di Jamovi untuk Kruskal-Wallis.";var d=V("r9");if(!d)return "Isi keputusan pada baris 9 terlebih dahulu.";if(d!=="tolak")return "Baris ini tidak diisi karena keputusan adalah gagal tolak H₀.";return ""}
 };
 
-/* ---------- peringatan lunak (tidak memblokir isian) ---------- */
-var MSG={
-  r8:function(){var t=V("r6"),v=V("r8var");
-    if(t==="welch"&&v==="fisher")return "Uji pada baris 6 adalah ANOVA Welch, sedangkan opsi yang dipilih adalah Assume equal (Fisher’s). Periksa kembali.";
-    if(t==="fisher"&&v==="welch")return "Uji pada baris 6 adalah ANOVA satu arah (Fisher), sedangkan opsi yang dipilih adalah Don’t assume equal (Welch’s). Periksa kembali.";
-    return ""},
-  r11:function(){var t=V("r6"),v=V("r11ph");
-    if(v==="none")return "Keputusan pada baris 9 adalah tolak H₀, sehingga uji lanjutan diperlukan. Pilih Games-Howell atau Tukey.";
-    if(t==="welch"&&v==="tukey")return "Tukey mensyaratkan varians setara, sedangkan ANOVA Welch dipakai saat varians tidak setara. Pertimbangkan Games-Howell.";
-    if(t==="fisher"&&v==="gh")return "Games-Howell dipakai bila varians tidak setara. Pada ANOVA Fisher (varians setara), pilihan yang lazim adalah Tukey.";
-    return ""},
-  r12:function(){var t=V("r6"),v=V("r12c");
-    if(v==="none")return "Tanpa koreksi, risiko kesalahan tipe I naik. Pertimbangkan Holm atau Bonferroni.";
-    if(t==="welch"&&v==="tukey")return "Tukey mensyaratkan varians setara, sedangkan ANOVA Welch dipakai saat varians tidak setara. Pertimbangkan Holm atau Bonferroni.";
-    return ""}
-};
 
 /* ---------- refresh ---------- */
 function refresh(){
@@ -760,11 +720,6 @@ function refresh(){
     c.textContent=t?"Uji terpilih (baris 6): "+NAME[t]:"Uji belum dipilih (baris 6)";
     el.appendChild(c);
   });
-  var ph0=f==="kw"?"contoh: Md₁ = Md₂ = Md₃":"contoh: μ₁ = μ₂ = μ₃";
-  $("#r7h0").placeholder=f?ph0:"";
-  $("#r7h1").placeholder=f?(f==="kw"?"contoh: sedikitnya satu median berbeda":"contoh: sedikitnya satu μ berbeda"):"";
-  syncES();
-  $$("[data-msg]").forEach(function(el){var m=MSG[el.dataset.msg]();el.textContent=m;el.hidden=!m});
   /* opsi terpilih */
   $$(".optw").forEach(function(w){var i=$("input",w);w.classList.toggle("sel",!!(i&&i.checked))});
   /* kunci dan penanda */
@@ -786,7 +741,14 @@ function refresh(){
   document.title="Templat isian uji beda lebih dari dua kelompok numeris"+(nomor?" - Soal "+nomor:"")+(nm?" - "+nm:"");
   autosize();
 }
-function autosize(){$$("textarea").forEach(function(t){if(t.offsetParent===null)return;t.style.height="auto";t.style.height=(t.scrollHeight+2)+"px"})}
+function mirror(){
+  $$("#sheet textarea,#sheet input[type=text],#head input[type=text]").forEach(function(t){
+    var p=t._pv;
+    if(!p){p=document.createElement("div");p.className="pv";t._pv=p;t.parentNode.insertBefore(p,t.nextSibling)}
+    p.textContent=t.value;
+  });
+}
+function autosize(){mirror();$$("textarea").forEach(function(t){if(t.offsetParent===null)return;t.style.height="auto";t.style.height=(t.scrollHeight+2)+"px"})}
 
 /* ---------- simpan ---------- */
 var KEY="lj-jamovi-v1:"+location.pathname,ST={head:{},sheets:{}},cur="0",tm=null;
