@@ -1709,7 +1709,7 @@ function renderScenario(){
   if(state.mode==='pick'){
     $('#scn-select').innerHTML=SCN.filter(inFilter).slice().sort((a,b)=>ctxK(a)-ctxK(b)||a.gName.localeCompare(b.gName,'id')).map(s=>'<option value="'+s.id+'"'+(s===c?' selected':'')+'>'+s.gName+' dan '+lcFirst(s.vName)+' ('+ctxK(s)+' kelompok)</option>').join('');
   }
-  $('#scn-sum').innerHTML='<div class="box"><div class="concl-title">Skenario aktif</div>'+statRow('Variabel kelompok',c.gName+' ('+c.groups.join(', ')+')')+statRow('Variabel numeris',c.vName+(c.unit?' ('+c.unit+')':''))+statRow('Unit pengamatan',c.unitObs)+statRow('Jumlah kelompok',String(ctxK(c)))+'</div>';
+  $('#scn-sum').innerHTML='<div class="box"><div class="concl-title">Skenario aktif</div>'+statRow('Variabel kategoris (kelompok)',c.gName+' ('+c.groups.join(', ')+')')+statRow('Variabel numeris',c.vName+(c.unit?' ('+c.unit+')':''))+statRow('Unit pengamatan',c.unitObs)+statRow('Jumlah kelompok',String(ctxK(c)))+'</div>';
   setChip('chip-scn',ctxK(c)+' kelompok'+(state.mode==='pick'?' \u00b7 dipilih':' \u00b7 acak'));
 }
 const ARROW='<svg class="pop-arrow" viewBox="0 0 22 34" aria-hidden="true"><path d="M11 2v26M4 21l7 8 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
