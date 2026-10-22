@@ -60,7 +60,7 @@ p.subtitle { text-align: center; color: var(--text-muted); font-size: 16px; marg
 
 .calc-row { display: flex; gap: 24px; align-items: flex-start; }
 
-.input-side { flex: 0 0 400px; min-width: 0; background: var(--card-bg); border-radius: 20px; padding: 28px; box-shadow: var(--shadow); }
+.input-side { flex: 0 0 clamp(300px, 36%, 400px); min-width: 0; background: var(--card-bg); border-radius: 20px; padding: 28px; box-shadow: var(--shadow); }
 .result-side { flex: 1; min-width: 0; }
 
 .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 0 0 14px; font-weight: 700; }
@@ -105,6 +105,20 @@ input.txt {
 .btn.primary:hover { color: #fff; opacity: .9; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 .btn-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* Dropdown skenario */
+.dd { position: relative; display: inline-block; }
+.dd-btn { display: inline-flex; align-items: center; gap: 7px; }
+.dd-chev { font-size: 13px; line-height: 1; }
+.dd-btn[aria-expanded="true"] { border-color: var(--accent-blue); color: var(--accent-blue); }
+.dd-menu { position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; min-width: 230px; max-height: 60vh; overflow-y: auto; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow), 0 10px 28px rgba(0,0,0,.14); padding: 6px; }
+.dd-menu[hidden] { display: none; }
+.dd-item { display: block; width: 100%; text-align: left; font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 600; color: var(--text-main); background: transparent; border: none; border-radius: 8px; padding: 8px 10px; cursor: pointer; }
+.dd-item small { display: block; font-size: 11.5px; font-weight: 500; color: var(--text-muted); margin-top: 1px; }
+.dd-item:hover, .dd-item:focus-visible { background: var(--fill1); outline: none; }
+.dd-item[aria-checked="true"] { color: var(--accent-blue); background: var(--fill1); }
+.dd-item:focus-visible { box-shadow: 0 0 0 2px rgba(0,113,227,.35) inset; }
+@media (max-width: 480px) { .dd-menu { min-width: min(260px, calc(100vw - 48px)); } }
 .dl-row { margin: 0 0 12px; }
 
 /* Urutan kelompok */
@@ -214,19 +228,29 @@ details.inline > div { margin-top: 14px; }
 :root[data-theme="dark"] .ic-moon { display: none; }
 :root:not([data-theme="dark"]) .ic-sun { display: none; }
 
-@media (min-width: 769px) {
+@media (min-width: 901px) {
     .input-side { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; }
 }
-@media (max-width: 768px) {
-    body { padding: 28px 14px; }
-    .calc-row { flex-direction: column; }
+@media (max-width: 900px) {
+    body { padding: 28px 12px; }
+    .calc-row { flex-direction: column; gap: 18px; }
     .input-side, .result-side { width: 100%; flex: none; }
-    .input-side { padding: 22px; }
-    .step { padding: 22px 18px; }
+    /* kotak input lebih ramping, kotak hasil sedikit melebar ke tepi layar karena memuat lebih banyak informasi */
+    .input-side { padding: 20px 18px; }
+    .result-side { width: calc(100% + 12px); margin: 0 -6px; }
+    .step { padding: 20px 14px; }
+    .stepnav-wrap { top: 6px; }
     h1 { font-size: 24px; }
     .verdict-status { font-size: 27px; }
     .seg label { font-size: 11.5px; }
-    .stepnav-wrap { top: 6px; }
+}
+@media (max-width: 480px) {
+    body { padding: 24px 8px; }
+    .result-side { width: calc(100% + 8px); margin: 0 -4px; }
+    .input-side { padding: 18px 16px; }
+    .step { padding: 18px 12px; }
+    .stat-row { gap: 10px; }
+    details.method { padding: 18px 16px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } html { scroll-behavior: auto; } .stepnav { scroll-behavior: auto; } }
 .sub.sep { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--border-color); }
@@ -268,8 +292,8 @@ details.inline > div { margin-top: 14px; }
                 <input type="text" id="vn-group" class="txt" placeholder="Nama variabel kelompok" autocomplete="off">
             </div>
             <div class="form-group">
-                <label for="vn-value">Variabel numerik yang diukur</label>
-                <input type="text" id="vn-value" class="txt" placeholder="Nama variabel numerik" autocomplete="off">
+                <label for="vn-value">Variabel numeris yang diukur</label>
+                <input type="text" id="vn-value" class="txt" placeholder="Nama variabel numeris" autocomplete="off">
             </div>
             <div class="form-group last">
                 <label for="vn-pop">Populasi sasaran</label>
@@ -282,7 +306,7 @@ details.inline > div { margin-top: 14px; }
                 <div class="btn-row" style="justify-content: space-between;">
                     <span class="help-text" style="margin: 0; flex: 1; min-width: 180px;">Salin-tempel dua kolom dari dataset Anda. Satu baris adalah satu unit pengamatan.</span>
                     <span class="btn-row" style="gap:6px;">
-                        <button type="button" class="btn" id="btn-example">Contoh data</button>
+                        <span class="dd" id="dd-example"><button type="button" class="btn dd-btn" id="btn-example" aria-haspopup="menu" aria-expanded="false" aria-controls="dd-menu"><span id="dd-label">Contoh data</span><span class="dd-chev" aria-hidden="true">&#9662;</span></button><div class="dd-menu" id="dd-menu" role="menu" hidden></div></span>
                         <button type="button" class="btn" id="btn-clear">Kosongkan</button>
                     </span>
                 </div>
@@ -298,7 +322,7 @@ details.inline > div { margin-top: 14px; }
             <div class="row-count" id="row-count" aria-live="polite"></div>
             <div class="hint" id="cat-summary" aria-live="polite" style="line-height:1.7;"></div>
             <div id="warn-box" class="msg-stack" style="margin:10px 0 0;"></div>
-            <div class="hint">Kolom 1 harus berisi 3 sampai 6 nama kelompok, masing-masing dengan minimal 3 data. Tempel tanpa judul kolom. Desimal memakai titik dan tanpa pemisah ribuan (1107, bukan 1.107). Penulisan nama kelompok harus konsisten, karena huruf besar dan kecil dibedakan.</div>
+            <div class="hint">Kolom 1 harus berisi 3 sampai 6 nama kelompok, masing-masing dengan minimal 3 data. Tempel tanpa judul kolom. Dua kolom yang disalin sekaligus dari Excel atau Sheets juga bisa ditempel ke kotak pertama, dan akan dipisah otomatis. Desimal memakai titik dan tanpa pemisah ribuan (1107, bukan 1.107). Penulisan nama kelompok harus konsisten, karena huruf besar dan kecil dibedakan.</div>
 
             <div class="section-title spaced">Urutan kelompok</div>
             <div id="order-box"><div class="hint">Urutan muncul setelah data terbaca.</div></div>
@@ -542,7 +566,7 @@ details.inline > div { margin-top: 14px; }
 var MAX_ROWS = 250, MAX_GRP = 6, MIN_N = 3;
 var Z975 = 1.959963984540054;
 
-/* ---------- Fungsi numerik dasar ---------- */
+/* ---------- Fungsi numeris dasar ---------- */
 function lgamma(x) {
     if (x >= 15) {
         var x2 = x * x;
@@ -1147,7 +1171,7 @@ function parseInput(t1, t2, maxRows) {
         return res;
     }
     if (order.length > MAX_GRP) {
-        res.errors.push('Kolom 1 berisi ' + order.length + ' kelompok (' + order.slice(0, 6).join(', ') + ', ...). Maksimum ' + MAX_GRP + ' kelompok. Jika ini kolom numerik atau judul kolom, periksa kembali isi kotak.');
+        res.errors.push('Kolom 1 berisi ' + order.length + ' kelompok (' + order.slice(0, 6).join(', ') + ', ...). Maksimum ' + MAX_GRP + ' kelompok. Jika ini kolom numeris atau judul kolom, periksa kembali isi kotak.');
         return res;
     }
     var gs = order.map(function (nm) { return groups['$' + nm]; });
@@ -1441,11 +1465,25 @@ var TEST_NAMES = { anova: 'Uji anova satu arah (Fisher)', welch: 'Uji anova satu
 var DEF = { value: 'nilai yang diukur', group: 'kelompok' };
 var lastO = null, calcTimer = null, orderState = { key: '', order: [] };
 var SAVE_KEY = 'data-kalkulator-komparasi';
-var EXAMPLE = {
-    g: ['Pakan A','Pakan A','Pakan A','Pakan A','Pakan A','Pakan A','Pakan A','Pakan A','Pakan A','Pakan A','Pakan A','Pakan A','Pakan B','Pakan B','Pakan B','Pakan B','Pakan B','Pakan B','Pakan B','Pakan B','Pakan B','Pakan B','Pakan B','Pakan B','Pakan C','Pakan C','Pakan C','Pakan C','Pakan C','Pakan C','Pakan C','Pakan C','Pakan C','Pakan C','Pakan C','Pakan C'],
-    v: [4.2,3.9,4.5,4.1,4.8,4.0,4.4,4.3,4.6,3.8,4.2,4.4,5.1,4.9,5.6,5.0,5.3,4.7,5.5,5.2,5.4,4.8,5.2,5.0,4.6,4.4,4.9,5.0,4.3,4.7,4.8,4.5,4.9,4.6,4.4,4.7]
-};
+var SCENARIOS = [{"id":1,"group":"Jenis pakan","g":["Pakan A","Pakan A","Pakan A","Pakan A","Pakan A","Pakan A","Pakan A","Pakan A","Pakan A","Pakan A","Pakan A","Pakan A","Pakan B","Pakan B","Pakan B","Pakan B","Pakan B","Pakan B","Pakan B","Pakan B","Pakan B","Pakan B","Pakan B","Pakan B","Pakan C","Pakan C","Pakan C","Pakan C","Pakan C","Pakan C","Pakan C","Pakan C","Pakan C","Pakan C","Pakan C","Pakan C"],
+"v":["0.62","0.68","0.9","0.78","0.5","0.7","0.63","0.72","0.51","0.73","0.73","0.89","0.89","0.91","0.67","1.12","0.62","0.98","0.81","0.74","0.77","0.77","0.9","0.84","1.23","0.83","1.05","0.94","1.14","0.8","1.01","1.08","0.87","1.17","1.07","1.17"],"k":3,"n":36},{"id":2,"group":"Wilayah","g":["Makassar","Makassar","Makassar","Makassar","Makassar","Makassar","Makassar","Makassar","Makassar","Makassar","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Maros","Gowa","Gowa","Gowa","Gowa","Gowa","Gowa","Gowa","Gowa","Gowa","Gowa","Gowa","Gowa","Gowa","Gowa","Takalar","Takalar","Takalar","Takalar","Takalar","Takalar","Takalar","Takalar","Takalar"],
+"v":["12.2","11.5","11.6","9.6","13.8","13.1","11.7","12.8","12.3","11.4","16.9","12.4","12.3","10.7","15.1","13.2","15.4","11.4","13.9","10.4","16.4","14.2","14.7","14.9","10.0","16.2","20.7","7.8","8.4","8.7","12.3","11.2","12.6","12.1","11.3","11.4","10.7","12.3","9.3","10.4","11.4","13.7","11.6","10.1","12.5","19.4","13.9","21.0","6.6","20.1","19.7"],"k":4,"n":51},{"id":3,"group":"Perlakuan","g":["Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Kontrol","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan A","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan B","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C","Disinfektan C"],
+"v":["369.0","491.0","366.0","137.0","516.0","392.0","217.0","425.0","373.0","358.0","305.0","416.0","193.0","272.0","195.0","372.0","266.0","218.0","163.0","223.0","261.0","220.0","565.0","476.0","51.0","84.0","234.0","202.0","159.0","159.0","499.0","72.0","112.0","477.0","206.0","208.0","103.0","52.0","155.0","149.0","67.0","93.0","86.0","51.0","85.0","95.0","92.0","66.0","129.0","154.0","109.0","55.0","140.0","67.0","153.0","47.0"],"k":4,"n":56},{"id":4,"group":"Kelompok umur","g":["Muda","Muda","Muda","Muda","Muda","Muda","Muda","Muda","Muda","Muda","Muda","Muda","Muda","Muda","Muda","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Dewasa","Tua","Tua","Tua","Tua","Tua","Tua","Tua","Tua","Tua","Tua","Tua","Tua","Tua","Tua","Tua"],
+"v":["14.6","15.3","14.5","11.9","15.4","14.7","13.1","14.9","14.6","14.5","14.0","14.9","12.8","13.7","13.2","15.0","14.1","13.5","12.7","13.6","14.0","13.6","16.1","15.6","9.7","11.0","13.7","13.3","14.3","14.3","17.4","12.2","13.4","17.3","15.0","15.1","13.2","11.4","14.3","14.2","12.0","12.9","13.9","12.5","13.8"],"k":3,"n":45},{"id":5,"group":"Sistem pemeliharaan","g":["Intensif","Intensif","Intensif","Intensif","Intensif","Intensif","Intensif","Intensif","Intensif","Intensif","Semi-intensif","Semi-intensif","Semi-intensif","Semi-intensif","Semi-intensif","Semi-intensif","Semi-intensif","Semi-intensif","Semi-intensif","Semi-intensif","Ekstensif","Ekstensif","Ekstensif","Ekstensif","Ekstensif","Ekstensif","Ekstensif","Ekstensif","Ekstensif","Ekstensif","Campuran","Campuran","Campuran","Campuran","Campuran","Campuran","Campuran","Campuran","Campuran","Campuran"],
+"v":["274.0","277.0","290.0","351.0","278.0","279.0","304.0","376.0","283.0","292.0","348.0","346.0","355.0","317.0","303.0","287.0","353.0","332.0","357.0","342.0","416.0","383.0","367.0","362.0","340.0","345.0","347.0","421.0","352.0","336.0","340.0","359.0","285.0","237.0","319.0","371.0","302.0","355.0","343.0","358.0"],"k":4,"n":40},{"id":6,"group":"Waktu pengamatan","g":["Hari 0","Hari 0","Hari 0","Hari 0","Hari 0","Hari 0","Hari 0","Hari 0","Hari 0","Hari 0","Hari 0","Hari 0","Hari 3","Hari 3","Hari 3","Hari 3","Hari 3","Hari 3","Hari 3","Hari 3","Hari 3","Hari 3","Hari 3","Hari 3","Hari 6","Hari 6","Hari 6","Hari 6","Hari 6","Hari 6","Hari 6","Hari 6","Hari 6","Hari 6","Hari 6","Hari 6","Hari 9","Hari 9","Hari 9","Hari 9","Hari 9","Hari 9","Hari 9","Hari 9","Hari 9","Hari 9","Hari 9","Hari 9","Hari 12","Hari 12","Hari 12","Hari 12","Hari 12","Hari 12","Hari 12","Hari 12","Hari 12","Hari 12","Hari 12","Hari 12"],
+"v":["5.71","5.67","5.68","5.58","5.79","5.76","5.68","5.74","5.71","5.67","5.75","5.68","5.6","5.46","5.84","5.67","5.86","5.52","5.74","5.43","5.95","5.76","5.8","5.82","5.75","5.84","5.9","5.72","5.71","5.72","5.84","5.81","5.85","5.84","5.81","5.81","5.62","6.09","5.19","5.51","5.81","6.51","5.36","5.21","5.45","6.14","5.59","6.3","5.75","5.99","5.98","5.79","5.91","6.0","5.91","5.98","6.09","5.92","5.88","5.84"],"k":5,"n":60},{"id":7,"group":"Lokasi","g":["Lokasi 1","Lokasi 1","Lokasi 1","Lokasi 1","Lokasi 1","Lokasi 1","Lokasi 1","Lokasi 1","Lokasi 1","Lokasi 1","Lokasi 2","Lokasi 2","Lokasi 2","Lokasi 2","Lokasi 2","Lokasi 2","Lokasi 2","Lokasi 2","Lokasi 2","Lokasi 2","Lokasi 3","Lokasi 3","Lokasi 3","Lokasi 3","Lokasi 3","Lokasi 3","Lokasi 3","Lokasi 3","Lokasi 3","Lokasi 3","Lokasi 4","Lokasi 4","Lokasi 4","Lokasi 4","Lokasi 4","Lokasi 4","Lokasi 4","Lokasi 4","Lokasi 4","Lokasi 4","Lokasi 5","Lokasi 5","Lokasi 5","Lokasi 5","Lokasi 5","Lokasi 5","Lokasi 5","Lokasi 5","Lokasi 5","Lokasi 5"],
+"v":["12.3","11.9","14.6","11.9","15.5","11.4","13.7","14.1","14.0","12.6","13.1","13.0","15.5","14.8","13.2","11.9","11.1","12.3","13.4","10.9","14.4","14.9","13.8","15.2","13.5","13.8","13.3","16.0","12.2","17.6","13.6","13.8","12.6","12.8","14.8","16.6","11.2","12.5","15.0","14.4","14.5","12.9","14.5","13.9","17.1","14.7","13.6","14.7","14.4","15.2"],"k":5,"n":50}];
 
+/* Konteks tiap skenario: variabel numeris yang diukur dan populasi sasaran (karangan untuk contoh) */
+var SCENARIO_CTX = {
+    1: { value: 'Pertambahan berat badan harian (kg/hari)', pop: 'sapi potong' },
+    2: { value: 'Produksi susu harian (liter/ekor/hari)', pop: 'sapi perah di peternakan rakyat Sulawesi Selatan' },
+    3: { value: 'Angka cemaran bakteri pada bak kendaraan (CFU/cm²)', pop: 'kendaraan pengangkut ternak' },
+    4: { value: 'Kadar hemoglobin darah (g/dL)', pop: 'anjing peliharaan' },
+    5: { value: 'Produksi telur per ekor per tahun (butir)', pop: 'itik petelur' },
+    6: { value: 'pH daging', pop: 'daging sapi yang disimpan dingin' },
+    7: { value: 'Konsentrasi amonia udara kandang (ppm)', pop: 'kandang ayam broiler' }
+};
 function H0() { return 'H<sub>0</sub>'; }
 function getTest() { return document.querySelector('input[name="test"]:checked').value; }
 function getAdj() { return document.querySelector('input[name="adj"]:checked').value; }
@@ -1782,7 +1820,7 @@ function conclusionText(o) {
             if (sig.length < o.ph.pairs.length) s += ' Pasangan kelompok lainnya tidak berbeda nyata.';
         }
     } else {
-        s += ' Bukti dari sampel belum cukup kuat untuk menyatakan ada perbedaan. Namun, hal ini tidak membuktikan bahwa perbedaan tidak ada.';
+        s += ' Bukti dari sampel belum cukup kuat untuk menyatakan ada perbedaan. Namun, hal ini bukanlah bukti bahwa di populasi tidak ada perbedaan antarkelompok.';
     }
     return s;
 }
@@ -1940,7 +1978,7 @@ function render(o) {
     /* tahap 1 */
     var hy = hypothesisHtml(o);
     $('hyp-h0').innerHTML = hy.h0; $('hyp-h1').innerHTML = hy.h1; $('hyp-n0').innerHTML = hy.n0; $('hyp-n1').innerHTML = hy.n1;
-    $('hyp-grid').innerHTML = statRow('Variabel kelompok', esc(o.gName)) + statRow('Variabel numerik', esc(o.vName)) + statRow(G('pop', 'Populasi sasaran'), esc(popPhrase(o))) + statRow('Jumlah kelompok dan total data', o.k + ' kelompok, n = ' + o.N);
+    $('hyp-grid').innerHTML = statRow('Variabel kelompok', esc(o.gName)) + statRow('Variabel numeris', esc(o.vName)) + statRow(G('pop', 'Populasi sasaran'), esc(popPhrase(o))) + statRow('Jumlah kelompok dan total data', o.k + ' kelompok, n = ' + o.N);
     setChip('chip-1', '');
 
     /* tahap 2 */
@@ -2077,12 +2115,71 @@ document.addEventListener('DOMContentLoaded', function () {
     })();
     document.querySelectorAll('input[name="test"], input[name="adj"], input[name="phkw"]').forEach(function (r) { r.addEventListener('change', calculate); });
     ['c1', 'c2', 'vn-group', 'vn-value', 'vn-pop'].forEach(function (id) { $(id).addEventListener('input', scheduleCalc); });
-    $('btn-clear').addEventListener('click', function () { $('c1').value = ''; $('c2').value = ''; orderState.key = ''; calculate(); });
-    $('btn-example').addEventListener('click', function () {
-        $('c1').value = EXAMPLE.g.join('\n'); $('c2').value = EXAMPLE.v.join('\n');
-        $('vn-group').value = 'Jenis pakan'; $('vn-value').value = 'Pertambahan bobot badan (kg)'; $('vn-pop').value = 'sapi perah di Kabupaten Enrekang';
-        orderState.key = ''; calculate();
-        if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) { setTimeout(function () { var r = $('results'); if (r && r.style.display !== 'none') r.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150); }
+    $('btn-clear').addEventListener('click', function () { $('c1').value = ''; $('c2').value = ''; setScenarioMark(0); orderState.key = ''; calculate(); });
+
+    /* Dropdown skenario */
+    (function () {
+        var wrap = $('dd-example'), btn = $('btn-example'), menu = $('dd-menu'), label = $('dd-label'), cur = 0;
+        menu.innerHTML = SCENARIOS.map(function (s) {
+            return '<button type="button" class="dd-item" role="menuitemradio" aria-checked="false" data-id="' + s.id + '">Skenario ' + s.id + '<small>' + s.k + ' kelompok, n = ' + s.n + '</small></button>';
+        }).join('');
+        var items = function () { return Array.prototype.slice.call(menu.querySelectorAll('.dd-item')); };
+        function openMenu(focusIdx) {
+            menu.hidden = false; btn.setAttribute('aria-expanded', 'true');
+            var it = items(); if (focusIdx !== undefined && it[focusIdx]) it[focusIdx].focus();
+        }
+        function closeMenu(back) {
+            if (menu.hidden) return;
+            menu.hidden = true; btn.setAttribute('aria-expanded', 'false');
+            if (back) btn.focus();
+        }
+        window.setScenarioMark = function (id) {
+            cur = id;
+            label.textContent = id ? 'Skenario ' + id : 'Contoh data';
+            items().forEach(function (b) { b.setAttribute('aria-checked', String(+b.getAttribute('data-id') === id)); });
+        };
+        function load(id) {
+            var s = SCENARIOS.filter(function (x) { return x.id === id; })[0]; if (!s) return;
+            $('c1').value = s.g.join('\n'); $('c2').value = s.v.join('\n');
+            var cx = SCENARIO_CTX[id] || { value: '', pop: '' };
+            $('vn-group').value = s.group; $('vn-value').value = cx.value; $('vn-pop').value = cx.pop;
+            setScenarioMark(id); orderState.key = ''; calculate();
+            if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) { setTimeout(function () { var r = $('results'); if (r && r.style.display !== 'none') r.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150); }
+        }
+        btn.addEventListener('click', function () { if (menu.hidden) openMenu(cur ? cur - 1 : 0); else closeMenu(false); });
+        btn.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowDown') { e.preventDefault(); openMenu(cur ? cur - 1 : 0); }
+        });
+        menu.addEventListener('click', function (e) {
+            var b = e.target.closest ? e.target.closest('.dd-item') : null; if (!b) return;
+            load(+b.getAttribute('data-id')); closeMenu(true);
+        });
+        menu.addEventListener('keydown', function (e) {
+            var it = items(), i = it.indexOf(document.activeElement);
+            if (e.key === 'ArrowDown') { e.preventDefault(); it[(i + 1) % it.length].focus(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); it[(i - 1 + it.length) % it.length].focus(); }
+            else if (e.key === 'Home') { e.preventDefault(); it[0].focus(); }
+            else if (e.key === 'End') { e.preventDefault(); it[it.length - 1].focus(); }
+            else if (e.key === 'Escape') { e.preventDefault(); closeMenu(true); }
+            else if (e.key === 'Tab') { closeMenu(false); }
+        });
+        document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) closeMenu(false); });
+        /* bila isi kotak data diubah manual, penanda skenario dilepas */
+        ['c1', 'c2'].forEach(function (id) { $(id).addEventListener('input', function () { if (cur) setScenarioMark(0); }); });
+    })();
+
+    /* Tempel dua kolom sekaligus dari Excel atau Sheets ke kotak kolom 1: dipisah otomatis, judul kolom dilewati */
+    $('c1').addEventListener('input', function () {
+        var t = this.value;
+        if (t.indexOf('\t') === -1) return;
+        var lines = splitLines(t), a = [], b = [], i, f;
+        for (i = 0; i < lines.length; i++) {
+            f = lines[i].split('\t');
+            if (f.length < 2) return;
+            a.push(f[0]); b.push(f[1]);
+        }
+        if (a.length > 1 && !NUM_RE.test(b[0].trim()) && b[0].trim() !== '' && NUM_RE.test((b[1] || '').trim())) { a.shift(); b.shift(); }
+        this.value = a.join('\n'); $('c2').value = b.join('\n');
     });
     $('order-box').addEventListener('click', function (e) {
         var b = e.target.closest ? e.target.closest('button[data-dir]') : null;
