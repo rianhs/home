@@ -390,7 +390,7 @@ details.inline > div { margin-top: 14px; }
                 <!-- Tahap 3 -->
                 <section class="step" id="st-asm">
                     <div class="step-head"><span class="step-num">3</span><h2 class="step-title" style="margin:0;">Pemeriksaan asumsi</h2><span class="chip-status" id="chip-3"></span></div>
-                    <p class="step-intro">Tahap ini memeriksa apakah data memenuhi syarat uji (independensi, normalitas, dan kesetaraan varians), lalu menyarankan uji yang paling sesuai.</p>
+                    <p class="step-intro">Tahap ini memeriksa apakah data memenuhi syarat uji (independensi, normalitas, dan kesetaraan varians). Saran uji yang paling sesuai muncul di tahap 4, tepat sebelum Anda memilih uji.</p>
                     <div class="sub">
                         <div class="sub-title">a. <span class="gl" tabindex="0" data-g="indep">Independensi</span></div>
                         <div class="box">Setiap unit pengamatan hanya berada di satu kelompok dan tidak saling memengaruhi. Asumsi ini dipenuhi lewat desain penelitian dan tidak diuji melalui statistika. Jika unit-unit berada dalam satu <span class="gl" tabindex="0" data-g="klaster">klaster</span> (misalnya satu kandang atau satu peternakan), mereka memiliki banyak karakter yang sama dan bisa saja saling memengaruhi, sehingga asumsi independensi ini perlu dipertimbangkan.</div>
@@ -420,7 +420,6 @@ details.inline > div { margin-top: 14px; }
                         <div class="sub-title">d. Ringkasan syarat uji yang dipilih</div>
                         <div class="stat-grid" id="cond-grid"></div>
                         <div class="box" id="cond-verdict"></div>
-                        <div class="box" id="suggest-full"></div>
                     </div>
                 </section>
 
@@ -428,6 +427,9 @@ details.inline > div { margin-top: 14px; }
                 <section class="step" id="st-test">
                     <div class="step-head"><span class="step-num">4</span><h2 class="step-title" style="margin:0;" id="test-title">Pelaksanaan uji statistika</h2><span class="chip-status" id="chip-4"></span></div>
                     <p class="step-intro">Tahap ini menguji semua kelompok sekaligus untuk menjawab apakah ada perbedaan antarkelompok. Notasi hipotesis mengikuti uji yang dipilih.</p>
+                    <div class="sub">
+                        <div class="box" id="suggest-full"></div>
+                    </div>
                     <div class="sub">
                         <div class="sub-title">Uji statistika</div>
                         <div class="seg" id="test-seg">
@@ -438,7 +440,7 @@ details.inline > div { margin-top: 14px; }
                             <input type="radio" name="test" id="test-kw" value="kw">
                             <label for="test-kw" class="gl" data-g="t-kw">Kruskal-Wallis<span class="seg-sub">nonparametrik</span></label>
                         </div>
-                        <div class="hint">Semua uji memakai <span class="gl" tabindex="0" data-g="alpha">&alpha;</span> = 0,05. Pemilihan uji ditentukan oleh pengguna berdasarkan pohon keputusan dan hasil pemeriksaan asumsi di tahap 3.</div>
+                        <div class="hint">Semua uji memakai <span class="gl" tabindex="0" data-g="alpha">&alpha;</span> = 0,05. Pemilihan uji ditentukan oleh pengguna, dengan berpedoman pada saran di atas dan hasil pemeriksaan asumsi di tahap 3.</div>
                     </div>
                     <div class="sub">
                         <div class="sub-title">Notasi hipotesis</div>
@@ -2115,7 +2117,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })();
     document.querySelectorAll('input[name="test"], input[name="adj"], input[name="phkw"]').forEach(function (r) { r.addEventListener('change', calculate); });
     ['c1', 'c2', 'vn-group', 'vn-value', 'vn-pop'].forEach(function (id) { $(id).addEventListener('input', scheduleCalc); });
-    $('btn-clear').addEventListener('click', function () { $('c1').value = ''; $('c2').value = ''; setScenarioMark(0); orderState.key = ''; calculate(); });
+    $('btn-clear').addEventListener('click', function () { $('c1').value = ''; $('c2').value = ''; $('vn-group').value = ''; $('vn-value').value = ''; $('vn-pop').value = ''; setScenarioMark(0); orderState.key = ''; calculate(); });
 
     /* Dropdown skenario */
     (function () {
