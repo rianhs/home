@@ -14,7 +14,7 @@
   --accent-blue:#0071e3;--green-dark:#1e9e46;--accent-red:#ff3b30;--border-color:#d5d2ca;
   --shadow:0 6px 18px rgba(60,50,30,.07);
   --fill1:#ebe9e3;--fill2:#dedbd3;--soft-bg:#edebe5;--input-bg:#f1efea;--btn-bg:#f6f5f1;--seg-active:#fbfaf7;
-  --ink3:#b9b6ad;--grid-line:#e4e1da;--err-tx:#b3261e;--warn-tx:#8a5a00;--ok-tx:#1e7a3a;
+  --ink3:#b9b6ad;--hl-line:#d4a300;--grid-line:#e4e1da;--err-tx:#b3261e;--warn-tx:#8a5a00;--ok-tx:#1e7a3a;
   --lowE-bg:#f3e6c9;--lowE-tx:#8a5a00;--vlowE-bg:#f1d9d3;--vlowE-tx:#b3261e;--more-bg:#dce8f3;--hl:#f1e0a0;--hl-tx:#3b3100;
   --bar:rgba(233,231,226,.88);
   color-scheme:light;
@@ -24,7 +24,7 @@
   --accent-blue:#3b9bff;--green-dark:#30d158;--accent-red:#ff6961;--border-color:#38383a;
   --shadow:0 0 0 .5px rgba(255,255,255,.06);
   --fill1:#2c2c2e;--fill2:#3a3a3c;--soft-bg:#2c2c2e;--input-bg:#2c2c2e;--btn-bg:#2c2c2e;--seg-active:#48484a;
-  --ink3:#636366;--grid-line:#38383a;--err-tx:#ff9a93;--warn-tx:#ffcc66;--ok-tx:#5ee08a;
+  --ink3:#636366;--hl-line:#e0b93a;--grid-line:#38383a;--err-tx:#ff9a93;--warn-tx:#ffcc66;--ok-tx:#5ee08a;
   --lowE-bg:#3d2f12;--lowE-tx:#ffcc66;--vlowE-bg:#432320;--vlowE-tx:#ff9a93;--more-bg:#13273d;
   --bar:rgba(0,0,0,.78);--hl:#5f5115;--hl-tx:#fff1b8;
   color-scheme:dark;
@@ -69,7 +69,6 @@ b{font-weight:700}
 .btn.sm{padding:7px 12px;font-size:12.5px}
 .btn.primary{background:var(--accent-blue);border-color:var(--accent-blue);color:#fff}
 .btn.primary:hover{color:#fff;opacity:.9}
-.btn.ghost{border-color:transparent;background:transparent;color:var(--accent-blue);padding:6px 2px}
 .btn-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
 /* Tata letak */
@@ -191,10 +190,6 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .cards3 p{margin:6px 0 0;font-size:13.5px;color:var(--text-soft);line-height:1.6}
 .trail{margin:0 0 12px;padding-left:20px;font-size:13.5px;color:var(--text-muted);line-height:1.7}
 .trail b{color:var(--text-main)}
-.opts,.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:10px}
-.opt,.choice{border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);border-radius:12px;padding:13px 16px;text-align:left;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s ease;line-height:1.45}
-.opt:hover,.choice:hover{border-color:var(--accent-blue);background:var(--fill1)}
-.choice small{display:block;font-weight:400;color:var(--text-muted);font-size:12.5px;margin-top:2px}
 
 /* Akordeon dengan penanda segitiga */
 details.inline{margin-top:10px;border:1px solid var(--border-color);border-radius:12px;padding:12px 16px;background:var(--soft-bg)}
@@ -239,20 +234,35 @@ footer{margin-top:26px;font-size:12.5px;color:var(--text-muted);line-height:1.7}
 
 .qq-wrap{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
 .qq-item svg{display:block;max-width:100%;height:auto}
-.tree{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 12px;font-size:13.5px;line-height:1.5}
-.tcell{display:flex;flex-direction:column;gap:6px;min-width:0}
-.tcell.span3{grid-column:1 / -1}
-.tcell.span2{grid-column:1 / span 2}
-.tcell.c3{grid-column:3}
-.tcell.empty{visibility:hidden}
-.tnode{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:11px 14px;height:100%}
+@media (max-width:640px){.qq-wrap{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}.qq-item{flex:none}.qq-item svg{max-width:none}}
+.org-wrap{overflow-x:auto;padding:2px 0 6px}
+.org,.org ul{list-style:none;margin:0;padding:0;display:flex;justify-content:center}
+.org{min-width:760px}
+.org > li > ul > li{width:376px;flex:none}
+.org ul{padding-top:22px;position:relative}
+.org li{position:relative;display:flex;flex-direction:column;align-items:center;padding:22px 6px 0}
+.org > li{padding-top:0}
+.org li::before,.org li::after{content:"";position:absolute;top:0;width:50%;height:22px;border-top:2px solid var(--ink3)}
+.org li::before{right:50%}
+.org li::after{left:50%}
+.org > li::before,.org > li::after{display:none}
+.org li:only-child::before,.org li:only-child::after{display:none}
+.org li:first-child::before{border:0}
+.org li:last-child::after{border:0}
+.org li:first-child::after{border-left:2px solid var(--ink3);border-radius:10px 0 0 0}
+.org li:last-child::before{border-right:2px solid var(--ink3);border-radius:0 10px 0 0}
+.org ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:2px solid var(--ink3)}
+.org ul.on::before{border-left-color:var(--hl-line)}
+.org li.on:first-child::after{border-top-color:var(--hl-line);border-left-color:var(--hl-line)}
+.org li.on:last-child::before{border-top-color:var(--hl-line);border-right-color:var(--hl-line)}
+.tnode{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:11px 12px;width:198px;font-size:13.5px;line-height:1.5;text-align:center}
 .tnode small{display:block;color:var(--text-muted);font-size:12px;font-weight:400;margin-top:2px}
-.tnode.res{background:var(--soft-bg);font-weight:600;text-align:center;display:flex;align-items:center;justify-content:center}
+.tnode.res{width:170px;background:var(--soft-bg);font-weight:600;display:flex;align-items:center;justify-content:center;min-height:62px}
 .tnode.on{background:var(--hl);border-color:transparent;color:var(--hl-tx);font-weight:700}
 .tnode.on small{color:inherit;opacity:.75}
-.tlab{align-self:flex-start;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--fill2);color:var(--text-soft)}
+.tlab{display:inline-block;margin-bottom:6px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--fill2);color:var(--text-soft)}
 .tlab.on{background:var(--hl);color:var(--hl-tx)}
-@media (max-width:640px){.tree{grid-template-columns:1fr}.tcell.span3,.tcell.span2,.tcell.c3{grid-column:1}.tcell.empty{display:none}}
+#asm-grp{margin-top:26px}
 #pick-notes{margin-top:10px}
 table.dt td.left,table.dt th.left{text-align:left}
 .ph-map{margin-bottom:18px}
@@ -404,13 +414,14 @@ table.dt td.left{text-align:left}
   </section>
 
   <section class="step" id="st-truth" data-nav="Populasi sebenarnya">
-    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Kebenaran populasi</h2><span class="chip-status" id="chip-truth"></span></div>
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Keseluruhan data pada populasi</h2><span class="chip-status" id="chip-truth"></span></div>
     <p class="step-intro">Ini keadaan populasi yang sebenarnya. Buka untuk memeriksa apakah keputusan dan estimasi dari sampel sudah tepat atau keliru.</p>
     <div id="truth-body"></div>
   </section>
 
   <footer><details class="inline"><summary>Catatan metode</summary><div>
 <p class="mp">Seluruh perhitungan berjalan di peramban. Normalitas diuji dengan Shapiro-Wilk (algoritma Royston) pada residu terstandar model (dasar langkah yang dianjurkan) dan pada tiap kelompok (diagnostik), dan kesetaraan varians dengan uji Levene berpusat rata-rata. Uji lanjutan mengikuti uji yang dipilih: Tukey HSD untuk uji anova satu arah (Fisher), Games-Howell untuk uji anova satu arah (Welch), serta DSCF atau Dunn dengan koreksi Bonferroni atau Holm untuk uji Kruskal-Wallis (bawaan DSCF). Tabel uji lanjutan memuat ukuran efek tiap pasangan: Cohen&#39;s d dengan penyebut akar kuadrat tengah dalam kelompok untuk kedua uji anova satu arah, atau rank-biserial untuk uji Kruskal-Wallis. Sampel ditarik acak sederhana dari populasi 1.000 unit, sehingga ukuran tiap kelompok ikut berubah dari satu penarikan ke penarikan lain. Taraf signifikansi tetap 0,05. Aturan pemilihan uji adalah patokan latihan dan tidak menggantikan pertimbangan biologis.</p>
+<p class="mp">Pemasangan uji omnibus dengan uji lanjutan mengikuti asumsi varians dan basis hitungnya. Tukey HSD memakai kuadrat tengah dalam kelompok gabungan sehingga varians dianggap setara. Games-Howell tidak mengandaikan varians setara. DSCF dan Dunn berbasis peringkat tanpa syarat normalitas. Pada DSCF, peringkat dihitung ulang di dalam tiap pasangan, selisih yang ditampilkan adalah selisih rerata peringkat dalam pasangan itu, statistik W adalah z peringkat dalam pasangan dikali akar 2 dengan tanda berlawanan terhadap selisih, dan nilai p diambil dari distribusi studentized range sehingga tidak memerlukan koreksi tambahan. Pada Dunn, dipakai peringkat keseluruhan dengan koreksi nilai p (Bonferroni atau Holm). Uji Dunn dan DSCF tidak menghasilkan CI, sehingga arah perbedaan dibaca dari tanda selisih rerata peringkat. Rank-biserial (r<sub>rb</sub>) dihitung dari peringkat di dalam pasangan dan bernilai −1 sampai 1, dengan nilai positif berarti kelompok pertama cenderung lebih tinggi. Batas klasifikasi |r<sub>rb</sub>|: 0,147; 0,33; dan 0,474. Batas klasifikasi |d| pada Cohen&#39;s d: 0,2; 0,5; dan 0,8. Garis acuan pada grafik rerata peringkat adalah (N + 1) / 2.</p>
 <p class="mp">Ukuran efek omnibus memakai eta-squared (η²) dan omega-squared (ω²) untuk kedua uji anova satu arah, serta epsilon-squared (ε²) untuk uji Kruskal-Wallis. Batas klasifikasi 0,01; 0,06; dan 0,14 berasal dari konvensi Cohen untuk η², dengan penyesuaian untuk kategori sangat kecil dan untuk ε², dan dibaca sebagai panduan kasar. ω² dikoreksi untuk bias sampel, sehingga biasanya sedikit lebih kecil daripada η² dan dapat bernilai sedikit negatif bila efek sangat kecil (dibaca sebagai 0). Kategori ω² memakai batas yang sama dengan η².</p>
 </div></details></footer>
 </main>
@@ -1119,11 +1130,6 @@ const PALETTE=['#0071e3','#8e5bd6','#1b97a8','#d6477f','#9c6b3f','#6b7a8f'];
 const FONT="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 const SUB0='<tspan baseline-shift="sub" font-size="9">0</tspan>';
 const TEST_NAMES={anova:'Uji anova satu arah (Fisher)',welch:'Uji anova satu arah (Welch)',kw:'Uji Kruskal-Wallis'};
-const TESTS=[
-  {id:'anova',name:'Uji anova satu arah (Fisher)',sub:'Membandingkan rerata; data normal dan varians setara'},
-  {id:'welch',name:'Uji anova satu arah (Welch)',sub:'Membandingkan rerata; data normal, varians tidak setara'},
-  {id:'kw',name:'Uji Kruskal-Wallis',sub:'Berbasis peringkat; tanpa syarat normalitas'}
-];
 
 const fmtCache={};
 function fmt(x,d){
@@ -1305,14 +1311,14 @@ function effTable(o) {
 function pairLabel(o, pr) { return o.names[pr.i] + ' \u2212 ' + o.names[pr.j]; }
 function postTable(o) {
     var ph = o.ph, m = ph.method, dunn = m === 'dunn', dscf = m === 'dscf', h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Pasangan</th>';
-    h += '<th>' + (dunn ? 'Selisih rerata peringkat' : dscf ? 'Selisih rerata peringkat dalam pasangan' : 'Selisih rerata') + '</th>';
+    h += '<th>' + ((dunn || dscf) ? G('selisih-peringkat', 'Selisih rerata peringkat') : 'Selisih rerata') + '</th>';
     if (!dscf) h += '<th>SE</th>';
     h += '<th>' + G('stat-' + ph.statName, ph.statName) + '</th>';
     if (!dunn && !dscf) h += '<th>df</th>';
     if (dunn) h += '<th>Nilai p mentah</th><th>Nilai p (' + ph.adjName + ')</th>'; else h += '<th>Nilai p</th>';
     if (ph.hasCI) h += '<th>CI 95%</th>';
-    if (ph.hasD) h += '<th>Cohen&#39;s d</th>';
-    if (ph.hasRB) h += '<th>Rank-biserial (r<sub>rb</sub>)</th>';
+    if (ph.hasD) h += '<th>' + G('d', "Cohen's d") + '</th>';
+    if (ph.hasRB) h += '<th>' + G('rb', 'Rank-biserial') + ' (r<sub>rb</sub>)</th>';
     h += '<th>Keputusan</th></tr></thead><tbody>';
     ph.pairs.forEach(function (pr) {
         h += '<tr' + (pr.sig ? ' class="hlrow"' : '') + '><th scope="row">' + esc(pairLabel(o, pr)) + '</th><td>' + fmt(pr.diff, 2) + '</td>';
@@ -1329,7 +1335,7 @@ function postTable(o) {
 }
 function postTSV(o) {
     var ph = o.ph, m = ph.method, dunn = m === 'dunn', dscf = m === 'dscf', out = [], head;
-    head = ['Pasangan', dunn ? 'Selisih rerata peringkat' : dscf ? 'Selisih rerata peringkat dalam pasangan' : 'Selisih rerata'];
+    head = ['Pasangan', (dunn || dscf) ? 'Selisih rerata peringkat' : 'Selisih rerata'];
     if (!dscf) head.push('SE');
     head.push(ph.statName);
     if (!dunn && !dscf) head.push('df');
@@ -1661,15 +1667,17 @@ const GL={
 'omnibus':'Uji yang menguji semua kelompok sekaligus dan menjawab apakah ada perbedaan di antara mereka. Pasangan yang berbeda dicari oleh uji lanjutan.',
 'm-tukey':'Uji Tukey HSD membandingkan semua pasangan kelompok sekaligus sambil mengendalikan peluang kesalahan tipe I secara keseluruhan. Uji ini lazim dipakai setelah uji anova satu arah (Fisher) dan memakai kuadrat tengah dalam kelompok gabungan.',
 'm-gh':'Uji Games-Howell membandingkan semua pasangan kelompok tanpa mengandaikan varians setara, sehingga cocok dipakai setelah uji anova satu arah (Welch). CI 95% sudah disesuaikan untuk banyak perbandingan.',
-'m-dunn':'Uji Dunn membandingkan rerata peringkat tiap pasangan kelompok. Nilai p dikoreksi (Holm atau Bonferroni) untuk mengendalikan kesalahan tipe I akibat banyak perbandingan. Uji ini lazim dipakai setelah Kruskal-Wallis.',
-'adj-bonferroni':'Koreksi Bonferroni: setiap nilai p dikalikan jumlah pasangan (maksimum 1). Sederhana dan ketat.',
-'adj-holm':'Koreksi Holm: nilai p diurutkan dari yang terkecil lalu dikalikan faktor yang makin kecil. Selalu sekuat atau lebih kuat daripada Bonferroni.',
+'m-dunn':'Uji Dunn membandingkan rerata peringkat tiap pasangan kelompok, memakai peringkat keseluruhan (tidak dihitung ulang per pasangan). Karena itu nilai p perlu dikoreksi (Holm atau Bonferroni) untuk mengendalikan kesalahan tipe I akibat banyak perbandingan. Uji ini tidak menghasilkan CI. Besar selisih dibaca dari rank-biserial.',
+'adj-bonferroni':'Koreksi Bonferroni: setiap nilai p dikalikan jumlah pasangan (maksimum 1). Sederhana dan ketat. Mengendalikan kesalahan tipe I untuk seluruh pasangan sekaligus.',
+'adj-holm':'Koreksi Holm: nilai p diurutkan dari yang terkecil lalu dikalikan faktor yang makin kecil. Menolak semua pasangan yang ditolak Bonferroni dan kadang lebih banyak. Mengendalikan kesalahan tipe I untuk seluruh pasangan sekaligus.',
 'stat-q':'Statistik q (studentized range): selisih rerata dibagi galat bakunya, dibandingkan dengan distribusi studentized range untuk k kelompok.',
 'stat-W':'W pada DSCF: z dari peringkat di dalam pasangan dikali akar 2, dengan tanda berlawanan terhadap selisih rerata peringkat. Dibandingkan dengan distribusi studentized range.',
 'stat-z':'z pada uji Dunn: selisih rerata peringkat dibagi galat bakunya (dengan koreksi nilai kembar).',
-'m-dscf':'Uji DSCF (Dwass-Steel-Critchlow-Fligner) membandingkan semua pasangan kelompok dengan peringkat yang dihitung ulang di dalam tiap pasangan. Nilai p memakai distribusi studentized range, sehingga kesalahan tipe I untuk seluruh pasangan sudah terkendali. Ini uji lanjutan bawaan setelah Kruskal-Wallis.',
-'d':"Cohen's d: selisih rerata dua kelompok dibagi akar kuadrat tengah dalam kelompok (simpangan baku gabungan seluruh kelompok). Dibaca dari nilai mutlaknya: 0,2 kecil, 0,5 sedang, 0,8 besar.",
-'rb':"Rank-biserial (r_rb): ukuran efek untuk dua kelompok berbasis peringkat, berkisar \u22121 sampai 1. (r_rb + 1) / 2 adalah peluang nilai acak dari kelompok pertama lebih besar daripada kelompok kedua (nilai kembar dihitung setengah).",
+'m-dscf':'Uji DSCF (Dwass-Steel-Critchlow-Fligner) membandingkan semua pasangan kelompok dengan peringkat yang dihitung ulang di dalam tiap pasangan. Nilai p memakai distribusi studentized range, sehingga kesalahan tipe I untuk seluruh pasangan sudah terkendali. Ini uji lanjutan bawaan setelah Kruskal-Wallis. Tidak memerlukan koreksi tambahan dan tidak menghasilkan CI. Selisih pada tabel adalah selisih rerata peringkat yang dihitung ulang di dalam pasangan itu.',
+'d':"Cohen's d: selisih rerata dua kelompok dibagi akar kuadrat tengah dalam kelompok (simpangan baku gabungan seluruh kelompok). Dibaca dari nilai mutlaknya. Klasifikasi |d|: kurang dari 0,2 sangat kecil; 0,2 sampai kurang dari 0,5 kecil; 0,5 sampai kurang dari 0,8 sedang; 0,8 atau lebih besar besar.",
+'rb':"Rank-biserial (r_rb): ukuran efek untuk dua kelompok berbasis peringkat, berkisar \u22121 sampai 1. (r_rb + 1) / 2 adalah peluang nilai acak dari kelompok pertama lebih besar daripada kelompok kedua (nilai kembar dihitung setengah). Nilai positif berarti kelompok pertama cenderung lebih tinggi. Klasifikasi |r_rb|: kurang dari 0,147 sangat kecil; 0,147 sampai kurang dari 0,33 kecil; 0,33 sampai kurang dari 0,474 sedang; 0,474 atau lebih besar besar.",
+'rerata-harapan':'Rerata peringkat bila tidak ada perbedaan antarkelompok: (N + 1) / 2, dengan N jumlah seluruh data.',
+'selisih-peringkat':'Selisih rerata peringkat kelompok pertama dikurangi kelompok kedua. Nilai positif berarti kelompok pertama cenderung lebih tinggi. Pada DSCF peringkat dihitung ulang di dalam pasangan itu, pada Dunn dipakai peringkat keseluruhan.',
 'uji lanjutan':'Perbandingan pasangan kelompok setelah uji omnibus menolak H0, dengan koreksi untuk banyak perbandingan.',
 'normalitas':'Asumsi bahwa galat model (residu) berasal dari sebaran normal (lonceng simetris).',
 'residu':'Selisih tiap nilai dari rerata kelompoknya, dibagi simpangan baku galat model dan disesuaikan dengan ukuran kelompok (residu terstandar). Pada anova, asumsi normalitas berlaku pada residu semua kelompok yang digabung. Normalitas residu menjadi dasar langkah yang dianjurkan.',
@@ -1706,8 +1714,7 @@ const SCN=[
 const PROP={3:[[.34,.33,.33],[.5,.3,.2],[.4,.4,.2]],4:[[.25,.25,.25,.25],[.4,.3,.2,.1],[.3,.3,.2,.2]],5:[[.2,.2,.2,.2,.2],[.3,.25,.2,.15,.1]]};
 
 /* ===== Keadaan ===== */
-const state={mode:'random',filter:'all',ctxId:null,n:60,guessMode:false,pop:null,sample:null,an:null,guess:null,revealed:false,history:[],order:[],sim:null,adj:'bonferroni',phKw:'dscf'};
-const locked=()=>state.guessMode&&state.guess===null;
+const state={mode:'random',filter:'all',ctxId:null,n:60,pop:null,sample:null,an:null,revealed:false,history:[],order:[],sim:null,adj:'bonferroni',phKw:'dscf'};
 const ctxK=c=>c.groups.length;
 const inFilter=c=>state.filter==='all'||(state.filter==='k3'?ctxK(c)===3:ctxK(c)>=4);
 const colorOf=gi=>PALETTE[state.order.indexOf(gi)%PALETTE.length];
@@ -1778,7 +1785,6 @@ function drawSample(){
     state.sample={groups:drawGroups(n),hl:sampleIdx(KDOT,Math.max(1,Math.round(n*KDOT/NPOP))),perm:shuffle(Array.from({length:n},(_,i)=>i))};
     state.an=analyzeSample();
   }while(state.an.o.error&&++tries<30);
-  state.guess=null;
   state.history.push({p:state.an.p,n:state.n});
   if(state.history.length>30)state.history.shift();
 }
@@ -1856,7 +1862,6 @@ function statRow(label,value){return '<div class="stat-row"><span class="stat-la
 function noteHtml(kind,label,text){return '<span class="tag tag-'+kind+'">'+label+'</span>'+text;}
 function chipHtml(kind,text){return '<span class="chip-status '+kind+'">'+text+'</span>';}
 function setChip(id,text,kind){const e=$('#'+id);if(!e)return;e.textContent=text||'';e.className='chip-status'+(kind?' '+kind:'');}
-function lockedHtml(){return '<div class="box">Tahap ini terbuka setelah kamu memilih satu langkah pada tahap <a href="#st-pick" style="color:var(--accent-blue);font-weight:600;text-decoration:none">Pilih uji</a>. Kamu juga bisa mematikan mode tebak pada bagian skenario.</div>';}
 function legendGroups(o,counts){return '<div class="legend">'+o.names.map((l,j)=>'<span><span class="sw" style="background:'+PALETTE[j%PALETTE.length]+';opacity:.85"></span>'+esc(l)+(counts?' (n = '+counts[j]+')':'')+'</span>').join('')+'</div>';}
 
 /* ===== Tahap: skenario, populasi, hipotesis, deskriptif, asumsi, pilih uji ===== */
@@ -1929,7 +1934,7 @@ function renderAsm(){
   h+='<div class="sub sep"><div class="sub-title">'+G('normalitas','Normalitas')+' '+G('residu','residu')+' ('+G('shapiro','uji Shapiro-Wilk')+')</div>';
   if(o.smallNWarn)h+='<div class="box" style="margin-bottom:10px">'+noteHtml('warn','Perhatian',esc(o.smallNWarn))+'</div>';
   h+=shapiroTable([o.resNormality])+'<div class="qq-wrap" data-chart="qqres"></div>';
-  h+='<details class="inline" id="asm-grp"'+(wasOpen?' open':'')+'><summary>Normalitas per kelompok (diagnostik)</summary><div>'+shapiroTable(o.normality)+'<div class="qq-wrap" data-chart="qqgrp"></div><p class="hint">Hasil per kelompok membantu melihat kelompok mana yang menyimpang, tetapi tidak menentukan pilihan uji. Tiap kelompok berisi sedikit data, dan makin banyak kelompok yang diuji, makin besar peluang salah satunya ditolak secara kebetulan (sekitar 18,5% untuk 4 kelompok yang semuanya normal pada α = 0,05).</p></div></details></div>';
+  h+='<details class="inline" id="asm-grp"'+(wasOpen?' open':'')+'><summary>Normalitas per kelompok</summary><div>'+shapiroTable(o.normality)+'<div class="qq-wrap" data-chart="qqgrp"></div><p class="hint">Hasil per kelompok membantu melihat kelompok mana yang menyimpang, tetapi tidak menentukan pilihan uji. Tiap kelompok berisi sedikit data, dan makin banyak kelompok yang diuji, makin besar peluang salah satunya ditolak secara kebetulan (sekitar 18,5% untuk 4 kelompok yang semuanya normal pada α = 0,05).</p></div></details></div>';
   h+='<div class="sub sep"><div class="sub-title">Kesetaraan '+G('varians')+' ('+G('levene','uji Levene')+')</div>';
   h+=L.error?'<p class="hint" style="margin-top:0">'+esc(L.error)+'</p>':'<div class="stat-grid">'+statRow('Uji Levene (pusat = rata-rata)','F('+L.df1+', '+L.df2+') = '+fmt(L.F,2))+statRow('Nilai p',fmtP(L.p))+statRow('Pembacaan nilai p',L.p>=0.05?'Varians tidak berbeda nyata':'Varians berbeda nyata')+'</div><p class="hint">Uji Levene dibaca bila residu normal. Pada data yang tidak normal, hasilnya tidak dipakai untuk memilih uji.</p>';
   h+='</div>';
@@ -1950,19 +1955,20 @@ function hypNotes(o){
 function treeBox(o,on){
   const P=on||null,rk=P&&P.rec;
   const A=c=>(P&&c)?' on':'';
-  const leaf=(id,name)=>'<div class="tnode res'+(P&&P.rec===id?' on':'')+'">'+name+'</div>';
-  const cell=(cls,pill,pOn,inner)=>'<div class="tcell '+cls+'">'+(pill?'<span class="tlab'+pOn+'">'+pill+'</span>':'')+inner+'</div>';
-  let t='<div class="tree">';
-  t+=cell('span3','','','<div class="tnode'+A(true)+'"><b>1.</b> Apakah '+G('residu','residu')+' model terdistribusi normal?<small>Uji '+G('shapiro','Shapiro-Wilk')+' pada residu: p &gt; 0,05, dibantu Q-Q plot</small></div>');
-  t+=cell('span2','Jawaban 1: Ya',A(rk&&rk!=='kw'),'<div class="tnode'+A(rk&&rk!=='kw')+'"><b>2.</b> Apakah '+G('varians','varians')+' semua kelompok setara?<small>Uji '+G('levene','Levene')+': p &gt; 0,05</small></div>');
-  t+=cell('c3 empty','','','');
-  t+=cell('','Jawaban 2: Ya',A(rk==='anova'),leaf('anova','Uji anova satu arah (Fisher)'));
-  t+=cell('','Jawaban 2: Tidak',A(rk==='welch'),leaf('welch','Uji anova satu arah (Welch)'));
-  t+=cell('','Jawaban 1: Tidak',A(rk==='kw'),leaf('kw','Uji Kruskal-Wallis'));
-  t+='</div>';
-  return '<div class="box"><div class="concl-title">Pohon keputusan pemilihan uji</div><p class="hint" style="margin:0 0 14px">Pohon ini memilih '+G('omnibus','uji omnibus')+', yaitu uji yang menguji semua kelompok sekaligus untuk menjawab apakah ada perbedaan antarkelompok.</p>'+t+'<p class="hint" style="margin-top:14px">'+(P?'Jalur yang disorot adalah jalur untuk data ini.':'Jalur untuk data ini akan disorot setelah kamu memilih satu langkah.')+'</p></div>';
+  const li=c=>'<li'+((P&&c)?' class="on"':'')+'>';
+  const leaf=(id,name)=>'<div class="tnode res'+A(P&&P.rec===id)+'">'+name+'</div>';
+  const lab=(txt,c)=>'<span class="tlab'+A(c)+'">'+txt+'</span>';
+  const yes=rk&&rk!=='kw';
+  let t='<div class="org-wrap"><ul class="org"><li>';
+  t+='<div class="tnode'+A(true)+'"><b>1.</b> Apakah '+G('residu','residu')+' model<br>terdistribusi normal?<small>Uji '+G('shapiro','Shapiro-Wilk')+' pada residu: p &gt; 0,05, dibantu Q-Q plot</small></div>';
+  t+='<ul'+(P?' class="on"':'')+'>';
+  t+=li(yes)+lab('Ya',yes)+'<div class="tnode'+A(yes)+'"><b>2.</b> Apakah '+G('varians','varians')+' semua<br>kelompok setara?<small>Uji '+G('levene','Levene')+': p &gt; 0,05</small></div>';
+  t+='<ul'+(yes?' class="on"':'')+'>'+li(rk==='anova')+lab('Ya',rk==='anova')+leaf('anova','Uji anova satu arah (Fisher)')+'</li>'+li(rk==='welch')+lab('Tidak',rk==='welch')+leaf('welch','Uji anova satu arah (Welch)')+'</li></ul></li>';
+  t+=li(rk==='kw')+lab('Tidak',rk==='kw')+leaf('kw','Uji Kruskal-Wallis')+'</li>';
+  t+='</ul></li></ul></div>';
+  return '<div class="box"><div class="concl-title">Pohon keputusan pemilihan uji</div><p class="hint" style="margin:0 0 14px">Pohon ini memilih '+G('omnibus','uji omnibus')+', yaitu uji yang menguji semua kelompok sekaligus untuk menjawab apakah ada perbedaan antarkelompok.</p>'+t+'<p class="hint" style="margin-top:14px">Jalur yang disorot adalah jalur untuk data ini.</p></div>';
 }
-function conflictBox(an,lk){
+function conflictBox(an){
   const o=an.o,gp=o.normality.filter(x=>!x.error),res=o.resNormality;
   const resOk=res&&!res.error&&res.p>=0.05,resBad=res&&!res.error&&res.p<0.05;
   const r1=!!(resOk&&gp.some(x=>x.p<0.05)),r2=!!(resBad&&gp.length&&gp.every(x=>x.p>=0.05));
@@ -1974,33 +1980,17 @@ function conflictBox(an,lk){
    +'</div></details>';
 }
 function renderPick(){
-  const an=state.an,o=an.o,el=$('#pick-body'),rec=an.rec,c=state.pop.ctx;
-  const intro='Data ini memiliki '+o.k+' kelompok ('+joinList(o.names.map(esc))+') dengan satu variabel numeris.';
-  if(locked()){
-    el.innerHTML='<p class="hint" style="margin-top:0">'+intro+' Berdasarkan ringkasan data dan pemeriksaan asumsi di atas, langkah mana yang kamu pilih?</p>'+treeBox(o,null)+'<div class="choices" style="margin-top:12px">'+TESTS.map(t=>'<button type="button" class="choice" data-act="guess" data-id="'+t.id+'">'+t.name+'<small>'+t.sub+'</small></button>').join('')+'</div><p style="margin:12px 0 0"><button type="button" class="btn ghost" data-act="skip">Tampilkan jawaban tanpa menebak</button></p>';
-    setChip('chip-pick','');return;
-  }
-  let h='',chip='',kind='';
-  if(state.guessMode&&state.guess&&state.guess!=='skip'){
-    const g=state.guess,gn=TEST_NAMES[g];
-    if(g===rec){h+='<div class="box">'+noteHtml('ok','Tepat','Kamu memilih '+gn+'.')+'</div>';chip='Tepat';kind='ok';}
-    else if(g==='welch'&&rec==='anova'){h+='<div class="box">'+noteHtml('info','Sah, tetapi bukan yang dianjurkan','Uji anova satu arah (Welch) tetap sah pada data ini. Karena varians setara, uji anova satu arah (Fisher) sudah memadai, dan hasil keduanya hampir sama.')+'</div>';chip='Sah';kind='ok';}
-    else if(g==='anova'&&rec==='welch'){h+='<div class="box">'+noteHtml('warn','Belum tepat','Uji Levene menunjukkan varians antarkelompok berbeda nyata, sedangkan uji anova satu arah (Fisher) mengandaikan varians setara. Uji anova satu arah (Welch) tidak memerlukan asumsi itu.')+'</div>';chip='Belum tepat';kind='warn';}
-    else if(g==='kw'){h+='<div class="box">'+noteHtml('info','Sah, tetapi kurang dianjurkan','Uji Kruskal-Wallis tidak mensyaratkan normalitas, sehingga tetap sah. Karena normalitas terpenuhi, uji berbasis rerata lebih dianjurkan.')+'</div>';chip='Sah';kind='ok';}
-    else{h+='<div class="box">'+noteHtml('warn','Belum tepat','Shapiro-Wilk menunjukkan penyimpangan dari normal pada residu model, sedangkan '+gn+' mengandaikan normalitas. Uji berbasis peringkat lebih sesuai.')+'</div>';chip='Belum tepat';kind='warn';}
-  }
-  h+=treeBox(o,{rec:rec,rej:o.reject});
+  const an=state.an,o=an.o,el=$('#pick-body'),rec=an.rec;
+  let h=treeBox(o,{rec:rec,rej:o.reject});
   h+='<div class="box"><div class="concl-title">Langkah yang dianjurkan</div><div class="sg-name">'+TEST_NAMES[rec]+'</div><p class="ip">'+esc(recWhy(o))+'</p></div>';
   h+=hypNotes(o);
-  h+=conflictBox(an,locked());
+  h+=conflictBox(an);
   el.innerHTML=h;
-  setChip('chip-pick',chip,kind);
+  setChip('chip-pick','');
 }
 
-/* ===== Tahap terkunci sampai tebakan ===== */
 function renderTest(){
   const el=$('#test-body');
-  if(locked()){el.innerHTML=lockedHtml();setChip('chip-test','');return;}
   const an=state.an,o=an.o,R=o.res,sig=o.reject,test=o.test,V=lcFirst(o.vName);
   let h='<div class="res-head"><span class="res-name">'+TEST_NAMES[test]+' \u00b7 \u03b1 = 0,05</span></div><div class="stat-grid">';
   if(test==='anova')h+=statRow('Nilai F',fmt(R.stat,2))+statRow('Derajat bebas antarkelompok (df1)',String(R.df1))+statRow('Derajat bebas dalam kelompok (df2)',String(R.df2))+statRow('Nilai p',fmtP(R.p));
@@ -2015,7 +2005,7 @@ function renderTest(){
   h+='<div class="legend"><span><span class="sw" style="background:#ff3b30;opacity:.35"></span>Daerah kritis (penolakan H<sub>0</sub>)</span><span><span class="sw" style="background:#ff3b30"></span>Nilai kritis (garis putus-putus)</span><span><span class="sw" style="background:#0071e3"></span>Nilai statistik uji</span></div>';
   h+='<p class="hint" style="margin-top:0">'+(test==='kw'?'Kurva chi-square dengan df = '+R.df+' dipakai sebagai pendekatan distribusi statistik H.':'Kurva F dengan df1 = '+R.df1+' dan df2 = '+dfTxt(R.df2)+'.')+' Bila titik berada di daerah merah, H<sub>0</sub> ditolak.</p>';
   h+='<div class="verdict-status '+(sig?'reject':'fail')+'">'+(sig?'Tolak H<sub>0</sub>':'Gagal menolak H<sub>0</sub>')+'</div><p class="verdict-sub">'+(sig?'Ada bukti perbedaan '+esc(V)+' antarkelompok.':'Bukti belum cukup untuk menyatakan ada perbedaan '+esc(V)+' antarkelompok.')+'</p>';
-  h+='<div class="sub sep"><div class="sub-title">'+(test==='kw'?'Rerata peringkat tiap kelompok':'Rerata dan '+G('CI','CI 95%')+' tiap kelompok')+'</div><p class="hint" style="margin:0 0 4px">'+(test==='kw'?'Grafik ini menunjukkan rerata peringkat tiap kelompok (titik).':'Grafik ini menunjukkan rerata tiap kelompok (titik) dan rentang '+G('CI','CI 95%')+'-nya (garis vertikal). Bila CI dua kelompok tidak saling tumpang tindih, kedua kelompok cenderung berbeda.')+'</p><div class="chart-wrap"><div data-chart="grp"></div></div><p class="hint" style="margin-top:0">'+(test==='kw'?'Garis putus-putus adalah rerata peringkat yang diharapkan bila tidak ada perbedaan antarkelompok, yaitu (N + 1) / 2.':(test==='anova'?'CI tiap kelompok memakai kuadrat tengah dalam kelompok gabungan (df = '+R.df2+'). Garis putus-putus adalah rerata keseluruhan.':'CI tiap kelompok dihitung dari data kelompok itu sendiri (distribusi t, df = n \u2212 1). Garis putus-putus adalah rerata keseluruhan.'))+'</p></div>';
+  h+='<div class="sub sep"><div class="sub-title">'+(test==='kw'?'Rerata peringkat tiap kelompok':'Rerata dan '+G('CI','CI 95%')+' tiap kelompok')+'</div><p class="hint" style="margin:0 0 4px">'+(test==='kw'?'Grafik ini menunjukkan rerata peringkat tiap kelompok (titik).':'Grafik ini menunjukkan rerata tiap kelompok (titik) dan rentang '+G('CI','CI 95%')+'-nya (garis vertikal). Bila CI dua kelompok tidak saling tumpang tindih, kedua kelompok cenderung berbeda.')+'</p><div class="chart-wrap"><div data-chart="grp"></div></div><p class="hint" style="margin-top:0">'+(test==='kw'?'Garis putus-putus adalah '+G('rerata-harapan','rerata peringkat yang diharapkan')+' bila tidak ada perbedaan antarkelompok.':(test==='anova'?'CI tiap kelompok memakai kuadrat tengah dalam kelompok gabungan (df = '+R.df2+'). Garis putus-putus adalah rerata keseluruhan.':'CI tiap kelompok dihitung dari data kelompok itu sendiri (distribusi t, df = n \u2212 1). Garis putus-putus adalah rerata keseluruhan.'))+'</p></div>';
   h+='<div style="margin-top:28px">'+pInterp(o)+'</div>';
   const ids=['anova','welch','kw'];
   h+='<details class="inline" style="margin-top:14px"><summary>Bandingkan semua uji pada data yang sama</summary><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">Uji</th><th>Nilai p</th></tr></thead><tbody>'+ids.map(id=>'<tr><th scope="row">'+TEST_NAMES[id]+(id===an.rec?' (dianjurkan)':'')+'</th><td>'+fmtP(an.tests[id])+'</td></tr>').join('')+'</tbody></table></div></details>';
@@ -2024,7 +2014,6 @@ function renderTest(){
 }
 function renderEff(){
   const el=$('#eff-body');
-  if(locked()){el.innerHTML=lockedHtml();setChip('chip-eff','');return;}
   const o=state.an.o,R=o.res,par=o.test!=='kw';
   const e2=o.effect2;
   let h='<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Nama ukuran efek</th><th>'+(par?G('eta',o.effect.name):G('epsilon',o.effect.name))+'</th>'+(par?'<th>'+G('omega',e2.name)+'</th>':'')+'</tr></thead><tbody><tr><th scope="row">Nilai</th><td>'+fmt(o.effect.value,3)+'</td>'+(par?'<td>'+fmt(e2.value,3)+'</td>':'')+'</tr><tr><th scope="row">Kategori ukuran efek</th><td>'+o.effect.category+'</td>'+(par?'<td>'+e2.category+'</td>':'')+'</tr></tbody></table></div>'+effTable(o);
@@ -2036,24 +2025,23 @@ function renderEff(){
 }
 function phMapHtml(cur){
   const rows=[
-    ['anova','Uji anova satu arah (Fisher)','Tukey HSD','Memakai kuadrat tengah dalam kelompok gabungan, sehingga varians dianggap setara.'],
-    ['welch','Uji anova satu arah (Welch)','Games-Howell','Tidak mengandaikan varians setara.'],
-    ['kw','Uji Kruskal-Wallis','DSCF (bawaan) atau Dunn dengan koreksi Bonferroni atau Holm','Berbasis peringkat, tanpa syarat normalitas.']
+    ['anova','Uji anova satu arah (Fisher)',G('m-tukey','Tukey HSD')],
+    ['welch','Uji anova satu arah (Welch)',G('m-gh','Games-Howell')],
+    ['kw','Uji Kruskal-Wallis',G('m-dscf','DSCF')+' (bawaan) atau '+G('m-dunn','Dunn')+' dengan koreksi Bonferroni atau Holm']
   ];
   const wasOpen=!!document.querySelector('#ph-map[open]');
-  let h='<details class="inline ph-map" id="ph-map"'+(wasOpen?' open':'')+'><summary>Pasangan uji omnibus dan uji lanjutan</summary><div><p class="mp">Uji lanjutan mengikuti uji omnibus yang dipakai pada tahap Hasil uji. Setiap uji omnibus memiliki uji lanjutan sendiri.</p><div class="tbl-wrap"><table class="dt map"><thead><tr><th>'+G('omnibus','Uji omnibus')+'</th><th>'+G('uji lanjutan','Uji lanjutan')+'</th><th>Dasar pemasangan</th></tr></thead><tbody>';
-  rows.forEach(r=>{h+='<tr'+(cur===r[0]?' class="hlrow"':'')+'><th scope="row">'+r[1]+(cur===r[0]?' (dipakai sekarang)':'')+'</th><td>'+r[2]+'</td><td>'+r[3]+'</td></tr>';});
+  let h='<details class="inline ph-map" id="ph-map"'+(wasOpen?' open':'')+'><summary>Pasangan uji omnibus dan uji lanjutan</summary><div><p class="mp">Uji lanjutan mengikuti uji omnibus yang dipakai pada tahap Hasil uji. Setiap uji omnibus memiliki uji lanjutan sendiri.</p><div class="tbl-wrap"><table class="dt map"><thead><tr><th>'+G('omnibus','Uji omnibus')+'</th><th>'+G('uji lanjutan','Uji lanjutan')+'</th></tr></thead><tbody>';
+  rows.forEach(r=>{h+='<tr'+(cur===r[0]?' class="hlrow"':'')+'><th scope="row">'+r[1]+(cur===r[0]?' (dipakai sekarang)':'')+'</th><td>'+r[2]+'</td></tr>';});
   return h+'</tbody></table></div></div></details>';
 }
 function renderPost(){
   const el=$('#post-body');
-  if(locked()){$('#post-title').innerHTML='Uji lanjutan';el.innerHTML=lockedHtml();setChip('chip-post','');return;}
   const o=state.an.o,ph=o.ph,sig=postSig(o);
   $('#post-title').innerHTML='Uji lanjutan \u00b7 '+G('m-'+ph.method,esc(ph.name));
   let body='';
-  if(o.test==='kw')body+='<div class="sub"><div class="sub-title">Metode uji lanjutan</div><div class="seg2" role="radiogroup" aria-label="Metode uji lanjutan"><button type="button" role="radio" class="gl" data-g="m-dscf" aria-checked="'+(state.phKw==='dscf')+'" data-act="phkw" data-v="dscf">DSCF</button><button type="button" role="radio" class="gl" data-g="m-dunn" aria-checked="'+(state.phKw==='dunn')+'" data-act="phkw" data-v="dunn">Dunn</button></div><p class="hint">DSCF adalah uji lanjutan bawaan setelah Kruskal-Wallis. Peringkat dihitung ulang di dalam tiap pasangan dan nilai p memakai distribusi studentized range, sehingga tidak memerlukan koreksi tambahan. Dunn memakai peringkat keseluruhan dan memerlukan koreksi nilai p.</p></div>';
-  if(ph.method==='dunn')body+='<div class="sub"><div class="sub-title">Koreksi nilai p</div><div class="seg2" role="radiogroup" aria-label="Koreksi nilai p"><button type="button" role="radio" class="gl" data-g="adj-bonferroni" aria-checked="'+(state.adj==='bonferroni')+'" data-act="adj" data-v="bonferroni">Bonferroni</button><button type="button" role="radio" class="gl" data-g="adj-holm" aria-checked="'+(state.adj==='holm')+'" data-act="adj" data-v="holm">Holm</button></div><p class="hint">Bonferroni (bawaan) mengalikan tiap nilai p dengan jumlah pasangan. Holm mengurutkan nilai p lalu mengalikannya dengan faktor yang makin kecil, sehingga selalu menolak semua pasangan yang ditolak Bonferroni dan kadang lebih banyak. Keduanya mengendalikan peluang kesalahan tipe I untuk seluruh pasangan sekaligus.</p></div>';
-  body+='<div class="sub"><div class="sub-title">Perbandingan berpasangan</div>'+postTable(o)+'<div class="btn-row" style="margin-top:8px"><button type="button" class="btn sm" data-act="copypost">Salin tabel uji lanjutan</button></div><p class="hint">Baris yang diberi latar menandai pasangan yang berbeda nyata pada \u03b1 = 0,05. Selisih dihitung sebagai kelompok pertama dikurangi kelompok kedua pada setiap pasangan.'+(ph.hasCI?'':(ph.method==='dscf'?' Selisih pada DSCF adalah selisih rerata peringkat yang dihitung ulang di dalam pasangan itu. Statistik W adalah z peringkat dalam pasangan dikali akar 2, dengan tanda berlawanan terhadap selisih, lalu dibandingkan dengan distribusi studentized range.':'')+' Uji Dunn dan DSCF tidak menghasilkan CI. Arah perbedaan dibaca dari tanda selisih rerata peringkat.')+(ph.hasD?' '+G('d',"Cohen's d")+' adalah selisih rerata dibagi akar kuadrat tengah dalam kelompok (simpangan baku gabungan seluruh kelompok). Klasifikasi |d|: kurang dari 0,2 sangat kecil; 0,2 sampai kurang dari 0,5 kecil; 0,5 sampai kurang dari 0,8 sedang; 0,8 atau lebih besar.':'')+(ph.hasRB?' '+G('rb','Rank-biserial')+' (r<sub>rb</sub>) dihitung dari peringkat di dalam pasangan dan bernilai \u22121 sampai 1. Nilai positif berarti kelompok pertama cenderung bernilai lebih tinggi. Klasifikasi |r<sub>rb</sub>|: kurang dari 0,147 sangat kecil; 0,147 sampai kurang dari 0,33 kecil; 0,33 sampai kurang dari 0,474 sedang; 0,474 atau lebih besar besar.':'')+'</p></div>';
+  if(o.test==='kw')body+='<div class="sub"><div class="sub-title">Metode uji lanjutan</div><div class="seg2" role="radiogroup" aria-label="Metode uji lanjutan"><button type="button" role="radio" class="gl" data-g="m-dscf" aria-checked="'+(state.phKw==='dscf')+'" data-act="phkw" data-v="dscf">DSCF</button><button type="button" role="radio" class="gl" data-g="m-dunn" aria-checked="'+(state.phKw==='dunn')+'" data-act="phkw" data-v="dunn">Dunn</button></div><p class="hint">DSCF adalah uji lanjutan bawaan setelah Kruskal-Wallis.</p></div>';
+  if(ph.method==='dunn')body+='<div class="sub"><div class="sub-title">Koreksi nilai p</div><div class="seg2" role="radiogroup" aria-label="Koreksi nilai p"><button type="button" role="radio" class="gl" data-g="adj-bonferroni" aria-checked="'+(state.adj==='bonferroni')+'" data-act="adj" data-v="bonferroni">Bonferroni</button><button type="button" role="radio" class="gl" data-g="adj-holm" aria-checked="'+(state.adj==='holm')+'" data-act="adj" data-v="holm">Holm</button></div><p class="hint">Bonferroni adalah koreksi bawaan.</p></div>';
+  body+='<div class="sub"><div class="sub-title">Perbandingan berpasangan</div>'+postTable(o)+'<div class="btn-row" style="margin-top:8px"><button type="button" class="btn sm" data-act="copypost">Salin tabel uji lanjutan</button></div><p class="hint">Baris berlatar menandai pasangan yang berbeda nyata pada \u03b1 = 0,05. Selisih dihitung sebagai kelompok pertama dikurangi kelompok kedua.'+(ph.hasCI?'':' Uji ini tidak menghasilkan CI, sehingga arah perbedaan dibaca dari tanda selisih.')+'</p></div>';
   if(ph.hasCI)body+='<div class="sub"><div class="sub-title">Selisih rerata dan '+G('CI','CI 95%')+' tiap pasangan</div><p class="hint" style="margin:0 0 4px">Grafik ini menunjukkan selisih rerata tiap pasangan (titik) beserta '+G('CI','CI 95%')+'-nya (garis horizontal). Makin dekat titik dengan garis nol, makin mirip kedua kelompok dalam pasangan itu (tidak ada selisih).</p><div class="chart-wrap"><div data-chart="post"></div></div><p class="hint" style="margin-top:0">Merah berarti CI tidak mencakup 0 (berbeda nyata), biru berarti CI mencakup 0 (tidak berbeda nyata).</p></div>';
   if(o.reject){
     el.innerHTML=phMapHtml(o.test)+body+'<div style="margin-top:14px">'+postInterp(o)+'</div>';
@@ -2065,7 +2053,6 @@ function renderPost(){
 }
 function renderConcl(){
   const el=$('#concl-body');
-  if(locked()){el.innerHTML=lockedHtml();return;}
   const o=state.an.o;
   el.innerHTML='<div class="box"><div class="concl-title">Kesimpulan statistika (untuk laporan ilmiah)</div><div id="concl-sci">'+esc(conclusionText(o))+'</div><div class="btn-row" style="margin-top:12px"><button type="button" class="btn" data-act="copy" data-target="concl-sci" data-label="Salin versi ilmiah">Salin versi ilmiah</button></div></div><div class="box"><div class="concl-title">Kesimpulan untuk orang awam</div><div id="concl-lay">'+esc(layText(o))+'</div><div class="btn-row" style="margin-top:12px"><button type="button" class="btn" data-act="copy" data-target="concl-lay" data-label="Salin versi awam">Salin versi awam</button></div></div>';
 }
@@ -2092,7 +2079,6 @@ function simSummary(){
 }
 function renderMulti(){
   const el=$('#multi-body');
-  if(locked()){el.innerHTML=lockedHtml();setChip('chip-multi','');return;}
   const hs=state.history,nsig=hs.filter(x=>x.p<ALPHA).length;
   let h='<div class="sub"><div class="sub-title">Penarikan berturut-turut</div><div class="chart-wrap"><div data-chart="pvhist"></div></div><p class="hint" style="margin-top:0">'+nsig+' dari '+hs.length+' penarikan menghasilkan p < 0,05 (titik biru), diukur dengan langkah yang dianjurkan pada tiap penarikan. Titik dengan cincin adalah penarikan terbaru. Tombol Tarik ulang sampel di bagian atas menambah titik baru.</p></div>';
   h+='<div class="sub"><div class="sub-title">Simulasi 100 sampel sekaligus</div><p class="hint" style="margin-top:0">Menarik 100 sampel dari populasi yang sama dengan n yang sedang dipilih, lalu menampilkan sebaran nilai p-nya.</p><div class="btn-row" style="margin:10px 0"><button type="button" class="btn primary" data-act="sim">Tarik 100 sampel</button></div><div id="sim-out">'+(state.sim?simSummary():'')+'</div></div>';
@@ -2103,7 +2089,6 @@ function renderMulti(){
 /* ===== Kebenaran populasi ===== */
 function renderTruth(){
   const el=$('#truth-body'),p=state.pop;
-  if(locked()){el.innerHTML=lockedHtml();setChip('chip-truth','');return;}
   if(!state.revealed){el.innerHTML='<div class="box center">Sudah menentukan kesimpulan? Bandingkan dengan keadaan populasi yang sebenarnya.<div style="margin-top:14px"><button type="button" class="btn primary" data-act="reveal">Buka kebenaran populasi</button></div></div>';setChip('chip-truth','');return;}
   const an=state.an,o=an.o,R=o.res,sig=o.reject,par=o.test!=='kw';
   const popG=state.order.map(i=>p.popVals[i]);
@@ -2211,7 +2196,6 @@ function drawCharts(){
 
 /* ===== Alur ===== */
 function renderAll(){renderScenario();renderPop();renderHyp();renderDesc();renderAsm();renderPick();renderGated();renumber();drawCharts();}
-function renderGuess(){renderPick();renderGated();renumber();drawCharts();}
 function refresh(){state.an=analyzeSample();renderAll();}
 function newPop(){
   const ctx=chooseCtx();
@@ -2239,8 +2223,6 @@ document.addEventListener('click',e=>{
   }
   else if(a==='adj'){state.adj=t.dataset.v;refresh();}
   else if(a==='phkw'){state.phKw=t.dataset.v;refresh();}
-  else if(a==='guess'){state.guess=t.dataset.id;renderGuess();}
-  else if(a==='skip'){state.guess='skip';renderGuess();}
   else if(a==='reveal'){state.revealed=true;renderTruth();renderMulti();drawCharts();}
   else if(a==='sim'){runSim();renderMulti();drawCharts();}
   else if(a==='copy'||a==='copypost'){
