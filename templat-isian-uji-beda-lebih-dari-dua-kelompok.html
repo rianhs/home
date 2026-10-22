@@ -87,7 +87,8 @@ ul.chk li::before{content:"\2611";margin-right:.45em;color:var(--blue)}
 ul.pick li::before{content:"\2610";margin-right:.45em;color:var(--muted)}
 .br{padding-top:2px;transition:opacity .15s}
 .br+.br{border-top:1px solid var(--line);margin-top:12px;padding-top:6px}
-.br.off{opacity:.5}
+.br.off{opacity:.5;text-decoration:line-through}
+.gbody p.sep{border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
 .badge{display:none;margin-left:6px;font-size:.72rem;font-weight:600;color:var(--blue);background:var(--blue-soft);padding:2px 8px;border-radius:99px;vertical-align:1px}
 .br.on .badge{display:inline-block}
 
@@ -232,7 +233,7 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
       <ol>
         <li>Klik tab <b>Analyses → Exploration → Descriptives</b>.</li>
         <li>Masukkan variabel numeris ke kotak <b>Variables</b> dan variabel kategoris ke kotak <b>Split by</b>.</li>
-        <li>Pada menu dropdown, ubah <b>Variables across columns</b> menjadi <b>Variables across rows</b>.</li>
+        <li>Pada menu dropdown <b>Descriptives</b>, ubah <b>Variables across columns</b> menjadi <b>Variables across rows</b>.</li>
         <li>Pada panel <b>Statistics</b>, centang opsi berikut dan matikan opsi lain:</li>
       </ol>
       <div class="sub2">Sample Size</div><ul class="chk"><li>N</li></ul>
@@ -260,28 +261,8 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
 
 <!-- 4 -->
 <section class="row" data-row="4">
-  <div class="c-k"><div class="no"><span class="mark">4</span></div><h3>Uji normalitas</h3></div>
+  <div class="c-k"><div class="no"><span class="mark">4</span></div><h3>Pemeriksaan asumsi</h3></div>
   <div class="c-i">
-    <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
-      <p>Masih di menu Descriptives. Pada panel <b>Statistics</b>, centang opsi berikut dan matikan opsi lain:</p>
-      <div class="sub2">Sample Size</div><ul class="chk"><li>N</li></ul>
-      <div class="sub2">Normality</div><ul class="chk"><li>Shapiro-Wilk</li></ul>
-      <p>Ambil tangkapan layar tabel Descriptives yang terbentuk, lalu unggah di bawah ini. Bacalah nilai p Shapiro-Wilk pada setiap kelompok.</p>
-    </div></details>
-    <div class="body">
-      <div class="up" data-k="r4img" data-cap="Tabel Descriptives (Shapiro-Wilk)" tabindex="0"></div>
-      <div class="fld"><div class="lab">Kesimpulan (pilih opsi yang sesuai)
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Data dinyatakan normal pada suatu kelompok bila nilai p Shapiro-Wilk lebih besar dari 0,05. Normal di semua kelompok berarti setiap kelompok memenuhi syarat itu.">i</button></div>
-        <div class="opts" data-k="r4"></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- 5 -->
-<section class="row" data-row="5">
-  <div class="c-k"><div class="no"><span class="mark">5</span></div><h3>Uji kesetaraan varians antar&shy;kelompok</h3><p class="note">Baris ini hanya bisa diisi jika data terdistribusi normal di semua kelompok.</p></div>
-  <div class="c-i">
-    <div class="lockmsg"></div>
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
       <ol>
         <li>Klik tab <b>Analyses → ANOVA → One-Way ANOVA</b>.</li>
@@ -295,10 +276,10 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
       <div class="up" data-k="r5img1" data-cap="Tabel Assumption Checks" tabindex="0"></div>
       <div class="up" data-k="r5img2" data-cap="Diagram Q-Q Plot" tabindex="0"></div>
       <div class="pair">
-        <div class="fld"><div class="lab">Normalitas data
+        <div class="fld"><div class="lab">Normalitas residu model
           <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dilihat dari uji normalitas pada tabel Assumption Checks (nilai p lebih besar dari 0,05 berarti normal) dan dari sebaran titik pada Q-Q Plot terhadap garis diagonal. Pada One-Way ANOVA, pemeriksaan ini dilakukan pada residu model.">i</button></div>
           <div class="opts" data-k="r5norm"></div></div>
-        <div class="fld"><div class="lab">Homogenitas (kesetaraan) varians
+        <div class="fld" id="fldVar"><div class="lab">Homogenitas (kesetaraan) varians
           <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dilihat dari Homogeneity test (uji Levene). Nilai p lebih besar dari 0,05 berarti varians setara. Nilai p 0,05 atau kurang berarti varians tidak setara.">i</button></div>
           <div class="opts" data-k="r5var"></div></div>
       </div>
@@ -306,31 +287,31 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
   </div>
 </section>
 
-<!-- 6 -->
-<section class="row" data-row="6">
-  <div class="c-k"><div class="no"><span class="mark">6</span></div><h3>Jenis uji statistika</h3><p class="note">Pilihan di baris ini menentukan opsi Jamovi yang tampil pada baris 8, 10, 11, dan 12.</p></div>
+<!-- 5 -->
+<section class="row" data-row="5">
+  <div class="c-k"><div class="no"><span class="mark">5</span></div><h3>Jenis uji statistika</h3><p class="note">Pilihan di baris ini menentukan opsi Jamovi yang tampil pada baris 7, 9, 10, dan 11.</p></div>
   <div class="c-i"><div class="body">
     <div class="fld"><div class="lab">Pilih opsi yang sesuai</div><div class="opts" data-k="r6"></div></div>
     <div class="fld"><label class="lab" for="r6a">Alasan</label><textarea id="r6a" data-k="r6a" rows="3"></textarea></div>
   </div></div>
 </section>
 
-<!-- 7 -->
-<section class="row" data-row="7">
-  <div class="c-k"><div class="no"><span class="mark">7</span></div><h3>Notasi hipotesis</h3><p class="note">Gunakan μ untuk ANOVA Fisher dan ANOVA Welch, dan median untuk Kruskal-Wallis. Tombol simbol ada di bagian atas halaman.</p></div>
+<!-- 6 -->
+<section class="row" data-row="6">
+  <div class="c-k"><div class="no"><span class="mark">6</span></div><h3>Notasi hipotesis</h3><p class="note">Gunakan μ untuk ANOVA Fisher dan ANOVA Welch, dan median untuk Kruskal-Wallis. Tombol simbol ada di bagian atas halaman.</p></div>
   <div class="c-i"><div class="body">
     <div class="fld"><label class="lab" for="r7h0">Notasi H₀</label><input type="text" id="r7h0" data-k="r7h0" autocomplete="off"></div>
     <div class="fld"><label class="lab" for="r7h1">Notasi H₁</label><input type="text" id="r7h1" data-k="r7h1" autocomplete="off"></div>
   </div></div>
 </section>
 
-<!-- 8 -->
-<section class="row" data-row="8">
-  <div class="c-k"><div class="no"><span class="mark">8</span></div><h3>Hasil uji statistika (statistik uji)</h3></div>
+<!-- 7 -->
+<section class="row" data-row="7">
+  <div class="c-k"><div class="no"><span class="mark">7</span></div><h3>Hasil uji statistika (statistik uji)</h3></div>
   <div class="c-i">
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
       <div class="br" data-b="anova">
-        <h4>Jika menggunakan uji ANOVA <span class="badge">Sesuai baris 6</span></h4>
+        <h4>Jika menggunakan uji ANOVA <span class="badge">Sesuai baris 5</span></h4>
         <ol>
           <li>Masih di menu <b>One-Way ANOVA</b>, centang opsi yang sesuai pada panel <b>Variances</b> (pilih pada isian di bawah):</li>
         </ol>
@@ -338,20 +319,20 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
         <ul class="pick"><li>Don’t assume equal (Welch’s)</li><li>Assume equal (Fisher’s)</li></ul>
       </div>
       <div class="br" data-b="kw">
-        <h4>Jika menggunakan uji Kruskal-Wallis <span class="badge">Sesuai baris 6</span></h4>
+        <h4>Jika menggunakan uji Kruskal-Wallis <span class="badge">Sesuai baris 5</span></h4>
         <ol>
           <li>Klik tab <b>Analyses → ANOVA → Non-Parametric → One-Way ANOVA: Kruskal-Wallis</b>.</li>
           <li>Masukkan variabel numeris ke kotak <b>Dependent Variables</b> dan variabel kategoris ke kotak <b>Grouping Variable</b>.</li>
         </ol>
         <p>Tidak ada opsi yang perlu dicentang pada langkah ini.</p>
       </div>
-      <p>Apa pun jenis uji yang dipilih, ambil tangkapan layar tabel yang terbentuk, lalu unggah di bawah ini.</p>
+      <p class="sep">Apa pun jenis uji yang dipilih, ambil tangkapan layar tabel yang terbentuk, lalu unggah di bawah ini.</p>
     </div></details>
     <div class="body">
       <div class="testbar" data-testbar></div>
-      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 6 terlebih dahulu.</div>
+      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 5 terlebih dahulu.</div>
       <div class="fld" data-fam="anova" hidden><div class="lab">Variances yang dicentang di Jamovi
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Pilih satu sesuai uji pada baris 6. Don’t assume equal (Welch’s) untuk ANOVA Welch, yaitu bila varians tidak setara. Assume equal (Fisher’s) untuk ANOVA satu arah Fisher, yaitu bila varians setara.">i</button></div>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Pilih satu sesuai uji pada baris 5. Don’t assume equal (Welch’s) untuk ANOVA Welch, yaitu bila varians tidak setara. Assume equal (Fisher’s) untuk ANOVA satu arah Fisher, yaitu bila varians setara.">i</button></div>
         <div class="opts" data-k="r8var"></div></div>
       <div class="info" data-fam="kw" hidden><b>Kruskal-Wallis:</b> tidak ada opsi yang perlu dicentang di langkah ini. Jalankan analisisnya, lalu unggah tabel hasilnya.</div>
       <div class="up" data-k="r8img" data-cap="Tabel hasil uji statistika" tabindex="0"></div>
@@ -359,44 +340,44 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
   </div>
 </section>
 
-<!-- 9 -->
-<section class="row" data-row="9">
-  <div class="c-k"><div class="no"><span class="mark">9</span></div><h3>Keputusan pada α = 0,05</h3></div>
+<!-- 8 -->
+<section class="row" data-row="8">
+  <div class="c-k"><div class="no"><span class="mark">8</span></div><h3>Keputusan pada α = 0,05</h3></div>
   <div class="c-i"><div class="body">
     <div class="fld"><div class="lab">Pilih opsi yang sesuai
-      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Bandingkan nilai p uji statistika (baris 8) dengan α = 0,05. Nilai p kurang dari atau sama dengan α berarti tolak H₀. Nilai p lebih besar dari α berarti gagal tolak H₀.">i</button></div>
+      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Bandingkan nilai p uji statistika (baris 7) dengan α = 0,05. Nilai p kurang dari atau sama dengan α berarti tolak H₀. Nilai p lebih besar dari α berarti gagal tolak H₀.">i</button></div>
       <div class="opts" data-k="r9"></div></div>
     <div class="fld"><label class="lab" for="r9a">Alasan</label><textarea id="r9a" data-k="r9a" rows="3"></textarea></div>
   </div></div>
 </section>
 
-<!-- 10 -->
-<section class="row" data-row="10">
-  <div class="c-k"><div class="no"><span class="mark">10</span></div><h3>Ukuran efek uji omnibus <button type="button" class="tip" aria-label="Penjelasan uji omnibus" data-tip="Uji omnibus menguji seluruh kelompok sekaligus: apakah sedikitnya ada satu kelompok yang berbeda dari yang lain. Uji ini belum menunjukkan kelompok mana yang berbeda (itu tugas uji lanjutan). Yang termasuk uji omnibus pada lembar ini: ANOVA Fisher, ANOVA Welch, dan Kruskal-Wallis.">i</button></h3></div>
+<!-- 9 -->
+<section class="row" data-row="9">
+  <div class="c-k"><div class="no"><span class="mark">9</span></div><h3>Ukuran efek uji omnibus <button type="button" class="tip" aria-label="Penjelasan uji omnibus" data-tip="Uji omnibus menguji seluruh kelompok sekaligus: apakah sedikitnya ada satu kelompok yang berbeda dari yang lain. Uji ini belum menunjukkan kelompok mana yang berbeda (itu tugas uji lanjutan). Yang termasuk uji omnibus pada lembar ini: ANOVA Fisher, ANOVA Welch, dan Kruskal-Wallis.">i</button></h3></div>
   <div class="c-i">
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
       <div class="br" data-b="anova">
-        <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch) <span class="badge">Sesuai baris 6</span></h4>
+        <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch) <span class="badge">Sesuai baris 5</span></h4>
         <ol>
           <li>Klik tab <b>Analyses → ANOVA → ANOVA</b>.</li>
           <li>Masukkan variabel numeris ke kotak <b>Dependent Variable</b> dan variabel kategoris ke kotak <b>Fixed Factors</b>.</li>
-          <li>Pada panel <b>Effect Size</b>, centang opsi yang sesuai (pilih pada isian di bawah):</li>
+          <li>Pada panel <b>Effect Size</b>, centang opsi berikut:</li>
         </ol>
         <div class="sub2">Effect Size</div>
-        <ul class="pick"><li>η²</li><li>partial η²</li><li>ω²</li></ul>
+        <ul class="chk"><li>η²</li><li>ω²</li></ul>
       </div>
       <div class="br" data-b="kw">
-        <h4>Jika menggunakan uji Kruskal-Wallis <span class="badge">Sesuai baris 6</span></h4>
+        <h4>Jika menggunakan uji Kruskal-Wallis <span class="badge">Sesuai baris 5</span></h4>
         <ol>
-          <li>Masih di menu <b>One-Way ANOVA: Kruskal-Wallis</b>, centang opsi berikut (pilih pada isian di bawah):</li>
+          <li>Masih di menu <b>One-Way ANOVA: Kruskal-Wallis</b>, centang opsi berikut:</li>
         </ol>
         <div class="sub2">Effect Size</div>
-        <ul class="pick"><li>ε²</li></ul>
+        <ul class="chk"><li>ε²</li></ul>
       </div>
     </div></details>
     <div class="body">
       <div class="testbar" data-testbar></div>
-      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 6 terlebih dahulu.</div>
+      <div class="need-fam" data-needfam>Pilih jenis uji statistika pada baris 5 terlebih dahulu.</div>
       <div class="fld" data-fam="anova" hidden><div class="lab">Effect Size yang dicentang di Jamovi (menu ANOVA)
         <button type="button" class="tip" aria-label="Penjelasan" data-tip="Boleh mencentang lebih dari satu, lalu pilih satu yang dilaporkan pada Jenis ukuran efek. Ukuran efek diambil dari menu ANOVA (model klasik), baik untuk ANOVA Fisher maupun ANOVA Welch.">i</button></div>
         <div class="opts" data-k="r10es"></div></div>
@@ -405,30 +386,30 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
         <div class="opts" data-k="r10ek"></div></div>
       <div class="up" data-fam="any" data-k="r10img" data-cap="Tabel ukuran efek" tabindex="0" hidden></div>
       <div class="fld" data-fam="any" hidden><label class="lab" for="r10k">Kategori ukuran efek</label>
-        <select id="r10k" data-k="r10k"><option value="">Pilih</option><option>Diabaikan (&lt; 0,01)</option><option>Kecil (0,01 sampai &lt; 0,06)</option><option>Sedang (0,06 sampai &lt; 0,14)</option><option>Besar (≥ 0,14)</option></select>
+        <select id="r10k" data-k="r10k"><option value="">Pilih</option><option>Sangat kecil (&lt; 0,01)</option><option>Kecil (0,01 sampai &lt; 0,06)</option><option>Sedang (0,06 sampai &lt; 0,14)</option><option>Besar (≥ 0,14)</option></select>
         <details class="legend">
           <summary>Cara menentukan kategori</summary>
           <table>
-            <tr><td>Diabaikan</td><td>kurang dari 0,01</td><td>Perbedaan kelompok menjelaskan kurang dari 1% variasi data.</td></tr>
+            <tr><td>Sangat kecil</td><td>kurang dari 0,01</td><td>Perbedaan kelompok menjelaskan kurang dari 1% variasi data.</td></tr>
             <tr><td>Kecil</td><td>0,01 sampai kurang dari 0,06</td><td>Menjelaskan 1% sampai kurang dari 6% variasi data.</td></tr>
             <tr><td>Sedang</td><td>0,06 sampai kurang dari 0,14</td><td>Menjelaskan 6% sampai kurang dari 14% variasi data.</td></tr>
             <tr><td>Besar</td><td>0,14 atau lebih</td><td>Menjelaskan 14% variasi data atau lebih.</td></tr>
           </table>
-          <p>Berlaku untuk η², partial η², ω², dan ε². Batas ini adalah acuan umum (Cohen), bukan batas mutlak.</p>
+          <p>Berlaku untuk η², ω², dan ε². Batas ini adalah acuan umum (Cohen), bukan batas mutlak.</p>
         </details>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 11 -->
-<section class="row" data-row="11">
-  <div class="c-k"><div class="no"><span class="mark">11</span></div><h3>Uji lanjutan (post-hoc)</h3><p class="note">Baris ini hanya bisa diisi jika keputusan adalah tolak H₀.</p></div>
+<!-- 10 -->
+<section class="row" data-row="10">
+  <div class="c-k"><div class="no"><span class="mark">10</span></div><h3>Uji lanjutan (post-hoc)</h3><p class="note">Baris ini hanya bisa diisi jika keputusan adalah tolak H₀.</p></div>
   <div class="c-i">
     <div class="lockmsg"></div>
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
       <div class="br" data-b="anova">
-        <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch) <span class="badge">Sesuai baris 6</span></h4>
+        <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch) <span class="badge">Sesuai baris 5</span></h4>
         <ol>
           <li>Buka panel <b>Post-Hoc Tests</b> di menu One-Way ANOVA, lalu centang opsi yang sesuai (pilih pada isian di bawah):</li>
         </ol>
@@ -438,14 +419,14 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
         <div class="sub2">Statistics</div><ul class="chk"><li>Mean difference</li><li>Report significance</li><li>Flag significant comparisons</li></ul>
       </div>
       <div class="br" data-b="kw">
-        <h4>Jika menggunakan uji Kruskal-Wallis <span class="badge">Sesuai baris 6</span></h4>
+        <h4>Jika menggunakan uji Kruskal-Wallis <span class="badge">Sesuai baris 5</span></h4>
         <ol>
           <li>Masih di menu <b>One-Way ANOVA: Kruskal-Wallis</b>, centang opsi pada panel <b>Post Hoc Tests</b> (pilih pada isian di bawah):</li>
         </ol>
         <div class="sub2">Post Hoc Tests</div>
         <ul class="pick"><li>DSCF pairwise comparisons</li><li>Dunn’s pairwise comparisons</li></ul>
       </div>
-      <p>Apa pun jenis uji lanjutan yang dipilih, ambil tangkapan layar tabel yang terbentuk, lalu unggah di bawah ini.</p>
+      <p class="sep">Apa pun jenis uji lanjutan yang dipilih, ambil tangkapan layar tabel yang terbentuk, lalu unggah di bawah ini.</p>
     </div></details>
     <div class="body">
       <div class="testbar" data-testbar></div>
@@ -463,38 +444,35 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
   </div>
 </section>
 
-<!-- 12 -->
-<section class="row" data-row="12">
-  <div class="c-k"><div class="no"><span class="mark">12</span></div><h3>Ukuran efek untuk pasangan kelompok pada uji lanjutan</h3><p class="note">Baris ini hanya bisa diisi jika keputusan adalah tolak H₀.</p></div>
+<!-- 11 -->
+<section class="row" data-row="11">
+  <div class="c-k"><div class="no"><span class="mark">11</span></div><h3>Ukuran efek untuk pasangan kelompok pada uji lanjutan</h3><p class="note">Baris ini hanya bisa diisi jika keputusan adalah tolak H₀.</p></div>
   <div class="c-i">
     <div class="lockmsg"></div>
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
       <div class="br" data-b="anova">
-        <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch) <span class="badge">Sesuai baris 6</span></h4>
+        <h4>Jika menggunakan uji ANOVA (Fisher maupun Welch) <span class="badge">Sesuai baris 5</span></h4>
         <ol>
           <li>Masih di menu <b>ANOVA</b>, buka panel <b>Post Hoc Tests</b>. Pindahkan variabel kategoris dari kotak kiri ke kotak kanan.</li>
-          <li>Pilih opsi <b>Correction</b> yang sesuai (pilih pada isian di bawah):</li>
+          <li>Pada opsi <b>Correction</b>, centang <b>Tukey</b>. Pilihan koreksi tidak memengaruhi nilai Cohen’s d, yang menjadi bahan untuk baris ini.</li>
+          <li>Pada panel <b>Effect Size</b>, pastikan opsi ini tercentang:</li>
         </ol>
-        <div class="sub2">Correction</div>
-        <ul class="pick"><li>No correction</li><li>Tukey</li><li>Scheffe</li><li>Bonferroni</li><li>Holm</li></ul>
-        <ol start="3"><li>Pastikan opsi ini tercentang:</li></ol>
         <div class="sub2">Effect Size</div><ul class="chk"><li>Cohen’s d</li></ul>
+        <p>Ambil tangkapan layar tabel yang terbentuk, lalu unggah di bawah ini. Cohen’s d dibaca dari kolom Cohen’s d pada setiap pasangan.</p>
       </div>
       <div class="br" data-b="kw">
-        <h4>Jika menggunakan uji Kruskal-Wallis <span class="badge">Sesuai baris 6</span></h4>
-        <p>Opsi ini tidak tersedia di Jamovi. Baris 12 tidak diisi untuk Kruskal-Wallis.</p>
+        <h4>Jika menggunakan uji Kruskal-Wallis <span class="badge">Sesuai baris 5</span></h4>
+        <p>Opsi ini tidak tersedia di Jamovi. Baris 11 tidak diisi untuk Kruskal-Wallis.</p>
       </div>
     </div></details>
     <div class="body">
       <div class="testbar" data-testbar></div>
-      <div class="fld"><div class="lab">Correction yang dipilih di Jamovi
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Koreksi dipakai karena ada banyak perbandingan pasangan sekaligus. Bonferroni dan Holm cocok untuk kasus umum, dan Holm sedikit lebih berdaya. Tukey untuk varians setara. Scheffe paling konservatif. No correction tidak dianjurkan. Perbandingan pasangan di menu ANOVA memakai galat gabungan, jadi tafsirkan dengan hati-hati bila varians tidak setara.">i</button></div>
-        <div class="opts" data-k="r12c"></div></div>
+      <div class="up" data-k="r12img" data-cap="Tabel perbandingan pasangan (Cohen’s d)" tabindex="0"></div>
       <p class="sect">Kesimpulan ukuran efek pada pasangan kelompok</p>
       <details class="legend" style="margin-top:0">
         <summary>Cara menentukan kategori Cohen’s d</summary>
         <table>
-          <tr><td>Diabaikan</td><td>kurang dari 0,2</td><td>Selisih rata-rata kurang dari 0,2 simpangan baku.</td></tr>
+          <tr><td>Sangat kecil</td><td>kurang dari 0,2</td><td>Selisih rata-rata kurang dari 0,2 simpangan baku.</td></tr>
           <tr><td>Kecil</td><td>0,2 sampai kurang dari 0,5</td><td>Selisih sekitar 0,2 sampai 0,5 simpangan baku.</td></tr>
           <tr><td>Sedang</td><td>0,5 sampai kurang dari 0,8</td><td>Selisih sekitar 0,5 sampai 0,8 simpangan baku.</td></tr>
           <tr><td>Besar</td><td>0,8 atau lebih</td><td>Selisih 0,8 simpangan baku atau lebih.</td></tr>
@@ -507,15 +485,15 @@ label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid
   </div>
 </section>
 
-<!-- 13 -->
-<section class="row" data-row="13">
-  <div class="c-k"><div class="no"><span class="mark">13</span></div><h3>Kesimpulan statistika</h3></div>
+<!-- 12 -->
+<section class="row" data-row="12">
+  <div class="c-k"><div class="no"><span class="mark">12</span></div><h3>Kesimpulan statistika</h3></div>
   <div class="c-i"><div class="body"><textarea id="r13" data-k="r13" rows="5" aria-label="Kesimpulan statistika"></textarea></div></div>
 </section>
 
-<!-- 14 -->
-<section class="row" data-row="14">
-  <div class="c-k"><div class="no"><span class="mark">14</span></div><h3>Kesimpulan dengan bahasa awam</h3></div>
+<!-- 13 -->
+<section class="row" data-row="13">
+  <div class="c-k"><div class="no"><span class="mark">13</span></div><h3>Kesimpulan dengan bahasa awam</h3></div>
   <div class="c-i"><div class="body"><textarea id="r14" data-k="r14" rows="5" aria-label="Kesimpulan dengan bahasa awam"></textarea></div></div>
 </section>
 
@@ -533,22 +511,20 @@ var $=function(s,r){return (r||document).querySelector(s)};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 
 /* ---------- opsi ---------- */
-var NAME={fisher:"ANOVA satu arah (Fisher)",welch:"ANOVA Welch",kw:"Uji Kruskal-Wallis"};
+var NAME={fisher:"ANOVA satu arah (Fisher)",welch:"ANOVA satu arah (Welch)",kw:"Uji Kruskal-Wallis"};
 var OPTS={
-  r4:{items:[["normal","data terdistribusi normal di semua kelompok"],["tidak","data tidak terdistribusi normal pada sedikitnya satu kelompok"]]},
   r5norm:{items:[["normal","terdistribusi normal"],["tidak","tidak terdistribusi normal"]]},
   r5var:{items:[["setara","varians setara"],["tidak","varians tidak setara"]]},
   r6:{items:[
-    ["fisher","ANOVA satu arah (Fisher)","Dipakai bila data normal di semua kelompok dan varians setara."],
-    ["welch","ANOVA Welch","Dipakai bila data normal di semua kelompok tetapi varians tidak setara."],
-    ["kw","Uji Kruskal-Wallis","Dipakai bila data tidak normal pada sedikitnya satu kelompok. Uji ini membandingkan peringkat data dan tidak mensyaratkan normalitas. Bila bentuk sebaran antarkelompok mirip, hasilnya dapat dibaca sebagai perbandingan median."]]},
+    ["fisher","ANOVA satu arah (Fisher)","Dipakai bila residu model terdistribusi normal dan varians setara."],
+    ["welch","ANOVA satu arah (Welch)","Dipakai bila residu model terdistribusi normal tetapi varians tidak setara."],
+    ["kw","Uji Kruskal-Wallis","Dipakai bila residu model tidak terdistribusi normal. Uji ini membandingkan peringkat data dan tidak mensyaratkan normalitas. Bila bentuk sebaran antarkelompok mirip, hasilnya dapat dibaca sebagai perbandingan median."]]},
   r8var:{items:[
-    ["welch","Don’t assume equal (Welch’s)","Pilih bila uji pada baris 6 adalah ANOVA Welch."],
-    ["fisher","Assume equal (Fisher’s)","Pilih bila uji pada baris 6 adalah ANOVA satu arah (Fisher)."]]},
+    ["welch","Don’t assume equal (Welch’s)","Pilih bila uji pada baris 5 adalah ANOVA Welch."],
+    ["fisher","Assume equal (Fisher’s)","Pilih bila uji pada baris 5 adalah ANOVA satu arah (Fisher)."]]},
   r9:{items:[["tolak","Tolak H₀"],["gagal","Gagal tolak H₀"]]},
   r10es:{multi:1,items:[
     ["eta","η²","Proporsi seluruh variasi data yang dijelaskan oleh perbedaan kelompok."],
-    ["peta","partial η²","Pada ANOVA satu arah nilainya sama dengan η² karena hanya ada satu faktor."],
     ["omega","ω²","Penaksir ukuran efek di populasi. Biasanya sedikit lebih kecil dari η² karena mengoreksi bias sampel."]]},
   r10ek:{multi:1,items:[
     ["eps","ε²","Ukuran efek untuk Kruskal-Wallis. Nilainya berkisar 0 sampai 1 dan dibaca sebagai proporsi variasi peringkat data yang dijelaskan oleh perbedaan kelompok."]]},
@@ -558,17 +534,11 @@ var OPTS={
     ["tukey","Tukey (equal variances)","Dipakai bila varians setara."]]},
   r11kw:{multi:1,items:[
     ["dscf","DSCF pairwise comparisons","Dwass-Steel-Critchlow-Fligner: membandingkan tiap pasangan kelompok dengan peringkat di dalam pasangan itu."],
-    ["dunn","Dunn’s pairwise comparisons","Membandingkan rata-rata peringkat tiap pasangan, dihitung dari peringkat seluruh data, dengan penyesuaian nilai p untuk banyak perbandingan."]]},
-  r12c:{items:[
-    ["none","No correction","Tanpa koreksi. Risiko kesalahan tipe I naik karena banyak pasangan dibandingkan sekaligus."],
-    ["tukey","Tukey","Untuk semua pasangan bila varians setara."],
-    ["scheffe","Scheffe","Paling konservatif, cocok untuk kontras yang kompleks."],
-    ["bonf","Bonferroni","Konservatif dan sederhana. Cocok untuk jumlah pasangan yang sedikit."],
-    ["holm","Holm","Mengendalikan kesalahan tipe I seperti Bonferroni dengan daya sedikit lebih besar."]]}
+    ["dunn","Dunn’s pairwise comparisons","Membandingkan rata-rata peringkat tiap pasangan, dihitung dari peringkat seluruh data, dengan penyesuaian nilai p untuk banyak perbandingan."]]}
 };
 
 /* ---------- simbol ---------- */
-var SYM=["H₀","H₁","μ","Md","α","μ₁","μ₂","μ₃","μ₄","Md₁","Md₂","Md₃","Md₄","₀","₁","₂","₃","₄","≠","≤","≥","η²","ω²","ε²"];
+var SYM=["H₀","H₁","μ","Md","α","μ₁","μ₂","μ₃","μ₄","μ₅","Md₁","Md₂","Md₃","Md₄","Md₅","₀","₁","₂","₃","₄","₅","≠","≤","≥","η²","ω²","ε²"];
 var syms=$("#syms");
 SYM.forEach(function(s){
   var b=document.createElement("button");b.type="button";b.className="sym";b.textContent=s;b.setAttribute("aria-label","Sisipkan "+s);
@@ -701,9 +671,8 @@ function getHead(){var o={};$$("#head [data-k]").forEach(function(el){o[el.datas
 
 /* ---------- aturan kunci ---------- */
 var LOCK={
-  "5":function(){var v=V("r4");if(!v)return "Isi kesimpulan normalitas pada baris 4 terlebih dahulu.";if(v!=="normal")return "Baris ini tidak diisi karena data tidak normal pada sedikitnya satu kelompok.";return ""},
-  "11":function(){if(!fam())return "Pilih jenis uji statistika pada baris 6 terlebih dahulu.";var d=V("r9");if(!d)return "Isi keputusan pada baris 9 terlebih dahulu.";if(d!=="tolak")return "Baris ini tidak diisi karena keputusan adalah gagal tolak H₀.";return ""},
-  "12":function(){if(!fam())return "Pilih jenis uji statistika pada baris 6 terlebih dahulu.";if(fam()==="kw")return "Baris ini tidak diisi karena ukuran efek per pasangan tidak tersedia di Jamovi untuk Kruskal-Wallis.";var d=V("r9");if(!d)return "Isi keputusan pada baris 9 terlebih dahulu.";if(d!=="tolak")return "Baris ini tidak diisi karena keputusan adalah gagal tolak H₀.";return ""}
+  "10":function(){if(!fam())return "Pilih jenis uji statistika pada baris 5 terlebih dahulu.";var d=V("r9");if(!d)return "Isi keputusan pada baris 8 terlebih dahulu.";if(d!=="tolak")return "Baris ini tidak diisi karena keputusan adalah gagal tolak H₀.";return ""},
+  "11":function(){if(!fam())return "Pilih jenis uji statistika pada baris 5 terlebih dahulu.";if(fam()==="kw")return "Baris ini tidak diisi karena ukuran efek per pasangan tidak tersedia di Jamovi untuk Kruskal-Wallis.";var d=V("r9");if(!d)return "Isi keputusan pada baris 8 terlebih dahulu.";if(d!=="tolak")return "Baris ini tidak diisi karena keputusan adalah gagal tolak H₀.";return ""}
 };
 
 
@@ -717,9 +686,11 @@ function refresh(){
   $$("[data-testbar]").forEach(function(el){
     el.textContent="";
     var c=document.createElement("span");c.className="chip"+(t?"":" off");
-    c.textContent=t?"Uji terpilih (baris 6): "+NAME[t]:"Uji belum dipilih (baris 6)";
+    c.textContent=t?"Uji terpilih (baris 5): "+NAME[t]:"Uji belum dipilih (baris 5)";
     el.appendChild(c);
   });
+  /* homogenitas varians hanya dinilai bila residu normal */
+  $("#fldVar").hidden=(V("r5norm")==="tidak");
   /* opsi terpilih */
   $$(".optw").forEach(function(w){var i=$("input",w);w.classList.toggle("sel",!!(i&&i.checked))});
   /* kunci dan penanda */
