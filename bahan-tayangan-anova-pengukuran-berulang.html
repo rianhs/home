@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bahan tayangan anova pengukuran berulang</title>
+<script>try{if(localStorage.getItem('tema-tayangan')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg-color:#e7e8e6;--card-bg:#f5f5f3;--text-main:#26282b;--text-muted:#666a70;--text-soft:#40434a;
+  --accent-blue:#2f6fb8;--green-dark:#2a8a4a;--accent-red:#d6453b;--border-color:#d2d4d2;
+  --shadow:0 6px 18px rgba(30,35,40,.07);
+  --fill1:#eaebe9;--fill2:#dcdedb;--soft-bg:#eceded;--input-bg:#eeefee;--btn-bg:#eeefee;--seg-active:#f8f8f7;
+  --ink3:#b5b8b6;--hl-line:#d4a300;--grid-line:#e3e4e2;--err-tx:#b3261e;--warn-tx:#8a5a00;--ok-tx:#1e7a3a;
+  --lowE-bg:#f3e6c9;--lowE-tx:#8a5a00;--vlowE-bg:#f1d9d3;--vlowE-tx:#b3261e;--more-bg:#dce8f3;--hl:#f1e0a0;--hl-tx:#3b3100;
+  --bar:rgba(231,232,230,.88);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg-color:#000000;--card-bg:#1c1c1e;--text-main:#f5f5f7;--text-muted:#98989d;--text-soft:#d1d1d6;
+  --accent-blue:#3b9bff;--green-dark:#30d158;--accent-red:#ff6961;--border-color:#38383a;
+  --shadow:0 0 0 .5px rgba(255,255,255,.06);
+  --fill1:#2c2c2e;--fill2:#3a3a3c;--soft-bg:#2c2c2e;--input-bg:#2c2c2e;--btn-bg:#2c2c2e;--seg-active:#48484a;
+  --ink3:#636366;--hl-line:#e0b93a;--grid-line:#38383a;--err-tx:#ff9a93;--warn-tx:#ffcc66;--ok-tx:#5ee08a;
+  --lowE-bg:#3d2f12;--lowE-tx:#ffcc66;--vlowE-bg:#432320;--vlowE-tx:#ff9a93;--more-bg:#13273d;
+  --bar:rgba(0,0,0,.78);--hl:#5f5115;--hl-tx:#fff1b8;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg-color);color:var(--text-main);font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+button{font-family:inherit}
+:focus-visible{outline:3px solid rgba(0,113,227,.4);outline-offset:2px}
+b{font-weight:700}
+
+/* Bilah atas */
+.topbar{position:sticky;top:0;z-index:30;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border-color);padding-top:env(safe-area-inset-top,0px)}
+.topbar-in{max-width:960px;margin:0 auto;padding:10px 20px 2px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:700;font-size:15px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.top-actions{display:flex;align-items:center;gap:8px;flex:none}
+.theme-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border-color);background:var(--btn-bg);color:var(--text-main);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:all .2s ease}
+.theme-btn:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
+.theme-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+:root[data-theme="dark"] .ic-moon{display:none}
+:root:not([data-theme="dark"]) .ic-sun{display:none}
+.stepnav-wrap{position:relative;max-width:960px;margin:0 auto}
+.stepnav{display:flex;gap:4px;overflow-x:auto;padding:6px 14px 8px;scrollbar-width:none;scroll-behavior:smooth;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.stepnav::-webkit-scrollbar{display:none}
+.stepnav a{flex:none;font-size:12.5px;font-weight:600;color:var(--text-muted);text-decoration:none;padding:7px 11px;border-radius:9px;white-space:nowrap;transition:all .2s ease}
+.stepnav a b{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--fill2);color:var(--text-soft);font-size:10.5px;margin-right:6px;padding:0 4px}
+.stepnav a:hover{color:var(--text-main);background:var(--fill1)}
+.stepnav a.active{color:var(--accent-blue);background:var(--fill1)}
+.stepnav a.active b{background:var(--accent-blue);color:#fff}
+.nav-arrow{position:absolute;top:0;bottom:0;width:44px;display:none;align-items:center;border:none;padding:0;cursor:pointer;color:var(--text-muted);font-size:24px;line-height:1;font-family:inherit;z-index:1}
+.nav-arrow.left{left:0;justify-content:flex-start;padding-left:10px;background:linear-gradient(to right,var(--bg-color) 45%,transparent)}
+.nav-arrow.right{right:0;justify-content:flex-end;padding-right:10px;background:linear-gradient(to left,var(--bg-color) 45%,transparent)}
+.stepnav-wrap.can-left .nav-arrow.left,.stepnav-wrap.can-right .nav-arrow.right{display:flex}
+.nav-arrow:hover{color:var(--accent-blue)}
+.progress{height:3px;background:var(--fill2)}
+.progress i{display:block;height:100%;width:0;background:var(--accent-blue);transition:width .12s linear}
+
+/* Tombol */
+.btn{font-family:inherit;font-size:13px;font-weight:600;padding:9px 14px;border-radius:10px;cursor:pointer;border:1px solid var(--border-color);background:var(--btn-bg);color:var(--text-main);transition:all .2s ease;text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
+.btn.sm{padding:7px 12px;font-size:12.5px}
+.btn.primary{background:var(--accent-blue);border-color:var(--accent-blue);color:#fff}
+.btn.primary:hover{color:#fff;opacity:.9}
+.btn-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* Tata letak */
+.wrap{max-width:960px;margin:0 auto;padding:0 20px calc(64px + env(safe-area-inset-bottom,0px))}
+header{padding:34px 0 22px}
+h1{font-size:clamp(26px,4.6vw,36px);line-height:1.12;letter-spacing:-.025em;font-weight:700;margin:0 0 10px}
+.lead{margin:0;color:var(--text-muted);font-size:16.5px}
+.lead-hint{margin:12px 0 0;font-size:13px;color:var(--text-muted)}
+
+.step{background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:26px 28px;margin-bottom:18px;scroll-margin-top:118px}
+.step-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.step-num{min-width:28px;height:28px;border-radius:14px;background:var(--accent-blue);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none;padding:0 6px}
+.step-title{font-size:19px;font-weight:700;letter-spacing:-.3px;flex:1;min-width:160px;margin:0}
+.chip-status{display:inline-block;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px;background:var(--fill1);color:var(--text-soft);white-space:nowrap}
+.chip-status.ok{color:var(--ok-tx)}.chip-status.warn{color:var(--warn-tx)}.chip-status.bad{color:var(--err-tx)}
+.chip-status:empty{display:none}
+.step-intro{font-size:14px;color:var(--text-muted);line-height:1.6;margin:-6px 0 20px;max-width:72ch}
+.sub{margin-top:26px}
+.sub.sep{padding-top:26px;border-top:1px solid var(--border-color)}
+.step-intro + .sub,.step-head + .sub{margin-top:0}
+.sub-title{font-size:14px;font-weight:700;margin:0 0 10px}
+.hint{font-size:13px;color:var(--text-muted);margin:8px 0 0;line-height:1.6}
+.cap{font-size:13px;color:var(--text-muted);margin:12px 0 0;line-height:1.6}
+p.ip{margin:0 0 8px;font-size:14.5px}
+p.ip:last-child{margin-bottom:0}
+
+/* Kotak seragam */
+.box{background:var(--soft-bg);border:1px solid var(--border-color);border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.7}
+.box + .box{margin-top:10px}
+.concl-title{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:700;margin-bottom:8px}
+.tag{font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.6px;margin-right:6px}
+.tag-ok{color:var(--ok-tx)}.tag-warn{color:var(--warn-tx)}.tag-err{color:var(--err-tx)}.tag-info{color:var(--accent-blue)}
+.sg-name{font-size:18px;font-weight:700;margin:2px 0 6px;letter-spacing:-.2px}
+.center{text-align:center}
+
+.stat-grid{margin:0 0 6px}
+.stat-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:9px 0;border-bottom:1px solid var(--grid-line);font-size:14px}
+.stat-row:last-child{border-bottom:none}
+.stat-label{color:var(--text-muted)}
+.stat-value{font-weight:700;font-size:15px;text-align:right}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:6px}
+.tile{background:var(--soft-bg);border:1px solid var(--border-color);border-radius:12px;padding:14px 16px}
+.tile .k{font-size:12.5px;color:var(--text-muted);min-height:2.6em}
+.tile .v{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.tile .s{font-size:12.5px;color:var(--text-muted);margin-top:4px}
+
+.tbl-wrap{overflow-x:auto}
+table.dt{border-collapse:collapse;width:100%;font-size:13.5px}
+table.dt th,table.dt td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--grid-line);white-space:nowrap}
+table.dt thead th{color:var(--text-muted);font-weight:600;font-size:12.5px}
+table.dt tbody th{text-align:left;font-weight:600;white-space:normal}
+table.dt tr.hlrow td,table.dt tr.hlrow th{background:var(--soft-bg);font-weight:700}
+table.dt tr.tot td,table.dt tr.tot th{border-top:1px solid var(--border-color);font-weight:700}
+table.dt td.cellsub{line-height:1.25}
+table.dt .subv{display:block;font-size:11.5px;color:var(--text-muted);font-weight:500}
+table.dt td.lowE{background:var(--lowE-bg);color:var(--lowE-tx);font-weight:700}
+table.dt td.vlowE{background:var(--vlowE-bg);color:var(--vlowE-tx);font-weight:700}
+table.dt td.rp{background:var(--more-bg);color:var(--accent-blue);font-weight:700}
+table.dt td.rn{background:var(--lowE-bg);color:var(--lowE-tx);font-weight:700}
+table.dt td small{display:block;font-size:11px;font-weight:500}
+table.map td,table.map th{white-space:normal;text-align:left;vertical-align:top}
+.gdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.idx{display:inline-block;min-width:16px;color:var(--ink3);font-weight:700;margin-right:4px}
+.arw{border:0;background:var(--fill2);color:var(--text-main);border-radius:7px;width:24px;height:24px;font-size:10px;cursor:pointer;margin-left:4px;vertical-align:middle;padding:0;line-height:1}
+.arw:disabled{opacity:.35;cursor:default}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
+.cols > div{min-width:0}
+.cols th,.cols td{white-space:normal}
+
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text-muted);margin-bottom:12px}
+.legend .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.chart-wrap{width:100%;overflow-x:auto;margin:10px 0 6px}
+.chart-wrap svg{display:block}
+.verdict-status{text-align:center;font-size:32px;font-weight:800;letter-spacing:-.8px;margin:14px 0 6px;line-height:1.15}
+.verdict-status.reject{color:var(--accent-red)}
+.verdict-status.fail{color:var(--green-dark)}
+.verdict-sub{text-align:center;font-size:13.5px;color:var(--text-soft);margin:0 0 16px}
+.res-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.res-name{font-weight:700;font-size:16px}
+ul.odds{margin:4px 0 14px;padding-left:20px;font-size:14px;line-height:1.7}
+.swapbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+
+/* Segmen, geser, sakelar */
+.seg2{display:inline-flex;background:var(--fill2);border-radius:11px;padding:3px;flex-wrap:wrap}
+.seg2 button{border:0;background:transparent;color:var(--text-main);font-size:13px;font-weight:600;padding:8px 16px;border-radius:8px;cursor:pointer;transition:all .2s ease}
+.seg2 button[aria-checked="true"]{background:var(--seg-active);box-shadow:0 2px 6px rgba(0,0,0,.1);color:var(--accent-blue)}
+.field-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.lbl{font-weight:600;font-size:14px}
+.nval{font-weight:700;color:var(--accent-blue)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:6px 0 0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--fill2)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--fill2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;margin-top:-11px;box-shadow:0 1px 4px rgba(0,0,0,.3),0 0 0 .5px rgba(0,0,0,.08)}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:0;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.switch{position:relative;width:51px;height:31px;flex:none}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:2}
+.switch i{position:absolute;inset:0;background:var(--fill2);border-radius:16px;transition:background .25s}
+.switch i::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:transform .25s}
+.switch input:checked + i{background:#34c759}
+.switch input:checked + i::after{transform:translateX(20px)}
+.switch input:focus-visible + i{outline:3px solid rgba(0,113,227,.4);outline-offset:2px}
+
+/* Kartu skenario */
+.scn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:12px 0}
+.scn-card{text-align:left;background:var(--soft-bg);border:1px solid var(--border-color);border-radius:12px;padding:14px 16px;cursor:pointer;color:var(--text-main);font-size:13px;line-height:1.5;display:flex;flex-direction:column;gap:4px;transition:all .2s ease}
+.scn-card:hover{border-color:var(--accent-blue)}
+.scn-card[aria-pressed="true"]{border-color:var(--accent-blue);box-shadow:0 0 0 2px var(--accent-blue) inset;background:var(--card-bg)}
+.scn-t{font-weight:700;font-size:14px;line-height:1.35}
+.scn-l{color:var(--text-muted);font-size:12.5px}
+.scn-l b{color:var(--text-soft)}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--fill2);color:var(--text-soft)}
+
+/* Tiga pertanyaan, pohon keputusan, pilihan uji */
+.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.cards3 .box + .box{margin-top:0}
+.qn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:11px;background:var(--accent-blue);color:#fff;font-size:12px;font-weight:700;margin-right:8px}
+.cards3 p{margin:6px 0 0;font-size:13.5px;color:var(--text-soft);line-height:1.6}
+.trail{margin:0 0 12px;padding-left:20px;font-size:13.5px;color:var(--text-muted);line-height:1.7}
+.trail b{color:var(--text-main)}
+
+/* Akordeon dengan penanda segitiga */
+details.inline{margin-top:10px;border:1px solid var(--border-color);border-radius:12px;padding:12px 16px;background:var(--soft-bg)}
+details.inline:first-of-type{margin-top:0}
+details summary{cursor:pointer;font-weight:700;font-size:13.5px;color:var(--text-main);list-style:none;display:flex;justify-content:flex-start;align-items:center;gap:10px;border-radius:6px}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"\25B6";flex:none;width:12px;font-size:11px;line-height:1;color:var(--text-muted)}
+details[open] > summary::before{content:"\25BC"}
+details summary:hover,details summary:hover::before{color:var(--accent-blue)}
+details.inline > div,details.inline > p{margin:12px 0 0;font-size:13.5px;color:var(--text-soft);line-height:1.7}
+
+.sel{font-family:inherit;font-size:13px;font-weight:600;padding:9px 12px;border-radius:10px;border:1px solid var(--border-color);background:var(--btn-bg);color:var(--text-main);max-width:100%;cursor:pointer}
+.sel:hover{border-color:var(--accent-blue)}
+.stat-row.two{align-items:flex-start}
+.statsub{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-top:3px}
+/* Tooltip glosarium */
+.gl{border-bottom:1.5px dotted var(--text-muted);cursor:help}
+.seg2 button.gl{border-bottom:0}
+.gl:focus-visible{outline-offset:1px;border-radius:3px}
+#tip{position:fixed;z-index:100;max-width:320px;background:var(--text-main);color:var(--card-bg);padding:9px 12px;border-radius:10px;font-size:12.5px;line-height:1.55;font-weight:500;pointer-events:none;opacity:0;transition:opacity .12s;box-shadow:0 6px 20px rgba(0,0,0,.25);left:0;top:0}
+#tip.on{opacity:1}
+
+/* Ilustrasi populasi */
+.pops{display:flex;gap:12px;justify-content:center}
+.pop-col{flex:1 1 0;max-width:290px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.pop-big{width:min(100%,210px);height:auto}
+.pop-small{width:min(62%,128px);height:auto;animation:pop .35s ease-out}
+.pop-arrow{width:22px;height:34px;margin:6px 0;color:var(--ink3)}
+.pop-sub{font-size:13px;color:var(--text-muted)}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+
+footer{margin-top:26px;font-size:12.5px;color:var(--text-muted);line-height:1.7}
+
+@media (max-width:640px){
+  .topbar-in{padding:8px 14px 0}
+  .wrap{padding:0 12px 56px}
+  .step{padding:22px 16px;scroll-margin-top:112px}
+  .brand{font-size:13.5px}
+  .verdict-status{font-size:26px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}.stepnav{scroll-behavior:auto}}
+
+.qq-wrap{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.qq-item svg{display:block;max-width:100%;height:auto}
+@media (max-width:640px){.qq-wrap{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}.qq-item{flex:none}.qq-item svg{max-width:none}}
+.org-wrap{overflow-x:auto;padding:2px 0 6px}
+.org,.org ul{list-style:none;margin:0;padding:0;display:flex;justify-content:center}
+.org{min-width:760px}
+.org > li > ul > li{width:376px;flex:none}
+.org ul{padding-top:22px;position:relative}
+.org li{position:relative;display:flex;flex-direction:column;align-items:center;padding:22px 6px 0}
+.org > li{padding-top:0}
+.org li::before,.org li::after{content:"";position:absolute;top:0;width:50%;height:22px;border-top:2px solid var(--ink3)}
+.org li::before{right:50%}
+.org li::after{left:50%}
+.org > li::before,.org > li::after{display:none}
+.org li:only-child::before,.org li:only-child::after{display:none}
+.org li:first-child::before{border:0}
+.org li:last-child::after{border:0}
+.org li:first-child::after{border-left:2px solid var(--ink3);border-radius:10px 0 0 0}
+.org li:last-child::before{border-right:2px solid var(--ink3);border-radius:0 10px 0 0}
+.org ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:2px solid var(--ink3)}
+.org ul.on::before{border-left-color:var(--hl-line)}
+.org li.on:first-child::after{border-top-color:var(--hl-line);border-left-color:var(--hl-line)}
+.org li.on:last-child::before{border-top-color:var(--hl-line);border-right-color:var(--hl-line)}
+.tnode{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:11px 12px;width:198px;font-size:13.5px;line-height:1.5;text-align:center}
+.tnode small{display:block;color:var(--text-muted);font-size:12px;font-weight:400;margin-top:2px}
+.tnode.res{width:170px;background:var(--soft-bg);font-weight:600;display:flex;align-items:center;justify-content:center;min-height:62px}
+.tnode.on{background:var(--hl);border-color:transparent;color:var(--hl-tx);font-weight:700}
+.tnode.on small{color:inherit;opacity:.75}
+.tlab{display:inline-block;margin-bottom:6px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--fill2);color:var(--text-soft)}
+.tlab.on{background:var(--hl);color:var(--hl-tx)}
+#asm-grp{margin-top:26px}
+#pick-notes{margin-top:10px}
+table.dt td.left,table.dt th.left{text-align:left}
+.ph-map{margin-bottom:18px}
+.cf-item p{margin:6px 0 0;font-size:13.5px;line-height:1.7}
+details.inline > div p.mp{margin:0 0 10px}
+details.inline > div p.mp:last-child{margin-bottom:0}
+.cf-item + .cf-item{margin-top:12px}
+.cf-item .cf-t{font-weight:700}
+.cf-item .tag-here{display:inline-block;margin-left:8px;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--accent-blue);color:#fff;vertical-align:1px}
+table.dt td.left{text-align:left}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.chip{display:inline-flex;align-items:center;background:var(--fill1);border-radius:9px;font-size:12.5px;font-weight:600;overflow:hidden}
+.chip > span{padding:5px 8px}
+.chip button{border:none;background:transparent;cursor:pointer;padding:5px 9px;font-size:13px;color:var(--accent-blue);font-weight:700;font-family:inherit}
+.chip button:hover{background:var(--fill2)}
+.chip button:disabled{color:var(--ink3);cursor:default;background:transparent}
+
+
+/* ===== Revisi v2 ===== */
+:root{--hl:#f1e0a0;--hl-tx:#3b3100}
+:root[data-theme="dark"]{--hl:#5f5115;--hl-tx:#fff1b8}
+#tip{white-space:pre-line;max-width:340px}
+.qline{margin:-6px 0 12px;font-size:13px;line-height:1.5;color:var(--text-soft);font-weight:600}
+.qline::before{content:"Pertanyaan tahap ini: ";color:var(--accent-blue);font-weight:700}
+ol.flow{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px}
+ol.flow li{display:flex;gap:12px;align-items:flex-start;background:var(--soft-bg);border:1px solid var(--border-color);border-radius:12px;padding:10px 14px;font-size:13.5px;line-height:1.6}
+ol.flow li .fn{flex:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:11px;background:var(--accent-blue);color:#fff;font-size:12px;margin-top:1px}
+ul.rd{margin:6px 0 0;padding-left:20px;font-size:13px;color:var(--text-muted);line-height:1.65}
+ul.rd li{margin-bottom:4px}
+details.inline p.mp{margin:0 0 10px}
+details.inline p.mp:last-child{margin-bottom:0}
+.chip-status{white-space:normal}
+.btn-row.tight{gap:8px;margin:8px 0 4px}
+
+.stepnav .ph{flex:none;align-self:center;font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);padding:0 4px 0 10px;margin-left:4px;border-left:1px solid var(--border-color);white-space:nowrap}
+.stepnav .ph:first-child{border-left:0;margin-left:0}
+table.dt td.hlc{background:var(--hl);color:var(--hl-tx);font-weight:700}
+
+/* ===== Revisi v3 ===== */
+.dd{position:relative;display:inline-block}
+.dd-btn{display:inline-flex;align-items:center;gap:7px}
+.dd-chev{font-size:13px;line-height:1}
+.dd-btn[aria-expanded="true"]{border-color:var(--accent-blue);color:var(--accent-blue)}
+.dd-menu{position:absolute;z-index:30;top:calc(100% + 6px);left:0;min-width:300px;max-width:min(380px,calc(100vw - 48px));max-height:60vh;overflow-y:auto;background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.16);padding:6px}
+.dd-menu[hidden]{display:none}
+.dd-item{display:block;width:100%;text-align:left;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--text-main);background:transparent;border:none;border-radius:8px;padding:8px 10px;cursor:pointer}
+.dd-item small{display:block;font-size:11.5px;font-weight:500;color:var(--text-muted);margin-top:1px;white-space:normal}
+.dd-item:hover,.dd-item:focus-visible{background:var(--fill1);outline:none}
+.dd-item[aria-checked="true"]{color:var(--accent-blue);background:var(--fill1)}
+.cards2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.cards2 .box + .box{margin-top:0}
+.cards2 p{margin:6px 0 0;font-size:13.5px;color:var(--text-soft);line-height:1.6}
+.cards2 .qx{font-style:normal;color:var(--text-main);font-weight:400}
+.dd-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.ss-guide li{margin-bottom:4px}
+.tbl-switch{margin:0 0 10px}
+.org.post{min-width:0;width:max-content;margin:0 auto}
+.org.post > li > ul > li{width:290px;flex:none}
+.org.post .tnode{width:164px;font-size:12.5px;padding:9px 10px}
+.org.post .tnode.res{width:128px;min-height:56px;font-size:12.5px}
+.org.post .tnode.wide{width:200px}
+.org.post li{padding-left:5px;padding-right:5px}
+.org.post .tnode small{font-size:11.5px}
+.org.sph{min-width:0;width:max-content;margin:0 auto}
+.org.sph > li > ul > li{width:auto;flex:none}
+.org.sph .tnode{width:150px;font-size:12.5px;padding:9px 10px}
+.org.sph .tnode.res{width:128px;min-height:56px;font-size:12.5px}
+.org.sph li{padding-left:5px;padding-right:5px}
+.org.sph .tnode small{font-size:11.5px}
+
+/* ===== Revisi v4 ===== */
+.sg-name.rec{color:var(--accent-blue)}
+.seg2.seg-pm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;max-width:720px;gap:2px}
+.seg2.seg-pm button{padding:8px 6px;line-height:1.35;text-align:center;font-size:12.5px}
+.seg2 .seg-sub{display:block;font-size:11px;font-weight:500;color:var(--text-muted);margin-top:1px}
+.seg2 .seg-rec{display:block;font-size:10.5px;font-weight:700;color:var(--accent-blue);margin-top:3px}
+@media (max-width:640px){.seg2.seg-pm{grid-template-columns:repeat(2,minmax(0,1fr))}}
+table.cc-map td:last-child{text-align:right;white-space:nowrap}
+table.cc-map{font-size:13px}
+@media (max-width:640px){
+  table.cc-map thead{display:none}
+  table.cc-map,table.cc-map tbody,table.cc-map tr,table.cc-map th,table.cc-map td{display:block;width:100%;text-align:left}
+  table.cc-map tr{padding:10px 0;border-bottom:1px solid var(--grid-line)}
+  table.cc-map th,table.cc-map td{border:0;padding:2px 0;white-space:normal}
+  table.cc-map td:nth-child(2){font-weight:600}
+  table.cc-map td:last-child{text-align:left;padding-top:6px}
+}
+
+.dd-grp{padding:8px 10px 4px;font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted)}
+.dd-grp:not(:first-child){border-top:1px solid var(--border-color);margin-top:4px;padding-top:10px}
+#sph-help{margin-top:20px!important}
+
+/* ===== Revisi v6: tabel gaya perangkat lunak dan tabel pivot ===== */
+.sw-title{font-size:13.5px;font-weight:700;margin:0 0 6px}
+.sw-note{font-size:12px;color:var(--text-muted);margin:6px 0 0;line-height:1.55}
+table.dt.sw{border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color)}
+table.dt.sw thead th{border-bottom:1px solid var(--border-color)}
+table.dt.sw tbody tr:last-child td,table.dt.sw tbody tr:last-child th{border-bottom:0}
+table.dt.sw th[rowspan]{vertical-align:top}
+table.dt .subv{display:block;font-size:11.5px;color:var(--text-muted);font-weight:500}
+.raw-wrap{max-height:380px;overflow:auto;border:1px solid var(--border-color);border-radius:12px}
+table.dt.raw thead th{position:sticky;top:0;background:var(--card-bg);z-index:1;border-bottom:1px solid var(--border-color)}
+table.dt.raw tbody tr:last-child td,table.dt.raw tbody tr:last-child th{border-bottom:0}
+table.dt.raw tbody th{font-weight:600;white-space:nowrap}
+@media print{.raw-wrap{max-height:none;overflow:visible}}
+</style>
+</head>
+<body>
+
+<div class="topbar" id="topbar">
+  <div class="topbar-in">
+    <div class="brand">Uji perbedaan numeris pada pengukuran berulang</div>
+    <div class="top-actions">
+      <button type="button" class="btn primary sm" data-act="resample">Tarik ulang sampel</button>
+      <button type="button" class="theme-btn" id="themebtn" data-act="theme" role="switch" aria-checked="false" aria-label="Mode gelap" title="Ganti mode terang atau gelap">
+        <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>
+        <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="stepnav-wrap" id="stepnav-wrap">
+    <button type="button" class="nav-arrow left" id="nav-left" aria-label="Geser ke tahap sebelumnya">&lsaquo;</button>
+    <nav class="stepnav" id="stepnav" aria-label="Tahap belajar"></nav>
+    <button type="button" class="nav-arrow right" id="nav-right" aria-label="Geser ke tahap berikutnya">&rsaquo;</button>
+  </div>
+  <div class="progress"><i id="prog"></i></div>
+</div>
+
+<main class="wrap">
+  <header>
+    <h1>Uji perbedaan numeris pada pengukuran berulang</h1>
+    <p class="lead">Halaman ini berisi panduan untuk melakukan uji <span class="gl" tabindex="0" data-g="rm">anova pengukuran berulang</span>, termasuk pemeriksaan <span class="gl" tabindex="0" data-g="sferisitas">sferisitas</span> dan uji lanjutannya.</p>
+    <p class="lead-hint">Catatan: Istilah dengan garis bawah putus-putus punya penjelasan singkat. Arahkan kursor atau ketuk istilahnya.</p>
+  </header>
+
+  <section class="step" id="st-when" data-nav="Kapan dipakai" data-phase="Konsep">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Kapan memakai uji ini</h2><span class="chip-status"></span></div>
+    <p class="qline">Apakah anova pengukuran berulang cocok untuk pertanyaan penelitian saya?</p>
+    <p class="step-intro">Tahap ini membantu memutuskan apakah anova pengukuran berulang tepat untuk pertanyaan penelitianmu.</p>
+    <div class="sub">
+      <div class="sub-title">Cakupan halaman ini</div>
+      <div class="box">Anova pengukuran berulang dipakai ketika sebuah variabel numeris diukur berkali-kali pada <span class="gl" tabindex="0" data-g="subjek">subjek</span> (unit) yang sama. Hasil pengukuran berulang pada sebuah subjek akan saling berkaitan. Oleh karena itu, uji ini memisahkan perbedaan antarsubjek dan efek <span class="gl" tabindex="0" data-g="kondisi">kondisi</span> yang sedang diukur.</div>
+    </div>
+    <div class="sub">
+      <div class="sub-title">Tiga pertanyaan penuntun</div>
+      <div class="cards3">
+        <div class="box"><b><span class="qn">1</span>Apakah subjek yang sama diukur pada berbagai kondisi?</b><p>Setiap subjek harus memiliki satu nilai numeris pada setiap kondisi. Antarsubjek harus independen.</p></div>
+        <div class="box"><b><span class="qn">2</span>Apa data yang diukur?</b><p>Dua variabel:<br>• satu variabel kategoris (kondisi pengukuran dengan ≥ 3 kelompok);<br>• satu variabel numeris.</p></div>
+        <div class="box"><b><span class="qn">3</span>Apa tujuannya?</b><p>Memeriksa apakah nilai berubah akibat kondisi tertentu dan kondisi mana saja yang berbeda secara signifikan.</p></div>
+      </div>
+      <div class="box" style="margin-top:10px">Bila ketiga pertanyaan dijawab ya, kamu berada di halaman yang tepat.</div>
+    </div>
+    <div class="sub">
+      <details class="inline"><summary>Fokus belajar</summary><div>Statistik uji dan nilai p dihitung oleh perangkat lunak, sehingga hitungan manual tidak perlu kamu kuasai. Kompetensi yang dilatih di sini adalah memahami logika statistika, memilih uji statistika yang tepat, menafsirkan angka yang dihasilkan, serta menyusun dan menjustifikasi kesimpulan secara tepat.</div></details>
+    </div>
+  </section>
+
+  <section class="step" id="st-scn" data-nav="Skenario" data-phase="Data">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Skenario dan pengaturan</h2><span class="chip-status" id="chip-scn"></span></div>
+    <p class="qline">Data apa yang akan dianalisis?</p>
+    <p class="step-intro">Pilih konteks data yang akan dianalisis. Ada tidaknya efek kondisi pada populasi diacak dan disembunyikan sampai kamu membuka tahap ke-13: Keseluruhan data pada populasi.</p>
+    <div class="sub">
+      <div class="sub-title">Cara memilih skenario</div>
+      <div class="btn-row">
+        <div class="seg2" role="radiogroup" aria-label="Cara memilih skenario">
+          <button type="button" role="radio" aria-checked="true" data-act="mode" data-v="random">Acak</button>
+          <button type="button" role="radio" aria-checked="false" data-act="mode" data-v="pick">Pilih sendiri</button>
+        </div>
+        <button type="button" class="btn" id="row-random" data-act="newpop">Skenario acak baru</button>
+        <span class="btn-row" id="row-pick" hidden>
+          <span class="dd" id="dd-scn"></span>
+          <button type="button" class="btn" data-act="newpop">Populasi baru dengan skenario ini</button>
+        </span>
+      </div>
+    </div>
+    <div class="sub" id="scn-sum"></div>
+    <div class="sub">
+      <div class="field-row"><label for="nrange" class="lbl">Jumlah subjek dalam sampel</label><span class="nval" id="nval">n = 12 subjek</span></div>
+      <input type="range" id="nrange" min="5" max="40" step="1" value="12">
+      <p class="hint">Jumlah subjek menentukan kekuatan uji. Subjek yang sedikit membuat uji normalitas dan sferisitas lemah. Geser untuk menarik sampel baru.</p>
+    </div>
+  </section>
+
+  <section class="step" id="st-pop" data-nav="Sampel" data-phase="Data">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Populasi dan sampel</h2><span class="chip-status" id="chip-pop"></span></div>
+    <p class="qline">Apa yang kita amati (sampel) dan apa yang ingin disimpulkan (populasi)?</p>
+    <p class="step-intro" id="pop-intro"></p>
+    <div id="pop-body"></div>
+  </section>
+
+  <section class="step" id="st-hyp" data-nav="Hipotesis" data-phase="Data">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Rumusan hipotesis</h2><span class="chip-status"></span></div>
+    <p class="qline">Apa yang sebenarnya diuji?</p>
+    <p class="step-intro">H<sub>0</sub> adalah anggapan awal yang diuji. H<sub>1</sub> adalah kemungkinan yang berlaku bila H<sub>0</sub> ditolak. Anova pengukuran berulang menguji satu pasang hipotesis, yang keduanya berlaku untuk populasi, sedangkan data yang kita lihat berasal dari sampel.</p>
+    <div id="hyp-body"></div>
+  </section>
+
+  <section class="step" id="st-desc" data-nav="Deskriptif" data-phase="Data">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Statistika deskriptif</h2><span class="chip-status" id="chip-desc"></span></div>
+    <p class="qline">Seperti apa data pada tiap kondisi?</p>
+    <p class="step-intro" id="desc-intro"></p>
+    <div id="desc-body"></div>
+  </section>
+
+  <section class="step" id="st-asm" data-nav="Asumsi" data-phase="Analisis">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Pemeriksaan asumsi</h2><span class="chip-status" id="chip-asm"></span></div>
+    <p class="qline">Apakah syarat uji parametrik terpenuhi?</p>
+    <p class="step-intro">Tahap ini memeriksa tiga syarat uji parametrik pada anova pengukuran berulang, yaitu independensi antarsubjek, normalitas residu, dan sferisitas.</p>
+    <div id="asm-body"></div>
+  </section>
+
+  <section class="step" id="st-pick" data-nav="Pilih uji" data-phase="Analisis">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Pilih uji</h2><span class="chip-status" id="chip-pick"></span></div>
+    <p class="qline">Uji mana yang dipakai, dan mengapa?</p>
+    <p class="step-intro">Pilih uji statistika sesuai dengan pemenuhan asumsi. Alasan pemilihan lebih penting daripada hitungannya.</p>
+    <div id="pick-body"></div>
+  </section>
+
+  <section class="step" id="st-test" data-nav="Hasil uji" data-phase="Analisis">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Hasil uji</h2><span class="chip-status" id="chip-test"></span></div>
+    <p class="qline">Apakah rerata berbeda antar kondisi?</p>
+    <p class="step-intro">Tahap ini menguji efek kondisi. <span class="gl" tabindex="0" data-g="pval">Nilai p</span> dibandingkan dengan <span class="gl" tabindex="0" data-g="alpha">&alpha;</span> = 0,05, lalu hasilnya dibaca pada sampel dan pada populasi.</p>
+    <div id="test-body"></div>
+  </section>
+
+  <section class="step" id="st-eff" data-nav="Ukuran efek" data-phase="Analisis">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Ukuran efek</h2><span class="chip-status" id="chip-eff"></span></div>
+    <p class="qline">Seberapa besar efeknya?</p>
+    <p class="step-intro">Nilai p menunjukkan ada tidaknya efek, sedangkan <span class="gl" tabindex="0" data-g="es">ukuran efek</span> menunjukkan seberapa besar efek itu.</p>
+    <div id="eff-body"></div>
+  </section>
+
+  <section class="step" id="st-post" data-nav="Uji lanjutan" data-phase="Analisis">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title" id="post-title">Uji lanjutan</h2><span class="chip-status" id="chip-post"></span></div>
+    <p class="qline">Kondisi mana yang berbeda?</p>
+    <p class="step-intro">Uji omnibus menyatakan bahwa ada perbedaan di suatu tempat tanpa menunjuk letaknya. Ikuti pohon keputusan di bawah untuk memutuskan apakah pasangan kondisi perlu dibandingkan.</p>
+    <div id="post-body"></div>
+  </section>
+
+  <section class="step" id="st-concl" data-nav="Kesimpulan" data-phase="Kesimpulan">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Kesimpulan</h2><span class="chip-status"></span></div>
+    <p class="qline">Bagaimana kesimpulan ini ditulis?</p>
+    <p class="step-intro">Hasil dirangkum dalam dua versi: kalimat siap pakai untuk laporan ilmiah dan penjelasan tanpa angka statistika untuk pembaca awam.</p>
+    <div id="concl-body"></div>
+  </section>
+
+  <section class="step" id="st-multi" data-nav="Lintas sampel" data-phase="Refleksi">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Nilai p lintas penarikan sampel</h2><span class="chip-status" id="chip-multi"></span></div>
+    <p class="qline">Seberapa stabil keputusan ini bila sampel diganti?</p>
+    <p class="step-intro">Sampel yang berbeda dari populasi yang sama dapat memberi keputusan yang berbeda. Tiap kali sampel ditarik ulang, nilai p ikut berubah dan keputusannya kadang berbalik.</p>
+    <div id="multi-body"></div>
+  </section>
+
+  <section class="step" id="st-truth" data-nav="Data pada populasi" data-phase="Refleksi">
+    <div class="step-head"><span class="step-num"></span><h2 class="step-title">Keseluruhan data pada populasi</h2><span class="chip-status" id="chip-truth"></span></div>
+    <p class="qline">Apakah keputusan saya sesuai dengan keadaan populasi?</p>
+    <p class="step-intro">Ini keadaan populasi yang sebenarnya. Buka untuk memeriksa apakah keputusan dan estimasi dari sampel sudah tepat atau keliru.</p>
+    <div id="truth-body"></div>
+  </section>
+
+  <footer><details class="inline"><summary>Catatan metode</summary><div>
+<p class="mp">Seluruh perhitungan berjalan di peramban. Tiap skenario membangkitkan populasi 200 subjek, dan tiap subjek memiliki satu nilai pada setiap kondisi. Nilai dibangkitkan sebagai rerata kondisi, ditambah efek subjek (sebaran normal) dan galat. Efek kondisi pada populasi ada atau tidak ada, dan kekuatannya diacak. Sebagian populasi memiliki varians galat yang berbeda antarkondisi (sferisitas dilanggar), dan sebagian memiliki sebaran miring ke kanan. Sampel ditarik acak sederhana sejumlah n subjek dari populasi.</p>
+<p class="mp">Model: jumlah kuadrat total dipecah menjadi JK subjek, JK kondisi, dan JK galat, dengan F = KT kondisi / KT galat dan derajat bebas (k &minus; 1) dan (n &minus; 1)(k &minus; 1). Uji Mauchly dihitung dari kontras Helmert ortonormal dengan pendekatan khi-kuadrat dua suku. Sferisitas diputuskan dengan aturan yang ditetapkan sebelum melihat data: uji Mauchly tidak nyata dan &epsilon; Greenhouse-Geisser &ge; 0,75 memakai anova klasik; uji Mauchly tidak nyata tetapi &epsilon; Greenhouse-Geisser &lt; 0,75 memakai koreksi Greenhouse-Geisser (uji Mauchly lemah pada subjek sedikit); uji Mauchly nyata dan &epsilon; Greenhouse-Geisser &gt; 0,75 memakai koreksi Huynh-Feldt; uji Mauchly nyata dan &epsilon; Greenhouse-Geisser &le; 0,75 memakai koreksi Greenhouse-Geisser. Batas 0,75 mengikuti anjuran Girden (1992). Bila &epsilon; berada dekat batas bawah 1/(k &minus; 1), pelanggaran tergolong sangat berat, dan MANOVA berulang atau model campuran linear patut dipertimbangkan. Koreksi mengalikan kedua derajat bebas dengan &epsilon;. Uji Friedman memakai peringkat di dalam subjek dengan koreksi seri, dan W Kendall = Q / (n(k &minus; 1)). Uji lanjutan memakai uji t berpasangan (anova) atau Wilcoxon (Friedman) dengan koreksi Holm atau Bonferroni. CI 95% selisih pada uji t berpasangan disesuaikan dengan koreksi tersebut: tingkat keyakinannya 1 &minus; 0,05 &times; p / p terkoreksi, sehingga CI mencakup 0 apabila p terkoreksi &ge; 0,05.</p>
+<p class="mp">Ukuran efek omnibus memakai partial eta-squared (&eta;&sup2;<sub>p</sub>), partial omega-squared (&omega;&sup2;<sub>p</sub>), dan W Kendall. Batas klasifikasi 0,01; 0,06; dan 0,14 berasal dari konvensi Cohen untuk &eta;&sup2;, sedangkan W Kendall memakai 0,1; 0,3; dan 0,5. Semua batas dibaca sebagai panduan kasar.</p>
+</div></details></footer>
+</main>
+
+<div id="tip" role="tooltip"></div>
+
+<script>
+var Z975 = 1.959963984540054;
+/* ---------- Fungsi numeris dasar ---------- */
+function lgamma(x) {
+    if (x >= 15) {
+        var x2 = x * x;
+        return (x - 0.5) * Math.log(x) - x + 0.9189385332046727 + 1 / (12 * x) - 1 / (360 * x * x2) + 1 / (1260 * x2 * x2 * x);
+    }
+    var c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+    var y = x, tmp = x + 5.5;
+    tmp -= (x + 0.5) * Math.log(tmp);
+    var ser = 1.000000000190015;
+    for (var j = 0; j < 6; j++) { y += 1; ser += c[j] / y; }
+    return -tmp + Math.log(2.5066282746310005 * ser / x);
+}
+function erf(x) {
+    var ax = Math.abs(x);
+    if (ax > 6) return x < 0 ? -1 : 1;
+    var term = ax, sum = ax;
+    for (var n = 1; n < 300; n++) {
+        term *= 2 * ax * ax / (2 * n + 1);
+        sum += term;
+        if (term < 1e-17 * sum) break;
+    }
+    var r = 2 / Math.sqrt(Math.PI) * Math.exp(-ax * ax) * sum;
+    return x < 0 ? -r : r;
+}
+function normTail(z) { return 0.5 * (1 - erf(z / Math.SQRT2)); } /* P(Z > z) */
+function pnormStd(z) { return z < 0 ? normTail(-z) : 1 - normTail(z); }
+
+function qnorm(p) {
+    var a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
+    var b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02, 6.680131188771972e+01, -1.328068155288572e+01];
+    var c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00, -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
+    var d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00, 3.754408661907416e+00];
+    var plow = 0.02425, phigh = 1 - plow, q, r, x;
+    if (p <= 0) return -Infinity;
+    if (p >= 1) return Infinity;
+    if (p < plow) {
+        q = Math.sqrt(-2 * Math.log(p));
+        x = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+    } else if (p <= phigh) {
+        q = p - 0.5; r = q * q;
+        x = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+    } else {
+        q = Math.sqrt(-2 * Math.log(1 - p));
+        x = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+    }
+    var cdf = x < 0 ? normTail(-x) : 1 - normTail(x);
+    var e = cdf - p;
+    var u = e * Math.sqrt(2 * Math.PI) * Math.exp(x * x / 2);
+    return x - u / (1 + x * u / 2);
+}
+
+function betacf(a, b, x) {
+    var MAXIT = 3000, EPS = 3e-16, FPMIN = 1e-300;
+    var qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < FPMIN) d = FPMIN;
+    d = 1 / d;
+    var h = d;
+    for (var m = 1; m <= MAXIT; m++) {
+        var m2 = 2 * m;
+        var aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+        d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+        c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+        d = 1 / d; h *= d * c;
+        aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+        d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+        c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+        d = 1 / d;
+        var del = d * c;
+        h *= del;
+        if (Math.abs(del - 1) < EPS) break;
+    }
+    return h;
+}
+function betai(a, b, x) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    var bt = Math.exp(lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+    if (x < (a + 1) / (a + b + 2)) return bt * betacf(a, b, x) / a;
+    return 1 - bt * betacf(b, a, 1 - x) / b;
+}
+function tTailRaw(t, df) { var x = df / (df + t * t); return 0.5 * betai(df / 2, 0.5, x); }
+function studentRightTail(t, df) { return t >= 0 ? tTailRaw(t, df) : 1 - tTailRaw(-t, df); }
+function fRightTail(F, d1, d2) { if (F <= 0) return 1; return betai(d2 / 2, d1 / 2, d2 / (d2 + d1 * F)); }
+
+var tCache = {};
+function critT(level, df) {
+    var key = level + '|' + df;
+    if (tCache[key] !== undefined) return tCache[key];
+    var a = (1 - level) / 2, lo = 0, hi = 5000;
+    for (var i = 0; i < 90; i++) {
+        var m = (lo + hi) / 2;
+        if (studentRightTail(m, df) > a) lo = m; else hi = m;
+    }
+    tCache[key] = (lo + hi) / 2;
+    return tCache[key];
+}
+var fCache = {};
+function critF(d1, d2) {
+    var key = d1 + '|' + d2;
+    if (fCache[key] !== undefined) return fCache[key];
+    var lo = 0, hi = 5000;
+    for (var i = 0; i < 100; i++) { var m = (lo + hi) / 2; if (fRightTail(m, d1, d2) > 0.05) lo = m; else hi = m; }
+    fCache[key] = (lo + hi) / 2;
+    return fCache[key];
+}
+function pdfF(x, d1, d2) {
+    if (x <= 0) return d1 < 2 ? Infinity : (d1 === 2 ? 1 : 0);
+    var lc = lgamma((d1 + d2) / 2) - lgamma(d1 / 2) - lgamma(d2 / 2) + (d1 / 2) * Math.log(d1 / d2);
+    return Math.exp(lc + (d1 / 2 - 1) * Math.log(x) - (d1 + d2) / 2 * Math.log(1 + d1 * x / d2));
+}
+
+/* gamma tak lengkap teregularisasi (untuk chi-square) */
+function gammaSeries(a, x) {
+    var ap = a, sum = 1 / a, del = sum;
+    for (var n = 0; n < 2000; n++) {
+        ap += 1; del *= x / ap; sum += del;
+        if (Math.abs(del) < Math.abs(sum) * 1e-16) break;
+    }
+    return sum * Math.exp(-x + a * Math.log(x) - lgamma(a));
+}
+function gammaCF(a, x) {
+    var FPMIN = 1e-300, b = x + 1 - a, c = 1 / FPMIN, d = 1 / b, h = d, i, an, del;
+    for (i = 1; i < 2000; i++) {
+        an = -i * (i - a); b += 2;
+        d = an * d + b; if (Math.abs(d) < FPMIN) d = FPMIN;
+        c = b + an / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+        d = 1 / d; del = d * c; h *= del;
+        if (Math.abs(del - 1) < 1e-16) break;
+    }
+    return Math.exp(-x + a * Math.log(x) - lgamma(a)) * h;
+}
+function gammaQ(a, x) { if (x <= 0) return 1; return x < a + 1 ? 1 - gammaSeries(a, x) : gammaCF(a, x); }
+function chisqRightTail(x, df) { return gammaQ(df / 2, x / 2); }
+function critChi(df) {
+    var lo = 0, hi = 2000;
+    for (var i = 0; i < 100; i++) { var m = (lo + hi) / 2; if (chisqRightTail(m, df) > 0.05) lo = m; else hi = m; }
+    return (lo + hi) / 2;
+}
+function pdfChi(x, df) {
+    if (x <= 0) return df < 2 ? Infinity : (df === 2 ? 0.5 : 0);
+    return Math.exp((df / 2 - 1) * Math.log(x) - x / 2 - (df / 2) * Math.LN2 - lgamma(df / 2));
+}
+
+function mean(a) { var s = 0; for (var i = 0; i < a.length; i++) s += a[i]; return s / a.length; }
+function sdev(a) {
+    var m = mean(a), s = 0;
+    for (var i = 0; i < a.length; i++) s += (a[i] - m) * (a[i] - m);
+    return Math.sqrt(s / (a.length - 1));
+}
+function sortedCopy(a) { return a.slice().sort(function (x, y) { return x - y; }); }
+function medianSorted(s) { var n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; }
+function median(a) { return medianSorted(sortedCopy(a)); }
+function summary(name, a) {
+    var s = sortedCopy(a);
+    return { name: name, n: a.length, mean: mean(a), median: medianSorted(s), sd: a.length > 1 ? sdev(a) : NaN, min: s[0], max: s[s.length - 1] };
+}
+function sign(x) { return x > 0 ? 1 : (x < 0 ? -1 : 0); }
+
+function rankAvg(vals) {
+    var n = vals.length, idx = [], i;
+    for (i = 0; i < n; i++) idx.push(i);
+    idx.sort(function (a, b) { return vals[a] - vals[b]; });
+    var r = new Array(n), ties = [];
+    i = 0;
+    while (i < n) {
+        var j = i;
+        while (j + 1 < n && vals[idx[j + 1]] === vals[idx[i]]) j++;
+        var avg = (i + j) / 2 + 1;
+        for (var k = i; k <= j; k++) r[idx[k]] = avg;
+        if (j > i) ties.push(j - i + 1);
+        i = j + 1;
+    }
+    return { r: r, ties: ties };
+}
+function tieSum(ties) { var s = 0; for (var i = 0; i < ties.length; i++) s += ties[i] * ties[i] * ties[i] - ties[i]; return s; }
+/* ---------- Shapiro-Wilk (algoritma Royston, AS R94) ---------- */
+function swPoly(cc, nord, x) {
+    var ret = cc[0];
+    if (nord > 1) {
+        var p = x * cc[nord - 1];
+        for (var j = nord - 2; j > 0; j--) p = (p + cc[j]) * x;
+        ret += p;
+    }
+    return ret;
+}
+function shapiroWilk(xin) {
+    var n = xin.length;
+    if (n < 3) return { error: 'Shapiro-Wilk memerlukan minimal 3 data.' };
+    if (n > 5000) return { error: 'Shapiro-Wilk dibatasi sampai 5000 data.' };
+    var x = sortedCopy(xin);
+    var range = x[n - 1] - x[0];
+    if (range < 1e-19) return { error: 'Semua nilai sama, uji normalitas tidak dapat dihitung.' };
+    var nn2 = Math.floor(n / 2), a = new Array(nn2 + 1), i, j;
+    var g = [-2.273, 0.459];
+    var c1 = [0, 0.221157, -0.147981, -2.07119, 4.434685, -2.706056];
+    var c2 = [0, 0.042981, -0.293762, -1.752461, 5.682633, -3.582633];
+    var c3 = [0.544, -0.39978, 0.025054, -6.714e-4];
+    var c4 = [1.3822, -0.77857, 0.062767, -0.0020322];
+    var c5 = [-1.5861, -0.31082, -0.083751, 0.0038915];
+    var c6 = [-0.4803, -0.082676, 0.0030302];
+    var an = n;
+    if (n === 3) {
+        a[1] = Math.SQRT1_2;
+    } else {
+        var an25 = an + 0.25, summ2 = 0;
+        for (i = 1; i <= nn2; i++) { a[i] = qnorm((i - 0.375) / an25); summ2 += a[i] * a[i]; }
+        summ2 *= 2;
+        var ssumm2 = Math.sqrt(summ2), rsn = 1 / Math.sqrt(an);
+        var a1 = swPoly(c1, 6, rsn) - a[1] / ssumm2;
+        var i1, fac;
+        if (n > 5) {
+            i1 = 3;
+            var a2 = -a[2] / ssumm2 + swPoly(c2, 6, rsn);
+            fac = Math.sqrt((summ2 - 2 * a[1] * a[1] - 2 * a[2] * a[2]) / (1 - 2 * a1 * a1 - 2 * a2 * a2));
+            a[2] = a2;
+        } else {
+            i1 = 2;
+            fac = Math.sqrt((summ2 - 2 * a[1] * a[1]) / (1 - 2 * a1 * a1));
+        }
+        a[1] = a1;
+        for (i = i1; i <= nn2; i++) a[i] /= -fac;
+    }
+    var coef = new Array(n), sx = 0;
+    for (i = 0, j = n - 1; i < n; i++, j--) {
+        coef[i] = (i === j) ? 0 : sign(i - j) * a[1 + Math.min(i, j)];
+        sx += x[i] / range;
+    }
+    sx /= n;
+    var sa = 0;
+    for (i = 0; i < n; i++) sa += coef[i];
+    sa /= n;
+    var ssa = 0, ssx = 0, sax = 0;
+    for (i = 0; i < n; i++) {
+        var asa = coef[i] - sa, xsx = x[i] / range - sx;
+        ssa += asa * asa; ssx += xsx * xsx; sax += asa * xsx;
+    }
+    var ssassx = Math.sqrt(ssa * ssx);
+    var w1 = (ssassx - sax) * (ssassx + sax) / (ssa * ssx);
+    var W = 1 - w1, pw;
+    if (n === 3) {
+        var pi6 = 1.90985931710274, stqr = 1.04719755119660;
+        pw = pi6 * (Math.asin(Math.sqrt(W)) - stqr);
+        if (pw < 0) pw = 0;
+        return { W: W, p: pw, n: n };
+    }
+    var y = Math.log(w1), xx = Math.log(an), m, s;
+    if (n <= 11) {
+        var gamma = swPoly(g, 2, an);
+        if (y >= gamma) return { W: W, p: 1e-99, n: n };
+        y = -Math.log(gamma - y);
+        m = swPoly(c3, 4, an);
+        s = Math.exp(swPoly(c4, 4, an));
+    } else {
+        m = swPoly(c5, 4, xx);
+        s = Math.exp(swPoly(c6, 3, xx));
+    }
+    pw = normTail((y - m) / s);
+    return { W: W, p: pw, n: n };
+}
+function adjustP(ps, method) {
+    var m = ps.length, idx = [], i, adj = new Array(m), run = 0;
+    for (i = 0; i < m; i++) idx.push(i);
+    idx.sort(function (a, b) { return ps[a] - ps[b]; });
+    if (method === 'bonferroni') { for (i = 0; i < m; i++) adj[i] = Math.min(1, ps[i] * m); return adj; }
+    for (i = 0; i < m; i++) {
+        run = Math.max(run, Math.min(1, (m - i) * ps[idx[i]]));
+        adj[idx[i]] = run;
+    }
+    return adj;
+}
+
+/* ---------- Uji lanjutan ---------- */
+function categoryD(d) { var a = Math.abs(d); return a < 0.2 ? 'sangat kecil' : a < 0.5 ? 'kecil' : a < 0.8 ? 'sedang' : 'besar'; }
+function categoryRB(r) { var a = Math.abs(r); return a < 0.147 ? 'sangat kecil' : a < 0.33 ? 'kecil' : a < 0.474 ? 'sedang' : 'besar'; }
+function categoryEta(e) { var a = Math.max(0, e); return a < 0.01 ? 'sangat kecil' : a < 0.06 ? 'kecil' : a < 0.14 ? 'sedang' : 'besar'; }
+function quantile7(s, p) { var n = s.length, h = (n - 1) * p, lo = Math.floor(h), hi = Math.ceil(h); return s[lo] + (h - lo) * (s[hi] - s[lo]); }
+function boxStats(vals) {
+    var s = sortedCopy(vals), q1 = quantile7(s, 0.25), med = quantile7(s, 0.5), q3 = quantile7(s, 0.75), iqr = q3 - q1;
+    var lf = q1 - 1.5 * iqr, uf = q3 + 1.5 * iqr, wl = s[s.length - 1], wu = s[0], out = [], i;
+    for (i = 0; i < s.length; i++) { if (s[i] >= lf) { wl = s[i]; break; } }
+    for (i = s.length - 1; i >= 0; i--) { if (s[i] <= uf) { wu = s[i]; break; } }
+    for (i = 0; i < s.length; i++) if (s[i] < lf || s[i] > uf) out.push(s[i]);
+    return { q1: q1, med: med, q3: q3, wl: wl, wu: wu, out: out, mean: mean(vals), min: s[0], max: s[s.length - 1] };
+}
+function niceStep(raw) {
+    if (!(raw > 0)) return 1;
+    var p = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10)), f = raw / p;
+    var m = f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10;
+    return m * p;
+}
+function qqPoints(a) {
+    var n = a.length, s = sortedCopy(a), m = mean(a), sd = sdev(a), off = n <= 10 ? 3 / 8 : 0.5, pts = [];
+    for (var i = 0; i < n; i++) pts.push([qnorm((i + 1 - off) / (n + 1 - 2 * off)), sd > 0 ? (s[i] - m) / sd : 0]);
+    return pts;
+}
+
+
+/* ===== CORE RM START: inti anova pengukuran berulang (tanpa DOM, dapat diuji di Node) ===== */
+var MAX_ROWS = 250, MIN_SUBJ = 5, MIN_K = 3, MAX_K = 6;
+var NUM_RE = /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/;
+function splitLines(t) {
+    var lines = String(t === undefined || t === null ? '' : t).split(/\r\n|\r|\n/);
+    while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+    return lines;
+}
+
+/* ---------- Pembacaan data format panjang: subjek, kondisi, nilai ---------- */
+function parseInputRM(c1, c2, c3, maxRows) {
+    var L1 = splitLines(c1), L2 = splitLines(c2), L3 = splitLines(c3);
+    var res = { empty: false, rows: 0, skipped: 0, errors: [], warnings: [], data: null };
+    var rows = Math.max(L1.length, L2.length, L3.length), i;
+    if (rows === 0) { res.empty = true; return res; }
+    res.rows = rows;
+    if (rows > maxRows) { res.errors.push('Data berisi ' + rows + ' baris, melebihi batas ' + maxRows + ' baris.'); return res; }
+    var subj = [], cond = [], val = [], bad = 0;
+    for (i = 0; i < rows; i++) {
+        var s = (L1[i] || '').trim(), c = (L2[i] || '').trim(), v = (L3[i] || '').trim();
+        if (s === '' || c === '' || v === '') { res.skipped++; continue; }
+        if (/^[+-]?\d+,\d+$/.test(v)) v = v.replace(',', '.');
+        if (!NUM_RE.test(v)) { if (bad < 3) res.errors.push('Baris ' + (i + 1) + ': nilai "' + v + '" pada kolom 3 bukan angka.'); bad++; continue; }
+        subj.push(s); cond.push(c); val.push(parseFloat(v));
+    }
+    if (bad > 3) res.errors.push('Ada ' + (bad - 3) + ' baris lain dengan nilai bukan angka.');
+    if (res.errors.length) return res;
+    if (!subj.length) { res.errors.push('Tidak ada baris yang lengkap pada ketiga kolom.'); return res; }
+    var ls = [], lc = [], si = {}, ci = {};
+    for (i = 0; i < subj.length; i++) {
+        if (!(subj[i] in si)) { si[subj[i]] = ls.length; ls.push(subj[i]); }
+        if (!(cond[i] in ci)) { ci[cond[i]] = lc.length; lc.push(cond[i]); }
+    }
+    var k = lc.length;
+    if (k < MIN_K) { res.errors.push(k === 1 ? 'Terbaca satu kondisi pada kolom 2. Anova pengukuran berulang memerlukan minimal 3 kondisi.' : 'Terbaca ' + k + ' kondisi. Untuk 2 kondisi gunakan uji t berpasangan. Anova pengukuran berulang memerlukan minimal 3 kondisi.'); return res; }
+    if (k > MAX_K) { res.errors.push('Terbaca ' + k + ' kondisi, melebihi batas ' + MAX_K + ' kondisi. Periksa apakah kolom 2 berisi nama kondisi, bukan nomor subjek.'); return res; }
+    var M = [], seen = {}, j;
+    for (i = 0; i < ls.length; i++) { M.push(new Array(k)); }
+    for (i = 0; i < subj.length; i++) {
+        var a = si[subj[i]], b = ci[cond[i]], key = a + '|' + b;
+        if (seen[key]) { res.errors.push('Subjek "' + subj[i] + '" muncul lebih dari satu kali pada kondisi "' + cond[i] + '". Setiap subjek harus memiliki satu nilai per kondisi.'); return res; }
+        seen[key] = true; M[a][b] = val[i];
+    }
+    var keep = [], drop = [];
+    for (i = 0; i < ls.length; i++) {
+        var full = true; for (j = 0; j < k; j++) if (M[i][j] === undefined) full = false;
+        if (full) keep.push(i); else drop.push(ls[i]);
+    }
+    if (drop.length) res.warnings.push(drop.length + ' subjek dilewati karena tidak memiliki nilai pada semua kondisi: ' + drop.slice(0, 5).join(', ') + (drop.length > 5 ? ', dan lainnya' : '') + '.');
+    if (keep.length < MIN_SUBJ) { res.errors.push('Subjek dengan data lengkap berjumlah ' + keep.length + '. Diperlukan minimal ' + MIN_SUBJ + ' subjek.'); return res; }
+    res.data = { subj: keep.map(function (q) { return ls[q]; }), conds: lc, M: keep.map(function (q) { return M[q]; }) };
+    return res;
+}
+
+/* ---------- Aljabar kecil ---------- */
+function detMat(A) {
+    var n = A.length, M = A.map(function (r) { return r.slice(); }), d = 1, i, j, k;
+    for (i = 0; i < n; i++) {
+        var p = i;
+        for (j = i + 1; j < n; j++) if (Math.abs(M[j][i]) > Math.abs(M[p][i])) p = j;
+        if (Math.abs(M[p][i]) < 1e-300) return 0;
+        if (p !== i) { var t = M[p]; M[p] = M[i]; M[i] = t; d = -d; }
+        d *= M[i][i];
+        for (j = i + 1; j < n; j++) { var f = M[j][i] / M[i][i]; for (k = i; k < n; k++) M[j][k] -= f * M[i][k]; }
+    }
+    return d;
+}
+function helmert(k) {
+    var C = [], r, j;
+    for (r = 1; r < k; r++) {
+        var row = new Array(k), nrm = Math.sqrt(r * (r + 1));
+        for (j = 0; j < k; j++) row[j] = j < r ? 1 / nrm : (j === r ? -r / nrm : 0);
+        C.push(row);
+    }
+    return C;
+}
+
+/* ---------- Sferisitas: Mauchly, Greenhouse-Geisser, Huynh-Feldt ---------- */
+function sphericity(M) {
+    var n = M.length, k = M[0].length, p = k - 1, C = helmert(k), D = [], i, j, q, r;
+    if (n - 1 <= p) return { error: 'Jumlah subjek terlalu sedikit untuk memeriksa sferisitas.' };
+    for (i = 0; i < n; i++) { var row = []; for (r = 0; r < p; r++) { var s = 0; for (j = 0; j < k; j++) s += M[i][j] * C[r][j]; row.push(s); } D.push(row); }
+    var mu = []; for (r = 0; r < p; r++) { var t = 0; for (i = 0; i < n; i++) t += D[i][r]; mu.push(t / n); }
+    var S = []; for (q = 0; q < p; q++) { S.push([]); for (r = 0; r < p; r++) { var c = 0; for (i = 0; i < n; i++) c += (D[i][q] - mu[q]) * (D[i][r] - mu[r]); S[q].push(c / (n - 1)); } }
+    var tr = 0, tr2 = 0; for (q = 0; q < p; q++) { tr += S[q][q]; for (r = 0; r < p; r++) tr2 += S[q][r] * S[q][r]; }
+    if (!(tr > 1e-300)) return { error: 'Semua selisih antarkondisi bernilai tetap, sferisitas tidak dapat dihitung.' };
+    var eps = tr * tr / (p * tr2);
+    var hf = (n * p * eps - 2) / (p * ((n - 1) - p * eps)); if (!(hf <= 1)) hf = 1; if (hf < eps) hf = eps;
+    var detS = detMat(S), W = detS / Math.pow(tr / p, p);
+    if (!(W > 0)) W = 0;
+    var nu = n - 1, df = p * (p + 1) / 2 - 1, rho = 1 - (2 * p * p + p + 2) / (6 * p * nu), chi = W > 0 ? -nu * rho * Math.log(W) : Infinity;
+    var w2 = (p + 2) * (p - 1) * (p - 2) * (2 * p * p * p + 6 * p * p + 3 * p + 2) / (288 * Math.pow(nu * p * rho, 2));
+    var pv = 0;
+    if (isFinite(chi)) { var a1 = chisqRightTail(chi, df), a2 = chisqRightTail(chi, df + 4); pv = Math.min(1, Math.max(0, a1 + w2 * (a2 - a1))); }
+    return { W: W, chi: chi, df: df, p: pv, gg: eps, hf: hf, lower: 1 / p };
+}
+
+/* ---------- Anova pengukuran berulang ---------- */
+function rmAnova(M) {
+    var n = M.length, k = M[0].length, N = n * k, i, j, gm = 0, rm = [], cm = [];
+    for (i = 0; i < n; i++) { var s = 0; for (j = 0; j < k; j++) { s += M[i][j]; gm += M[i][j]; } rm.push(s / k); }
+    gm /= N;
+    for (j = 0; j < k; j++) { var t = 0; for (i = 0; i < n; i++) t += M[i][j]; cm.push(t / n); }
+    var ssT = 0, ssS = 0, ssC = 0, res = [];
+    for (i = 0; i < n; i++) for (j = 0; j < k; j++) { ssT += Math.pow(M[i][j] - gm, 2); res.push(M[i][j] - rm[i] - cm[j] + gm); }
+    for (i = 0; i < n; i++) ssS += k * Math.pow(rm[i] - gm, 2);
+    for (j = 0; j < k; j++) ssC += n * Math.pow(cm[j] - gm, 2);
+    var ssE = Math.max(0, ssT - ssS - ssC);
+    var dfC = k - 1, dfS = n - 1, dfE = (n - 1) * (k - 1);
+    var msC = ssC / dfC, msS = ssS / dfS, msE = ssE / dfE, F = msE > 0 ? msC / msE : Infinity;
+    var dfW = k * (n - 1), msW = (ssS + ssE) / dfW, F1 = msW > 0 ? msC / msW : Infinity;
+    var om = dfC * (F - 1) / (dfC * (F - 1) + N);
+    return {
+        n: n, k: k, N: N, gm: gm, rowMeans: rm, colMeans: cm, res: res,
+        ssT: ssT, ssS: ssS, ssC: ssC, ssE: ssE, dfC: dfC, dfS: dfS, dfE: dfE, msC: msC, msS: msS, msE: msE,
+        F: F, p: isFinite(F) ? fRightTail(F, dfC, dfE) : 0, crit: critF(dfC, dfE),
+        etaP: ssC / (ssC + ssE), etaG: ssC / (ssC + ssS + ssE), omegaP: Math.max(0, om),
+        ow: { df2: dfW, ms: msW, F: F1, p: isFinite(F1) ? fRightTail(F1, dfC, dfW) : 0 }
+    };
+}
+function gaCorrect(an, eps) {
+    var d1 = eps * an.dfC, d2 = eps * an.dfE;
+    return { eps: eps, df1: d1, df2: d2, p: isFinite(an.F) ? fRightTail(an.F, d1, d2) : 0, crit: critF(d1, d2) };
+}
+
+/* ---------- Friedman dan Kendall W ---------- */
+function friedmanTest(M) {
+    var n = M.length, k = M[0].length, i, j, R = new Array(k).fill(0), A = 0, tied = false;
+    for (i = 0; i < n; i++) {
+        var rk = rankAvg(M[i]); if (rk.ties.length) tied = true;
+        for (j = 0; j < k; j++) { R[j] += rk.r[j]; A += rk.r[j] * rk.r[j]; }
+    }
+    var C = n * k * (k + 1) * (k + 1) / 4, num = 0;
+    for (j = 0; j < k; j++) num += Math.pow(R[j] - n * (k + 1) / 2, 2);
+    var den = A - C, Q = den > 1e-12 ? (k - 1) * num / den : 0, df = k - 1;
+    return { Q: Q, df: df, p: chisqRightTail(Q, df), crit: critChi(df), W: Q / (n * (k - 1)), sumRanks: R, meanRanks: R.map(function (x) { return x / n; }), tied: tied, n: n, k: k };
+}
+function categoryW(w) { var a = Math.max(0, w); return a < 0.1 ? 'sangat kecil' : a < 0.3 ? 'kecil' : a < 0.5 ? 'sedang' : 'besar'; }
+
+/* ---------- Uji peringkat bertanda Wilcoxon (dua sisi) ---------- */
+function signedRank(d) {
+    var nz = d.filter(function (v) { return v !== 0; }), n = nz.length, i;
+    if (n === 0) return { n: 0, nAll: d.length, W: 0, Wp: 0, Wm: 0, p: 1, rb: 0, exact: false, z: 0 };
+    var ab = nz.map(Math.abs), rk = rankAvg(ab), Wp = 0, tot = n * (n + 1) / 2;
+    for (i = 0; i < n; i++) if (nz[i] > 0) Wp += rk.r[i];
+    var Wm = tot - Wp, Wmin = Math.min(Wp, Wm), p, exact = false, z = 0;
+    if (n <= 50 && rk.ties.length === 0) {
+        exact = true;
+        var cnt = new Array(tot + 1).fill(0); cnt[0] = 1;
+        for (i = 1; i <= n; i++) for (var s = tot; s >= i; s--) cnt[s] += cnt[s - i];
+        var cum = 0; for (i = 0; i <= Math.round(Wmin); i++) cum += cnt[i];
+        p = Math.min(1, 2 * cum / Math.pow(2, n));
+    } else {
+        var mu = n * (n + 1) / 4, v = n * (n + 1) * (2 * n + 1) / 24 - tieSum(rk.ties) / 48;
+        z = v > 0 ? Math.max(0, Math.abs(Wp - mu) - 0.5) / Math.sqrt(v) : 0;
+        p = Math.min(1, 2 * normTail(z));
+    }
+    return { n: n, nAll: d.length, W: Wp, Wp: Wp, Wm: Wm, p: p, rb: (Wp - Wm) / tot, exact: exact, z: z };
+}
+
+/* ---------- Uji lanjutan semua pasangan ---------- */
+function pairwiseRM(M, conds, kind, adjMethod) {
+    var n = M.length, k = conds.length, pairs = [], i, j, r, ps = [];
+    for (i = 0; i < k - 1; i++) for (j = i + 1; j < k; j++) {
+        var d = M.map(function (row) { return row[i] - row[j]; }), md = mean(d), sd = sdev(d), pr;
+        if (kind === 'param') {
+            var se = sd / Math.sqrt(n), t = se > 0 ? md / se : (md === 0 ? 0 : Infinity * sign(md)), df = n - 1;
+            var p = se > 0 ? Math.min(1, 2 * studentRightTail(Math.abs(t), df)) : (md === 0 ? 1 : 0), cv = critT(0.95, df);
+            pr = { i: i, j: j, label: conds[i] + ' − ' + conds[j], diff: md, sd: sd, se: se, t: t, df: df, p: p, lo: md - cv * se, hi: md + cv * se, dz: sd > 0 ? md / sd : (md === 0 ? 0 : Infinity * sign(md)) };
+        } else {
+            var w = signedRank(d), sorted = sortedCopy(d);
+            pr = { i: i, j: j, label: conds[i] + ' − ' + conds[j], diff: medianSorted(sorted), W: w.Wp, nz: w.n, p: w.p, rb: w.rb, exact: w.exact, z: w.z };
+        }
+        pairs.push(pr); ps.push(pr.p);
+    }
+    var adj = adjustP(ps, adjMethod);
+    for (r = 0; r < pairs.length; r++) { pairs[r].padj = adj[r]; pairs[r].sig = adj[r] < 0.05; }
+    /* CI terkoreksi: tingkat keyakinan 1 - 0,05 x p / p terkoreksi. CI mencakup 0 bila dan hanya bila p terkoreksi >= 0,05 */
+    if (kind === 'param') {
+        for (r = 0; r < pairs.length; r++) {
+            var q = pairs[r], ratio = (q.p > 0 && q.padj > 0) ? q.p / q.padj : 1 / pairs.length;
+            ratio = Math.min(1, Math.max(1e-6, ratio));
+            q.ciLevel = 1 - 0.05 * ratio;
+            if (q.se > 0) { var cvA = critT(q.ciLevel, q.df); q.loA = q.diff - cvA * q.se; q.hiA = q.diff + cvA * q.se; }
+            else { q.loA = q.lo; q.hiA = q.hi; }
+        }
+    }
+    return { pairs: pairs, kind: kind, adj: adjMethod };
+}
+
+/* ---------- Analisis lengkap ---------- */
+/* Aturan keputusan sferisitas (ditetapkan sebelum melihat data), berlaku untuk k >= 3 */
+function sphChoiceOf(S) {
+    if (S.p < 0.05) return S.gg > 0.75 ? 'hf' : 'gg';
+    return S.gg >= 0.75 ? 'anova' : 'gg';
+}
+function sphNearLower(S) { return S.p < 0.05 && S.gg <= 0.75 && (S.gg - S.lower) / (1 - S.lower) < 0.25; }
+function corrName(id) { return id === 'hf' ? 'Huynh-Feldt' : 'Greenhouse-Geisser'; }
+function normObj(label, arr) {
+    var r = shapiroWilk(arr);
+    if (r.error) return { label: label, n: arr.length, error: r.error, qq: [] };
+    return { label: label, n: arr.length, W: r.W, p: r.p, qq: qqPoints(arr) };
+}
+function analyzeRM(data, method, adjMethod) {
+    var M = data.M, conds = data.conds, n = M.length, k = conds.length, j, i;
+    var an = rmAnova(M), sph = sphericity(M), fr = friedmanTest(M);
+    var cols = conds.map(function (c, jj) { return M.map(function (r) { return r[jj]; }); });
+    var o = { n: n, k: k, N: n * k, subj: data.subj, conds: conds, M: M, cols: cols, an: an, sph: sph, fr: fr, warnings: [] };
+    o.summ = conds.map(function (c, jj) { return summary(c, cols[jj]); });
+    o.total = summary('Semua data', [].concat.apply([], M));
+    o.resNormality = normObj('Residu model', an.res);
+    o.normCond = conds.map(function (c, jj) { return normObj(c, cols[jj]); });
+    o.gg = sph.error ? null : gaCorrect(an, sph.gg);
+    o.hf = sph.error ? null : gaCorrect(an, sph.hf);
+    o.method = method;
+    o.adjMethod = adjMethod || 'holm';
+    o.nonNormal = !!(!o.resNormality.error && o.resNormality.p < 0.05);
+    o.sphMauchly = !!(!sph.error && sph.p < 0.05);
+    o.sphEps = !!(!sph.error && sph.gg < 0.75);
+    o.sphChoice = sph.error ? 'gg' : sphChoiceOf(sph);
+    o.sphBad = o.sphChoice !== 'anova';
+    o.sphNear = !!(!sph.error && sphNearLower(sph));
+    o.sg = o.nonNormal ? 'friedman' : o.sphChoice;
+    if (method === 'friedman') {
+        o.test = { stat: fr.Q, p: fr.p, crit: fr.crit, reject: fr.p < 0.05, df1: fr.df, label: 'χ²' };
+    } else if (method === 'hf' && o.hf) {
+        o.test = { stat: an.F, p: o.hf.p, crit: o.hf.crit, reject: o.hf.p < 0.05, df1: o.hf.df1, df2: o.hf.df2, label: 'F' };
+    } else if (method === 'gg' && o.gg) {
+        o.test = { stat: an.F, p: o.gg.p, crit: o.gg.crit, reject: o.gg.p < 0.05, df1: o.gg.df1, df2: o.gg.df2, label: 'F' };
+    } else {
+        o.method = 'anova';
+        o.test = { stat: an.F, p: an.p, crit: an.crit, reject: an.p < 0.05, df1: an.dfC, df2: an.dfE, label: 'F' };
+    }
+    if (o.method === 'friedman') {
+        o.eff = { name: 'W Kendall', v: fr.W, cat: categoryW(fr.W) };
+    } else {
+        o.eff = { etaP: an.etaP, etaG: an.etaG, omegaP: an.omegaP, catEta: categoryEta(an.etaP), catOmega: categoryEta(an.omegaP) };
+    }
+    o.post = pairwiseRM(M, conds, o.method === 'friedman' ? 'rank' : 'param', o.adjMethod);
+    if (n < 10) o.smallN = 'Jumlah subjek ' + n + ' tergolong kecil. Uji normalitas dan sferisitas memiliki daya rendah, sehingga hasilnya perlu dibaca dengan hati-hati.';
+    return o;
+}
+/* ===== CORE RM END ===== */
+
+/* ---------- Glosarium (tooltip) ---------- */
+var GL = {
+'rm': 'Anova pengukuran berulang: uji statistika untuk membandingkan rerata sebuah variabel numeris pada ≥3 kondisi ketika subjek yang sama diukur secara berulang pada setiap kondisi.',
+'subjek': 'Subjek: unit yang diukur berulang kali, misalnya satu ekor hewan yang beratnya ditimbang pada beberapa waktu. Tiap subjek menjadi pembanding bagi dirinya sendiri.',
+'kondisi': 'Kondisi: situasi atau waktu ketika pengukuran dilakukan, misalnya sebelum, saat, dan sesudah perlakuan. Pada anova pengukuran berulang, kondisi disebut juga faktor within-subject.',
+'within': 'Within-subject: perbandingan dilakukan di dalam subjek yang sama. Lawannya between-subject, yaitu perbandingan antarkelompok subjek yang berbeda.',
+'h0': 'Hipotesis nol (H0): pernyataan bahwa tidak ada efek atau tidak ada perbedaan. Uji statistika mencari bukti untuk menolaknya.',
+'h1': 'Hipotesis alternatif (H1): pernyataan bahwa ada efek atau perbedaan.',
+'pop': 'Populasi sasaran: seluruh individu yang ingin dijangkau oleh kesimpulan penelitian. Sampel diambil dari populasi ini.',
+'ci95': 'CI 95% (selang kepercayaan 95%): rentang nilai yang masuk akal bagi parameter populasi berdasarkan sampel. Bila pengambilan sampel diulang berkali-kali, sekitar 95% selang yang dibuat dengan cara ini memuat nilai sebenarnya.',
+'pval': 'Nilai p: peluang mendapatkan hasil sekuat ini atau lebih ekstrem bila H0 benar. Makin kecil nilai p, makin kuat bukti terhadap H0. H0 ditolak bila nilai p lebih kecil daripada α.',
+'alpha': 'α (taraf signifikansi): batas peluang kesalahan tipe I yang diterima, yaitu menolak H0 padahal H0 benar. Di sini 0,05 (5%).',
+'F': 'Statistik F: perbandingan variasi yang berkaitan dengan kondisi terhadap variasi galat. Makin besar F, makin kuat indikasi adanya efek kondisi.',
+'df': 'Derajat bebas (df): banyaknya nilai yang bebas bervariasi dalam perhitungan. Menentukan bentuk distribusi acuan untuk menghitung nilai p.',
+'crit': 'Nilai kritis: batas statistik uji. Bila statistik uji melampaui batas ini, H0 ditolak pada α = 0,05.',
+'region': 'Daerah kritis: rentang nilai statistik uji yang membuat H0 ditolak.',
+'teststat': 'Statistik uji: angka yang dihitung dari data untuk dibandingkan dengan nilai kritis.',
+'shapiro': 'Uji Shapiro-Wilk menguji apakah data berasal dari sebaran normal. Nilai p kecil (di bawah 0,05) menandakan ada bukti data menyimpang dari normal.',
+'swW': 'Statistik W Shapiro-Wilk: berkisar dari 0 sampai 1. Makin dekat ke 1, makin mendekati normal.',
+'residu': 'Residu pada anova pengukuran berulang: nilai yang tersisa setelah rerata subjek dan rerata kondisi dikeluarkan dari tiap pengamatan. Asumsi normalitas berlaku untuk residu ini.',
+'qq': 'Q-Q plot membandingkan sebaran data dengan sebaran normal. Titik yang mengikuti garis putus-putus menandakan data mendekati normal.',
+'mean': 'Rerata (mean): jumlah semua nilai dibagi banyaknya data.',
+'median': 'Median: nilai tengah data setelah diurutkan.',
+'sd': 'SD (simpangan baku): ukuran sebaran data di sekitar rerata. Makin besar SD, makin lebar sebarannya.',
+'jk': 'Jumlah kuadrat (JK): ukuran total variasi, yaitu jumlah kuadrat selisih nilai terhadap rerata.',
+'kt': 'Kuadrat tengah (KT): jumlah kuadrat dibagi derajat bebasnya.',
+'galat': 'Galat: variasi yang tersisa setelah efek subjek dan efek kondisi dikeluarkan. Kuadrat tengah galat menjadi pembagi pada statistik F, dengan derajat bebas (n − 1)(k − 1).',
+'jkSubj': 'JK subjek: variasi yang berasal dari perbedaan tingkat dasar antarsubjek, misalnya sapi yang memang lebih berat sejak awal. Pada anova pengukuran berulang, bagian ini dikeluarkan dari galat.',
+'omnibus': 'Uji omnibus: uji yang menjawab apakah suatu efek ada secara keseluruhan, tanpa menyebut kondisi atau pasangan mana yang berbeda.',
+'es': 'Ukuran efek: besarnya perbedaan atau hubungan, tidak bergantung pada jumlah data.',
+'etaP': 'Partial eta-squared (η²p): proporsi variasi kondisi terhadap gabungan variasi kondisi dan galat, setelah variasi antarsubjek dikeluarkan. Berkisar dari 0 sampai 1.',
+'etaG': 'Generalized eta-squared (η²G): proporsi variasi kondisi terhadap total variasi, termasuk variasi antarsubjek. Nilainya lebih kecil daripada η²p dan lebih mudah dibandingkan antarpenelitian.',
+'omegaP': 'Partial omega-squared (ω²p): versi η²p yang dikoreksi bias, dengan perkiraan yang lebih mendekati nilai populasi. Nilai negatif ditulis 0.',
+'sferisitas': 'Sferisitas (sphericity): asumsi matematis yang harus dipenuhi pada anova pengukuran berulang bahwa selisih nilai pada setiap pasangan kelompok memiliki varians yang setara. Bila sferisitas dilanggar, nilai p pada anova klasik menjadi terlalu kecil.',
+'mauchly': 'Uji Mauchly menguji sferisitas. Nilai p di bawah 0,05 menandakan ada bukti sferisitas dilanggar. Uji ini lemah pada subjek sedikit dan terlalu peka pada subjek banyak, sehingga dibaca bersama nilai ε.',
+'eps': 'Epsilon (ε): ukuran seberapa berat sferisitas dilanggar. Bernilai 1 bila terpenuhi sempurna dan turun sampai 1/(k − 1) pada pelanggaran paling berat. Pedoman kasar: 0,90 atau lebih hampir terpenuhi, 0,75 sampai di bawah 0,90 pelanggaran ringan, di bawah 0,75 pelanggaran nyata.',
+'gg': 'Greenhouse-Geisser (GG): cara menaksir ε yang cenderung terlalu rendah (konservatif). Koreksinya mengalikan derajat bebas dengan ε, sehingga nilai p naik bila sferisitas dilanggar. Dipakai sebagai koreksi bila sferisitas dilanggar secara nyata (ε sama dengan atau di bawah 0,75).',
+'hf': 'Huynh-Feldt (HF): cara lain menaksir ε yang cenderung terlalu tinggi (liberal) dan dibatasi maksimum 1. Dipakai sebagai koreksi bila uji Mauchly nyata tetapi ε Greenhouse-Geisser masih di atas 0,75 (pelanggaran ringan sampai sedang).',
+'friedman': 'Uji Friedman: uji peringkat untuk tiga kondisi atau lebih pada subjek yang sama. Nilai tiap subjek diberi peringkat di dalam subjek itu, lalu rerata peringkat antarkondisi dibandingkan. Tidak mensyaratkan normalitas.',
+'kendallW': 'W Kendall: ukuran efek untuk uji Friedman, bernilai 0 sampai 1. Nilai 1 berarti semua subjek mengurutkan kondisi dengan cara yang sama.',
+'wilcoxon': 'Uji peringkat bertanda Wilcoxon: uji untuk dua kondisi pada subjek yang sama, berdasarkan peringkat besar selisih. Dipakai sebagai uji lanjutan Friedman.',
+'pairedt': 'Uji t berpasangan: membandingkan dua kondisi dengan menguji apakah rerata selisih tiap subjek berbeda dari nol.',
+'holm': 'Koreksi Holm: cara mengendalikan peluang salah menyatakan "berbeda" ketika banyak pasangan dibandingkan sekaligus. Lebih berdaya daripada Bonferroni dan sama amannya.',
+'bonferroni': 'Koreksi Bonferroni: nilai p setiap pasangan dikalikan jumlah pasangan. Sederhana, tetapi lebih konservatif daripada Holm.',
+'dz': 'Cohen\'s dz: ukuran efek untuk dua kondisi berpasangan, yaitu rerata selisih dibagi SD selisih. Batas kasar: 0,2 kecil, 0,5 sedang, 0,8 besar.',
+'rrb': 'Rank-biserial (r_rb): ukuran efek berbasis peringkat, bernilai −1 sampai 1. Nilai positif berarti kondisi pertama cenderung bernilai lebih tinggi.',
+'mauW': 'W Mauchly: statistik uji sferisitas. Nilainya 0 sampai 1. Nilai 1 berarti sferisitas terpenuhi sempurna, dan makin kecil nilainya, makin berat pelanggarannya.',
+'pMauchly': 'Nilai p uji Mauchly: nilai di bawah 0,05 menandakan ada bukti sferisitas dilanggar. Uji ini lemah pada subjek sedikit, sehingga dibaca bersama ε.',
+'efekDalam': 'Efek dalam subjek (within subjects effects): bagian variasi yang dibandingkan di dalam subjek yang sama, yaitu efek kondisi dan galatnya. Bagian inilah yang menjawab apakah rerata berbeda antar kondisi.',
+'efekAntar': 'Efek antarsubjek (between subjects effects): variasi akibat perbedaan tingkat dasar antarsubjek. Variasi ini dikeluarkan dari galat, dan tidak diuji dengan F pada anova pengukuran berulang.',
+'galatDalam': 'Galat efek dalam subjek: variasi yang tersisa setelah efek subjek dan efek kondisi dikeluarkan. Kuadrat tengahnya menjadi pembagi pada statistik F. Pada keluaran perangkat lunak, baris ini berlabel Residual.',
+'galatAntar': 'Galat antarsubjek: variasi antarsubjek, yaitu JK subjek dengan df n − 1. Pada keluaran perangkat lunak, baris ini berlabel Residual. Tidak ada nilai F karena baris ini bukan efek yang diuji.',
+'ss3': 'Jumlah kuadrat tipe III: cara menghitung jumlah kuadrat yang menilai tiap efek setelah efek lain diperhitungkan. Pada data seimbang seperti ini (tiap subjek diukur pada semua kondisi), hasilnya sama dengan tipe lain.',
+'sphcorr': 'Koreksi sferisitas: penyesuaian derajat bebas bila sferisitas dilanggar. "Tidak ada" berarti anova klasik. Greenhouse-Geisser dan Huynh-Feldt mengalikan df dengan ε masing-masing. Jumlah kuadrat dan F tidak berubah, sedangkan df, kuadrat tengah, dan nilai p berubah.',
+'t-anova': 'Anova pengukuran berulang klasik: mensyaratkan residu mendekati normal dan sferisitas terpenuhi.',
+'t-gg': 'Anova pengukuran berulang dengan koreksi Greenhouse-Geisser: pilihan bila residu mendekati normal dan sferisitas dilanggar nyata (ε Greenhouse-Geisser sama dengan atau di bawah 0,75).',
+'t-hf': 'Anova pengukuran berulang dengan koreksi Huynh-Feldt: pilihan bila uji Mauchly nyata tetapi ε Greenhouse-Geisser di atas 0,75 (pelanggaran ringan sampai sedang).',
+'ciAdj': 'CI 95% terkoreksi: selang kepercayaan selisih yang disesuaikan dengan koreksi perbandingan ganda, sehingga selaras dengan nilai p terkoreksi. Selang yang tidak mencakup 0 berarti pasangan itu berbeda nyata setelah koreksi. Selangnya lebih lebar daripada CI 95% biasa dan berubah bila koreksi diganti.',
+'t-friedman': 'Uji Friedman: pilihan bila residu menyimpang dari normal. Tidak mensyaratkan normalitas maupun sferisitas.'
+};
+function G(k, l) { return '<span class="gl" tabindex="0" data-g="' + String(k).replace(/"/g, '&quot;') + '">' + (l || k) + '</span>'; }
+
+function G(k, l) { return '<span class="gl" tabindex="0" data-g="' + String(k).replace(/"/g, '&quot;') + '">' + (l || k) + '</span>'; }
+(function () {
+    var tip = document.getElementById('tip'), timer = null;
+    function placeTip(el) {
+        var r = el.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
+        var x = r.left + r.width / 2 - tw / 2; x = Math.max(8, Math.min(window.innerWidth - tw - 8, x));
+        var y = r.bottom + 8; if (y + th > window.innerHeight - 8) y = r.top - th - 8;
+        tip.style.left = x + 'px'; tip.style.top = Math.max(8, y) + 'px';
+    }
+    function hideTip() { clearTimeout(timer); tip.classList.remove('on'); }
+    function showTip(el, auto) {
+        var t = GL[el.getAttribute('data-g')]; if (!t) return;
+        tip.textContent = t; tip.classList.add('on'); placeTip(el);
+        clearTimeout(timer);
+        if (auto) timer = setTimeout(hideTip, 2500 + t.length * 20);
+    }
+    function glOf(e) { return e.target && e.target.closest ? e.target.closest('.gl') : null; }
+    document.addEventListener('mouseover', function (e) { var g = glOf(e); if (g) showTip(g, false); });
+    document.addEventListener('mouseout', function (e) { var g = glOf(e); if (g && !g.contains(e.relatedTarget)) hideTip(); });
+    document.addEventListener('focusin', function (e) { var g = glOf(e); if (g) showTip(g, false); });
+    document.addEventListener('focusout', function (e) { if (glOf(e)) hideTip(); });
+    document.addEventListener('click', function (e) { var g = glOf(e); if (g) showTip(g, true); else hideTip(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideTip(); });
+    window.addEventListener('scroll', hideTip, { passive: true });
+})();
+/* ---------- Unduh grafik (satu atau beberapa SVG dalam satu PNG) ---------- */
+function downloadChart(id) {
+    var el = $(id), svgs = el ? el.querySelectorAll('svg') : []; if (!svgs.length) return;
+    var cs = getComputedStyle(document.documentElement), bg = (cs.getPropertyValue('--card-bg') || '#fff').trim();
+    var items = [], loaded = 0, GAP = 12, PER = 3, i;
+    function ser(svg) { return new XMLSerializer().serializeToString(svg).replace(/var\((--[\w-]+)\)/g, function (m, n) { return (cs.getPropertyValue(n) || '#000').trim(); }); }
+    function finish() {
+        var rows = [];
+        for (i = 0; i < items.length; i += PER) rows.push(items.slice(i, i + PER));
+        var W = 0, H = GAP;
+        rows.forEach(function (row) { var w = GAP, h = 0; row.forEach(function (it) { w += it.w + GAP; h = Math.max(h, it.h); }); W = Math.max(W, w); H += h + GAP; });
+        var sc = 2, cv = document.createElement('canvas'); cv.width = W * sc; cv.height = H * sc;
+        var ctx = cv.getContext('2d'); ctx.fillStyle = bg; ctx.fillRect(0, 0, cv.width, cv.height);
+        var y = GAP;
+        rows.forEach(function (row) {
+            var x = GAP, h = 0;
+            row.forEach(function (it) { ctx.drawImage(it.img, x * sc, y * sc, it.w * sc, it.h * sc); x += it.w + GAP; h = Math.max(h, it.h); });
+            y += h + GAP;
+        });
+        cv.toBlob(function (b) {
+            if (!b) return;
+            var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'grafik-' + id + '.png';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+        }, 'image/png');
+    }
+    Array.prototype.forEach.call(svgs, function (svg, k) {
+        var img = new Image(), w = +svg.getAttribute('width') || 300, h = +svg.getAttribute('height') || 250;
+        items[k] = { img: img, w: w, h: h };
+        img.onload = function () { loaded++; if (loaded === svgs.length) finish(); };
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(ser(svg));
+    });
+}
+
+function copyText(txt, b, label) {
+    function done() { b.textContent = 'Tersalin'; setTimeout(function () { b.textContent = label; }, 1600); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
+    else { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); done(); }
+}
+
+
+/* ===================== Format angka gaya Indonesia ===================== */
+var fmtCache = {};
+function fmt(x, d) {
+    if (x === null || x === undefined || typeof x !== 'number' || !isFinite(x)) return '\u2013';
+    if (!fmtCache[d]) fmtCache[d] = new Intl.NumberFormat('id-ID', { minimumFractionDigits: d, maximumFractionDigits: d });
+    var s = fmtCache[d].format(x);
+    if (/^-0(,0+)?$/.test(s)) s = s.slice(1);
+    return s.replace('-', '\u2212');
+}
+function fmtSmart(x, maxD) {
+    maxD = maxD === undefined ? 2 : maxD;
+    if (x === null || x === undefined || !isFinite(x)) return '\u2013';
+    var f = Math.pow(10, maxD), rounded = Math.round(x * f) / f, d = 0;
+    for (var k = 0; k <= maxD; k++) {
+        var fk = Math.pow(10, k);
+        if (Math.abs(Math.round(rounded * fk) / fk - rounded) < 1e-9) { d = k; break; }
+    }
+    return fmt(rounded, d);
+}
+function fmtP(p) { if (!isFinite(p)) return '\u2013'; if (p < 0.0005) return '< 0,001'; return fmt(p, 3); }
+function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+function rr(v) { return Math.round(v * 100) / 100; }
+
+/* ===================== Primitif SVG ringan ===================== */
+var FONT = "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+var SUB0 = '<tspan baseline-shift="sub" font-size="9">0</tspan>';
+var PALETTE = ['#0071e3', '#8e5bd6', '#1b97a8', '#d6477f', '#9c6b3f', '#6b7a8f'];
+function chartWidth(el) { var w = el.clientWidth; return Math.max(280, w > 0 ? w : 680); }
+function svgOpen(W, H, label) { return '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + label + '">'; }
+function ln(x1, y1, x2, y2, stroke, w, extra) {
+    return '<line x1="' + rr(x1) + '" y1="' + rr(y1) + '" x2="' + rr(x2) + '" y2="' + rr(y2) + '" stroke="' + stroke + '" stroke-width="' + w + '"' + (extra || '') + '/>';
+}
+function tx(x, y, s, o) {
+    o = o || {};
+    var size = o.size || 12, weight = o.weight || 400, fill = o.fill || 'var(--text-main)', anchor = o.anchor || 'middle';
+    var base = ' x="' + rr(x) + '" y="' + rr(y) + '" font-family="' + FONT + '" font-size="' + size + '" font-weight="' + weight + '" text-anchor="' + anchor + '"';
+    var out = '';
+    if (o.halo) out += '<text' + base + ' fill="var(--card-bg)" stroke="var(--card-bg)" stroke-width="4" stroke-linejoin="round">' + s + '</text>';
+    return out + '<text' + base + ' fill="' + fill + '">' + s + '</text>';
+}
+function circ(cx, cy, r, fill, stroke, sw) {
+    return '<circle cx="' + rr(cx) + '" cy="' + rr(cy) + '" r="' + r + '" fill="' + fill + '"' + (stroke ? ' stroke="' + stroke + '" stroke-width="' + sw + '"' : '') + '/>';
+}
+
+/* ===================== Kurva distribusi uji (F atau chi-square) ===================== */
+function drawTestCurve(el, c) {
+    var W = chartWidth(el), H = 250, ml = 16, mr = 16, mt = 58, mb = 56, ph = H - mt - mb, i;
+    var clip = c.stat > c.crit * 3.5, hi = clip ? c.crit * 3 : Math.max(c.crit * 1.6, c.stat * 1.12, c.crit + 3), lo = 0, x0 = hi * 0.002, yFrom = c.yFrom !== undefined ? c.yFrom : x0;
+    var yMax = 0;
+    for (i = 0; i <= 300; i++) { var v = c.pdf(yFrom + (hi - yFrom) * i / 300); if (isFinite(v) && v > yMax) yMax = v; }
+    if (!(yMax > 0)) yMax = 1;
+    var sx = function (x) { return ml + (x - lo) / (hi - lo) * (W - ml - mr); };
+    var sy = function (y) { return mt + (1 - clamp(y, 0, yMax) / yMax) * ph; };
+    var baseY = sy(0), labelY = 24, critRowY = baseY + 20, statRowY = baseY + 38;
+    var s = svgOpen(W, H, 'Kurva distribusi uji hipotesis');
+    var d = 'M' + rr(sx(c.crit)) + ' ' + rr(sy(c.pdf(c.crit))) + ' ';
+    for (i = 1; i <= 80; i++) { var xa = c.crit + (hi - c.crit) * i / 80; d += 'L' + rr(sx(xa)) + ' ' + rr(sy(c.pdf(xa))) + ' '; }
+    d += 'L' + rr(sx(hi)) + ' ' + rr(baseY) + ' L' + rr(sx(c.crit)) + ' ' + rr(baseY) + ' Z';
+    s += '<path d="' + d + '" fill="#ff3b30" fill-opacity="0.16"/>';
+    d = '';
+    for (i = 0; i <= 200; i++) { var x = x0 + (hi - x0) * i / 200; d += (i === 0 ? 'M' : 'L') + rr(sx(x)) + ' ' + rr(sy(c.pdf(x))) + ' '; }
+    s += '<path d="' + d + '" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linejoin="round"/>';
+    s += ln(sx(lo), baseY, sx(hi), baseY, 'var(--ink3)', 1);
+    s += ln(sx(c.crit), baseY, sx(c.crit), sy(c.pdf(c.crit)), '#ff3b30', 1.4, ' stroke-dasharray="4 3"');
+    s += tx(sx(c.crit), critRowY, fmt(c.crit, 2), { size: 11.5, weight: 700, fill: 'var(--err-tx)', halo: true });
+    s += tx(clamp(sx((c.crit + hi) / 2), 34, W - 34), labelY, 'tolak H' + SUB0, { size: 12, weight: 700, fill: '#ff3b30', halo: true });
+    s += tx(clamp(sx(c.crit / 2), 44, W - 44), labelY, 'gagal tolak H' + SUB0, { size: 12, weight: 700, fill: '#0071e3', halo: true });
+    var stc = clip ? hi * 0.97 : c.stat, xs = sx(stc), ys = sy(c.pdf(stc)), col = c.reject ? '#ff3b30' : '#0071e3';
+    s += ln(xs, baseY, xs, ys, col, 2) + circ(xs, ys, 5.5, col, 'var(--card-bg)', 2);
+    s += tx(clamp(xs, 40, W - 40), statRowY, c.label + ' = ' + fmt(c.stat, 2) + (clip ? ' \u2192' : ''), { size: 12.5, weight: 800, fill: col, halo: true });
+    el.innerHTML = s + '</svg>';
+}
+function drawForestMulti(el, rows, refText) {
+    var W = Math.min(720, chartWidth(el)), rowH = 30, ml = 210, mr = 26, mt = 36, mb = 42, H = mt + rows.length * rowH + mb, i;
+    var vals = [0];
+    rows.forEach(function (r) { vals.push(r.est, r.lo, r.hi); });
+    var vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals), pad = (vmax - vmin) * 0.08 || 1, amin = vmin - pad, amax = vmax + pad;
+    var sx = function (v) { return ml + (v - amin) / (amax - amin) * (W - ml - mr); };
+    var axY = H - mb, s = svgOpen(W, H, 'Selisih rerata pada tiap pasangan kelompok dengan CI 95%');
+    s += ln(ml, axY, W - mr, axY, 'var(--border-color)', 1);
+    var step = niceStep((amax - amin) / 6);
+    for (var t = Math.ceil(amin / step - 1e-9) * step; t <= amax + 1e-9; t += step) {
+        var tv = Math.abs(t) < 1e-9 ? 0 : t;
+        s += ln(sx(tv), axY, sx(tv), axY + 4, 'var(--border-color)', 1) + tx(sx(tv), axY + 17, fmtSmart(tv, 2), { size: 10.5, fill: 'var(--text-muted)' });
+    }
+    s += ln(sx(0), mt - 12, sx(0), axY, 'var(--text-muted)', 1.5, ' stroke-dasharray="5 4"');
+    s += tx(clamp(sx(0), 70, W - 70), mt - 18, refText, { size: 11.5, weight: 700, fill: 'var(--text-muted)', halo: true });
+    rows.forEach(function (r, q) {
+        var cy = mt + rowH * q + rowH / 2, col = r.sig ? '#ff3b30' : '#0071e3';
+        s += tx(ml - 10, cy + 4, esc(shortName(r.label, 34)), { size: 11.5, weight: 600, anchor: 'end' });
+        s += ln(sx(r.lo), cy, sx(r.hi), cy, col, 3) + ln(sx(r.lo), cy - 6, sx(r.lo), cy + 6, col, 3) + ln(sx(r.hi), cy - 6, sx(r.hi), cy + 6, col, 3);
+        s += circ(sx(r.est), cy, 5.5, col, 'var(--card-bg)', 2);
+    });
+    el.innerHTML = s + '</svg>';
+}
+function drawQQ(el, list) {
+    var h = '';
+    list.forEach(function (s) {
+        if (s.error || !s.qq.length) return;
+        var W = 250, H = 250, ml = 38, mr = 12, mt = 26, mb = 38, lim = 0;
+        s.qq.forEach(function (p) { lim = Math.max(lim, Math.abs(p[0]), Math.abs(p[1])); });
+        lim = Math.max(2.5, Math.ceil(lim * 2) / 2);
+        var sx = function (v) { return ml + (v + lim) / (2 * lim) * (W - ml - mr); };
+        var sy = function (v) { return mt + (1 - (v + lim) / (2 * lim)) * (H - mt - mb); };
+        var g = svgOpen(W, H, 'Q-Q plot ' + esc(s.label));
+        g += ln(sx(-lim), sy(-lim), sx(lim), sy(lim), 'var(--ink3)', 1.4, ' stroke-dasharray="4 3"');
+        g += ln(ml, sy(-lim), W - mr, sy(-lim), 'var(--border-color)', 1) + ln(ml, mt, ml, sy(-lim), 'var(--border-color)', 1);
+        for (var t = -Math.floor(lim); t <= Math.floor(lim); t++) {
+            g += tx(sx(t), sy(-lim) + 14, String(t), { size: 10, fill: 'var(--text-muted)' });
+            g += tx(ml - 6, sy(t) + 3.5, String(t), { size: 10, fill: 'var(--text-muted)', anchor: 'end' });
+        }
+        s.qq.forEach(function (p) { g += circ(sx(p[0]), sy(p[1]), 2.6, '#0071e3', null, 0).replace('/>', ' fill-opacity="0.6"/>'); });
+        g += tx(W / 2, 15, esc(shortName(s.label, 28)), { size: 12, weight: 700 });
+        g += tx((ml + W - mr) / 2, H - 6, 'Kuantil teoretis', { size: 10.5, fill: 'var(--text-muted)' });
+        h += '<div class="qq-item">' + g + '</svg></div>';
+    });
+    el.innerHTML = h;
+}
+function drawBoxplot(el, series) {
+    var k = series.length, W = Math.min(720, chartWidth(el)), H = 290, ml = 52, mr = 16, mt = 16, mb = 44, lo = Infinity, hi = -Infinity;
+    var st = series.map(function (s) { var b = boxStats(s.vals); lo = Math.min(lo, b.min); hi = Math.max(hi, b.max); return b; });
+    var pad = (hi - lo) * 0.06 || 1; lo -= pad; hi += pad;
+    var step = niceStep((hi - lo) / 5), t0 = Math.ceil(lo / step - 1e-9) * step;
+    var sy = function (v) { return mt + (1 - (v - lo) / (hi - lo)) * (H - mt - mb); };
+    var g = svgOpen(W, H, 'Boxplot'), t;
+    g += ln(ml, mt, ml, H - mb, 'var(--border-color)', 1) + ln(ml, H - mb, W - mr, H - mb, 'var(--border-color)', 1);
+    for (t = t0; t <= hi + 1e-9; t += step) {
+        g += ln(ml, sy(t), W - mr, sy(t), 'var(--grid-line)', 1);
+        g += tx(ml - 7, sy(t) + 3.5, fmtSmart(t, 2), { size: 10.5, fill: 'var(--text-muted)', anchor: 'end' });
+    }
+    var slot = (W - ml - mr) / k, bw = Math.min(80, slot * 0.46);
+    series.forEach(function (s, q) {
+        var b = st[q], cx = ml + slot * (q + 0.5), x0 = cx - bw / 2, col = PALETTE[q % PALETTE.length];
+        g += ln(cx, sy(b.wu), cx, sy(b.q3), col, 1.6) + ln(cx, sy(b.q1), cx, sy(b.wl), col, 1.6);
+        g += ln(cx - bw / 4, sy(b.wu), cx + bw / 4, sy(b.wu), col, 1.6) + ln(cx - bw / 4, sy(b.wl), cx + bw / 4, sy(b.wl), col, 1.6);
+        g += '<rect x="' + rr(x0) + '" y="' + rr(sy(b.q3)) + '" width="' + rr(bw) + '" height="' + rr(Math.max(1, sy(b.q1) - sy(b.q3))) + '" fill="' + col + '" fill-opacity="0.14" stroke="' + col + '" stroke-width="1.6" rx="3"/>';
+        s.vals.forEach(function (v, idx) {
+            var u = (Math.imul(idx + 1, 2654435761) >>> 0) % 1000 / 1000, px = cx + (u - 0.5) * bw * 0.8, isOut = b.out.indexOf(v) !== -1;
+            g += circ(px, sy(v), 2.6, col, null, 0).replace('/>', ' fill-opacity="0.55"/>');
+            if (isOut) g += circ(px, sy(v), 4.4, 'none', col, 1.4);
+        });
+        g += ln(x0, sy(b.med), x0 + bw, sy(b.med), 'var(--text-main)', 2.8);
+        g += circ(cx, sy(b.mean), 4.2, 'var(--card-bg)', 'var(--text-main)', 1.6);
+        g += tx(cx, H - mb + 18, esc(shortName(s.name, k > 4 ? 12 : 18)), { size: 12, weight: 600 });
+    });
+    el.innerHTML = g + '</svg>';
+}
+
+/* ===================== Grafik khusus pengukuran berulang ===================== */
+/* Lintasan tiap subjek (garis tipis) dan rerata atau median tiap kondisi (garis tebal) */
+function drawProfile(el, o) {
+    var k = o.k, n = o.n, W = Math.min(760, chartWidth(el)), H = 320, ml = 58, mr = 24, mt = 22, mb = 54, i, j, t;
+    var par = o.method !== 'friedman', lo = Infinity, hi = -Infinity;
+    o.M.forEach(function (row) { row.forEach(function (v) { if (v < lo) lo = v; if (v > hi) hi = v; }); });
+    var est = [], eLo = [], eHi = [];
+    for (j = 0; j < k; j++) {
+        var col = o.cols[j];
+        if (par) {
+            var m = mean(col), se = sdev(col) / Math.sqrt(n), cv = critT(0.95, n - 1);
+            est.push(m); eLo.push(m - cv * se); eHi.push(m + cv * se);
+            lo = Math.min(lo, m - cv * se); hi = Math.max(hi, m + cv * se);
+        } else { est.push(median(col)); eLo.push(null); eHi.push(null); }
+    }
+    var pad = (hi - lo) * 0.06 || 1; lo -= pad; hi += pad;
+    var step = niceStep((hi - lo) / 5), t0 = Math.ceil(lo / step - 1e-9) * step;
+    var sy = function (v) { return mt + (1 - (v - lo) / (hi - lo)) * (H - mt - mb); };
+    var slot = (W - ml - mr) / k, sx = function (q) { return ml + slot * (q + 0.5); };
+    var g = svgOpen(W, H, 'Lintasan tiap subjek dan ' + (par ? 'rerata' : 'median') + ' tiap kondisi');
+    g += ln(ml, mt, ml, H - mb, 'var(--border-color)', 1) + ln(ml, H - mb, W - mr, H - mb, 'var(--border-color)', 1);
+    for (t = t0; t <= hi + 1e-9; t += step) {
+        g += ln(ml, sy(t), W - mr, sy(t), 'var(--grid-line)', 1);
+        g += tx(ml - 7, sy(t) + 3.5, fmtSmart(t, 2), { size: 10.5, fill: 'var(--text-muted)', anchor: 'end' });
+    }
+    for (i = 0; i < n; i++) {
+        var d = '';
+        for (j = 0; j < k; j++) d += (j === 0 ? 'M' : 'L') + rr(sx(j)) + ' ' + rr(sy(o.M[i][j])) + ' ';
+        g += '<path d="' + d + '" fill="none" stroke="var(--text-muted)" stroke-opacity="0.38" stroke-width="1.1" stroke-linejoin="round"/>';
+        for (j = 0; j < k; j++) g += circ(sx(j), sy(o.M[i][j]), 2, 'var(--text-muted)', null, 0).replace('/>', ' fill-opacity="0.5"/>');
+    }
+    var dm = '';
+    for (j = 0; j < k; j++) dm += (j === 0 ? 'M' : 'L') + rr(sx(j)) + ' ' + rr(sy(est[j])) + ' ';
+    g += '<path d="' + dm + '" fill="none" stroke="#0071e3" stroke-width="3.2" stroke-linejoin="round"/>';
+    for (j = 0; j < k; j++) {
+        if (eLo[j] !== null) {
+            var x = sx(j);
+            g += ln(x, sy(eLo[j]), x, sy(eHi[j]), '#0071e3', 2.2) + ln(x - 6, sy(eLo[j]), x + 6, sy(eLo[j]), '#0071e3', 2.2) + ln(x - 6, sy(eHi[j]), x + 6, sy(eHi[j]), '#0071e3', 2.2);
+        }
+        g += circ(sx(j), sy(est[j]), 5.5, '#0071e3', 'var(--card-bg)', 2);
+        g += tx(sx(j), H - mb + 18, esc(shortName(o.conds[j], k > 4 ? 12 : 18)), { size: 12, weight: 600 });
+    }
+    el.innerHTML = g + '</svg>';
+}
+
+/* ===== UTILITAS DAN TEKS (dipakai kalkulator dan bahan tayangan) ===== */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function shortName(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+function lcFirst(s) { s = String(s); return /^[A-Z][a-z]/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s; }
+function joinList(a) { return a.length <= 2 ? a.join(' dan ') : a.slice(0, -1).join(', ') + ', dan ' + a[a.length - 1]; }
+function pTxt(p) { return p < 0.0005 ? 'nilai p < 0,001' : 'nilai p = ' + fmt(p, 3); }
+function pShort(p) { return p < 0.0005 ? 'p < 0,001' : 'p = ' + fmt(p, 3); }
+function dfTxt(df) { return Math.abs(df - Math.round(df)) < 1e-9 ? fmt(df, 0) : fmt(df, 2); }
+function dfPair(a, b) { var frac = Math.abs(a - Math.round(a)) > 1e-9 || Math.abs(b - Math.round(b)) > 1e-9; return dfTxt(a) + (frac ? '; ' : ', ') + dfTxt(b); }
+function ciS(lo, hi, d) { return fmt(lo, d || 2) + ' sampai ' + fmt(hi, d || 2); }
+function H0() { return 'H<sub>0</sub>'; }
+function popPhrase(c) { var p = String(c.popName || '').trim(); return 'populasi ' + (p || 'asal sampel'); }
+var TEST_NAMES = { anova: 'Anova pengukuran berulang (klasik)', gg: 'Anova pengukuran berulang (koreksi Greenhouse-Geisser)', hf: 'Anova pengukuran berulang (koreksi Huynh-Feldt)', friedman: 'Uji Friedman' };
+var ADJ_NAMES = { holm: 'Holm', bonferroni: 'Bonferroni' };
+
+/* Alasan sferisitas dianggap dilanggar: Mauchly nyata atau epsilon GG di bawah 0,75 */
+function sphReason(o) {
+    var S = o.sph;
+    if (S.error) return 'sferisitas tidak dapat diperiksa pada data ini';
+    if (o.sphChoice === 'hf') return 'uji Mauchly nyata (' + pShort(S.p) + '), tetapi ε Greenhouse-Geisser = ' + fmt(S.gg, 2) + ' berada di atas 0,75 (pelanggaran ringan sampai sedang)';
+    if (S.p < 0.05) return 'uji Mauchly nyata (' + pShort(S.p) + ') dan ε Greenhouse-Geisser = ' + fmt(S.gg, 2) + ' (≤ 0,75, pelanggaran nyata)';
+    return 'uji Mauchly tidak nyata (' + pShort(S.p) + '), tetapi ε Greenhouse-Geisser = ' + fmt(S.gg, 2) + ' berada di bawah 0,75';
+}
+/* Saran uji dan ringkasan syarat */
+function suggestRM(o) {
+    var id = o.sg, why;
+    if (id === 'friedman') why = 'Shapiro-Wilk pada residu model menunjukkan penyimpangan dari normal (' + pShort(o.resNormality.p) + '). Uji Friedman tidak mensyaratkan normalitas residu.';
+    else if (id === 'gg') why = o.sph.error ? 'Residu tidak menyimpang dari normal, tetapi sferisitas tidak dapat diperiksa pada data ini. Koreksi Greenhouse-Geisser adalah pilihan yang aman.' : 'Residu tidak menyimpang dari normal, tetapi sferisitas dianggap dilanggar: ' + sphReason(o) + '. Koreksi Greenhouse-Geisser menyesuaikan derajat bebas untuk pelanggaran ini.';
+    else if (id === 'hf') why = 'Residu tidak menyimpang dari normal, tetapi sferisitas dianggap dilanggar: ' + sphReason(o) + '. Pada pelanggaran ringan sampai sedang, Greenhouse-Geisser cenderung terlalu konservatif, sehingga koreksi Huynh-Feldt dipakai.';
+    else why = 'Residu tidak menyimpang dari normal dan sferisitas terpenuhi (uji Mauchly, ' + pShort(o.sph.p) + '; ε Greenhouse-Geisser = ' + fmt(o.sph.gg, 2) + '). Syarat anova pengukuran berulang klasik terpenuhi, dan koreksi Greenhouse-Geisser tetap sah dipakai.';
+    if (o.sphNear && id === 'gg') why += ' ε berada dekat batas bawah ' + fmt(o.sph.lower, 3) + ', yaitu pelanggaran sangat berat. Pertimbangkan MANOVA berulang atau model campuran linear, yang berada di luar cakupan halaman ini.';
+    if (o.n < 10) why += ' Jumlah subjek kecil, sehingga uji asumsi lemah dan saran ini perlu dibaca bersama pertimbangan lain.';
+    return { id: id, name: TEST_NAMES[id], why: why };
+}
+function condInfo(o) {
+    var ch = o.sphChoice;
+    if (o.method === 'friedman') return { ok: true, msg: 'Uji Friedman tidak mensyaratkan normalitas residu maupun sferisitas. Independensi antarsubjek tetap perlu dipenuhi lewat desain pengambilan data.' };
+    if (o.nonNormal) return { ok: false, msg: 'Normalitas residu belum terpenuhi (' + pShort(o.resNormality.p) + '). Pertimbangkan uji Friedman.' };
+    if (o.method === 'anova' && o.sphBad) return { ok: false, msg: o.sph.error ? 'Sferisitas tidak dapat diperiksa. Gunakan koreksi Greenhouse-Geisser.' : 'Sferisitas dianggap dilanggar (' + sphReason(o) + '). Gunakan koreksi ' + corrName(ch) + '.' };
+    if (o.method === 'gg') {
+        if (ch === 'gg') return { ok: true, msg: 'Residu mendekati normal, dan pelanggaran sferisitas sudah ditangani oleh koreksi Greenhouse-Geisser.' };
+        if (ch === 'hf') return { ok: true, msg: 'Residu mendekati normal, dan pelanggaran sferisitas sudah ditangani. Aturan keputusan memilih Huynh-Feldt, sedangkan Greenhouse-Geisser lebih konservatif dan tetap sah.' };
+        return { ok: true, msg: 'Residu mendekati normal dan sferisitas terpenuhi. Koreksi Greenhouse-Geisser tetap sah, tetapi sedikit lebih konservatif daripada anova klasik.' };
+    }
+    if (o.method === 'hf') {
+        if (ch === 'hf') return { ok: true, msg: 'Residu mendekati normal, dan pelanggaran sferisitas ringan sampai sedang sudah ditangani oleh koreksi Huynh-Feldt.' };
+        if (ch === 'gg') return { ok: false, msg: 'Pelanggaran sferisitas tergolong nyata (ε Greenhouse-Geisser sama dengan atau di bawah 0,75), dan Huynh-Feldt cenderung terlalu longgar pada kondisi ini. Gunakan koreksi Greenhouse-Geisser.' };
+        return { ok: true, msg: 'Residu mendekati normal dan sferisitas terpenuhi. Koreksi Huynh-Feldt tetap sah, tetapi tidak diperlukan.' };
+    }
+    return { ok: true, msg: 'Syarat uji parametrik terpenuhi. Lanjutkan dengan ' + lcFirst(TEST_NAMES[o.method]) + '.' };
+}
+/* Hipotesis */
+function hypothesisHtml(o, c) {
+    var V = lcFirst(c.vName), cn = lcFirst(c.cond), pop = popPhrase(c), par = o.method !== 'friedman', k = o.k, mus = [], i;
+    for (i = 1; i <= k; i++) mus.push('μ<sub>' + i + '</sub>');
+    if (par) return {
+        h0: 'Rerata ' + esc(V) + ' sama pada seluruh ' + k + ' ' + esc(cn) + ' pada ' + esc(pop) + '.',
+        h1: 'Setidaknya ada satu ' + esc(cn) + ' dengan rerata ' + esc(V) + ' yang berbeda dari ' + esc(cn) + ' lain.',
+        notation: ['<b>H<sub>0</sub></b>: ' + mus.join(' = '), '<b>H<sub>1</sub></b>: tidak semua μ sama']
+    };
+    return {
+        h0: 'Sebaran ' + esc(V) + ' sama pada semua ' + k + ' ' + esc(cn) + ' di ' + esc(pop) + ', sehingga tidak ada ' + esc(cn) + ' yang cenderung bernilai lebih tinggi.',
+        h1: 'Setidaknya ada satu ' + esc(cn) + ' yang cenderung bernilai lebih tinggi atau lebih rendah daripada ' + esc(cn) + ' lain.',
+        notation: ['<b>H<sub>0</sub></b>: median selisih tiap pasangan ' + esc(cn) + ' = 0', '<b>H<sub>1</sub></b>: median selisih setidaknya satu pasangan ≠ 0']
+    };
+}
+
+/* Kesimpulan */
+function sigPairs(o) { return o.post.pairs.filter(function (p) { return p.sig; }); }
+function pairSci(o, pr) {
+    if (o.post.kind === 'param') return pr.label + ' (selisih rerata = ' + fmt(pr.diff, 2) + ', CI 95% terkoreksi ' + ciS(pr.loA, pr.hiA) + ', ' + (pr.padj < 0.0005 ? 'p terkoreksi < 0,001' : 'p terkoreksi = ' + fmt(pr.padj, 3)) + ', dz = ' + fmt(pr.dz, 2) + ')';
+    return pr.label + ' (median selisih = ' + fmt(pr.diff, 2) + ', ' + (pr.padj < 0.0005 ? 'p terkoreksi < 0,001' : 'p terkoreksi = ' + fmt(pr.padj, 3)) + ', rank-biserial = ' + fmt(pr.rb, 2) + ')';
+}
+function conclusionText(o, c) {
+    var t = o.test, par = o.method !== 'friedman', V = lcFirst(c.vName), cn = lcFirst(c.cond), s, ph = '';
+    if (par) {
+        var e = o.eff, fs = 'F(' + dfPair(t.df1, t.df2) + ') = ' + fmt(t.stat, 2) + ', ' + pShort(t.p) + ', η²p = ' + fmt(e.etaP, 2) + ' (' + e.catEta + ')' + (o.method === 'gg' ? ', ε = ' + fmt(o.gg.eps, 2) : o.method === 'hf' ? ', ε = ' + fmt(o.hf.eps, 2) : '');
+        s = (o.method === 'gg' ? 'Anova pengukuran berulang dengan koreksi Greenhouse-Geisser' : o.method === 'hf' ? 'Anova pengukuran berulang dengan koreksi Huynh-Feldt' : 'Anova pengukuran berulang') + (t.reject ? ' menunjukkan perbedaan rerata ' + V + ' yang nyata antar ' + cn : ' tidak menunjukkan perbedaan rerata ' + V + ' yang nyata antar ' + cn) + ', ' + fs + '.';
+    } else {
+        s = 'Uji Friedman ' + (t.reject ? 'menunjukkan perbedaan ' : 'tidak menunjukkan perbedaan ') + V + ' yang nyata antar ' + cn + ', χ²(' + t.df1 + ', n = ' + o.n + ') = ' + fmt(t.stat, 2) + ', ' + pShort(t.p) + ', W Kendall = ' + fmt(o.eff.v, 2) + ' (' + o.eff.cat + ').';
+    }
+    if (t.reject) {
+        var sg = sigPairs(o), nm = (par ? 'uji t berpasangan' : 'uji peringkat bertanda Wilcoxon') + ' dengan koreksi ' + ADJ_NAMES[o.adjMethod];
+        if (!sg.length) ph = ' Pada uji lanjutan (' + nm + '), tidak ada pasangan ' + cn + ' yang berbeda nyata setelah koreksi.';
+        else ph = ' Uji lanjutan (' + nm + ') menunjukkan perbedaan nyata pada pasangan berikut: ' + sg.map(function (p) { return pairSci(o, p); }).join('; ') + '.';
+    }
+    return s + ph + ' Kesimpulan ini berlaku untuk ' + popPhrase(c) + ', dengan anggapan bahwa sampel mewakili populasi tersebut.';
+}
+function pairDir(o, pr) {
+    var v = o.post.kind === 'param' ? pr.diff : pr.rb;
+    return v > 0 ? [o.conds[pr.i], o.conds[pr.j]] : [o.conds[pr.j], o.conds[pr.i]];
+}
+function layText(o, c) {
+    var t = o.test, V = lcFirst(c.vName), cn = lcFirst(c.cond), sj = lcFirst(c.subj || DEF_SUBJ), k = o.k;
+    var cat = o.method === 'friedman' ? o.eff.cat : o.eff.catEta;
+    var s = 'Pada ' + o.n + ' ' + sj + ' yang diukur di ' + k + ' ' + cn + ', ';
+    if (!t.reject) return s + 'tidak cukup bukti bahwa ' + V + ' berbeda antar ' + cn + '. Selisih kecil yang tampak pada sampel dapat muncul secara kebetulan, sehingga belum dapat dianggap sebagai perbedaan yang sebenarnya. Kesimpulan ini berlaku untuk ' + popPhrase(c) + ' bila sampelnya mewakili populasi tersebut.';
+    s += V + ' terbukti berbeda antar ' + cn + ', dengan pengaruh yang tergolong ' + cat + '. ';
+    var sg = sigPairs(o);
+    if (!sg.length) s += 'Namun, setelah semua pasangan dibandingkan secara hati-hati, perbedaan itu belum dapat dipastikan terletak pada pasangan ' + cn + ' tertentu. ';
+    else {
+        s += 'Secara khusus, ' + joinList(sg.slice(0, 6).map(function (p) { var d = pairDir(o, p); return d[0] + ' lebih tinggi daripada ' + d[1]; })) + (sg.length > 6 ? ', serta beberapa pasangan lain' : '') + '. ';
+    }
+    return s + 'Kesimpulan ini berlaku untuk ' + popPhrase(c) + ' bila sampelnya mewakili populasi tersebut.';
+}
+var DEF_SUBJ = 'subjek';
+
+/* Potongan HTML kecil */
+function epsRead(e) { return e >= 0.9 ? 'hampir terpenuhi' : e >= 0.75 ? 'pelanggaran ringan' : 'pelanggaran nyata'; }
+function statRowSub(label, value, sub) { return '<div class="stat-row two"><span class="stat-label">' + label + '</span><span class="stat-value">' + value + '<span class="statsub">' + sub + '</span></span></div>'; }
+function sphVerdictText(S) {
+    var ch = sphChoiceOf(S), t;
+    if (ch === 'hf') t = 'Nilai p Mauchly < 0,05, jadi ada bukti sferisitas dilanggar. ε Greenhouse-Geisser berada di atas 0,75 (pelanggaran ringan sampai sedang), sehingga koreksi Huynh-Feldt dipakai.';
+    else if (ch === 'gg' && S.p < 0.05) t = 'Nilai p Mauchly < 0,05 dan ε Greenhouse-Geisser sama dengan atau di bawah 0,75 (pelanggaran nyata), sehingga koreksi Greenhouse-Geisser dipakai.';
+    else if (ch === 'gg') t = 'Nilai p Mauchly ≥ 0,05, tetapi ε Greenhouse-Geisser di bawah 0,75 (pelanggaran nyata). Uji Mauchly lemah pada subjek sedikit, sehingga ε ikut menentukan: sferisitas dianggap dilanggar dan koreksi Greenhouse-Geisser dipakai.';
+    else t = 'Nilai p Mauchly ≥ 0,05 dan ε Greenhouse-Geisser ≥ 0,75, jadi sferisitas dianggap terpenuhi. Anova klasik boleh dipakai, dan koreksi Greenhouse-Geisser tetap sah bila diinginkan.';
+    if (sphNearLower(S)) t += ' ε berada dekat batas bawah ' + fmt(S.lower, 3) + ' (pelanggaran sangat berat). Pertimbangkan MANOVA berulang atau model campuran linear.';
+    return t;
+}
+function sphStatRows(S) {
+    return '<div class="sw-title">' + G('sferisitas', 'Uji sferisitas') + '</div><div class="tbl-wrap"><table class="dt sw"><thead><tr><th></th><th>' + G('mauW', 'W Mauchly') + '</th><th>' + G('pMauchly', 'p') + '</th><th>' + G('gg', 'ε Greenhouse-Geisser') + '</th><th>' + G('hf', 'ε Huynh-Feldt') + '</th></tr></thead><tbody><tr><th scope="row">' + G('kondisi', 'Kondisi') + '</th><td>' + fmt(S.W, 3) + '</td><td>' + fmtP(S.p) + '</td><td>' + fmt(S.gg, 3) + '</td><td>' + fmt(S.hf, 3) + '</td></tr></tbody></table></div>' +
+        '<div class="sw-note">Catatan. Uji Mauchly memakai pendekatan khi-kuadrat, χ²(' + S.df + ') = ' + fmt(S.chi, 2) + '. Batas bawah ε pada data ini adalah ' + fmt(S.lower, 3) + '.</div>' +
+        '<div class="stat-grid" style="margin-top:12px;">' + statRowSub('Keputusan sferisitas', sphChoiceOf(S) === 'anova' ? 'Terpenuhi' : 'Dianggap dilanggar', (sphChoiceOf(S) === 'anova' ? 'Tanpa koreksi (anova klasik). ' : 'Koreksi yang dipakai: ' + corrName(sphChoiceOf(S)) + '. ') + 'ε Greenhouse-Geisser ' + epsRead(S.gg)) + '</div>';
+}
+function sphericityBlock(S, n) {
+    var wasOpen = !!document.querySelector('#sph-help[open]');
+    var nTxt = n < 10 ? 'Data ini berisi ' + n + ' subjek, tergolong sedikit, sehingga uji Mauchly lemah.' : n >= 50 ? 'Data ini berisi ' + n + ' subjek, tergolong banyak, sehingga uji Mauchly mudah menyatakan nyata untuk penyimpangan kecil.' : 'Data ini berisi ' + n + ' subjek, berada di rentang menengah.';
+    var h = sphStatRows(S) + '<p class="hint">' + sphVerdictText(S) + '</p>';
+    h += '<details class="inline" id="sph-help"' + (wasOpen ? ' open' : '') + '><summary>Cara membaca angka sferisitas</summary><div>' +
+        '<p class="mp"><b>Apa aturan keputusannya?</b><br>Aturan ditetapkan sebelum melihat data, agar pilihan koreksi tidak disesuaikan dengan hasil yang diinginkan.<br>1. Uji Mauchly tidak nyata dan ε Greenhouse-Geisser ≥ 0,75: anova klasik.<br>2. Uji Mauchly tidak nyata, tetapi ε Greenhouse-Geisser &lt; 0,75: koreksi Greenhouse-Geisser.<br>3. Uji Mauchly nyata dan ε Greenhouse-Geisser &gt; 0,75: koreksi Huynh-Feldt.<br>4. Uji Mauchly nyata dan ε Greenhouse-Geisser ≤ 0,75: koreksi Greenhouse-Geisser. Bila ε mendekati batas bawah 1/(k − 1), pertimbangkan MANOVA berulang atau model campuran linear.<br>Pada k = 2 sferisitas otomatis terpenuhi, sehingga aturan ini berlaku untuk k ≥ 3.</p>' +
+        '<p class="mp"><b>Angka mana yang menentukan keputusan mengenai sferisitas?</b><br>Dua angka dibaca bersama. Nilai p uji Mauchly menjawab apakah ada bukti pelanggaran, dan ε Greenhouse-Geisser menunjukkan seberapa berat pelanggarannya. Sferisitas dianggap dilanggar bila nilai p Mauchly &lt; 0,05 atau ε Greenhouse-Geisser &lt; 0,75. Jenis koreksinya mengikuti aturan di atas.</p>' +
+        '<p class="mp"><b>Mengapa nilai ε ikut menentukan bila uji Mauchly tidak nyata?</b><br>Uji Mauchly sering gagal mendeteksi pelanggaran sferisitas yang sebenarnya ada, terutama pada subjek sedikit. Nilai ε tidak bergantung pada kuat atau lemahnya uji itu karena langsung menaksir besar pelanggaran. Pada banyak subjek, kebalikannya terjadi: uji Mauchly mudah menyatakan nyata untuk penyimpangan kecil, tetapi ε yang mendekati 1 menunjukkan bahwa koreksi nyaris tidak mengubah hasil. Patokan umum: di bawah 10 subjek tergolong sedikit, di atas 50 subjek tergolong banyak. ' + nTxt + '</p>' +
+        '<p class="mp"><b>Apa itu ε dan mengapa ada dua nilai?</b><br>Epsilon (ε) bernilai 1 bila sferisitas terpenuhi sempurna, lalu turun sampai batas bawah 1/(k − 1) = ' + fmt(S.lower, 3) + ' pada pelanggaran paling berat. Greenhouse-Geisser dan Huynh-Feldt adalah dua cara menaksir ε. Greenhouse-Geisser cenderung terlalu rendah (konservatif), sedangkan Huynh-Feldt cenderung lebih tinggi (maksimum 1). ε Greenhouse-Geisser dipakai untuk menilai berat pelanggaran. Koreksi Huynh-Feldt dipakai bila uji Mauchly nyata tetapi ε Greenhouse-Geisser di atas 0,75, sedangkan koreksi Greenhouse-Geisser dipakai pada pelanggaran yang lebih berat. Bila kedua nilai ε berdekatan, memilih salah satunya tidak mengubah kesimpulan.</p>' +
+        '<p class="mp"><b>Seberapa rendah ε dianggap sebagai pelanggaran?</b><br>Pedoman kasar: ε ≥ 0,90 hampir terpenuhi, 0,75 sampai di bawah 0,90 pelanggaran ringan, dan di bawah 0,75 pelanggaran nyata. Batas 0,75 berasal dari anjuran Girden (1992) untuk memakai koreksi Greenhouse-Geisser saat ε &lt; 0,75. Semua batas ini pedoman, bukan aturan baku. Pada data ini, ε Greenhouse-Geisser = ' + fmt(S.gg, 3) + ' (' + epsRead(S.gg) + ').</p>' +
+        '<p class="mp"><b>Apa akibatnya bila sferisitas dilanggar?</b><br>Pada anova klasik, nilai p menjadi terlalu kecil, sehingga ' + H0() + ' lebih sering ditolak dari yang seharusnya (galat tipe I melebihi 5%). Koreksi mengalikan kedua derajat bebas (df) dengan ε. Hal ini menaikkan nilai p dan mengembalikan peluang galat tipe I mendekati 5%. Nilai p anova klasik tidak dikoreksi, sedangkan nilai p setelah koreksi adalah nilai p yang dipakai untuk keputusan. Keduanya ditampilkan di tahap Hasil uji. Sebagai alternatif, uji Friedman tidak memerlukan asumsi sferisitas.</p>' +
+        '</div></details>';
+    return h;
+}
+function statRow(label, value) { return '<div class="stat-row"><span class="stat-label">' + label + '</span><span class="stat-value">' + value + '</span></div>'; }
+function noteHtml(kind, label, text) { return '<span class="tag tag-' + kind + '">' + label + '</span>' + text; }
+function setChip(id, text, kind) { var e = document.getElementById(id); if (!e) return; e.textContent = text || ''; e.className = 'chip-status' + (kind ? ' ' + kind : ''); }
+function sumRow(r, th) {
+    return '<tr><th scope="row">' + th + '</th><td>' + r.n + '</td><td>' + fmt(r.mean, 2) + '</td><td>' + fmt(r.median, 2) + '</td><td>' + fmt(r.sd, 2) + '</td><td>' + fmt(r.min, 2) + '</td><td>' + fmt(r.max, 2) + '</td></tr>';
+}
+function sumHead(first) {
+    return '<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">' + first + '</th><th>n</th><th>' + G('mean', 'Rerata (mean)') + '</th><th>' + G('median', 'Median') + '</th><th>' + G('sd', 'SD') + '</th><th>Min</th><th>Maks</th></tr></thead><tbody>';
+}
+function summaryTable(o, condLabel) {
+    var h = sumHead(esc(condLabel));
+    o.summ.forEach(function (r, j) { h += sumRow(r, '<span class="gdot" style="background:' + PALETTE[j % PALETTE.length] + '"></span>' + esc(r.name)); });
+    return h + sumRow(o.total, 'Semua data').replace('<tr>', '<tr class="tot">') + '</tbody></table></div>';
+}
+function summaryTSV(o) {
+    var out = ['\tn\tRerata (mean)\tMedian\tSD\tMin\tMaks'];
+    o.summ.concat([o.total]).forEach(function (r) { out.push([r.name, r.n, fmt(r.mean, 2), fmt(r.median, 2), fmt(r.sd, 2), fmt(r.min, 2), fmt(r.max, 2)].join('\t')); });
+    return out.join('\n');
+}
+/* Tabel pivot data mentah: baris = subjek, kolom = kondisi */
+function decOf(M) { var d = 0; M.forEach(function (r) { r.forEach(function (v) { var s = String(v); if (/e/i.test(s)) return; var q = (s.split('.')[1] || '').length; if (q > d) d = q; }); }); return Math.min(d, 4); }
+function rawPivot(o, dec) {
+    if (dec === undefined) dec = decOf(o.M);
+    var h = '<div class="raw-wrap"><table class="dt raw"><thead><tr><th style="text-align:left;">' + G('subjek', 'Identitas subjek') + '</th>';
+    o.conds.forEach(function (cn, j) { h += '<th><span class="gdot" style="background:' + PALETTE[j % PALETTE.length] + '"></span>' + esc(cn) + '</th>'; });
+    h += '</tr></thead><tbody>';
+    o.M.forEach(function (row, i) { h += '<tr><th scope="row">' + esc(o.subj[i]) + '</th>' + row.map(function (v) { return '<td>' + fmt(v, dec) + '</td>'; }).join('') + '</tr>'; });
+    return h + '</tbody></table></div>';
+}
+function shapiroTable(list) {
+    var h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th></th><th>n</th><th>' + G('swW', 'W') + '</th><th>' + G('pval', 'Nilai p') + '</th><th>Pembacaan nilai p</th></tr></thead><tbody>';
+    list.forEach(function (s) {
+        if (s.error) { h += '<tr><th scope="row">' + esc(s.label) + '</th><td>' + s.n + '</td><td colspan="3" class="left">' + esc(s.error) + '</td></tr>'; return; }
+        h += '<tr><th scope="row">' + esc(s.label) + '</th><td>' + s.n + '</td><td>' + fmt(s.W, 3) + '</td><td>' + fmtP(s.p) + '</td><td>' + (s.p >= 0.05 ? 'Tidak ada bukti menyimpang dari normal' : 'Ada bukti menyimpang dari normal') + '</td></tr>';
+    });
+    return h + '</tbody></table></div>';
+}
+/* Tabel anova pengukuran berulang dalam format luaran perangkat lunak statistika */
+function anovaCorrMode(o) { return !!(o.gg && o.hf && (o.method === 'gg' || o.method === 'hf' || o.sphBad)); }
+function anovaTable(o) {
+    var a = o.an, corr = anovaCorrMode(o), used = (o.method === 'gg' || o.method === 'hf') ? o.method : 'none', i;
+    var cs = [{ id: 'none', name: 'Tidak ada', d1: a.dfC, d2: a.dfE, p: a.p }];
+    if (corr) { cs.push({ id: 'gg', name: 'Greenhouse-Geisser', d1: o.gg.df1, d2: o.gg.df2, p: o.gg.p }); cs.push({ id: 'hf', name: 'Huynh-Feldt', d1: o.hf.df1, d2: o.hf.df2, p: o.hf.p }); }
+    var span = corr ? ' rowspan="' + cs.length + '"' : '';
+    var h = '<div class="sw-title">' + G('efekDalam', 'Efek dalam subjek') + '</div><div class="tbl-wrap"><table class="dt sw"><thead><tr><th></th>' + (corr ? '<th class="left" style="text-align:left;">' + G('sphcorr', 'Koreksi sferisitas') + '</th>' : '') + '<th>' + G('jk', 'Jumlah kuadrat') + '</th><th>' + G('df', 'df') + '</th><th>' + G('kt', 'Kuadrat tengah') + '</th><th>' + G('F', 'F') + '</th><th>' + G('pval', 'p') + '</th></tr></thead><tbody>';
+    for (i = 0; i < cs.length; i++) {
+        var c = cs[i], isUsed = corr && c.id === used;
+        h += '<tr' + (isUsed ? ' class="hlrow"' : '') + '>' + (i === 0 ? '<th scope="row"' + span + '>' + G('kondisi', 'Kondisi') + '</th>' : '') + (corr ? '<td class="left">' + c.name + (isUsed ? '<span class="subv">dipakai untuk keputusan</span>' : '') + '</td>' : '') + '<td>' + fmt(a.ssC, 3) + '</td><td>' + dfTxt(c.d1) + '</td><td>' + fmt(a.ssC / c.d1, 3) + '</td><td>' + fmt(a.F, 2) + '</td><td>' + fmtP(c.p) + '</td></tr>';
+    }
+    for (i = 0; i < cs.length; i++) {
+        var e = cs[i];
+        h += '<tr>' + (i === 0 ? '<th scope="row"' + span + '>' + G('galatDalam', 'Galat') + '</th>' : '') + (corr ? '<td class="left">' + e.name + '</td>' : '') + '<td>' + fmt(a.ssE, 3) + '</td><td>' + dfTxt(e.d2) + '</td><td>' + fmt(a.ssE / e.d2, 3) + '</td><td></td><td></td></tr>';
+    }
+    h += '</tbody></table></div><div class="sw-note">Catatan. ' + G('ss3', 'Jumlah kuadrat tipe III') + '.</div>';
+    h += '<div class="sw-title" style="margin-top:18px;">' + G('efekAntar', 'Efek antarsubjek') + '</div><div class="tbl-wrap"><table class="dt sw"><thead><tr><th></th><th>' + G('jk', 'Jumlah kuadrat') + '</th><th>' + G('df', 'df') + '</th><th>' + G('kt', 'Kuadrat tengah') + '</th><th>' + G('F', 'F') + '</th><th>' + G('pval', 'p') + '</th></tr></thead><tbody><tr><th scope="row">' + G('galatAntar', 'Galat') + '</th><td>' + fmt(a.ssS, 3) + '</td><td>' + a.dfS + '</td><td>' + fmt(a.msS, 3) + '</td><td></td><td></td></tr></tbody></table></div><div class="sw-note">Catatan. ' + G('ss3', 'Jumlah kuadrat tipe III') + '.</div>';
+    return h;
+}
+/* Ringkasan keputusan di bawah tabel anova */
+function decisionBox(o) {
+    var t = o.test;
+    return '<div class="stat-grid" style="margin-top:14px;">' + statRow('Uji yang dipakai untuk keputusan', esc(TEST_NAMES[o.method])) + statRow(G('F', 'F') + ' (df ' + dfPair(t.df1, t.df2) + ')', fmt(t.stat, 2)) + statRow(G('crit', 'Nilai kritis'), fmt(t.crit, 2)) + statRow(G('pval', 'Nilai p') + ' yang dipakai', fmtP(t.p)) + '</div>';
+}
+/* Keterangan di bawah tabel: mengapa tabel sederhana atau tabel koreksi yang tampil */
+function ggNote(o) {
+    if (o.method === 'friedman') return '';
+    var s, ch = o.sphChoice, rec = corrName(ch);
+    if ((o.method === 'gg' || o.method === 'hf') && o.sphBad) { var used = corrName(o.method), eps = o.method === 'gg' ? o.gg.eps : o.hf.eps; s = 'Sferisitas dianggap dilanggar, sehingga tabel menampilkan tiga baris koreksi. Baris yang disorot (' + used + ', ε = ' + fmt(eps, 3) + ') dipakai untuk keputusan.' + (o.method !== ch ? ' Aturan keputusan memilih ' + rec + ', sehingga pilihan ini berbeda dari saran.' : ''); }
+    else if (o.method === 'gg' || o.method === 'hf') s = 'Sferisitas terpenuhi, tetapi koreksi ' + corrName(o.method) + ' dipilih. Tabel menampilkan tiga baris koreksi, dan baris yang disorot dipakai untuk keputusan. Koreksi ini sah dipakai, tetapi sedikit lebih konservatif.';
+    else if (o.sphBad && o.gg) s = 'Sferisitas dianggap dilanggar, tetapi anova klasik yang dipilih, sehingga baris Tidak ada yang disorot. Bandingkan dengan baris ' + rec + ', yang dianjurkan pada kondisi ini.';
+    else if (o.sph.error) s = 'Sferisitas tidak dapat diperiksa pada data ini, sehingga tabel sederhana yang ditampilkan.';
+    else s = 'Sferisitas terpenuhi, sehingga koreksi tidak diperlukan dan tabel sederhana yang ditampilkan. Bila sferisitas dilanggar, tabel berubah menjadi tiga baris koreksi.';
+    var wo = !!document.querySelector('#tbl-help[open]');
+    return '<p class="hint">' + s + '</p><details class="inline" id="tbl-help"' + (wo ? ' open' : '') + '><summary>Cara membaca tabel anova</summary><div>' +
+        '<p class="mp"><b>Dua tabel.</b> Tabel efek dalam subjek membandingkan kondisi di dalam subjek yang sama dan menjawab pertanyaan uji. Tabel efek antarsubjek memperlihatkan besar variasi antarsubjek yang dikeluarkan dari galat.</p>' +
+        '<p class="mp"><b>Asal F.</b> Kuadrat tengah adalah jumlah kuadrat dibagi df. F adalah kuadrat tengah kondisi dibagi kuadrat tengah galat.</p>' +
+        '<p class="mp"><b>Mengapa tabel antarsubjek tidak memiliki F.</b> Perbedaan tingkat dasar antarsubjek bukan hal yang ingin diuji. Variasinya dipisahkan agar tidak menggelembungkan galat.</p>' +
+        '<p class="mp"><b>Mengapa muncul tiga baris koreksi.</b> Bila sferisitas dilanggar, df dikalikan ε. Jumlah kuadrat dan F tidak berubah, sedangkan df, kuadrat tengah, dan nilai p berubah. Nilai p pada baris yang disorot dipakai untuk keputusan.</p>' +
+        '<p class="mp">Susunan tabel mengikuti keluaran perangkat lunak statistika, sehingga mudah dicocokkan dengan hasil analisismu sendiri.</p></div></details>';
+}
+
+function friedmanTable(o) {
+    var f = o.fr, h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Kondisi</th><th>Jumlah peringkat</th><th>Rerata peringkat</th><th>' + G('median', 'Median') + '</th></tr></thead><tbody>';
+    o.conds.forEach(function (cn, j) { h += '<tr><th scope="row"><span class="gdot" style="background:' + PALETTE[j % PALETTE.length] + '"></span>' + esc(cn) + '</th><td>' + fmt(f.sumRanks[j], 1) + '</td><td>' + fmt(f.meanRanks[j], 2) + '</td><td>' + fmt(o.summ[j].median, 2) + '</td></tr>'; });
+    h += '</tbody></table></div><div class="stat-grid" style="margin-top:12px;">' + statRow('Statistik uji', 'χ²(' + f.df + ', n = ' + f.n + ') = ' + fmt(f.Q, 2)) + statRow(G('crit', 'Nilai kritis'), fmt(f.crit, 2)) + statRow(G('pval', 'Nilai p'), fmtP(f.p)) + statRow('Keputusan', f.p < 0.05 ? 'Tolak ' + H0() : 'Gagal menolak ' + H0()) + '</div>';
+    return h;
+}
+
+/* ---- dari kalkulator ---- */
+function postTable(o) {
+    var P = o.post, par = P.kind === 'param', h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Pasangan kondisi</th>';
+    if (par) h += '<th>Selisih rerata</th><th>' + G('ciAdj', 'CI 95% terkoreksi') + ' (' + ADJ_NAMES[P.adj] + ')</th><th>t</th>';
+    else h += '<th>Median selisih</th><th>W<sup>+</sup></th><th>n selisih &ne; 0</th>';
+    h += '<th>Nilai p</th><th>p terkoreksi (' + ADJ_NAMES[P.adj] + ')</th><th>' + G(par ? 'dz' : 'rrb', par ? 'd<sub>z</sub>' : 'r<sub>rb</sub>') + '</th><th>Keputusan</th></tr></thead><tbody>';
+    P.pairs.forEach(function (p) {
+        var ef = par ? p.dz : p.rb, cat = par ? categoryD(ef) : categoryRB(ef);
+        h += '<tr' + (p.sig ? ' class="hlrow"' : '') + '><th scope="row" style="white-space:nowrap;">' + esc(p.label) + '</th>';
+        if (par) h += '<td>' + fmt(p.diff, 2) + '</td><td style="white-space:nowrap;">' + fmt(p.loA, 2) + ' sampai ' + fmt(p.hiA, 2) + '</td><td>' + fmt(p.t, 2) + '</td>';
+        else h += '<td>' + fmt(p.diff, 2) + '</td><td>' + fmt(p.W, 1) + '</td><td>' + p.nz + '</td>';
+        h += '<td>' + fmtP(p.p) + '</td><td>' + fmtP(p.padj) + '</td><td style="white-space:nowrap;">' + fmt(ef, 2) + ' (' + cat + ')</td><td style="white-space:nowrap;">' + (p.sig ? 'Berbeda nyata' : 'Tidak nyata') + '</td></tr>';
+    });
+    return h + '</tbody></table></div>';
+}
+
+function postTSV(o) {
+    var par = o.post.kind === 'param', out = [par ? ['Pasangan', 'Selisih rerata', 'CI bawah', 'CI atas', 't', 'df', 'p', 'p terkoreksi', 'dz'] : ['Pasangan', 'Median selisih', 'W+', 'n selisih tidak nol', 'p', 'p terkoreksi', 'rank-biserial']];
+    out[0] = out[0].join('\t'); out = [out[0]];
+    o.post.pairs.forEach(function (p) {
+        out.push((par ? [p.label, fmt(p.diff, 3), fmt(p.loA, 3), fmt(p.hiA, 3), fmt(p.t, 3), p.df, fmtP(p.p), fmtP(p.padj), fmt(p.dz, 3)] : [p.label, fmt(p.diff, 3), fmt(p.W, 1), p.nz, fmtP(p.p), fmtP(p.padj), fmt(p.rb, 3)]).join('\t'));
+    });
+    return out.join('\n');
+}
+
+function effHtml(o) {
+    var h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Ukuran efek</th><th>Nilai</th><th>Kategori</th></tr></thead><tbody>', rows;
+    if (o.method === 'friedman') {
+        h += '<tr><th scope="row">' + G('kendallW', 'W Kendall') + '</th><td>' + fmt(o.eff.v, 3) + '</td><td>' + o.eff.cat + '</td></tr>';
+        rows = [['Sangat kecil', '< 0,1'], ['Kecil', '0,1 sampai < 0,3'], ['Sedang', '0,3 sampai < 0,5'], ['Besar', '≥ 0,5']];
+    } else {
+        h += '<tr><th scope="row">' + G('etaP', 'η²<sub>p</sub>') + '</th><td>' + fmt(o.eff.etaP, 3) + '</td><td>' + o.eff.catEta + '</td></tr>';
+        h += '<tr><th scope="row">' + G('omegaP', 'ω²<sub>p</sub>') + '</th><td>' + fmt(o.eff.omegaP, 3) + '</td><td>' + o.eff.catOmega + '</td></tr>';
+        h += '<tr><th scope="row">' + G('etaG', 'η²<sub>G</sub>') + '</th><td>' + fmt(o.eff.etaG, 3) + '</td><td>tidak dikategorikan</td></tr>';
+        rows = [['Sangat kecil', '< 0,01'], ['Kecil', '0,01 sampai < 0,06'], ['Sedang', '0,06 sampai < 0,14'], ['Besar', '≥ 0,14']];
+    }
+    h += '</tbody></table></div>';
+    var wo = !!document.querySelector('#eff-cls[open]');
+    h += '<details class="inline" id="eff-cls"' + (wo ? ' open' : '') + ' style="margin-top:16px"><summary><span>Klasifikasi ukuran efek (' + (o.method === 'friedman' ? 'W Kendall' : 'η²<sub>p</sub> dan ω²<sub>p</sub>') + ')</span></summary><div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Kategori</th><th>Rentang</th></tr></thead><tbody>';
+    rows.forEach(function (r) { h += '<tr><th scope="row">' + r[0] + '</th><td>' + r[1] + '</td></tr>'; });
+    h += '</tbody></table></div><p class="hint">Batas klasifikasi mengikuti catatan metode di bagian bawah halaman dan dibaca sebagai panduan kasar.' + (o.method === 'gg' || o.method === 'hf' ? ' Pada koreksi sferisitas, ukuran efek tetap dihitung dari F tanpa koreksi.' : '') + '</p></div></details>';
+    return h;
+}
+
+/* ===================== Tayangan anova pengukuran berulang ===================== */
+var $ = function (id) { return document.getElementById(id); };
+var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+var ALPHA = 0.05, NC = 200, KD = 36;
+var DD_PICK = {};
+
+/* tambahan glosarium khusus tayangan */
+GL['galat1'] = 'Galat tipe I (positif palsu): menolak H0 padahal H0 benar. Peluangnya sama dengan α, yaitu sekitar 5%.';
+GL['galat2'] = 'Galat tipe II (negatif palsu): gagal menolak H0 padahal H0 salah. Peluangnya mengecil bila jumlah subjek bertambah atau efeknya besar.';
+GL['power'] = 'Power (daya uji): peluang menolak H0 ketika H0 memang salah. Dipengaruhi besar efek, jumlah subjek, dan besar galat.';
+GL['galat-s'] = 'Galat sampling: selisih antara hasil sampel dan keadaan populasi yang muncul karena yang diamati adalah sebagian subjek saja.';
+GL['pencilan'] = 'Pencilan: nilai yang letaknya jauh dari sebagian besar data.';
+GL['profil'] = 'Plot profil: tiap garis tipis adalah satu subjek yang diukur pada semua kondisi. Garis tebal biru menghubungkan rerata (atau median) tiap kondisi.';
+
+function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+function wpick(items) { var t = 0; items.forEach(function (i) { t += i[1]; }); var r = Math.random() * t; for (var q = 0; q < items.length; q++) { r -= items[q][1]; if (r <= 0) return items[q][0]; } return items[0][0]; }
+function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function randn() { var u = 0; while (u === 0) u = Math.random(); var v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function fmtInt(n) { return fmt(n, 0); }
+function chipHtml(kind, text) { return '<span class="chip-status ' + kind + '">' + text + '</span>'; }
+
+function applyTheme(t) {
+    if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); else document.documentElement.removeAttribute('data-theme');
+    var b = $('themebtn'); if (b) b.setAttribute('aria-checked', t === 'dark' ? 'true' : 'false');
+}
+function toggleTheme() {
+    var d = document.documentElement.getAttribute('data-theme') === 'dark', t = d ? 'light' : 'dark';
+    applyTheme(t); try { localStorage.setItem('tema-tayangan', t); } catch (e) {}
+    drawCharts();
+}
+applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+
+/* ===== Konteks skenario ===== */
+var SCN = [
+    { id: 1, subj: 'Sapi', cond: 'Waktu pengukuran', vName: 'Bobot badan', unit: 'kg', popn: 'sapi Bali', conds: ['Awal', 'Pekan 2', 'Pekan 4', 'Pekan 6'], ordered: true, mu: 200, sd: 18, dec: 1, note: 'Sapi ditimbang pada empat waktu' },
+    { id: 2, subj: 'Anjing', cond: 'Waktu setelah makan', vName: 'Kadar glukosa darah', unit: 'mg/dL', popn: 'anjing dewasa sehat', conds: ['0 menit', '30 menit', '60 menit', '120 menit'], ordered: true, mu: 105, sd: 12, dec: 0, note: 'Glukosa darah anjing pada empat waktu' },
+    { id: 3, subj: 'Kucing', cond: 'Waktu pascaoperasi', vName: 'Skor nyeri', unit: 'skala 0 sampai 10', popn: 'kucing yang menjalani ovariohisterektomi', conds: ['6 jam', '24 jam', '48 jam'], ordered: true, mu: 5, sd: 1.4, dec: 1, lo: 0, hi: 10, note: 'Skor nyeri kucing pada tiga waktu' },
+    { id: 4, subj: 'Kuda', cond: 'Waktu pengukuran', vName: 'Suhu rektal', unit: '°C', popn: 'kuda dewasa sehat', conds: ['Pagi', 'Siang', 'Sore'], ordered: false, mu: 37.8, sd: 0.35, dec: 2, note: 'Suhu rektal kuda pada tiga waktu' },
+    { id: 5, subj: 'Kambing', cond: 'Fase transportasi', vName: 'Denyut jantung', unit: 'kali/menit', popn: 'kambing kacang', conds: ['Sebelum', 'Saat transportasi', 'Sesudah'], ordered: false, mu: 90, sd: 10, dec: 0, note: 'Denyut jantung kambing pada tiga fase' }
+];
+var state = { mode: 'random', ctxId: null, n: 12, pop: null, sample: null, an: null, revealed: false, history: [], sim: null, adj: 'holm' };
+
+/* ===== Populasi dan sampel ===== */
+function sunflower(K, R) { var pts = []; for (var i = 0; i < K; i++) { var r = R * Math.sqrt((i + 0.5) / K), t = i * 2.399963229728653; pts.push([r * Math.cos(t), r * Math.sin(t)]); } return pts; }
+function contrast(k, ord, dir) {
+    var u = []; for (var g = 0; g < k; g++) u.push(-1 + 2 * g / (k - 1));
+    if (ord) return u.map(function (x) { return x * dir; });
+    var s; do { s = shuffle(u); } while (s.every(function (x, q) { return x === u[q]; }));
+    return s;
+}
+function makePopRM(ctx) {
+    var k = ctx.conds.length, i, j;
+    var str = wpick([[0, 3], [0.4, 2], [0.8, 2], [1.4, 2]]);
+    var shape = wpick([['normal', 5], ['hetero', 2.5], ['skew', 2.5]]);
+    var u = contrast(k, ctx.ordered, Math.random() < 0.5 ? -1 : 1);
+    var sk = 0.9, Ee = Math.exp(sk * sk / 2), Se = Math.sqrt((Math.exp(sk * sk) - 1) * Math.exp(sk * sk));
+    var M = [], tm = [];
+    for (j = 0; j < k; j++) tm.push(ctx.mu + str * ctx.sd * 0.8 * u[j] * 0.5);
+    for (i = 0; i < NC; i++) {
+        var so = ctx.sd * 1.2 * randn(), sl = shape === 'hetero' ? ctx.sd * 0.8 * randn() : 0, row = [];
+        for (j = 0; j < k; j++) {
+            var z = randn(), e = shape === 'skew' ? (Math.exp(sk * z) - Ee) / Se * ctx.sd * 0.55 : ctx.sd * 0.35 * z;
+            var v = tm[j] + so + sl * u[j] + e;
+            if (ctx.lo !== undefined) v = Math.max(ctx.lo, v);
+            if (ctx.hi !== undefined) v = Math.min(ctx.hi, v);
+            v = Math.max(ctx.mu * 0.02, v);
+            row.push(+v.toFixed(ctx.dec));
+        }
+        M.push(row);
+    }
+    var layout = sunflower(KD, 26);
+    return { ctx: ctx, M: M, k: k, tm: tm, tr: str > 0, str: str, shape: shape, layout: layout, dotOrder: shuffle(layout.map(function (_, q) { return q; })) };
+}
+function sampleIdx(N, n) { var idx = []; for (var i = 0; i < N; i++) idx.push(i); for (i = 0; i < n; i++) { var j = i + Math.floor(Math.random() * (N - i)); var t = idx[i]; idx[i] = idx[j]; idx[j] = t; } return idx.slice(0, n); }
+function pad2(q) { return (q < 10 ? '0' : '') + q; }
+function dataOfIdx(idx) {
+    var p = state.pop;
+    return { subj: idx.map(function (q) { return 'S' + (q + 1 < 100 ? pad2(q + 1) : q + 1); }), conds: p.ctx.conds.slice(), M: idx.map(function (q) { return p.M[q].slice(); }) };
+}
+function analyzeData(data) {
+    var o0 = analyzeRM(data, 'anova', state.adj), rec = o0.sg, o = o0;
+    if ((rec === 'gg' || rec === 'hf') && !o0[rec]) rec = 'anova';
+    if (rec !== 'anova') o = analyzeRM(data, rec, state.adj);
+    var c = state.pop.ctx;
+    o.vName = c.vName + (c.unit ? ' (' + c.unit + ')' : ''); o.cond = c.cond; o.subj0 = c.subj; o.popName = c.popn;
+    o.ctx = { vName: c.vName, cond: c.cond, subj: c.subj, popName: c.popn };
+    var tests = { anova: o0.an.p, gg: o0.gg ? o0.gg.p : null, hf: o0.hf ? o0.hf.p : null, friedman: o0.fr.p };
+    return { o: o, rec: rec, tests: tests, p: o.test.p };
+}
+function quickP(data) {
+    var o0 = analyzeRM(data, 'anova', 'holm'), rec = o0.sg;
+    if ((rec === 'gg' || rec === 'hf') && !o0[rec]) rec = 'anova';
+    return { p: rec === 'anova' ? o0.an.p : rec === 'gg' ? o0.gg.p : rec === 'hf' ? o0.hf.p : o0.fr.p, rec: rec };
+}
+function drawSample() {
+    var idx = sampleIdx(NC, state.n);
+    state.sample = { idx: idx, hl: shuffle(state.pop.dotOrder) };
+    state.an = analyzeData(dataOfIdx(idx));
+    state.history.push({ p: state.an.p, n: state.n });
+    if (state.history.length > 30) state.history.shift();
+}
+
+/* ===== Tahap: skenario dan populasi ===== */
+function chooseCtx() {
+    if (state.mode === 'pick' && state.ctxId) return SCN.filter(function (s) { return s.id === state.ctxId; })[0];
+    var alt = SCN.filter(function (s) { return !state.pop || s !== state.pop.ctx; });
+    return pick(alt.length ? alt : SCN);
+}
+function scnMenuItems() {
+    var out = [];
+    [3, 4].forEach(function (k) {
+        var g = SCN.filter(function (x) { return x.conds.length === k; }).sort(function (a, b) { return a.subj.localeCompare(b.subj, 'id'); });
+        if (!g.length) return;
+        out.push({ h: k + ' kondisi' });
+        g.forEach(function (x) { out.push({ v: String(x.id), t: x.subj + ': ' + lcFirst(x.vName), s: x.note }); });
+    });
+    return out;
+}
+function renderScenario() {
+    var c = state.pop.ctx;
+    $$('[data-act="mode"]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.v === state.mode ? 'true' : 'false'); });
+    $('row-random').hidden = state.mode !== 'random'; $('row-pick').hidden = state.mode !== 'pick';
+    if (state.mode === 'pick') ddRender('dd-scn', scnMenuItems(), String(c.id));
+    $('scn-sum').innerHTML = '<div class="box"><div class="concl-title">Skenario aktif</div>' +
+        statRow('Subjek', esc(c.subj)) + statRow('Kondisi', esc(c.cond) + ' (' + esc(c.conds.join(', ')) + ')') +
+        statRow('Variabel numeris', esc(c.vName) + (c.unit ? ' (' + esc(c.unit) + ')' : '')) +
+        statRow('Populasi sasaran', esc(c.popn)) + statRow('Ukuran populasi', fmtInt(NC) + ' subjek, tiap subjek diukur pada ' + c.conds.length + ' kondisi') + '</div>';
+    setChip('chip-scn', c.conds.length + ' kondisi' + (state.mode === 'pick' ? ', dipilih sendiri' : ', acak'));
+}
+var ARROW = '<svg class="pop-arrow" viewBox="0 0 22 34" aria-hidden="true"><path d="M11 2v26M4 21l7 8 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function circleSvg(cls, col, hlCount, style) {
+    var p = state.pop, set = {}, hl = state.sample.hl.slice(0, hlCount); hl.forEach(function (k) { set[k] = 1; });
+    var s = '<svg class="' + cls + '" viewBox="0 0 60 60"' + (style ? ' style="' + style + '"' : '') + ' aria-hidden="true"><circle cx="30" cy="30" r="29" fill="#8e8e93" fill-opacity=".08" stroke="#8e8e93" stroke-opacity=".55" stroke-width="1.2"/>';
+    p.layout.forEach(function (pt, k) { var on = set[k]; s += '<circle cx="' + (30 + pt[0] * 0.98).toFixed(1) + '" cy="' + (30 + pt[1] * 0.98).toFixed(1) + '" r="' + (on ? 2.3 : 1.4) + '" fill="' + col + '"' + (on ? '' : ' fill-opacity=".3"') + '/>'; });
+    return s + '</svg>';
+}
+function renderPop() {
+    var o = state.an.o, c = state.pop.ctx, n = state.n, k = c.conds.length, hl = Math.max(1, Math.round(n * KD / NC));
+    $('pop-intro').innerHTML = 'Populasi berisi ' + fmtInt(NC) + ' subjek. Setiap subjek memiliki satu nilai pada setiap kondisi. Hal yang kita amati adalah sampel, tetapi kita ingin menyimpulkan keadaan populasi. Lingkaran digambar dengan ' + KD + ' titik, sehingga proporsi titik terang mengikuti proporsi sampel. Titik yang sama menunjukkan subjek yang sama pada semua kondisi.';
+    var h = '<div class="pops"><div class="pop-col">' + circleSvg('pop-big', '#0071e3', hl) + '<div class="pop-sub">Populasi: ' + fmtInt(NC) + ' ' + esc(lcFirst(c.subj)) + '</div></div></div>';
+    h += '<div class="pops" style="margin-top:2px">' + ARROW + '</div>';
+    h += '<div class="pops" style="flex-wrap:wrap">';
+    c.conds.forEach(function (cn, j) {
+        h += '<div class="pop-col" style="max-width:' + (k > 3 ? 150 : 190) + 'px">' + circleSvg('pop-small', PALETTE[j % PALETTE.length], hl) + '<div class="pop-sub"><span class="gdot" style="background:' + PALETTE[j % PALETTE.length] + '"></span>' + esc(cn) + '</div></div>';
+    });
+    h += '</div>';
+    $('pop-body').innerHTML = h + '<p class="cap center">Sampel berisi ' + n + ' ' + esc(lcFirst(c.subj)) + ' yang diambil secara acak sederhana dari ' + fmtInt(NC) + ' ' + esc(lcFirst(c.subj)) + ' dalam populasi. Tiap ' + esc(lcFirst(c.subj)) + ' yang terpilih diukur ' + esc(lcFirst(c.vName)) + ' pada ' + k + ' ' + esc(lcFirst(c.cond)) + ', sehingga kita mendapatkan ' + n + ' &times; ' + k + ' = ' + (n * k) + ' pengamatan.</p>';
+    $('pop-body').insertAdjacentHTML('beforeend', '<div class="sub sep"><div class="sub-title">Data mentah sampel: ' + esc(lcFirst(c.vName)) + (c.unit ? ' (' + esc(c.unit) + ')' : '') + '</div>' + rawPivot(o, c.dec) + '<p class="hint">Satu baris adalah satu ' + esc(lcFirst(c.subj)) + ' dan satu kolom adalah satu ' + esc(lcFirst(c.cond)) + ', sehingga setiap sel berisi hasil pengukuran satu ' + esc(lcFirst(c.subj)) + ' pada satu ' + esc(lcFirst(c.cond)) + '. Tabel ini adalah data yang dianalisis pada tahap-tahap berikutnya. Bentuk ini disebut format lebar. Kalkulator memakai format panjang, yaitu tiga kolom (subjek, kondisi, nilai) dengan satu baris per pengukuran.</p></div>');
+    setChip('chip-pop', 'n = ' + n + ' subjek');
+}
+function renderHyp() {
+    var o = state.an.o, hy = hypothesisHtml(o, o.ctx);
+    $('hyp-body').innerHTML = '<div class="box"><div class="concl-title">Rumusan hipotesis</div><p class="ip"><b>' + H0() + '</b>: ' + hy.h0 + '</p><p class="ip"><b>H<sub>1</sub></b>: ' + hy.h1 + '</p></div>' +
+        '<div class="box"><div class="concl-title">Notasi</div>' + hy.notation.map(function (x) { return '<p class="ip">' + x + '</p>'; }).join('') + '<p class="hint">H<sub>1</sub> tidak menyebut kondisi mana yang berbeda karena pertanyaan itu dijawab oleh uji lanjutan. Rumusan ini mengikuti uji yang dianjurkan pada tahap Pilih uji (' + esc(lcFirst(TEST_NAMES[o.method])) + ').</p></div>';
+}
+function renderDesc() {
+    var o = state.an.o, c = o.ctx;
+    $('desc-intro').innerHTML = 'Tahap ini meringkas data tiap kondisi dalam tabel dan grafik. Perhatikan pusat data (' + G('median') + ' dan rerata), sebaran (SD dan lebar kotak), serta ' + G('pencilan') + ' sebelum menguji.';
+    var h = '<div class="sub">' + summaryTable(o, c.cond) + '</div>';
+    h += '<div class="sub"><div class="sub-title">Plot ' + G('profil', 'profil') + ' tiap subjek</div><div class="chart-wrap"><div data-chart="prof"></div></div><p class="hint">Tiap garis tipis adalah satu ' + esc(lcFirst(c.subj)) + '. Garis yang hampir sejajar menandakan perbedaan antarsubjek yang stabil, dan inilah variasi yang dikeluarkan dari galat pada anova pengukuran berulang.</p></div>';
+    h += '<div class="sub"><div class="sub-title">Boxplot per kondisi</div><div class="chart-wrap"><div data-chart="box"></div></div><p class="hint">Kotak membentang dari kuartil 1 sampai kuartil 3. Garis tebal di dalam kotak adalah median, lingkaran putih adalah rerata, dan lingkaran kosong di luar kumis adalah pencilan.</p></div>';
+    $('desc-body').innerHTML = h;
+    setChip('chip-desc', o.n + ' subjek × ' + o.k + ' kondisi');
+}
+function asmVerdict(o) {
+    if (o.nonNormal) return { kind: 'warn', label: 'Normalitas belum terpenuhi', msg: 'Shapiro-Wilk pada residu model menunjukkan penyimpangan dari normal (' + pShort(o.resNormality.p) + '). Pertimbangkan uji Friedman.', chip: 'Normalitas dilanggar', ck: 'warn' };
+    if (o.sphBad) return { kind: 'warn', label: 'Sferisitas dianggap dilanggar', msg: o.sph.error ? 'Sferisitas tidak dapat diperiksa pada data ini. Gunakan koreksi Greenhouse-Geisser.' : 'Residu tidak menyimpang dari normal, tetapi sferisitas dianggap dilanggar: ' + sphReason(o) + '. Gunakan koreksi ' + corrName(o.sphChoice) + '.', chip: 'Sferisitas dilanggar', ck: 'warn' };
+    return { kind: 'ok', label: 'Terpenuhi', msg: 'Residu tidak menyimpang dari normal dan sferisitas terpenuhi. Syarat anova pengukuran berulang klasik terpenuhi.', chip: 'Syarat parametrik terpenuhi', ck: 'ok' };
+}
+function renderAsm() {
+    var o = state.an.o, S = o.sph, av = asmVerdict(o), wasOpen = !!document.querySelector('#asm-grp[open]'), sj = esc(lcFirst(o.subj0));
+    var h = '<div class="sub"><div class="sub-title">a. Independensi dan kelengkapan data</div><div class="box">Sampel ditarik acak sederhana, sehingga ' + sj + ' yang satu tidak memengaruhi ' + sj + ' yang lain. Nilai dalam satu ' + sj + ' memang saling berkaitan, dan keterkaitan itulah yang ditangani oleh model. Asumsi independensi antarsubjek dipenuhi lewat desain pengambilan data dan tidak diuji secara statistika. Setiap ' + sj + ' memiliki nilai pada semua kondisi (' + o.n + ' &times; ' + o.k + ' = ' + o.N + ' pengamatan). Bila ada ' + sj + ' yang kehilangan nilai pada sebagian kondisi, ' + sj + ' itu dikeluarkan dari analisis.</div></div>';
+    h += '<div class="sub sep"><div class="sub-title">b. Normalitas ' + G('residu', 'residu') + ' (' + G('shapiro', 'uji Shapiro-Wilk') + ')</div>';
+    if (o.smallN) h += '<div class="box" style="margin-bottom:10px">' + noteHtml('warn', 'Perhatian', esc(o.smallN)) + '</div>';
+    h += shapiroTable([o.resNormality]) + '<div class="qq-wrap" data-chart="qqres"></div>';
+    h += '<details class="inline" id="asm-grp"' + (wasOpen ? ' open' : '') + '><summary>Normalitas per kondisi</summary><div>' + shapiroTable(o.normCond) + '<div class="qq-wrap" data-chart="qqgrp"></div><p class="hint">Hasil per kondisi membantu melihat kondisi mana yang menyimpang, tetapi tidak menentukan pilihan uji. Tiap kondisi berisi sedikit data, dan makin banyak kondisi yang diuji, makin besar peluang salah satunya ditolak secara kebetulan.</p></div></details></div>';
+    h += '<div class="sub sep"><div class="sub-title">c. ' + G('sferisitas', 'Sferisitas') + ' (' + G('mauchly', 'uji Mauchly') + ')</div>';
+    var sphInner = S.error ? '<p class="hint" style="margin-top:0">' + esc(S.error) + '</p>' : sphericityBlock(S, o.n);
+    if (o.nonNormal) {
+        var wasSkip = !!document.querySelector('#sph-skip[open]');
+        h += '<div class="box">' + noteHtml('info', 'Tidak perlu dibaca', 'Normalitas residu tidak terpenuhi (' + pShort(o.resNormality.p) + '), sehingga uji Friedman yang dianjurkan. Uji Friedman tidak mensyaratkan sferisitas, jadi hasil uji Mauchly tidak memengaruhi pilihan uji dan tidak perlu dibaca.') + '</div>';
+        h += '<details class="inline" id="sph-skip"' + (wasSkip ? ' open' : '') + ' style="margin-top:10px"><summary>Tampilkan hasil uji sferisitas (tidak dipakai untuk keputusan)</summary><div>' + sphInner + '</div></details>';
+    } else h += sphInner;
+    h += '</div>';
+    var rs = o.resNormality, cg = o.nonNormal ? '' : statRow('Pola pengukuran', 'Berulang (tiap subjek diukur pada semua kondisi)');
+    cg += statRow(G('shapiro', 'Nilai p Shapiro-Wilk (residu)'), rs.error ? 'tidak dapat dihitung' : fmtP(rs.p) + (rs.p >= 0.05 ? ' (tidak menyimpang)' : ' (menyimpang)'));
+    if (!o.nonNormal) {
+        cg += statRow(G('mauchly', 'Nilai p uji Mauchly'), S.error ? 'tidak dapat dihitung' : fmtP(S.p) + (S.p >= 0.05 ? ' (tidak ada bukti dilanggar)' : ' (ada bukti dilanggar)'));
+        cg += statRow(G('eps', 'ε') + ' ' + G('gg', 'Greenhouse-Geisser'), S.error ? 'tidak dapat dihitung' : fmt(S.gg, 3) + (S.gg >= 0.75 ? ' (≥ 0,75)' : ' (< 0,75, pelanggaran nyata)'));
+        cg += statRow('Sferisitas', o.sphBad ? 'dianggap dilanggar' : 'terpenuhi');
+        cg += statRow('Koreksi menurut aturan keputusan', o.sphChoice === 'anova' ? 'tidak ada (anova klasik)' : corrName(o.sphChoice));
+    }
+    h += '<div class="sub sep"><div class="sub-title">d. Ringkasan syarat uji parametrik</div><div class="stat-grid">' + cg + '</div><div class="box">' + noteHtml(av.kind, av.label, esc(av.msg)) + '</div>' + conflictBox(state.an) + '</div>';
+    $('asm-body').innerHTML = h;
+    setChip('chip-asm', av.chip, av.ck);
+}
+function treeBox(o, rec) {
+    var S = o.sph, yes = rec !== 'friedman', mn = yes && !S.error && S.p < 0.05, nb = yes && !mn;
+    var A = function (c) { return c ? ' on' : ''; };
+    var li = function (c) { return '<li' + (c ? ' class="on"' : '') + '>'; };
+    var leaf = function (name, on) { return '<div class="tnode res' + A(on) + '"><span>' + name + '</span></div>'; };
+    var lab = function (txt, c) { return '<span class="tlab' + A(c) + '">' + txt + '</span>'; };
+    var L = {
+        anova: 'Anova pengukuran berulang ' + G('t-anova', 'klasik'),
+        gg: 'Anova pengukuran berulang ' + G('t-gg', 'koreksi Greenhouse-Geisser'),
+        hf: 'Anova pengukuran berulang ' + G('t-hf', 'koreksi Huynh-Feldt'),
+        friedman: 'Uji ' + G('t-friedman', 'Friedman')
+    };
+    var t = '<div class="org-wrap"><ul class="org sph"><li>';
+    t += '<div class="tnode on"><b>1.</b> Apakah ' + G('residu', 'residu') + ' model<br>terdistribusi normal?<small>Uji ' + G('shapiro', 'Shapiro-Wilk') + ' pada residu: p &gt; 0,05, dibantu Q-Q plot</small></div>';
+    t += '<ul class="on">';
+    t += li(yes) + lab('Ya', yes) + '<div class="tnode' + A(yes) + '"><b>2.</b> Apakah uji ' + G('mauchly', 'Mauchly') + ' signifikan?<small>p &lt; 0,05 berarti ada bukti ' + G('sferisitas', 'sferisitas') + ' dilanggar</small></div>';
+    t += '<ul' + (yes ? ' class="on"' : '') + '>';
+    t += li(nb) + lab('Tidak signifikan', nb) + '<div class="tnode' + A(nb) + '"><b>3a.</b> Apakah ' + G('eps', 'ε') + ' ' + G('gg', 'Greenhouse-Geisser') + ' &ge; 0,75?</div><ul' + (nb ? ' class="on"' : '') + '>' +
+        li(nb && rec === 'anova') + lab('Ya', nb && rec === 'anova') + leaf(L.anova, nb && rec === 'anova') + '</li>' +
+        li(nb && rec === 'gg') + lab('Tidak', nb && rec === 'gg') + leaf(L.gg, nb && rec === 'gg') + '</li></ul></li>';
+    t += li(mn) + lab('Signifikan', mn) + '<div class="tnode' + A(mn) + '"><b>3b.</b> Apakah ' + G('eps', 'ε') + ' ' + G('gg', 'Greenhouse-Geisser') + ' &gt; 0,75?</div><ul' + (mn ? ' class="on"' : '') + '>' +
+        li(mn && rec === 'hf') + lab('Ya', mn && rec === 'hf') + leaf(L.hf, mn && rec === 'hf') + '</li>' +
+        li(mn && rec === 'gg') + lab('Tidak', mn && rec === 'gg') + leaf(L.gg, mn && rec === 'gg') + '</li></ul></li>';
+    t += '</ul></li>';
+    t += li(rec === 'friedman') + lab('Tidak', rec === 'friedman') + leaf(L.friedman, rec === 'friedman') + '</li>';
+    t += '</ul></li></ul></div>';
+    return '<div class="box"><div class="concl-title">Pohon keputusan pemilihan uji</div><p class="hint" style="margin:0 0 14px">Pohon ini memilih uji omnibus, yaitu uji yang menjawab apakah rerata berbeda di suatu tempat di antara semua kondisi. Aturan ditetapkan sebelum melihat data. Pada k = 2 sferisitas otomatis terpenuhi, sehingga pohon ini berlaku untuk k &ge; 3.</p>' + t + '<p class="hint" style="margin-top:14px">Jalur yang disorot adalah jalur untuk data ini.</p></div>';
+}
+function conflictBox(an) {
+    var o = an.o, S = o.sph, ok = !o.nonNormal && !S.error;
+    var r1 = !!(ok && S.p >= 0.05 && S.gg < 0.75), r2 = !!(ok && o.sphChoice === 'hf'), r3 = !!(ok && o.sphNear), r4 = !!(o.nonNormal && o.n >= 30);
+    var tg = function (f) { return f ? '<span class="tag-here">Terjadi pada data ini</span>' : ''; };
+    var wasOpen = !!document.querySelector('#asm-notes[open]');
+    return '<details class="inline" id="asm-notes"' + (wasOpen ? ' open' : '') + ' style="margin-top:18px"><summary>Catatan kasus khusus saat membaca hasil asumsi</summary><div>' +
+        '<div class="cf-item"><div class="cf-t">1. Bagaimana jika uji Mauchly tidak nyata, tetapi ε Greenhouse-Geisser di bawah 0,75?' + tg(r1) + '</div><p>Sferisitas tetap dianggap dilanggar, sehingga yang dipakai adalah anova dengan koreksi Greenhouse-Geisser. Uji Mauchly lemah pada subjek sedikit dan bisa melewatkan pelanggaran nyata, sedangkan ε langsung menaksir seberapa berat pelanggarannya. Nilai p anova klasik tidak dikoreksi. Nilai p setelah koreksi diperoleh dengan mengalikan kedua df dengan ε, dan nilai inilah yang dipakai untuk keputusan. Kedua nilai p ditampilkan berdampingan di tahap Hasil uji.</p></div>' +
+        '<div class="cf-item"><div class="cf-t">2. Bagaimana jika uji Mauchly nyata, tetapi ε Greenhouse-Geisser masih di atas 0,75?' + tg(r2) + '</div><p>Pelanggarannya ringan sampai sedang. Pada ε setinggi ini, Greenhouse-Geisser cenderung terlalu konservatif, sehingga koreksi Huynh-Feldt dipakai. Bila nilai p kedua koreksi berada di sisi yang berbeda dari 0,05, laporkan keduanya dan jelaskan bahwa pilihan koreksi mengikuti aturan yang ditetapkan sebelum melihat data. Kedua nilai p ditampilkan di tahap Hasil uji.</p></div>' +
+        '<div class="cf-item"><div class="cf-t">3. Bagaimana jika ε mendekati batas bawah 1/(k − 1)?' + tg(r3) + '</div><p>Pelanggarannya sangat berat. Koreksi Greenhouse-Geisser tetap memberi nilai p yang aman, tetapi kekuatan uji turun. MANOVA berulang atau model campuran linear patut dipertimbangkan, tetapi keduanya berada di luar cakupan halaman ini.</p></div>' +
+        '<div class="cf-item"><div class="cf-t">4. Bagaimana jika residu tidak berdistribusi normal, tetapi jumlah subjeknya besar?' + tg(r4) + '</div><p>Secara baku, ketidaknormalan pada uji Shapiro-Wilk mengarahkan ke uji Friedman. Namun pada jumlah subjek besar, uji Shapiro-Wilk terlalu peka terhadap penyimpangan yang sangat kecil. Periksa Q-Q plot untuk menilai apakah penyimpangannya berat, lalu bandingkan hasil keempat uji pada tabel perbandingan di tahap Hasil uji.</p></div>' +
+        '<div class="cf-item"><div class="cf-t">5. Bagaimana jika ada subjek yang tidak memiliki data pada kondisi tertentu?</div><p>Anova pengukuran berulang memerlukan data lengkap, sehingga subjek yang datanya tidak lengkap dikeluarkan dari analisis. Bila data yang hilang banyak, model campuran linear adalah alternatif yang dapat menanganinya, tetapi berada di luar cakupan halaman ini.</p></div>' +
+        '</div></details>';
+}
+function recNameHtml(id) {
+    return id === 'anova' ? 'Anova pengukuran berulang (' + G('t-anova', 'klasik') + ')' : id === 'gg' ? 'Anova pengukuran berulang (' + G('t-gg', 'koreksi Greenhouse-Geisser') + ')' : id === 'hf' ? 'Anova pengukuran berulang (' + G('t-hf', 'koreksi Huynh-Feldt') + ')' : 'Uji ' + G('t-friedman', 'Friedman');
+}
+function renderPick() {
+    var an = state.an, o = an.o, rec = an.rec, sg = suggestRM(o);
+    var h = treeBox(o, rec);
+    h += '<div class="box"><div class="concl-title">Langkah yang dianjurkan</div><div class="sg-name rec">' + recNameHtml(rec) + '</div><p class="ip">' + esc(sg.why) + '</p></div>';
+    $('pick-body').innerHTML = h;
+    setChip('chip-pick', { anova: 'Anova klasik', gg: 'Greenhouse-Geisser', hf: 'Huynh-Feldt', friedman: 'Friedman' }[rec]);
+}
+
+/* ===== Interpretasi ===== */
+function interpBox(samp, pop) { return '<div class="box"><div class="concl-title">Interpretasi</div><p class="ip"><b>Pada sampel.</b> ' + samp + '</p><p class="ip"><b>Pada populasi.</b> ' + pop + '</p></div>'; }
+function pInterp(o) {
+    var t = o.test, rej = t.reject, cn = esc(lcFirst(o.cond)), V = esc(lcFirst(o.ctx.vName)), samp, pop;
+    samp = (rej ? 'Nilai p ' : 'Nilai p ') + (t.p < 0.0005 ? '< 0,001' : '= ' + fmt(t.p, 3)) + ' ' + (rej ? 'lebih kecil' : 'tidak lebih kecil') + ' daripada α (0,05). Nilai p menyatakan peluang memperoleh sampel dengan pola sekuat ini atau lebih ekstrem bila ' + H0() + ' benar. ' + (rej ? 'Pola ini sulit dijelaskan oleh kebetulan.' : 'Pola ini masih masuk akal sebagai akibat kebetulan.');
+    if (rej) pop = 'Tolak ' + H0() + ': ada bukti bahwa ' + V + ' berbeda antar ' + cn + ' pada populasi. Bila ' + H0() + ' sebenarnya benar, keputusan menolak adalah ' + G('galat1', 'galat tipe I') + ' (peluangnya sekitar 5%).';
+    else pop = 'Gagal menolak ' + H0() + ': bukti dari sampel belum cukup untuk menyatakan ada perbedaan pada populasi. Ini bukan bukti bahwa perbedaannya tidak ada. Bila perbedaan sebenarnya ada, keputusan ini adalah ' + G('galat2', 'galat tipe II') + ', dan jumlah subjek yang lebih besar meningkatkan ' + G('power', 'power') + '.';
+    return interpBox(samp, pop);
+}
+function effInterp(o) {
+    var par = o.method !== 'friedman', rej = o.test.reject, V = esc(lcFirst(o.ctx.vName)), samp, pop = 'Nilai ini adalah estimasi dari sampel, sedangkan ukuran efek pada populasi bisa lebih besar atau lebih kecil. ';
+    if (par) {
+        samp = 'η²<sub>p</sub> = ' + fmt(o.eff.etaP, 3) + ' (efek ' + o.eff.catEta + '), ω²<sub>p</sub> = ' + fmt(o.eff.omegaP, 3) + '. Contoh pembacaan: bila η²<sub>p</sub> = 0,20, sekitar 20% variasi ' + V + ' yang tersisa setelah perbedaan antarsubjek dikeluarkan berkaitan dengan kondisi.';
+    } else {
+        samp = 'W Kendall = ' + fmt(o.eff.v, 3) + ' (efek ' + o.eff.cat + '). Nilai 1 berarti semua subjek mengurutkan kondisi dengan cara yang sama, dan nilai 0 berarti urutannya tidak searah.';
+    }
+    var cat = par ? o.eff.catEta : o.eff.cat, small = cat === 'kecil' || cat === 'sangat kecil';
+    if (rej && small) pop += 'Efeknya nyata tetapi berukuran kecil: perbedaan terdeteksi, namun kekuatannya terbatas. Hal ini lazim pada jumlah subjek yang besar.';
+    else if (!rej && !small) pop += 'Efek tidak nyata padahal ukurannya pada sampel tergolong sedang atau besar. Kemungkinan jumlah subjek terlalu sedikit (power rendah), jadi coba naikkan n.';
+    else pop += 'Ukuran efek sejalan dengan keputusan uji.';
+    return interpBox(samp, pop);
+}
+function postInterpRM(o) {
+    var sig = sigPairs(o), par = o.method !== 'friedman', samp, pop;
+    if (!o.test.reject) {
+        samp = G('omnibus', 'Uji omnibus') + ' tidak menolak ' + H0() + ', sehingga pasangan yang tampak berbeda tidak ditafsirkan. Tabel ditampilkan sebagai informasi.';
+        pop = 'Karena ' + H0() + ' tidak ditolak, pola antarpasangan belum dapat dianggap berlaku pada populasi.';
+    } else if (!sig.length) {
+        samp = 'Tidak ada pasangan yang berbeda nyata, meskipun uji omnibus menolak ' + H0() + '.';
+        pop = 'Hal ini dapat terjadi karena koreksi perbandingan berganda membuat uji lanjutan lebih ketat daripada uji omnibus. Belum ada pasangan tertentu yang dapat ditunjuk sebagai sumber perbedaan pada populasi.';
+    } else {
+        samp = sig.map(function (pr) {
+            var d = pairDir(o, pr);
+            return esc(d[0]) + ' lebih tinggi daripada ' + esc(d[1]) + ' (' + (par ? 'selisih rerata = ' + fmt(Math.abs(pr.diff), 2) + '; d<sub>z</sub> = ' + fmt(Math.abs(pr.dz), 2) + ', efek ' + categoryD(pr.dz) : 'median selisih = ' + fmt(Math.abs(pr.diff), 2) + '; r<sub>rb</sub> = ' + fmt(Math.abs(pr.rb), 2) + ', efek ' + categoryRB(pr.rb)) + ').';
+        }).join(' ');
+        if (sig.length < o.post.pairs.length) samp += ' Pasangan lainnya tidak berbeda nyata.';
+        pop = par ? 'CI 95% selisih pada pasangan yang ditandai tidak mencakup 0, sehingga arah perbedaan pada populasi dapat dikatakan sama dengan arah di sampel. CI pada tabel dan grafik sudah disesuaikan dengan koreksi berganda, sehingga selaras dengan nilai p terkoreksi.' : 'Pasangan yang ditandai berbeda nyata setelah koreksi, sehingga ada bukti bahwa kondisi tersebut berbeda pada populasi. Uji Wilcoxon tidak menghasilkan CI pada tabel ini, jadi besar perbedaannya dibaca dari rank-biserial.';
+    }
+    return interpBox(samp, pop);
+}
+
+/* ===== Hasil uji, ukuran efek, uji lanjutan, kesimpulan ===== */
+function renderTest() {
+    var an = state.an, o = an.o, par = o.method !== 'friedman', t = o.test, cn = esc(lcFirst(o.cond)), openCmp = !!document.querySelector('#cmp-all[open]');
+    var h = '<div class="res-head"><span class="res-name">' + TEST_NAMES[o.method] + ': α = 0,05</span></div>';
+    h += par ? anovaTable(o) + decisionBox(o) + ggNote(o) : friedmanTable(o);
+    h += '<div class="verdict-status ' + (t.reject ? 'reject' : 'fail') + '">' + (t.reject ? 'Tolak ' + H0() : 'Gagal menolak ' + H0()) + '</div>';
+    h += '<p class="verdict-sub">' + (t.reject ? 'Efek ' + cn + ' nyata. Nilai berbeda antar ' + cn + ', dan letak perbedaannya dibaca pada uji lanjutan.' : 'Efek ' + cn + ' tidak nyata. Tidak ada bukti perbedaan antar ' + cn + ', sehingga uji lanjutan tidak ditafsirkan.') + '</p>';
+    h += '<div class="sub sep"><div class="sub-title">Kurva ' + (par ? 'distribusi F' : 'distribusi khi-kuadrat') + '</div><div class="chart-wrap"><div data-chart="curve"></div></div>';
+    h += '<div class="legend"><span><span class="sw" style="background:#ff3b30;opacity:.35"></span>Daerah kritis (penolakan H<sub>0</sub>)</span><span><span class="sw" style="background:#ff3b30"></span>Nilai kritis (garis putus-putus)</span><span><span class="sw" style="background:#0071e3"></span>Nilai statistik uji</span></div>';
+    h += '<p class="hint" style="margin-top:0">' + (par ? 'Kurva ini adalah distribusi F dengan df pembilang ' + dfTxt(t.df1) + ' dan df penyebut ' + dfTxt(t.df2) + (o.method === 'gg' || o.method === 'hf' ? ' (sudah dikoreksi)' : '') + '.' : 'Kurva ini adalah distribusi khi-kuadrat dengan df = ' + t.df1 + '.') + ' Bila titik berada di daerah merah, ' + H0() + ' ditolak.</p></div>';
+    var rows = [['anova', 'Anova pengukuran berulang (klasik)'], ['gg', 'Anova pengukuran berulang (Greenhouse-Geisser)'], ['hf', 'Anova pengukuran berulang (Huynh-Feldt)'], ['friedman', 'Uji Friedman']];
+    h += '<div style="margin-top:16px"><details class="inline" id="cmp-all"' + (openCmp ? ' open' : '') + '><summary>Bandingkan keempat uji pada data yang sama</summary><div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">Uji</th><th>Nilai p</th><th>Keputusan</th></tr></thead><tbody>' + rows.map(function (r) {
+        var p = an.tests[r[0]];
+        return '<tr><th scope="row">' + r[1] + (r[0] === an.rec ? ' (dianjurkan)' : '') + '</th><td>' + (p === null ? '-' : fmtP(p)) + '</td><td>' + (p === null ? 'tidak dapat dihitung' : p < ALPHA ? 'Tolak H<sub>0</sub>' : 'Gagal menolak H<sub>0</sub>') + '</td></tr>';
+    }).join('') + '</tbody></table></div><p class="hint">Keempat uji menjawab pertanyaan yang sama dengan asumsi yang berbeda. Bila keempatnya sepakat, kesimpulan tidak bergantung pada pilihan uji. Bila berbeda, ikuti uji yang dianjurkan oleh pemeriksaan asumsi.</p></div></details></div>';
+    h += '<div style="margin-top:28px">' + pInterp(o) + '</div>';
+    $('test-body').innerHTML = h;
+    setChip('chip-test', t.reject ? 'Nyata' : 'Tidak nyata', t.reject ? 'bad' : 'ok');
+}
+function renderEff() {
+    var o = state.an.o;
+    $('eff-body').innerHTML = effHtml(o) + '<div style="margin-top:14px">' + effInterp(o) + '</div>';
+    setChip('chip-eff', o.method === 'friedman' ? o.eff.cat : o.eff.catEta);
+}
+function postTree(o) {
+    var rej = o.test.reject, par = o.method !== 'friedman', A = function (c) { return c ? ' on' : ''; }, li = function (c) { return '<li' + (c ? ' class="on"' : '') + '>'; };
+    var lab = function (txt, c) { return '<span class="tlab' + A(c) + '">' + txt + '</span>'; };
+    var t = '<div class="org-wrap"><ul class="org post"><li><div class="tnode on"><b>1.</b> Apakah uji ' + G('omnibus', 'omnibus') + ' nyata?<small>Nilai p &lt; 0,05 pada tahap Hasil uji</small></div><ul class="on">';
+    t += li(!rej) + lab('Tidak', !rej) + '<div class="tnode res' + A(!rej) + '"><span>Berhenti: pasangan tidak ditafsirkan</span></div></li>';
+    t += li(rej) + lab('Ya', rej) + '<div class="tnode' + A(rej) + '"><b>2.</b> Apa uji omnibus yang dipakai?<small>Mengikuti tahap Pilih uji</small></div><ul' + A(rej) + '>';
+    t += li(rej && par) + lab('Anova', rej && par) + '<div class="tnode res' + A(rej && par) + '"><span>Uji ' + G('pairedt', 't berpasangan') + ', koreksi ' + G(state.adj, ADJ_NAMES[state.adj]) + '</span></div></li>';
+    t += li(rej && !par) + lab('Friedman', rej && !par) + '<div class="tnode res' + A(rej && !par) + '"><span>Uji ' + G('wilcoxon', 'Wilcoxon') + ', koreksi ' + G(state.adj, ADJ_NAMES[state.adj]) + '</span></div></li>';
+    t += '</ul></li></ul></li></ul></div>';
+    return '<div class="box"><div class="concl-title">Pohon keputusan uji lanjutan</div>' + t + '<p class="hint" style="margin-top:14px">Jalur yang disorot adalah jalur untuk data ini. Koreksi ' + ADJ_NAMES[state.adj] + ' menjaga peluang galat tipe I tetap sekitar 5% ketika banyak pasangan dibandingkan sekaligus.</p></div>';
+}
+function adjSeg() {
+    var a = state.adj, mk = function (v, l) { return '<button type="button" role="radio" class="gl" data-g="' + v + '" aria-checked="' + (a === v) + '" data-act="adj" data-v="' + v + '">' + l + '</button>'; };
+    return '<div class="lbl" style="margin-bottom:6px;">Koreksi perbandingan ganda (berlaku untuk tabel dan grafik di bawah)</div><div class="seg2" role="radiogroup" aria-label="Koreksi perbandingan ganda">' + mk('holm', 'Holm') + mk('bonferroni', 'Bonferroni') + '</div><p class="hint" style="margin:6px 0 12px;">Keduanya menjaga peluang galat tipe I tetap sekitar 5% saat banyak pasangan dibandingkan. Bonferroni lebih konservatif, sehingga nilai p terkoreksinya sama dengan atau lebih besar daripada Holm.</p>';
+}
+function renderPost() {
+    var o = state.an.o, P = o.post, par = o.method !== 'friedman', sig = sigPairs(o), openPh = !!document.querySelector('#ph-tbl[open]');
+    $('post-title').textContent = 'Uji lanjutan: ' + (par ? 'uji t berpasangan' : 'uji Wilcoxon signed-rank') + ', koreksi ' + ADJ_NAMES[P.adj];
+    var body = '<div class="sub"><div class="sub-title">Perbandingan berpasangan (' + P.pairs.length + ' pasangan)</div>' + adjSeg() + postTable(o) + '<div class="btn-row" style="margin-top:8px"><button type="button" class="btn sm" data-act="copypost">Salin tabel uji lanjutan</button></div><p class="hint">Baris berlatar menandai pasangan yang berbeda nyata pada α = 0,05 setelah koreksi. Selisih dihitung sebagai kondisi yang lebih awal dikurangi kondisi yang lebih akhir.</p></div>';
+    if (par) body += '<div class="sub"><div class="sub-title">Selisih rerata tiap pasangan (' + G('ciAdj', 'CI 95% terkoreksi') + ' ' + ADJ_NAMES[P.adj] + ')</div><p class="hint" style="margin:0 0 4px">Titik adalah selisih tiap pasangan dan garis horizontal adalah CI 95% terkoreksi. Grafik ini berubah bersama tabel bila koreksi diganti, dan Bonferroni memberi CI yang lebih lebar daripada Holm. Merah berarti CI tidak mencakup 0 (berbeda nyata setelah koreksi), biru berarti CI mencakup 0.</p><div class="chart-wrap"><div data-chart="post"></div></div></div>';
+    var h = '<div class="sub">' + postTree(o) + '</div>';
+    if (o.test.reject) {
+        h += body + '<div style="margin-top:14px">' + postInterpRM(o) + '</div>';
+        setChip('chip-post', sig.length ? sig.length + ' dari ' + P.pairs.length + ' pasangan nyata' : 'Tidak ada pasangan nyata', sig.length ? 'bad' : 'warn');
+    } else {
+        h += '<div class="box">' + noteHtml('info', 'Tidak diperlukan', G('omnibus', 'Uji omnibus') + ' tidak menolak ' + H0() + ', sehingga uji lanjutan tidak perlu dibaca. Tabel tetap dapat dibuka sebagai informasi.') + '</div><details class="inline" id="ph-tbl"' + (openPh ? ' open' : '') + ' style="margin-top:10px"><summary>Tampilkan tabel uji lanjutan</summary><div>' + body + '</div></details><div style="margin-top:14px">' + postInterpRM(o) + '</div>';
+        setChip('chip-post', 'Tidak diperlukan');
+    }
+    $('post-body').innerHTML = h;
+}
+function renderConcl() {
+    var o = state.an.o, c = o.ctx;
+    $('concl-body').innerHTML = '<div class="box"><div class="concl-title">Kesimpulan statistika (untuk laporan ilmiah)</div><div id="concl-sci">' + esc(conclusionText(o, c)) + '</div><div class="btn-row" style="margin-top:12px"><button type="button" class="btn" data-act="copy" data-target="concl-sci" data-label="Salin versi ilmiah">Salin versi ilmiah</button></div></div>' +
+        '<div class="box"><div class="concl-title">Kesimpulan untuk orang awam</div><div id="concl-lay">' + esc(layText(o, c)) + '</div><div class="btn-row" style="margin-top:12px"><button type="button" class="btn" data-act="copy" data-target="concl-lay" data-label="Salin versi awam">Salin versi awam</button></div></div>';
+}
+
+/* ===== Riwayat dan simulasi ===== */
+function drawHistory(el, hs) {
+    var W = chartWidth(el), H = 150, ml = 36, mr = 14, mt = 14, mb = 26, n = hs.length;
+    var x = function (i) { return ml + (n === 1 ? (W - ml - mr) / 2 : i / (n - 1) * (W - ml - mr)); }, y = function (p) { return mt + (1 - p) * (H - mt - mb); };
+    var s = svgOpen(W, H, 'Riwayat nilai p pada penarikan sampel berturut-turut');
+    [0, 0.5, 1].forEach(function (v) { s += ln(ml, y(v), W - mr, y(v), 'var(--grid-line)', 1) + tx(ml - 6, y(v) + 4, fmt(v, 1), { size: 10.5, fill: 'var(--text-muted)', anchor: 'end' }); });
+    s += ln(ml, y(0.05), W - mr, y(0.05), '#ff9500', 1.2, ' stroke-dasharray="4 3"') + tx(W - mr, y(0.05) - 4, '0,05', { size: 10.5, fill: 'var(--warn-tx)', anchor: 'end' });
+    hs.forEach(function (h, i) { var pv = h.p, col = pv < ALPHA ? '#0071e3' : '#8e8e93'; if (i === n - 1) s += circ(x(i), y(pv), 8, 'none', col, 1.6); s += circ(x(i), y(pv), 4.5, col); });
+    s += tx(ml, H - 6, 'penarikan pertama', { size: 10.5, fill: 'var(--text-muted)', anchor: 'start' }) + tx(W - mr, H - 6, 'terbaru', { size: 10.5, fill: 'var(--text-muted)', anchor: 'end' });
+    el.innerHTML = s + '</svg>';
+}
+function drawSimHist(el, sim) {
+    var W = chartWidth(el), H = 230, ml = 44, mr = 14, mt = 18, mb = 44, B = 20, bins = new Array(B).fill(0), t;
+    sim.ps.forEach(function (p) { bins[Math.min(B - 1, Math.floor(p / 0.05))]++; });
+    var mx = Math.max.apply(null, bins), yTop = Math.max(5, mx) * 1.1, ystep = niceStep(yTop / 4), pw = W - ml - mr, bw = pw / B;
+    var sy = function (v) { return mt + (1 - v / yTop) * (H - mt - mb); };
+    var s = svgOpen(W, H, 'Sebaran nilai p dari 100 sampel');
+    s += ln(ml, mt, ml, H - mb, 'var(--border-color)', 1) + ln(ml, H - mb, W - mr, H - mb, 'var(--border-color)', 1);
+    for (t = 0; t <= yTop + 1e-9; t += ystep) s += ln(ml, sy(t), W - mr, sy(t), 'var(--grid-line)', 1) + tx(ml - 6, sy(t) + 3.5, fmtSmart(t, 1), { size: 10, fill: 'var(--text-muted)', anchor: 'end' });
+    bins.forEach(function (v, i) {
+        var red = i === 0;
+        s += '<rect x="' + rr(ml + i * bw + 1) + '" y="' + rr(sy(v)) + '" width="' + rr(Math.max(1, bw - 2)) + '" height="' + rr(Math.max(0, (H - mb) - sy(v))) + '" fill="' + (red ? '#ff3b30' : '#0071e3') + '" fill-opacity="' + (red ? 0.65 : 0.45) + '"/>';
+        if (v > 0) s += tx(ml + i * bw + bw / 2, sy(v) - 4, String(v), { size: 10, fill: 'var(--text-muted)' });
+    });
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (t2) { var xx = ml + t2 * pw; s += ln(xx, H - mb, xx, H - mb + 4, 'var(--border-color)', 1) + tx(xx, H - mb + 16, fmt(t2, 2), { size: 10, fill: 'var(--text-muted)' }); });
+    s += tx(ml + pw / 2, H - 6, 'Nilai p (tiap batang selebar 0,05)', { size: 10.5, fill: 'var(--text-muted)' });
+    s += tx(11, (mt + H - mb) / 2, 'Jumlah sampel', { size: 10.5, fill: 'var(--text-muted)' }).replace(/<text /g, '<text transform="rotate(-90 11 ' + rr((mt + H - mb) / 2) + ')" ');
+    el.innerHTML = s + '</svg>';
+}
+function runSim() {
+    var ps = [], cnt = { anova: 0, gg: 0, hf: 0, friedman: 0 };
+    for (var q = 0; q < 100; q++) {
+        var r = quickP(dataOfIdx(sampleIdx(NC, state.n)));
+        ps.push(r.p); cnt[r.rec]++;
+    }
+    state.sim = { n: state.n, ps: ps, c: cnt };
+}
+function simSummary() {
+    var sm = state.sim, p = state.pop, rej = sm.ps.filter(function (x) { return x < ALPHA; }).length;
+    var h = '<div class="tiles"><div class="tile"><div class="k">Sampel yang menolak H<sub>0</sub></div><div class="v">' + rej + ' dari 100</div><div class="s">n = ' + sm.n + ' subjek</div></div>' +
+        '<div class="tile"><div class="k">Uji yang dipakai pada tiap sampel</div><div class="v" style="font-size:16px;line-height:1.5">Klasik: ' + sm.c.anova + '<br>Greenhouse-Geisser: ' + sm.c.gg + '<br>Huynh-Feldt: ' + sm.c.hf + '<br>Friedman: ' + sm.c.friedman + '</div><div class="s">mengikuti langkah yang dianjurkan</div></div></div>';
+    h += '<div class="sub-title" style="margin-top:14px">Sebaran nilai p</div><div class="chart-wrap"><div data-chart="sim"></div></div>';
+    var txt;
+    if (!state.revealed) txt = 'Nilai p berbeda dari satu sampel ke sampel lain, dan jumlah sampel yang menolak H<sub>0</sub> bergantung pada besar efek dan jumlah subjek. Buka keadaan populasi pada tahap terakhir untuk melihat arti persentase ini.';
+    else if (p.tr) txt = ' H<sub>0</sub> salah (efek kondisi ada), jadi ' + rej + '% sampel yang menolak H<sub>0</sub> menggambarkan ' + G('power', 'power') + ' dan sisanya adalah ' + G('galat2', 'galat tipe II') + '.';
+    else txt = 'H<sub>0</sub> benar (efek kondisi tidak ada), jadi sampel yang menolak H<sub>0</sub> (' + rej + ' dari 100) adalah ' + G('galat1', 'galat tipe I') + ' dan seharusnya mendekati 5.';
+    return h + '<div class="box"><div class="concl-title">Arti simulasi ini</div><p class="ip">' + txt.trim() + '</p></div>';
+}
+function renderMulti() {
+    var hs = state.history, nsig = hs.filter(function (x) { return x.p < ALPHA; }).length;
+    var h = '<div class="sub"><div class="sub-title">Penarikan berturut-turut</div><div class="chart-wrap"><div data-chart="pvhist"></div></div><p class="hint" style="margin-top:0">' + nsig + ' dari ' + hs.length + ' penarikan menghasilkan p &lt; 0,05 (titik biru), diukur dengan uji yang dianjurkan pada tiap penarikan. Titik dengan cincin adalah penarikan terbaru. Tombol Tarik ulang sampel di bagian atas menambah titik baru.</p></div>';
+    h += '<div class="sub"><div class="sub-title">Simulasi 100 sampel sekaligus</div><p class="hint" style="margin-top:0">Menarik 100 sampel dari populasi yang sama dengan jumlah subjek yang sedang dipilih, lalu menampilkan sebaran nilai p.</p><div class="btn-row" style="margin:10px 0"><button type="button" class="btn primary" data-act="sim">Tarik 100 sampel</button></div><div id="sim-out">' + (state.sim ? simSummary() : '') + '</div></div>';
+    $('multi-body').innerHTML = h;
+    setChip('chip-multi', nsig + ' dari ' + hs.length + ' menolak H0');
+}
+
+/* ===== Keadaan populasi ===== */
+function ciTxtL(lo, hi) { return fmt(lo, 2) + ' s.d. ' + fmt(hi, 2); }
+function renderTruth() {
+    var el = $('truth-body'), p = state.pop;
+    if (!state.revealed) { el.innerHTML = '<div class="box center">Sudah menentukan kesimpulan? Bandingkan dengan keadaan populasi yang sebenarnya.<div style="margin-top:14px"><button type="button" class="btn primary" data-act="reveal">Buka keadaan populasi</button></div></div>'; setChip('chip-truth', ''); return; }
+    var an = state.an, o = an.o, c = p.ctx, par = o.method !== 'friedman', k = p.k, j, i;
+    var yn = function (ok) { return ok ? chipHtml('ok', 'Ya') : chipHtml('bad', 'Tidak'); };
+    var cols = c.conds.map(function (_, jj) { return p.M.map(function (r) { return r[jj]; }); }), all = [];
+    p.M.forEach(function (r) { all = all.concat(r); });
+    var po = { summ: c.conds.map(function (cn, jj) { return summary(cn, cols[jj]); }), total: summary('Semua data', all) };
+    var h = '<div class="sub"><div class="sub-title">Tabel populasi (' + fmtInt(NC) + ' subjek)</div>' + summaryTable(po, c.cond) + '</div>';
+    h += '<div class="sub"><div class="sub-title">Estimasi sampel dibanding nilai populasi</div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">Kondisi</th><th>' + (par ? 'Rerata sampel' : 'Median sampel') + '</th>' + (par ? '<th>CI 95% sampel</th>' : '') + '<th>' + (par ? 'Rerata populasi' : 'Median populasi') + '</th>' + (par ? '<th>CI menangkap nilai populasi?</th>' : '') + '</tr></thead><tbody>';
+    o.summ.forEach(function (r, jj) {
+        var pv = par ? po.summ[jj].mean : po.summ[jj].median;
+        h += '<tr><th scope="row"><span class="gdot" style="background:' + PALETTE[jj % PALETTE.length] + '"></span>' + esc(r.name) + '</th>';
+        if (par) { var se = r.sd / Math.sqrt(r.n), tc = critT(0.95, r.n - 1), lo = r.mean - tc * se, hi = r.mean + tc * se; h += '<td>' + fmt(r.mean, 2) + '</td><td>' + ciTxtL(lo, hi) + '</td><td>' + fmt(pv, 2) + '</td><td>' + yn(lo <= pv && pv <= hi) + '</td></tr>'; }
+        else h += '<td>' + fmt(r.median, 2) + '</td><td>' + fmt(pv, 2) + '</td></tr>';
+    });
+    h += '</tbody></table></div>' + (par ? '<p class="hint">CI 95% disusun agar, bila penarikan sampel diulang berkali-kali, sekitar 95% CI menangkap nilai populasi. Dengan beberapa kondisi sekaligus, peluang paling sedikit satu CI meleset lebih besar. Tarik ulang sampel beberapa kali dan perhatikan seberapa sering CI meleset.</p>' : '') + '</div>';
+    var rj = o.test.reject, tr = p.tr, v = rj && tr ? 'Benar' : rj && !tr ? 'Positif palsu (galat tipe I)' : !rj && tr ? 'Negatif palsu (galat tipe II)' : 'Benar';
+    h += '<div class="sub"><div class="sub-title">Keadaan populasi dan keputusan sampel</div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left">Efek</th><th>Pada populasi</th><th>Keputusan sampel</th><th>Penilaian</th></tr></thead><tbody><tr><th scope="row">' + esc(c.cond) + '</th><td>' + (tr ? 'Ada efek (H<sub>0</sub> salah)' : 'Tidak ada efek (H<sub>0</sub> benar)') + '</td><td>' + (rj ? 'Tolak H<sub>0</sub>' : 'Gagal menolak H<sub>0</sub>') + '</td><td>' + (v === 'Benar' ? chipHtml('ok', v) : chipHtml('warn', v)) + '</td></tr></tbody></table></div><p class="hint">Efek kondisi pada populasi dibangkitkan sebagai pola naik atau turun pada rerata kondisi, atau tidak ada sama sekali. Pada populasi tanpa efek, selisih kecil antar rerata kondisi pada tabel populasi muncul dari proses pembuatan data acak dan bukan perbedaan sejati.</p></div>';
+    var shp = { normal: 'mendekati normal', hetero: 'mendekati normal, tetapi subjek berbeda dalam besar perubahannya sehingga sferisitas dilanggar', skew: 'miring ke kanan pada galat, sehingga normalitas residu dilanggar' }[p.shape];
+    h += '<div class="sub"><div class="stat-grid">' + statRow('Sebaran data pada populasi', shp) + statRow('Efek kondisi pada populasi', p.tr ? 'ada' : 'tidak ada') + '</div><p class="hint">Perbedaan antara tabel sampel dan tabel populasi disebut ' + G('galat-s', 'galat sampling') + '. Tabel populasi dipakai sebagai acuan keadaan sebenarnya.</p></div>';
+    el.innerHTML = h;
+    setChip('chip-truth', v === 'Benar' ? 'Keputusan benar' : 'Keputusan keliru', v === 'Benar' ? 'ok' : 'warn');
+}
+
+/* ===== Navigasi dan grafik ===== */
+var activeId = null;
+function renumber() {
+    var k = 0, h = '';
+    $$('section.step[data-nav]').forEach(function (s) {
+        k++;
+        var n = s.querySelector('.step-num'); if (n) n.textContent = k;
+        h += '<a href="#' + s.id + '"' + (s.id === activeId ? ' class="active"' : '') + '><b>' + k + '</b>' + s.dataset.nav + '</a>';
+    });
+    $('stepnav').innerHTML = h; updateNavArrows();
+}
+function updateNavArrows() {
+    var n = $('stepnav'), w = $('stepnav-wrap'); if (!n || !w) return;
+    var max = n.scrollWidth - n.clientWidth;
+    w.classList.toggle('can-left', n.scrollLeft > 4);
+    w.classList.toggle('can-right', n.scrollLeft < max - 4);
+}
+function centerNavLink(a) {
+    var n = $('stepnav'); if (!n || !a) return;
+    n.scrollTo({ left: a.offsetLeft - (n.clientWidth - a.offsetWidth) / 2, behavior: 'smooth' });
+}
+function updateProgress() { var h = document.documentElement, max = h.scrollHeight - h.clientHeight, p = max > 0 ? h.scrollTop / max : 0; $('prog').style.width = (clamp(p, 0, 1) * 100).toFixed(1) + '%'; }
+function drawCharts() {
+    if (!state.an) return;
+    var o = state.an.o, par = o.method !== 'friedman';
+    $$('[data-chart]').forEach(function (el) {
+        var k = el.dataset.chart;
+        if (k === 'prof') drawProfile(el, o);
+        else if (k === 'box') drawBoxplot(el, o.conds.map(function (cn, j) { return { name: cn, vals: o.cols[j] }; }));
+        else if (k === 'qqres') drawQQ(el, [o.resNormality]);
+        else if (k === 'qqgrp') drawQQ(el, o.normCond);
+        else if (k === 'curve') { var t = o.test; drawTestCurve(el, par ? { pdf: function (x) { return pdfF(x, t.df1, t.df2); }, yFrom: t.df1 < 2 ? t.crit * 0.15 : undefined, crit: t.crit, stat: t.stat, reject: t.reject, label: 'F' } : { pdf: function (x) { return pdfChi(x, t.df1); }, crit: t.crit, stat: t.stat, reject: t.reject, label: 'χ²' }); }
+        else if (k === 'post') { if (par) drawForestMulti(el, o.post.pairs.map(function (p) { return { label: p.label, est: p.diff, lo: p.loA, hi: p.hiA, sig: p.sig }; }), '0 (tidak ada selisih)'); }
+        else if (k === 'pvhist') drawHistory(el, state.history);
+        else if (k === 'sim' && state.sim) drawSimHist(el, state.sim);
+    });
+}
+function renderAll() { renderScenario(); renderPop(); renderHyp(); renderDesc(); renderAsm(); renderPick(); renderTest(); renderEff(); renderPost(); renderConcl(); renderMulti(); renderTruth(); renumber(); drawCharts(); }
+function newPop() {
+    var ctx = chooseCtx();
+    state.pop = makePopRM(ctx);
+    state.history = []; state.revealed = false; state.sim = null;
+    drawSample(); renderAll();
+}
+function resample() { drawSample(); renderAll(); }
+function postTSVsafe() { return postTSV(state.an.o); }
+
+document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('[data-act]') : null;
+    if (!t) return;
+    var a = t.dataset.act;
+    if (a === 'theme') toggleTheme();
+    else if (a === 'resample') resample();
+    else if (a === 'newpop') newPop();
+    else if (a === 'mode') { state.mode = t.dataset.v; if (state.mode === 'pick') state.ctxId = state.pop.ctx.id; renderScenario(); }
+    else if (a === 'reveal') { state.revealed = true; renderTruth(); renderMulti(); drawCharts(); }
+    else if (a === 'sim') { runSim(); renderMulti(); drawCharts(); }
+    else if (a === 'adj') {
+        if (state.adj !== t.dataset.v) {
+            state.adj = t.dataset.v; state.an = analyzeData(dataOfIdx(state.sample.idx));
+            renderPost(); renderConcl(); drawCharts();
+            var nb = document.querySelector('[data-act="adj"][data-v="' + state.adj + '"]'); if (nb) nb.focus();
+        }
+    }
+    else if (a === 'copy' || a === 'copypost') {
+        var src = a === 'copy' ? document.getElementById(t.dataset.target) : null, txtv = a === 'copy' ? (src ? src.textContent : '') : postTSVsafe(), orig = t.dataset.label || t.textContent;
+        copyText(txtv, t, orig);
+    }
+});
+var nr = $('nrange');
+nr.addEventListener('input', function () { state.n = +nr.value; $('nval').textContent = 'n = ' + state.n + ' subjek'; });
+nr.addEventListener('change', function () { state.n = +nr.value; resample(); });
+DD_PICK['dd-scn'] = function (v) { state.ctxId = +v; state.mode = 'pick'; newPop(); };
+$('nav-left').addEventListener('click', function () { var n = $('stepnav'); n.scrollBy({ left: -n.clientWidth * 0.6, behavior: 'smooth' }); });
+$('nav-right').addEventListener('click', function () { var n = $('stepnav'); n.scrollBy({ left: n.clientWidth * 0.6, behavior: 'smooth' }); });
+$('stepnav').addEventListener('scroll', updateNavArrows, { passive: true });
+window.addEventListener('scroll', updateProgress, { passive: true });
+var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { updateNavArrows(); updateProgress(); drawCharts(); }, 120); });
+if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+            if (en.isIntersecting) {
+                activeId = en.target.id;
+                $$('#stepnav a').forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + activeId); });
+                centerNavLink($('stepnav').querySelector('a[href="#' + activeId + '"]'));
+            }
+        });
+    }, { rootMargin: '-18% 0px -68% 0px' });
+    $$('section.step[data-nav]').forEach(function (s) { io.observe(s); });
+}
+
+/* ===== Dropdown dengan segitiga kecil ===== */
+function ddRender(id, items, cur, label) {
+    var w = $(id); if (!w) return;
+    var it = items.filter(function (x) { return x.v === cur; })[0];
+    w.setAttribute('data-dd', id);
+    w.innerHTML = '<button type="button" class="btn dd-btn" aria-haspopup="menu" aria-expanded="false"><span class="dd-label">' + esc(label || (it ? it.t : 'Pilih')) + '</span><span class="dd-chev" aria-hidden="true">&#9662;</span></button><div class="dd-menu" role="menu" hidden>' + items.map(function (x) { if (x.h) return '<div class="dd-grp" role="presentation">' + esc(x.h) + '</div>'; return '<button type="button" class="dd-item" role="menuitemradio" aria-checked="' + (x.v === cur) + '" data-v="' + esc(x.v) + '">' + esc(x.t) + (x.s ? '<small>' + esc(x.s) + '</small>' : '') + '</button>'; }).join('') + '</div>';
+}
+function ddClose(w, back) { var m = w.querySelector('.dd-menu'), b = w.querySelector('.dd-btn'); if (!m || m.hidden) return; m.hidden = true; b.setAttribute('aria-expanded', 'false'); if (back) b.focus(); }
+function ddOpen(w) {
+    var m = w.querySelector('.dd-menu'), b = w.querySelector('.dd-btn'); m.hidden = false; b.setAttribute('aria-expanded', 'true');
+    var f = m.querySelector('.dd-item[aria-checked="true"]') || m.querySelector('.dd-item'); if (f) f.focus();
+}
+document.addEventListener('click', function (e) {
+    var w = e.target.closest ? e.target.closest('.dd') : null;
+    document.querySelectorAll('.dd').forEach(function (x) { if (x !== w) ddClose(x, false); });
+    if (!w) return;
+    var it = e.target.closest('.dd-item'), btn = e.target.closest('.dd-btn');
+    if (it) {
+        var id = w.getAttribute('data-dd'), v = it.getAttribute('data-v'); ddClose(w, false);
+        if (DD_PICK[id]) DD_PICK[id](v);
+        var nb = $(id) && $(id).querySelector('.dd-btn'); if (nb) nb.focus();
+    } else if (btn) { if (w.querySelector('.dd-menu').hidden) ddOpen(w); else ddClose(w, true); }
+});
+document.addEventListener('keydown', function (e) {
+    var w = e.target.closest ? e.target.closest('.dd') : null; if (!w) return;
+    var m = w.querySelector('.dd-menu'), its = Array.prototype.slice.call(m.querySelectorAll('.dd-item')), i = its.indexOf(document.activeElement);
+    if (m.hidden) { if (e.key === 'ArrowDown') { e.preventDefault(); ddOpen(w); } return; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); its[(i + 1) % its.length].focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); its[(i - 1 + its.length) % its.length].focus(); }
+    else if (e.key === 'Home') { e.preventDefault(); its[0].focus(); }
+    else if (e.key === 'End') { e.preventDefault(); its[its.length - 1].focus(); }
+    else if (e.key === 'Escape') { e.preventDefault(); ddClose(w, true); }
+    else if (e.key === 'Tab') { ddClose(w, false); }
+});
+
+newPop();
+updateProgress();
+
+</script>
+</body>
+</html>
