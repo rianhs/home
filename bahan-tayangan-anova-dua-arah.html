@@ -440,7 +440,7 @@ details.step-acc > .acc-body > .step-intro{margin-top:0}
       <div class="box" style="margin-top:10px">Bila ketiga pertanyaan dijawab ya, kamu berada di halaman yang tepat. Bila unit yang sama diukur berulang kali, diperlukan rancangan lain.</div>
     </div>
     <div class="sub">
-      <details class="inline"><summary>Fokus belajar</summary><div>Statistik uji dan nilai p dihitung oleh perangkat lunak, sehingga hitungan manual tidak perlu kamu kuasai. Kompetensi yang dilatih di sini adalah memahami logika statistika, membaca interaksi sebelum efek utama, memilih uji statistika yang tepat, memeriksa syaratnya, menafsirkan angka yang dihasilkan, lalu membenarkan (menjustifikasi) kesimpulan.</div></details>
+      <details class="inline"><summary>Fokus belajar</summary><div>Statistik uji dan nilai p dihitung oleh perangkat lunak, sehingga hitungan manual tidak perlu kamu kuasai. Kompetensi yang dilatih di sini adalah memahami logika statistika, memilih uji statistika yang tepat, membaca interaksi antarfaktor, menafsirkan angka yang dihasilkan, lalu menyusun dan membenarkan (menjustifikasi) kesimpulan.</div></details>
     </div>
   </section>
 
@@ -459,7 +459,7 @@ details.step-acc > .acc-body > .step-intro{margin-top:0}
     <div id="scn-default">
       <div class="sub">
         <div class="sub-title">Skenario</div>
-        <div class="box">Seorang peneliti ingin menyelidiki dampak stres panas (<i>heat stress</i>) terhadap kesejahteraan sapi perah. Ia mengukur kadar kortisol (hormon stres) pada pukul 13.00 siang dari sapi-sapi yang ditempatkan di dua sistem kandang, yaitu kandang terbuka (konvensional, ventilasi alami) dan kandang tertutup (modern, dilengkapi kipas dan sprinkler). Ia juga ingin tahu apakah respons stres ini berbeda antara sapi Brahman, yang dikenal tahan panas, dan sapi FH, yang peka terhadap panas.</div>
+        <div class="box">Seorang peneliti ingin menyelidiki dampak paparan panas terhadap tingkat stres pada sapi perah. Ia mengukur kadar kortisol (hormon stres) pada pukul 13.00 siang dari sapi-sapi yang ditempatkan di dua sistem kandang, yaitu kandang terbuka (dengan ventilasi alami) dan kandang tertutup (dilengkapi kipas dan sprinkler air). Ia juga ingin tahu apakah respons stres ini berbeda antara sapi Brahman (dikenal tahan panas) dan sapi FH (peka terhadap panas).</div>
       </div>
       <div class="sub">
         <div class="cols">
@@ -477,7 +477,7 @@ details.step-acc > .acc-body > .step-intro{margin-top:0}
         <ol class="plain-ol">
           <li><b>Pengaruh sistem kandang.</b> Apakah ada pengaruh perbedaan sistem kandang terhadap kadar kortisol?</li>
           <li><b>Pengaruh rumpun sapi.</b> Apakah ada pengaruh perbedaan rumpun sapi terhadap kadar kortisol?</li>
-          <li><b>Interaksi.</b> Apakah ada interaksi antara sistem kandang dan rumpun sapi? Contoh: apakah manfaat kandang tertutup lebih besar untuk sapi FH daripada untuk sapi Brahman?</li>
+          <li><b>Interaksi.</b> Apakah ada interaksi antara sistem kandang dan rumpun sapi? Contoh: apakah pengaruh kandang tertutup lebih besar untuk sapi FH daripada untuk sapi Brahman?</li>
         </ol>
       </div>
       <div class="sub">
@@ -507,7 +507,7 @@ details.step-acc > .acc-body > .step-intro{margin-top:0}
     <div class="sub" id="scn-sum"></div>
 
     <div class="sub" id="scn-demo">
-      <p class="hint" style="margin:0 0 12px">Data yang tampil pada tahap berikutnya adalah 32 pengukuran kortisol pada skenario ini. Tombol Tarik ulang sampel di bagian atas mengambil sampel acak lain (8 sapi per sel) dari populasi dengan pola yang sama. Tombol di bawah ini mengembalikan data semula.</p>
+      <p class="hint" style="margin:0 0 12px">Data yang tampil pada tahap berikutnya adalah 32 pengukuran kortisol pada skenario ini. Tombol "Tarik ulang sampel" di bagian kanan atas halaman mengambil sampel sapi lain (8 sapi per sel) secara acak dari populasi dengan pola yang sama. Tombol di bawah ini mengembalikan data semula (default).</p>
       <div class="demo-row"><button type="button" class="btn" data-act="demo">Kembali ke data contoh</button></div>
     </div>
 
@@ -2689,7 +2689,7 @@ function miniCircle(q, j, hlCount) {
 }
 function renderPop() {
     var o = state.an.o, c = state.pop.ctx, n = state.n, a = c.A.length, b = c.B.length;
-    $('pop-intro').innerHTML = 'Titik terang adalah unit yang terpilih menjadi sampel. Yang kita lihat adalah sampel, tetapi ingin menyimpulkan keadaan populasi. Populasi berisi ' + fmtInt(NC) + ' unit pada setiap sel, dan tiap unit memiliki satu nilai numeris. Setiap sel digambar dengan ' + KD + ' titik, jadi proporsi titik terang mengikuti proporsi sampel. Warna menunjukkan kelompok faktor B.';
+    $('pop-intro').innerHTML = 'Titik terang adalah unit yang terpilih menjadi sampel. Data yang kita lihat merupakan sampel, tetapi kita ingin menyimpulkan keadaan populasi. Populasi berisi ' + fmtInt(NC) + ' unit pada setiap sel, dan tiap unit memiliki satu nilai numeris. Setiap sel digambar dengan ' + KD + ' titik, jadi proporsi titik terang mengikuti proporsi sampel. Warna menunjukkan kelompok faktor B.';
     var grid = '<div style="display:grid;grid-template-columns:auto repeat(' + b + ',minmax(0,1fr));gap:8px;align-items:center;max-width:520px;margin:0 auto">';
     grid += '<div></div>' + state.oB.map(function (j) { return '<div style="text-align:center;font-size:12.5px;font-weight:600"><span class="gdot" style="background:' + PALETTE[state.oB.indexOf(j) % PALETTE.length] + '"></span>' + esc(shortName(c.B[j], 16)) + '</div>'; }).join('');
     state.oA.forEach(function (i, qi) {
