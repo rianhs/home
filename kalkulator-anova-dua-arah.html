@@ -345,6 +345,10 @@ ul.rd.dark { color: var(--text-soft); font-size: 13.5px; }
 .cmp-q + .cmp-item { padding-top: 2px; }
 .cmp-t { font-weight: 600; font-size: 13.5px; color: var(--text-main); }
 @media (max-width: 640px) { .dl { grid-template-columns: 1fr; gap: 0; } .dl dt { margin-top: 6px; } }
+/* slider ukuran teks grafik */
+.fs-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 10px;font-size:12.5px;font-weight:600;color:var(--text-soft)}
+.fs-row input[type=range]{flex:0 1 220px;min-width:120px;accent-color:var(--accent-blue);cursor:pointer}
+.fs-row span{min-width:48px;color:var(--text-muted);font-weight:600}
 </style>
 </head>
 <body>
@@ -1421,8 +1425,13 @@ function drawGroupPlot(el, p) {
 }
 
 /* ===================== Forest plot beberapa pasangan ===================== */
+var forestFont = 11.5;
 function drawForestMulti(el, rows, refText, wide) {
-    var W = Math.max(wide ? 600 : 540, Math.min(760, chartWidth(el))), rowH = 30, ml = wide ? 280 : 210, mr = 26, mt = 36, mb = 42, H = mt + rows.length * rowH + mb, i;
+    var fs = forestFont, rowH = Math.max(30, Math.round(fs * 2.4)), mr = 26, mt = 36, mb = 42, H = mt + rows.length * rowH + mb, i;
+    var maxLen = 0;
+    rows.forEach(function (r) { maxLen = Math.max(maxLen, String(r.label).length); });
+    var ml = Math.max(120, Math.ceil(maxLen * fs * 0.6) + 24), plotMin = 320;
+    var avail = chartWidth(el), W = Math.max(ml + mr + plotMin, Math.min(avail, 900));
     var vals = [0];
     rows.forEach(function (r) { vals.push(r.est, r.lo, r.hi); });
     var vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals), pad = (vmax - vmin) * 0.08 || 1, amin = vmin - pad, amax = vmax + pad;
@@ -1438,7 +1447,7 @@ function drawForestMulti(el, rows, refText, wide) {
     s += tx(clamp(sx(0), 70, W - 70), mt - 18, refText, { size: 11.5, weight: 700, fill: 'var(--text-muted)', halo: true });
     rows.forEach(function (r, q) {
         var cy = mt + rowH * q + rowH / 2, col = r.sig ? '#ff3b30' : '#0071e3';
-        s += tx(ml - 10, cy + 4, esc(shortName(r.label, wide ? 46 : 34)), { size: 11.5, weight: 600, anchor: 'end' });
+        s += tx(ml - 10, cy + fs * 0.35, esc(r.label), { size: fs, weight: 600, anchor: 'end' });
         s += ln(sx(r.lo), cy, sx(r.hi), cy, col, 3) + ln(sx(r.lo), cy - 6, sx(r.lo), cy + 6, col, 3) + ln(sx(r.hi), cy - 6, sx(r.hi), cy + 6, col, 3);
         s += circ(sx(r.est), cy, 5.5, col, 'var(--card-bg)', 2);
     });
@@ -2751,7 +2760,7 @@ function renderPosthoc(o) {
     body += notes + '<div class="sub"><div class="sub-title">Perbandingan berpasangan</div>' + postTable(o, ph) +
         '<div class="btn-row" style="margin-top:8px;"><button type="button" class="btn sm" id="btn-copy-post">Salin tabel uji lanjutan</button></div>' +
         '<p class="hint">Baris yang diberi latar menandai pasangan yang berbeda nyata pada ' + G('alpha', 'α') + ' = 0,05. Selisih dihitung sebagai kelompok pertama dikurangi kelompok kedua. ' + (ph.cells ? 'Seluruh ' + nP + ' pasangan sel dibandingkan dalam satu ' + G('rangkaian', 'rangkaian perbandingan') + ', sehingga nilai p ' + esc(ph.pName) + ' sudah mengendalikan kesalahan tipe I untuk semua pasangan sekaligus.' : 'Pengendalian kesalahan tipe I berlaku di dalam tiap ' + G('rangkaian', 'rangkaian perbandingan') + '.') + '</p></div>';
-    if (ph.hasCI) body += '<div class="sub"><div class="sub-title">Selisih dan ' + G('ci95', 'CI 95%') + ' tiap pasangan</div><p class="hint">Titik adalah selisih tiap pasangan dan garis horizontal adalah CI 95%-nya. Merah berarti CI tidak mencakup 0 (berbeda nyata), biru berarti CI mencakup 0.</p><div class="chart-wrap"><div id="post-chart"></div></div><div class="btn-row dl-row"><button type="button" class="btn sm" data-dl="post-chart">Unduh grafik (PNG)</button></div></div>';
+    if (ph.hasCI) body += '<div class="sub"><div class="sub-title">Selisih dan ' + G('ci95', 'CI 95%') + ' tiap pasangan</div><p class="hint">Titik adalah selisih tiap pasangan dan garis horizontal adalah CI 95%-nya. Merah berarti CI tidak mencakup 0 (berbeda nyata), biru berarti CI mencakup 0.</p><div class="fs-row"><label for="fs-post">Ukuran teks label</label><input type="range" id="fs-post" min="8" max="18" step="0.5" value="' + forestFont + '"><span id="fs-post-val">' + fmtSmart(forestFont, 1) + ' px</span></div><div class="chart-wrap"><div id="post-chart"></div></div><div class="btn-row dl-row"><button type="button" class="btn sm" data-dl="post-chart">Unduh grafik (PNG)</button></div></div>';
     if (relevant) {
         $('post-body').innerHTML = body + '<div style="margin-top:14px">' + postInterp(o, ph, md) + '</div>';
         setChip('chip-6', sig.length ? sig.length + ' dari ' + ph.pairs.length + ' pasangan berbeda nyata' : 'Tidak ada pasangan berbeda nyata', sig.length ? 'bad' : 'warn');
@@ -2761,6 +2770,8 @@ function renderPosthoc(o) {
         setChip('chip-6', 'Tidak diperlukan');
     }
     var b = $('btn-copy-post'); if (b) b.addEventListener('click', function () { copyText(postTSV(o, ph), this, 'Salin tabel uji lanjutan'); });
+    var fsr = $('fs-post');
+    if (fsr) fsr.addEventListener('input', function () { forestFont = parseFloat(this.value); $('fs-post-val').textContent = fmtSmart(forestFont, 1) + ' px'; if (lastO) drawPostChart(lastO); });
     document.querySelectorAll('#post-body [data-dl]').forEach(function (x) { x.addEventListener('click', function () { downloadChart(x.getAttribute('data-dl')); }); });
 }
 
@@ -2782,6 +2793,10 @@ function refreshInt() {
     sel.innerHTML = opts; sel.hidden = !(gapOn && SB.length > 2);
     drawInteraction($('int-chart'), o, sw);
 }
+function drawPostChart(o) {
+    var pc = $('post-chart'), ph = phTable(o, curMode(o));
+    if (pc && ph.hasCI) drawForestMulti(pc, ph.pairs.map(function (pr) { return { label: pr.fam !== null && pr.fam !== undefined ? pr.label + ' (' + pr.fam + ')' : pr.label, est: pr.diff, lo: pr.lo, hi: pr.hi, sig: pr.sig }; }), '0 (tidak ada selisih)', ph.cells);
+}
 function drawCharts(o) {
     if (!o) return;
     var k, sw = getSwap();
@@ -2790,8 +2805,7 @@ function drawCharts(o) {
     drawQQ($('qqgrp-box'), o.normality);
     updateCurve(o);
     o.showGap = gapOn; o.gapPair = gapPairs[sw ? 'b' : 'a']; drawInteraction($('int-chart'), o, sw);
-    var pc = $('post-chart'), ph = phTable(o, curMode(o));
-    if (pc && ph.hasCI) drawForestMulti(pc, ph.pairs.map(function (pr) { return { label: pr.fam !== null && pr.fam !== undefined ? pr.label + ' (' + pr.fam + ')' : pr.label, est: pr.diff, lo: pr.lo, hi: pr.hi, sig: pr.sig }; }), '0 (tidak ada selisih)', ph.cells);
+    drawPostChart(o);
 }
 
 function scheduleCalc() { clearTimeout(calcTimer); calcTimer = setTimeout(calculate, 120); }
