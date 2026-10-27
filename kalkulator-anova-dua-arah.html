@@ -290,8 +290,27 @@ ol.flow li{display:flex;gap:12px;align-items:flex-start;background:var(--soft-bg
 ol.flow li .fn{flex:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:11px;background:var(--accent-blue);color:#fff;font-size:12px;margin-top:1px}
 ul.rd{margin:6px 0 0;padding-left:20px;font-size:13px;color:var(--text-muted);line-height:1.65}
 ul.rd li{margin-bottom:4px}
-details.inline p.mp{margin:0 0 10px}
+details.inline > div{font-size:13.5px;line-height:1.65}
+details.inline p.mp{margin:0 0 10px;font-size:13.5px;line-height:1.65;color:var(--text-soft)}
 details.inline p.mp:last-child{margin-bottom:0}
+details.inline p.hint{font-size:12.5px;color:var(--text-muted)}
+details.inline .tbl-wrap{font-size:13px}
+@media (max-width:480px){
+  .box{font-size:13.5px;line-height:1.65;padding:12px 14px}
+  .stat-row{font-size:13.5px}
+  .stat-value{font-size:14px}
+  p.ip{font-size:13.5px}
+  .step-intro,.verdict-sub,.cmp-text{font-size:13px}
+  .sg-name{font-size:14px}
+  table.dt{font-size:12.5px}
+  table.dt thead th{font-size:12px}
+  details.inline{padding:10px 12px}
+  details.inline > summary,details summary{font-size:13px}
+  details.inline > div,details.inline p.mp,.dl,.cmp-t{font-size:13px}
+  .cmp-q{font-size:12px}
+  ul.rd,ul.rd.dark{font-size:12.5px}
+  .verdict-status{font-size:24px}
+}
 .chip-status{white-space:normal}
 .btn-row.tight{gap:8px;margin:8px 0 4px}
 
@@ -306,6 +325,26 @@ details.inline p.mp:last-child{margin-bottom:0}
 .sel{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:6px 10px;border-radius:10px;border:1px solid var(--border-color);background:var(--btn-bg);color:var(--text-main);max-width:100%;cursor:pointer}
 .sel:hover{border-color:var(--accent-blue)}
 .sel[hidden]{display:none}
+/* ===== Selaras dengan bahan tayangan: uji lanjutan ===== */
+table.dt th.left, table.dt td.left { text-align: left; }
+table.dt th.grp { vertical-align: top; }
+table.dt tr.hlrow th.grp { background: transparent; font-weight: 700; }
+table.dt .subv { display: block; font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
+p.ip { margin: 0 0 8px; font-size: 14.5px; }
+ul.rd.dark { color: var(--text-soft); font-size: 13.5px; }
+.box ul.rd.dark { margin: 4px 0 10px; }
+.dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 6px 0 0; font-size: 13.5px; line-height: 1.65; }
+.dl dt { color: var(--text-muted); font-weight: 600; }
+.dl dd { margin: 0; color: var(--text-soft); }
+.cmp-group + .cmp-group, .mp + .cmp-group { margin-top: 18px; }
+.cmp-group + .cmp-group { padding-top: 16px; border-top: 1px solid var(--border-color); }
+.cmp-head { font-weight: 700; font-size: 14px; }
+.cmp-q { font-size: 12.5px; color: var(--text-muted); margin: 2px 0 6px; line-height: 1.6; }
+.cmp-item { padding: 10px 0; }
+.cmp-item + .cmp-item { border-top: 1px solid var(--grid-line); }
+.cmp-q + .cmp-item { padding-top: 2px; }
+.cmp-t { font-weight: 600; font-size: 13.5px; color: var(--text-main); }
+@media (max-width: 640px) { .dl { grid-template-columns: 1fr; gap: 0; } .dl dt { margin-top: 6px; } }
 </style>
 </head>
 <body>
@@ -1185,6 +1224,7 @@ var GL = {
 'm-gh':'Uji bergaya Games-Howell: kontras rerata dengan varians dan derajat bebas Welch per kontras, sehingga tidak mengandaikan varians sama. Nilai p memakai distribusi studentized range.',
 'm-art':'Uji Tukey pada peringkat selaras: pembandingan pasangan memakai peringkat yang disejajarkan terhadap efek yang bersangkutan. Ini pendekatan, bukan prosedur baku di semua perangkat lunak.',
 'stat-q':'Statistik q (studentized range): selisih dibagi galat baku selisih dikali √2, dibandingkan dengan distribusi studentized range.',
+'stat-t':'Statistik t pada pasangan: selisih dibagi galat baku selisih. Nilai p tidak diambil dari distribusi t biasa, tetapi dari distribusi studentized range agar kesalahan tipe I terkendali untuk seluruh pasangan dalam satu rangkaian.',
 'h0':'Hipotesis nol (H0): pernyataan bahwa tidak ada efek atau tidak ada perbedaan. Uji statistika mencari bukti untuk menolaknya.',
 'h1':'Hipotesis alternatif (H1): pernyataan bahwa ada efek atau perbedaan.',
 'pop':'Populasi sasaran: seluruh individu yang ingin dijangkau oleh kesimpulan penelitian. Sampel diambil dari populasi ini.',
@@ -1233,7 +1273,7 @@ var GL = {
     'interaksi': 'Interaksi: keadaan ketika pengaruh satu faktor tidak sama pada setiap kelompok faktor lainnya. Pada plot interaksi, garis yang sejajar menunjukkan tidak ada interaksi, sedangkan garis yang tidak sejajar (searah atau bersilangan) menunjukkan kemungkinan interaksi. Keputusan akhirnya diambil dari uji pada tabel anova.',
     'sederhana': 'Efek sederhana: pengaruh satu faktor pada satu kelompok tertentu dari faktor lainnya. Contoh: perbedaan antarpakan khusus pada sapi jantan. Efek sederhana dibaca bila interaksi nyata.',
     'marginal': 'Rerata marginal: rerata satu kelompok setelah sel-sel di dalamnya dirata-ratakan dengan bobot sama. Contoh: rerata jantan adalah rerata dari sel jantan pada pakan P, pakan Q, dan pakan R.',
-    'rangkaian': 'Rangkaian perbandingan: sekumpulan pasangan kelompok yang dibandingkan bersama dan dikoreksi bersama agar peluang salah menyatakan "berbeda" tetap terkendali. Contoh: semua pasangan pakan pada satu jenis kelamin adalah satu rangkaian. Pada efek utama, semua pasangan satu faktor adalah satu rangkaian.',
+    'rangkaian': 'Rangkaian perbandingan: sekumpulan pasangan kelompok yang dibandingkan bersama dan dikoreksi bersama agar peluang salah menyatakan "berbeda" tetap terkendali. Contoh: pada interaksi, semua pasangan sel adalah satu rangkaian. Pada efek utama, semua pasangan satu faktor adalah satu rangkaian.',
     'ss-type': 'Jumlah kuadrat Tipe II dan Tipe III adalah dua cara membagi variasi ke tiap efek. Pada data seimbang hasilnya sama. Pada data tidak seimbang hasilnya dapat berbeda.\nJumlah kuadrat Tipe III menguji tiap efek setelah semua efek lain, termasuk interaksi (bawaan banyak perangkat lunak statistika).\nJumlah kuadrat Tipe II menguji tiap efek utama setelah efek utama lainnya tanpa menyertakan interaksi, dan lebih bertenaga bila interaksi memang tidak ada (bawaan sebagian perangkat lunak statistika).',
     'seimbang': 'Data seimbang: setiap sel berisi jumlah data yang sama. Anova dua arah tetap dapat dijalankan pada data tidak seimbang, tetapi pilihan jenis jumlah kuadrat (Tipe II atau Tipe III) mulai memengaruhi hasil.',
     'hc3': 'HC3 (heteroscedasticity-consistent, versi 3) adalah cara menghitung galat baku yang tidak mengandaikan varians sama di semua sel. Statistik ujinya Wald F dengan derajat bebas galat model. Cocok bila residu mendekati normal tetapi varians antarsel berbeda.',
@@ -1381,8 +1421,8 @@ function drawGroupPlot(el, p) {
 }
 
 /* ===================== Forest plot beberapa pasangan ===================== */
-function drawForestMulti(el, rows, refText) {
-    var W = Math.min(720, chartWidth(el)), rowH = 30, ml = 210, mr = 26, mt = 36, mb = 42, H = mt + rows.length * rowH + mb, i;
+function drawForestMulti(el, rows, refText, wide) {
+    var W = Math.max(wide ? 600 : 540, Math.min(760, chartWidth(el))), rowH = 30, ml = wide ? 280 : 210, mr = 26, mt = 36, mb = 42, H = mt + rows.length * rowH + mb, i;
     var vals = [0];
     rows.forEach(function (r) { vals.push(r.est, r.lo, r.hi); });
     var vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals), pad = (vmax - vmin) * 0.08 || 1, amin = vmin - pad, amax = vmax + pad;
@@ -1398,7 +1438,7 @@ function drawForestMulti(el, rows, refText) {
     s += tx(clamp(sx(0), 70, W - 70), mt - 18, refText, { size: 11.5, weight: 700, fill: 'var(--text-muted)', halo: true });
     rows.forEach(function (r, q) {
         var cy = mt + rowH * q + rowH / 2, col = r.sig ? '#ff3b30' : '#0071e3';
-        s += tx(ml - 10, cy + 4, esc(shortName(r.label, 34)), { size: 11.5, weight: 600, anchor: 'end' });
+        s += tx(ml - 10, cy + 4, esc(shortName(r.label, wide ? 46 : 34)), { size: 11.5, weight: 600, anchor: 'end' });
         s += ln(sx(r.lo), cy, sx(r.hi), cy, col, 3) + ln(sx(r.lo), cy - 6, sx(r.lo), cy + 6, col, 3) + ln(sx(r.hi), cy - 6, sx(r.hi), cy + 6, col, 3);
         s += circ(sx(r.est), cy, 5.5, col, 'var(--card-bg)', 2);
     });
@@ -1912,7 +1952,7 @@ function contrastStat(cs, W, k, kind, mse, dfE) {
 function phTable(o, mode) {
     if (o.phCache[mode]) return o.phCache[mode];
     var a = o.a, b = o.b, la = o.la, lb = o.lb, raw = o.cells, method = o.method;
-    var mse = o.m.anova.mse, dfE = o.m.anova.dfE, yc = raw, kind = method === 'robust' ? 'welch' : 'pooled', i, j, i2, j2, c;
+    var mse = o.m.anova.mse, dfE = o.m.anova.dfE, yc = raw, kind = method === 'robust' ? 'welch' : 'pooled', i, j, i2, c, u, v;
     if (method === 'art') {
         var key = mode === 'mainA' ? 'A' : mode === 'mainB' ? 'B' : 'AB', t = o.m.art.terms[TERM_KEYS.indexOf(key)];
         yc = cellsFromVec(t.ranks, a, b, raw); mse = t.mse; dfE = t.dfE;
@@ -1923,6 +1963,7 @@ function phTable(o, mode) {
     var mk = function (W, k, lab, gi, gj, ii, jj) {
         var r = contrastStat(cs, W, k, kind, mse, dfE);
         r.label = lab; r.i = ii; r.j = jj;
+        r.t = r.se > 0 ? r.diff / r.se : 0;
         if (method === 'art') r.rb = rbPair(gi, gj); else r.d = r.diff / Math.sqrt(o.m.anova.mse);
         return r;
     };
@@ -1936,30 +1977,58 @@ function phTable(o, mode) {
             pairs.push(mk(W, L.length, L[i] + ' − ' + L[i2], gi, gj, i, i2));
         }
         fams.push({ label: null, k: L.length, pairs: pairs });
-    } else if (mode === 'simAB') {
-        for (j = 0; j < b; j++) {
-            var ps = [];
-            for (i = 0; i < a - 1; i++) for (i2 = i + 1; i2 < a; i2++) ps.push(mk([{ i: i, j: j, w: 1 }, { i: i2, j: j, w: -1 }], a, la[i] + ' − ' + la[i2], raw[i][j], raw[i2][j], i, i2));
-            fams.push({ label: lb[j], fixed: j, k: a, pairs: ps });
-        }
     } else {
-        for (i = 0; i < a; i++) {
-            var ps2 = [];
-            for (j = 0; j < b - 1; j++) for (j2 = j + 1; j2 < b; j2++) ps2.push(mk([{ i: i, j: j, w: 1 }, { i: i, j: j2, w: -1 }], b, lb[j] + ' − ' + lb[j2], raw[i][j], raw[i][j2], j, j2));
-            fams.push({ label: la[i], fixed: i, k: b, pairs: ps2 });
+        /* interaksi: seluruh pasangan sel dalam satu rangkaian (urutan sel: faktor A lambat, faktor B cepat) */
+        var cl = [], prs = [];
+        for (i = 0; i < a; i++) for (j = 0; j < b; j++) cl.push({ i: i, j: j });
+        var K = cl.length;
+        for (u = 0; u < K - 1; u++) for (v = u + 1; v < K; v++) {
+            var c1 = cl[u], c2 = cl[v];
+            var pr = mk([{ i: c1.i, j: c1.j, w: 1 }, { i: c2.i, j: c2.j, w: -1 }], K, la[c1.i] + ', ' + lb[c1.j] + ' − ' + la[c2.i] + ', ' + lb[c2.j], raw[c1.i][c1.j], raw[c2.i][c2.j], u, v);
+            pr.c1 = c1; pr.c2 = c2; pr.type = c1.j === c2.j ? 'A' : (c1.i === c2.i ? 'B' : 'D');
+            prs.push(pr);
         }
+        fams.push({ label: null, k: K, pairs: prs });
     }
     var flat = []; fams.forEach(function (f) { f.pairs.forEach(function (p) { p.fam = f.label; flat.push(p); }); });
     var res = { mode: mode, method: method, families: fams, pairs: flat, hasCI: method !== 'art', hasD: method !== 'art', hasRB: method === 'art',
-        name: method === 'anova' ? 'Tukey HSD' : method === 'robust' ? 'Games-Howell (kontras rerata)' : 'Tukey pada peringkat selaras', statName: 'q', simple: mode === 'simAB' || mode === 'simBA' };
+        name: method === 'anova' ? 'Tukey HSD' : method === 'robust' ? 'Games-Howell (kontras rerata)' : 'Tukey pada peringkat selaras',
+        pName: method === 'anova' ? 'Tukey' : method === 'robust' ? 'Games-Howell' : 'Tukey pada peringkat', statName: 't', cells: mode === 'cells' };
     o.phCache[mode] = res;
     return res;
 }
+function simFamilies(o, byA) {
+    var ph = phTable(o, 'cells'), fams = [], nFix = byA ? o.b : o.a, g;
+    for (g = 0; g < nFix; g++) {
+        var fl = byA ? o.lb[g] : o.la[g], prs = [];
+        ph.pairs.forEach(function (p) {
+            if (byA ? (p.type === 'A' && p.c1.j === g) : (p.type === 'B' && p.c1.i === g)) {
+                var q = {}, kk;
+                for (kk in p) q[kk] = p[kk];
+                q.i = byA ? p.c1.i : p.c1.j; q.j = byA ? p.c2.i : p.c2.j;
+                q.label = byA ? o.la[p.c1.i] + ' − ' + o.la[p.c2.i] : o.lb[p.c1.j] + ' − ' + o.lb[p.c2.j];
+                q.fam = fl;
+                prs.push(q);
+            }
+        });
+        fams.push({ label: fl, fixed: g, pairs: prs });
+    }
+    return fams;
+}
 function defaultMode(o) {
     var r = o.reject;
-    if (r[2]) return 'simAB';
+    if (r[2]) return 'cells';
     if (r[1] && !r[0]) return 'mainB';
     return 'mainA';
+}
+/* mode yang diberi label "Disarankan": interaksi nyata -> hanya interaksi; selain itu tiap efek utama yang nyata; tidak ada yang nyata -> tidak ada */
+function recModes(o) {
+    var r = o.reject;
+    if (r[2]) return ['cells'];
+    var out = [];
+    if (r[0]) out.push('mainA');
+    if (r[1]) out.push('mainB');
+    return out;
 }
 /* nilai pusat tiap kelompok (atau tiap sel dalam satu famili) untuk uraian: rerata marginal (anova, robust) atau median (ART) */
 function levelCenters(o, mode, fixed) {
@@ -2049,12 +2118,14 @@ function termSci(o, k) {
 }
 function postSciText(o, mode) {
     var ph = getPH(o, mode), s = '', sigAny = false;
-    if (ph.simple) {
-        ph.families.forEach(function (f) {
-            var sg = f.pairs.filter(function (p) { return p.sig; });
-            if (sg.length) { sigAny = true; s += ' Pada kelompok ' + f.label + ' (' + lcFirst(mode === 'simAB' ? o.nB : o.nA) + '), perbedaan nyata ditemukan pada ' + sg.map(function (p) { return pairSci(o, p); }).join('; ') + '.'; }
+    if (mode === 'cells') {
+        [true, false].forEach(function (byA) {
+            simFamilies(o, byA).forEach(function (f) {
+                var sg = f.pairs.filter(function (p) { return p.sig; });
+                if (sg.length) { sigAny = true; s += ' Pada kelompok ' + f.label + ' (' + lcFirst(byA ? o.nB : o.nA) + '), perbedaan nyata ditemukan pada ' + sg.map(function (p) { return pairSci(o, p); }).join('; ') + '.'; }
+            });
         });
-        if (!sigAny) s += ' Namun, uji lanjutan ' + ph.name + ' pada efek sederhana tidak menemukan pasangan yang berbeda nyata.';
+        if (!sigAny) s += ' Namun, uji lanjutan ' + ph.name + ' pada seluruh pasangan sel tidak menemukan pasangan yang berbeda nyata.';
     } else {
         var sg2 = ph.pairs.filter(function (p) { return p.sig; });
         if (sg2.length) { s += ' Pada efek utama ' + lcFirst(mode === 'mainA' ? o.nA : o.nB) + ', uji lanjutan ' + ph.name + ' menunjukkan perbedaan nyata pada ' + sg2.map(function (p) { return pairSci(o, p); }).join('; ') + '.'; }
@@ -2068,8 +2139,7 @@ function conclusionText(o, mode) {
     if (r[2]) {
         s += ' Karena interaksi nyata, pengaruh satu faktor bergantung pada kelompok faktor lainnya, sehingga efek utama ditafsirkan dengan hati-hati (pada interaksi bersilangan efek utama dapat menyesatkan) dan perbandingan dilakukan pada efek sederhana.';
         s += ' ' + (o.method !== 'art' ? 'Rerata ± SD per sel: ' : 'Median per sel: ') + cellDesc(o) + '.';
-        var m = (mode === 'simAB' || mode === 'simBA') ? mode : 'simAB';
-        s += postSciText(o, m);
+        s += postSciText(o, 'cells');
     } else {
         s += ' Interaksi tidak nyata, sehingga efek utama ditafsirkan sendiri-sendiri.';
         s += ' ' + (o.method !== 'art' ? 'Rerata ± SD per sel: ' : 'Median per sel: ') + cellDesc(o) + '.';
@@ -2139,14 +2209,16 @@ function layText(o, mode) {
         return s;
     }
     if (r[2]) {
-        var byA = mode !== 'simBA', mm = byA ? 'simAB' : 'simBA', ph = getPH(o, mm), names = byA ? o.la : o.lb, Fc = byA ? A : B, Fo = byA ? B : A;
+        var byA = true, mm = 'simAB', fams = simFamilies(o, true), names = o.la, Fc = A, Fo = B;
         s += 'Pada ' + P + ', pengaruh ' + Fc + ' terhadap ' + V + ' berbeda menurut ' + Fo + '. Artinya, perbedaan antarkelompok ' + Fc + ' tidak sama pada setiap kelompok ' + Fo + '. ';
-        ph.families.forEach(function (f) {
+        fams.forEach(function (f) {
             var sg = f.pairs.filter(function (p) { return p.sig; });
             if (!sg.length) { s += 'Pada kelompok ' + f.label + ' (' + Fo + '), belum ada perbedaan antarkelompok ' + Fc + ' yang jelas. '; return; }
             var cen = levelCenters(o, mm, f.fixed);
             s += 'Pada kelompok ' + f.label + ' (' + Fo + '): ' + layClusters(names, cen, sigFnOf(f.pairs), u, par);
         });
+        var famsB = simFamilies(o, false), sigB = famsB.filter(function (f) { return f.pairs.some(function (p) { return p.sig; }); }), nsB = famsB.filter(function (f) { return !f.pairs.some(function (p) { return p.sig; }); });
+        if (sigB.length) s += 'Dari sudut pandang lain, perbedaan antarkelompok ' + Fo + ' terlihat jelas pada kelompok ' + joinList(sigB.map(function (f) { return f.label; })) + ' (' + Fc + ')' + (nsB.length ? ', tetapi belum jelas pada kelompok ' + joinList(nsB.map(function (f) { return f.label; })) : '') + '. ';
         s += 'Perbedaan ini kecil kemungkinannya terjadi karena kebetulan. ';
         var e = o.terms[2].catEta;
         if (e === 'sangat kecil' || e === 'kecil') s += 'Meski demikian, kekuatan interaksinya tergolong ' + e + '. ';
@@ -2229,11 +2301,10 @@ function postFlowHtml(o) {
     return h + '</ol></div>';
 }
 function pmExplain(o, md) {
-    var nA = esc(lcFirst(o.nA)), nB = esc(lcFirst(o.nB)), la = o.la.map(esc), lb = o.lb.map(esc), t;
+    var nA = esc(lcFirst(o.nA)), nB = esc(lcFirst(o.nB)), la = o.la.map(esc), lb = o.lb.map(esc), t, K = o.a * o.b, nP = K * (K - 1) / 2;
     if (md === 'mainA') t = '<b>Efek utama ' + nA + '.</b> Membandingkan rerata tiap kelompok ' + nA + ' setelah semua kelompok ' + nB + ' dirata-ratakan. Contoh: ' + la[0] + ' dibandingkan dengan ' + la[1] + ' berdasarkan ' + G('marginal', 'rerata marginal') + '. Seluruh pasangan kelompok ' + nA + ' membentuk satu ' + G('rangkaian', 'rangkaian perbandingan') + '.';
     else if (md === 'mainB') t = '<b>Efek utama ' + nB + '.</b> Membandingkan rerata tiap kelompok ' + nB + ' setelah semua kelompok ' + nA + ' dirata-ratakan. Contoh: ' + lb[0] + ' dibandingkan dengan ' + lb[1] + ' berdasarkan ' + G('marginal', 'rerata marginal') + '. Seluruh pasangan kelompok ' + nB + ' membentuk satu ' + G('rangkaian', 'rangkaian perbandingan') + '.';
-    else if (md === 'simAB') t = '<b>Efek sederhana ' + nA + ' pada tiap kelompok ' + nB + '.</b> Membandingkan kelompok ' + nA + ' secara terpisah di dalam setiap kelompok ' + nB + '. Contoh: ' + la[0] + ' dibandingkan dengan ' + la[1] + ' khusus pada ' + lb[0] + '. Ada ' + o.b + ' ' + G('rangkaian', 'rangkaian perbandingan') + ' (satu per kelompok ' + nB + '), dan pengendalian kesalahan tipe I berlaku di dalam tiap rangkaian.';
-    else t = '<b>Efek sederhana ' + nB + ' pada tiap kelompok ' + nA + '.</b> Membandingkan kelompok ' + nB + ' secara terpisah di dalam setiap kelompok ' + nA + '. Contoh: ' + lb[0] + ' dibandingkan dengan ' + lb[1] + ' khusus pada ' + la[0] + '. Ada ' + o.a + ' ' + G('rangkaian', 'rangkaian perbandingan') + ' (satu per kelompok ' + nA + '), dan pengendalian kesalahan tipe I berlaku di dalam tiap rangkaian.';
+    else t = '<b>Interaksi: seluruh pasangan sel.</b> ' + K + ' sel menghasilkan ' + nP + ' pasangan yang dibandingkan dalam satu ' + G('rangkaian', 'rangkaian perbandingan') + ', sehingga nilai p ' + (o.method === 'robust' ? 'Games-Howell' : 'Tukey') + ' mengendalikan kesalahan tipe I untuk semua pasangan sekaligus. Pasangan yang berbeda pada satu faktor saja adalah ' + G('sederhana', 'efek sederhana') + ', sedangkan pasangan yang berbeda pada kedua faktor adalah perbandingan diagonal.';
     return '<div class="box" style="margin:16px 0 12px;">' + t + '</div>';
 }
 /* ===== TEKS END ===== */
@@ -2385,36 +2456,49 @@ function effHtml(o) {
     h += '</tbody></table></div>';
     var rows = [['Sangat kecil', '< 0,01'], ['Kecil', '0,01 sampai < 0,06'], ['Sedang', '0,06 sampai < 0,14'], ['Besar', '≥ 0,14']];
     var wo = !!document.querySelector('#eff-cls[open]');
-    h += '<details class="inline" id="eff-cls"' + (wo ? ' open' : '') + ' style="margin-top:16px"><summary>Klasifikasi ukuran efek (η²<sub>p</sub> dan ω²<sub>p</sub>)</summary><div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Kategori</th><th>Rentang</th></tr></thead><tbody>';
+    h += '<details class="inline" id="eff-cls"' + (wo ? ' open' : '') + ' style="margin-top:16px"><summary>Klasifikasi ukuran efek (η²p dan ω²p)</summary><div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Kategori</th><th>Rentang</th></tr></thead><tbody>';
     rows.forEach(function (r) { h += '<tr><th scope="row">' + r[0] + '</th><td>' + r[1] + '</td></tr>'; });
     h += '</tbody></table></div><p class="hint">Batas klasifikasi mengikuti catatan metode di bagian bawah halaman dan dibaca sebagai panduan kasar.' + (o.method === 'robust' ? ' Pada uji HC3, nilai dihitung dari statistik F robust sehingga bersifat perkiraan.' : '') + (o.method === 'art' ? ' Pada ART, nilai dihitung dari F pada peringkat selaras sehingga bersifat perkiraan.' : '') + '</p></div></details>';
     return h;
 }
 function postTable(o, ph) {
-    var art = o.method === 'art', cols = 3 + (art ? 3 : 5);
-    var h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Pasangan</th>';
-    h += '<th>' + G('ph-diff', art ? 'Selisih rerata peringkat selaras' : 'Selisih') + '</th><th>' + G('se', 'SE') + '</th><th>' + G('stat-q', 'q') + '</th><th>' + G('df', 'df') + '</th><th>' + G('pval', 'Nilai p') + '</th>';
-    if (ph.hasCI) h += '<th>' + G('ci95', 'CI 95%') + '</th><th>' + G('d', 'Cohen&#39;s d') + '</th>';
-    if (ph.hasRB) h += '<th>' + G('rrb', 'Rank-biserial (r<sub>rb</sub>)') + '</th>';
-    h += '<th>Keputusan</th></tr></thead><tbody>';
-    ph.families.forEach(function (f) {
-        if (f.label !== null) h += '<tr class="tot"><th scope="row" colspan="' + (ph.hasCI ? 9 : 7) + '" style="text-align:left;">' + esc(ph.mode === 'simAB' ? o.nB : o.nA) + ': ' + esc(f.label) + '</th></tr>';
-        f.pairs.forEach(function (pr) {
-            h += '<tr' + (pr.sig ? ' class="hlrow"' : '') + '><th scope="row">' + esc(pr.label) + '</th><td>' + fmt(pr.diff, 2) + '</td><td>' + fmt(pr.se, 2) + '</td><td>' + fmt(pr.stat, 2) + '</td><td>' + dfTxt(pr.df) + '</td><td>' + fmtP(pr.p) + '</td>';
-            if (ph.hasCI) h += '<td>' + ciS(pr.lo, pr.hi, 2) + '</td><td>' + fmt(pr.d, 2) + ' (' + categoryD(pr.d) + ')</td>';
-            if (ph.hasRB) h += '<td>' + fmt(pr.rb, 2) + ' (' + categoryRB(pr.rb) + ')</td>';
-            h += '<td>' + (pr.sig ? 'Berbeda nyata' : 'Tidak berbeda nyata') + '</td></tr>';
-        });
+    var art = o.method === 'art', cells = ph.cells, pairs = ph.pairs, nl = cells ? 5 : 3, h, hdr;
+    h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th class="left" colspan="' + nl + '">Perbandingan</th>';
+    hdr = [G('ph-diff', art ? 'Selisih rerata peringkat selaras' : 'Selisih rerata'), G('se', 'SE'), G('df', 'df'), G('stat-t', 't'), G('pval', 'Nilai p') + '<span class="subv">' + ph.pName + '</span>'];
+    if (ph.hasCI) hdr.push(G('ci95', 'CI 95%'), G('d', 'Cohen&#39;s d'));
+    if (ph.hasRB) hdr.push(G('rrb', 'Rank-biserial (r<sub>rb</sub>)'));
+    hdr.push('Keputusan');
+    hdr.forEach(function (x) { h += '<th rowspan="2">' + x + '</th>'; });
+    h += '</tr><tr>';
+    if (cells) h += '<th class="left">' + esc(o.nA) + '</th><th class="left">' + esc(o.nB) + '</th><th></th><th class="left">' + esc(o.nA) + '</th><th class="left">' + esc(o.nB) + '</th>';
+    else { var fn = ph.mode === 'mainA' ? o.nA : o.nB; h += '<th class="left">' + esc(fn) + '</th><th></th><th class="left">' + esc(fn) + '</th>'; }
+    h += '</tr></thead><tbody>';
+    pairs.forEach(function (pr, idx) {
+        h += '<tr' + (pr.sig ? ' class="hlrow"' : '') + '>';
+        if (cells) {
+            if (idx === 0 || pairs[idx - 1].i !== pr.i) {
+                var cnt = pairs.filter(function (p) { return p.i === pr.i; }).length;
+                h += '<th class="left grp" scope="rowgroup" rowspan="' + cnt + '">' + esc(o.la[pr.c1.i]) + '</th><th class="left grp" scope="rowgroup" rowspan="' + cnt + '">' + esc(o.lb[pr.c1.j]) + '</th>';
+            }
+            h += '<td class="left">–</td><td class="left">' + esc(o.la[pr.c2.i]) + '</td><td class="left">' + esc(o.lb[pr.c2.j]) + '</td>';
+        } else {
+            var nz = pr.label.split(' − ');
+            h += '<th class="left" scope="row">' + esc(nz[0]) + '</th><td class="left">–</td><td class="left">' + esc(nz[1]) + '</td>';
+        }
+        h += '<td>' + fmt(pr.diff, 2) + '</td><td>' + fmt(pr.se, 3) + '</td><td>' + dfTxt(pr.df) + '</td><td>' + fmt(pr.t, 2) + '</td><td>' + fmtP(pr.p) + '</td>';
+        if (ph.hasCI) h += '<td>' + ciS(pr.lo, pr.hi, 2) + '</td><td>' + fmt(pr.d, 2) + ' (' + categoryD(pr.d) + ')</td>';
+        if (ph.hasRB) h += '<td>' + fmt(pr.rb, 2) + ' (' + categoryRB(pr.rb) + ')</td>';
+        h += '<td>' + (pr.sig ? 'Berbeda nyata' : 'Tidak berbeda nyata') + '</td></tr>';
     });
     return h + '</tbody></table></div>';
 }
 function postTSV(o, ph) {
-    var art = o.method === 'art', head = ['Famili', 'Pasangan', art ? 'Selisih rerata peringkat selaras' : 'Selisih', 'SE', 'q', 'df', 'p'], out;
+    var art = o.method === 'art', head = ['Pasangan', art ? 'Selisih rerata peringkat selaras' : 'Selisih rerata', 'SE', 'df', 't', 'Nilai p (' + ph.pName + ')'], out;
     if (ph.hasCI) head.push('CI 95%', "Cohen's d", 'Kategori d');
     if (ph.hasRB) head.push('Rank-biserial', 'Kategori rank-biserial');
     head.push('Keputusan'); out = [head.join('\t')];
     ph.pairs.forEach(function (pr) {
-        var row = [pr.fam === null || pr.fam === undefined ? '' : pr.fam, pr.label, fmt(pr.diff, 2), fmt(pr.se, 2), fmt(pr.stat, 2), dfTxt(pr.df), fmtP(pr.p)];
+        var row = [pr.label, fmt(pr.diff, 2), fmt(pr.se, 3), dfTxt(pr.df), fmt(pr.t, 2), fmtP(pr.p)];
         if (ph.hasCI) row.push(ciS(pr.lo, pr.hi, 2), fmt(pr.d, 2), categoryD(pr.d));
         if (ph.hasRB) row.push(fmt(pr.rb, 2), categoryRB(pr.rb));
         row.push(pr.sig ? 'Berbeda nyata' : 'Tidak berbeda nyata');
@@ -2570,12 +2654,91 @@ function render(o) {
     drawCharts(o);
 }
 
+function interpBox(samp, pop) {
+    var sm = /^<ul/.test(samp) ? '<p class="ip"><b>Pada sampel.</b></p>' + samp : '<p class="ip"><b>Pada sampel.</b> ' + samp + '</p>';
+    return '<div class="box"><div class="concl-title">Interpretasi</div>' + sm + '<p class="ip"><b>Pada populasi.</b> ' + pop + '</p></div>';
+}
+function keepOpen(id, def) { var e = document.getElementById(id); return e ? e.open : def; }
+/* uraian uji lanjutan pada interaksi: efek sederhana A di tiap B, efek sederhana B di tiap A, dan perbandingan diagonal */
+function cellsInterp(o, ph) {
+    var par = o.method !== 'art', sv = splitVar(o), V = esc(lcFirst(sv.base)), u = sv.unit ? ' ' + esc(sv.unit) : '', ctr = par ? 'rerata' : 'rerata peringkat selaras';
+    var cn = function (c) { return esc(o.la[c.i] + '–' + o.lb[c.j]); };
+    var block = function (pr, kind) {
+        var n1, n2, fx = '', fxN = '', title, prefix = '', d = Math.abs(pr.diff), hi, lo;
+        if (kind === 'A') { n1 = o.la[pr.c1.i]; n2 = o.la[pr.c2.i]; fx = o.lb[pr.c1.j]; fxN = o.nB; }
+        else if (kind === 'B') { n1 = o.lb[pr.c1.j]; n2 = o.lb[pr.c2.j]; fx = o.la[pr.c1.i]; fxN = o.nA; }
+        else { n1 = o.la[pr.c1.i] + '–' + o.lb[pr.c1.j]; n2 = o.la[pr.c2.i] + '–' + o.lb[pr.c2.j]; }
+        var w1 = kind === 'D' ? 'sel ' + esc(n1) : 'kelompok ' + esc(n1), w2 = kind === 'D' ? 'sel ' + esc(n2) : 'kelompok ' + esc(n2);
+        title = kind === 'D' ? cn(pr.c1) + ' dibanding ' + cn(pr.c2) : esc(n1) + ' dibanding ' + esc(n2);
+        if (kind !== 'D') prefix = 'Pada ' + esc(fx) + ' (' + esc(lcFirst(fxN)) + '), ';
+        hi = pr.diff > 0 ? w1 : w2; lo = pr.diff > 0 ? w2 : w1;
+        var verdict = pr.sig
+            ? '<b>Ya.</b> ' + prefix + hi + ' memiliki ' + V + (par ? ' yang secara nyata ' + fmt(d, 2) + u + ' lebih tinggi' : ' yang cenderung lebih tinggi secara nyata') + ' daripada ' + lo + '.'
+            : '<b>Tidak.</b> ' + prefix + V + ' tidak berbeda nyata antara ' + w1 + ' dan ' + w2 + '.';
+        return '<div class="cmp-item"><div class="cmp-t">' + title + '</div><dl class="dl"><dt>Perbandingan</dt><dd>' + cn(pr.c1) + ' vs ' + cn(pr.c2) + '</dd><dt>Hasil</dt><dd>selisih ' + ctr + ' = ' + fmt(pr.diff, 2) + (par ? u : '') + '; ' + pShort(pr.p) + ' (' + (pr.sig ? 'nyata' : 'tidak nyata') + ')</dd><dt>Interpretasi</dt><dd>' + verdict + '</dd></dl></div>';
+    };
+    var famHtml = function (byA) {
+        var Fc = byA ? o.nA : o.nB, Fo = byA ? o.nB : o.nA, Lc = byA ? o.la : o.lb, h = '';
+        simFamilies(o, byA).forEach(function (f) {
+            var cmp = Lc.length === 2 ? 'antara ' + esc(Lc[0]) + ' dan ' + esc(Lc[1]) : 'antarkelompok ' + esc(lcFirst(Fc));
+            h += '<div class="cmp-group"><div class="cmp-head">Pada ' + esc(f.label) + ' (' + esc(lcFirst(Fo)) + ')</div><div class="cmp-q">Pertanyaan: apakah ada perbedaan ' + V + ' ' + cmp + '?</div>' + f.pairs.map(function (pr) { return block(pr, byA ? 'A' : 'B'); }).join('') + '</div>';
+        });
+        return h;
+    };
+    var diag = ph.pairs.filter(function (p) { return p.type === 'D'; }), nSimple = ph.pairs.length - diag.length;
+    var h = '<div class="sub"><div class="sub-title">Interpretasi uji lanjutan</div>';
+    h += '<details class="inline" id="ph-sa"' + (keepOpen('ph-sa', true) ? ' open' : '') + '><summary>Efek sederhana ' + esc(lcFirst(o.nA)) + ', dibaca di dalam tiap kelompok ' + esc(lcFirst(o.nB)) + '</summary><div>' + famHtml(true) + '</div></details>';
+    h += '<details class="inline" id="ph-sb"' + (keepOpen('ph-sb', true) ? ' open' : '') + ' style="margin-top:10px"><summary>Efek sederhana ' + esc(lcFirst(o.nB)) + ', dibaca di dalam tiap kelompok ' + esc(lcFirst(o.nA)) + '</summary><div>' + famHtml(false) + '</div></details>';
+    if (diag.length) h += '<details class="inline" id="ph-dg"' + (keepOpen('ph-dg', false) ? ' open' : '') + ' style="margin-top:10px"><summary>Perbandingan diagonal (tambahan)</summary><div><p class="mp">Dari ' + ph.pairs.length + ' perbandingan, ' + nSimple + ' menjaga satu faktor tetap sama (efek sederhana) dan ' + diag.length + ' adalah perbandingan diagonal, yaitu pasangan yang berbeda pada kedua faktor. Perbandingan diagonal tidak wajib diuraikan, tetapi dapat memberi tambahan wawasan.</p><div class="cmp-group">' + diag.map(function (pr) { return block(pr, 'D'); }).join('') + '</div></div></details>';
+    h += '</div>';
+    var qa = function (byA) {
+        var Fc = byA ? o.nA : o.nB, Fo = byA ? o.nB : o.nA, out = '';
+        simFamilies(o, byA).forEach(function (f) {
+            var ns = f.pairs.filter(function (p) { return p.sig; }).length;
+            out += '<li>Apakah ' + esc(lcFirst(Fc)) + ' berpengaruh pada ' + esc(f.label) + ' (' + esc(lcFirst(Fo)) + ')? <b>' + (ns === 0 ? 'Tidak' : (f.pairs.length === 1 ? 'Ya' : 'Ya, pada ' + ns + ' dari ' + f.pairs.length + ' pasangan')) + '</b></li>';
+        });
+        return out;
+    };
+    var sumTxt = function (byA) {
+        var Fc = byA ? o.nA : o.nB, fams = simFamilies(o, byA);
+        var sg = fams.filter(function (f) { return f.pairs.some(function (p) { return p.sig; }); }).map(function (f) { return esc(f.label); });
+        var nsg = fams.filter(function (f) { return !f.pairs.some(function (p) { return p.sig; }); }).map(function (f) { return esc(f.label); });
+        return 'Pengaruh ' + esc(lcFirst(Fc)) + ' ' + (sg.length ? 'nyata pada ' + joinList(sg) : '') + (sg.length && nsg.length ? ' dan ' : '') + (nsg.length ? 'tidak nyata pada ' + joinList(nsg) : '') + '.';
+    };
+    h += '<div class="box" style="margin-top:14px"><div class="concl-title">Ringkasan efek sederhana</div><ul class="rd dark">' + qa(true) + qa(false) + '</ul><p class="ip" style="margin-top:10px"><b>Kesimpulan.</b> ' + sumTxt(true) + ' ' + sumTxt(false) + ' Pola ini menunjukkan mekanisme interaksi: pengaruh satu faktor berbeda menurut kelompok faktor lainnya.</p></div>';
+    var sig = ph.pairs.filter(function (p) { return p.sig; });
+    var samp = 'Dari ' + ph.pairs.length + ' pasangan sel, ' + sig.length + ' berbeda nyata pada α = 0,05. Rincian tiap pasangan ada pada uraian di atas.';
+    var pop = ph.hasCI ? 'CI 95% selisih pada pasangan yang ditandai tidak melewati 0, sehingga arah perbedaan pada populasi dapat dikatakan sama dengan arah di sampel. Pengendalian kesalahan tipe I berlaku untuk seluruh pasangan sel sekaligus. Cohen\'s d menunjukkan besar selisih dalam satuan simpangan baku galat dan perlu dibaca bersama nilai p.' : 'Nilai p pasangan memakai pendekatan Tukey pada peringkat selaras, sehingga perlakukan hasilnya sebagai perkiraan. ART tidak menghasilkan CI, jadi arah perbedaan dibaca dari tanda selisih dan besar selisih dari r<sub>rb</sub>.';
+    return h + '<div style="margin-top:14px">' + interpBox(samp, pop) + '</div>';
+}
+function postInterp(o, ph, md) {
+    var sig = ph.pairs.filter(function (p) { return p.sig; }), par = o.method !== 'art', samp, pop;
+    var idx = md === 'mainA' ? 0 : md === 'mainB' ? 1 : 2;
+    if (!o.reject[idx]) {
+        samp = G('omnibus', 'Uji omnibus') + ' untuk ' + (idx === 2 ? 'interaksi' : 'efek ini') + ' tidak menolak H<sub>0</sub>, sehingga pasangan yang tampak berbeda tidak ditafsirkan. Tabel ditampilkan sebagai informasi.';
+        pop = 'Karena H<sub>0</sub> tidak ditolak, pola antarpasangan belum dapat dianggap berlaku pada populasi.';
+    } else if (md === 'cells') {
+        return cellsInterp(o, ph);
+    } else if (!sig.length) {
+        samp = 'Tidak ada pasangan yang berbeda nyata, meskipun uji omnibus menolak H<sub>0</sub>.';
+        pop = 'Hal ini dapat terjadi karena pengendalian perbandingan berganda membuat uji lanjutan lebih ketat daripada uji omnibus. Belum ada pasangan tertentu yang dapat ditunjuk sebagai sumber perbedaan pada populasi.';
+    } else {
+        samp = '<ul class="rd dark">' + sig.map(function (pr) {
+            var nmz = pr.label.split(' − '), hi = pr.diff > 0 ? nmz[0] : nmz[1], lo = pr.diff > 0 ? nmz[1] : nmz[0];
+            return '<li>' + esc(hi) + ' memiliki ' + (par ? 'rerata' : 'rerata peringkat selaras') + ' lebih tinggi daripada ' + esc(lo) + ' (selisih = ' + fmt(Math.abs(pr.diff), 2) + (ph.hasD ? '; Cohen\'s d = ' + fmt(Math.abs(pr.d), 2) + ', efek ' + categoryD(pr.d) : '') + (ph.hasRB ? '; r<sub>rb</sub> = ' + fmt(Math.abs(pr.rb), 2) + ', efek ' + categoryRB(pr.rb) : '') + ').</li>';
+        }).join('') + '</ul>';
+        if (sig.length < ph.pairs.length) samp += '<p class="ip">Pasangan lainnya tidak berbeda nyata.</p>';
+        pop = ph.hasCI ? 'CI 95% selisih pada pasangan yang ditandai tidak melewati 0, sehingga arah perbedaan pada populasi dapat dikatakan sama dengan arah di sampel. Pengendalian kesalahan tipe I berlaku di dalam tiap rangkaian perbandingan. Cohen\'s d menunjukkan besar selisih dalam satuan simpangan baku galat dan perlu dibaca bersama nilai p.' : 'Nilai p pasangan memakai pendekatan Tukey pada peringkat selaras, sehingga perlakukan hasilnya sebagai perkiraan. ART tidak menghasilkan CI, jadi arah perbedaan dibaca dari tanda selisih dan besar selisih dari r<sub>rb</sub>.';
+    }
+    return interpBox(samp, pop);
+}
 function renderPosthoc(o) {
-    var md = curMode(o), def = defaultMode(o), ph = phTable(o, md), sig = ph.pairs.filter(function (p) { return p.sig; });
-    var labels = { mainA: ['Efek utama', o.nA], mainB: ['Efek utama', o.nB], simAB: ['Efek sederhana', o.nA + ' pada tiap kelompok ' + o.nB], simBA: ['Efek sederhana', o.nB + ' pada tiap kelompok ' + o.nA] };
+    var md = curMode(o), recs = recModes(o), ph = phTable(o, md), sig = ph.pairs.filter(function (p) { return p.sig; });
+    var K = o.a * o.b, nP = K * (K - 1) / 2;
+    var labels = { cells: ['Interaksi', 'semua pasangan sel (' + nP + ' perbandingan)'], mainA: ['Efek utama', o.nA], mainB: ['Efek utama', o.nB] };
     var seg = '<div class="seg" id="pm-seg">';
-    ['mainA', 'mainB', 'simAB', 'simBA'].forEach(function (m) {
-        seg += '<input type="radio" name="pmode" id="pm-' + m + '" value="' + m + '"' + (m === md ? ' checked' : '') + '><label for="pm-' + m + '">' + labels[m][0] + '<span class="seg-sub">' + esc(shortName(labels[m][1], 38)) + '</span>' + (m === def ? '<span class="seg-rec">Disarankan</span>' : '') + '</label>';
+    ['cells', 'mainA', 'mainB'].forEach(function (m) {
+        seg += '<input type="radio" name="pmode" id="pm-' + m + '" value="' + m + '"' + (m === md ? ' checked' : '') + '><label for="pm-' + m + '">' + labels[m][0] + '<span class="seg-sub">' + esc(shortName(labels[m][1], 38)) + '</span>' + (recs.indexOf(m) >= 0 ? '<span class="seg-rec">Disarankan</span>' : '') + '</label>';
     });
     $('pm-wrap').innerHTML = seg + '</div>';
     $('post-flow').innerHTML = postFlowHtml(o); $('pm-explain').innerHTML = pmExplain(o, md);
@@ -2587,14 +2750,14 @@ function renderPosthoc(o) {
     if (o.method === 'art') notes += '<div class="box">' + noteHtml('info', 'Catatan', 'Uji lanjutan pada ART memakai pendekatan Tukey terhadap peringkat yang disejajarkan untuk efek terkait. Ukuran efek rank-biserial dihitung dari data asli pada pasangan itu (bukan dari peringkat selaras), sehingga bersifat perkiraan. Perlakukan hasilnya sebagai perkiraan dan periksa kembali dengan perangkat lunak khusus bila hasilnya akan dilaporkan.') + '</div>';
     body += notes + '<div class="sub"><div class="sub-title">Perbandingan berpasangan</div>' + postTable(o, ph) +
         '<div class="btn-row" style="margin-top:8px;"><button type="button" class="btn sm" id="btn-copy-post">Salin tabel uji lanjutan</button></div>' +
-        '<p class="hint">Baris yang diberi latar menandai pasangan yang berbeda nyata pada ' + G('alpha', 'α') + ' = 0,05. Pengendalian kesalahan tipe I berlaku di dalam tiap ' + G('rangkaian', 'rangkaian perbandingan') + '.</p></div>';
+        '<p class="hint">Baris yang diberi latar menandai pasangan yang berbeda nyata pada ' + G('alpha', 'α') + ' = 0,05. Selisih dihitung sebagai kelompok pertama dikurangi kelompok kedua. ' + (ph.cells ? 'Seluruh ' + nP + ' pasangan sel dibandingkan dalam satu ' + G('rangkaian', 'rangkaian perbandingan') + ', sehingga nilai p ' + esc(ph.pName) + ' sudah mengendalikan kesalahan tipe I untuk semua pasangan sekaligus.' : 'Pengendalian kesalahan tipe I berlaku di dalam tiap ' + G('rangkaian', 'rangkaian perbandingan') + '.') + '</p></div>';
     if (ph.hasCI) body += '<div class="sub"><div class="sub-title">Selisih dan ' + G('ci95', 'CI 95%') + ' tiap pasangan</div><p class="hint">Titik adalah selisih tiap pasangan dan garis horizontal adalah CI 95%-nya. Merah berarti CI tidak mencakup 0 (berbeda nyata), biru berarti CI mencakup 0.</p><div class="chart-wrap"><div id="post-chart"></div></div><div class="btn-row dl-row"><button type="button" class="btn sm" data-dl="post-chart">Unduh grafik (PNG)</button></div></div>';
     if (relevant) {
-        $('post-body').innerHTML = body;
+        $('post-body').innerHTML = body + '<div style="margin-top:14px">' + postInterp(o, ph, md) + '</div>';
         setChip('chip-6', sig.length ? sig.length + ' dari ' + ph.pairs.length + ' pasangan berbeda nyata' : 'Tidak ada pasangan berbeda nyata', sig.length ? 'bad' : 'warn');
     } else {
-        $('post-body').innerHTML = '<div class="box">' + noteHtml('info', 'Tidak diperlukan', G('omnibus', 'Uji omnibus') + ' untuk ' + (md === 'simAB' || md === 'simBA' ? 'interaksi' : 'efek ini') + ' tidak menolak H<sub>0</sub>, sehingga uji lanjutan tidak perlu dibaca. Tabel tetap dapat dibuka sebagai informasi.') + '</div>' +
-            '<details class="inline" id="ph-tbl"' + (openPh ? ' open' : '') + '><summary>Tampilkan tabel uji lanjutan</summary><div>' + body + '</div></details>';
+        $('post-body').innerHTML = '<div class="box">' + noteHtml('info', 'Tidak diperlukan', G('omnibus', 'Uji omnibus') + ' untuk ' + (md === 'cells' ? 'interaksi' : 'efek ini') + ' tidak menolak H<sub>0</sub>, sehingga uji lanjutan tidak perlu dibaca. Tabel tetap dapat dibuka sebagai informasi.') + '</div>' +
+            '<details class="inline" id="ph-tbl"' + (openPh ? ' open' : '') + '><summary>Tampilkan tabel uji lanjutan</summary><div>' + body + '</div></details><div style="margin-top:14px">' + postInterp(o, ph, md) + '</div>';
         setChip('chip-6', 'Tidak diperlukan');
     }
     var b = $('btn-copy-post'); if (b) b.addEventListener('click', function () { copyText(postTSV(o, ph), this, 'Salin tabel uji lanjutan'); });
@@ -2628,7 +2791,7 @@ function drawCharts(o) {
     updateCurve(o);
     o.showGap = gapOn; o.gapPair = gapPairs[sw ? 'b' : 'a']; drawInteraction($('int-chart'), o, sw);
     var pc = $('post-chart'), ph = phTable(o, curMode(o));
-    if (pc && ph.hasCI) drawForestMulti(pc, ph.pairs.map(function (pr) { return { label: pr.fam !== null && pr.fam !== undefined ? pr.label + ' (' + pr.fam + ')' : pr.label, est: pr.diff, lo: pr.lo, hi: pr.hi, sig: pr.sig }; }), '0 (tidak ada selisih)');
+    if (pc && ph.hasCI) drawForestMulti(pc, ph.pairs.map(function (pr) { return { label: pr.fam !== null && pr.fam !== undefined ? pr.label + ' (' + pr.fam + ')' : pr.label, est: pr.diff, lo: pr.lo, hi: pr.hi, sig: pr.sig }; }), '0 (tidak ada selisih)', ph.cells);
 }
 
 function scheduleCalc() { clearTimeout(calcTimer); calcTimer = setTimeout(calculate, 120); }
