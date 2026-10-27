@@ -424,23 +424,37 @@ table.dt.raw tbody th{font-weight:600;white-space:nowrap}
   <section class="step" id="st-scn" data-nav="Skenario" data-phase="Data">
     <div class="step-head"><span class="step-num"></span><h2 class="step-title">Skenario dan pengaturan</h2><span class="chip-status" id="chip-scn"></span></div>
     <p class="qline">Data apa yang akan dianalisis?</p>
-    <p class="step-intro">Pilih konteks data yang akan dianalisis. Ada tidaknya efek kondisi pada populasi diacak dan disembunyikan sampai kamu membuka tahap ke-13: Keseluruhan data pada populasi.</p>
+    <p class="step-intro">Skenario bawaan membahas bobot badan sapi Bali pada empat waktu. Untuk berlatih dengan konteks lain, pilih skenario sendiri. Ada tidaknya efek kondisi pada populasi diacak dan disembunyikan sampai kamu membuka tahap ke-13: Keseluruhan data pada populasi.</p>
     <div class="sub">
-      <div class="sub-title">Cara memilih skenario</div>
-      <div class="btn-row">
-        <div class="seg2" role="radiogroup" aria-label="Cara memilih skenario">
-          <button type="button" role="radio" aria-checked="true" data-act="mode" data-v="random">Acak</button>
-          <button type="button" role="radio" aria-checked="false" data-act="mode" data-v="pick">Pilih sendiri</button>
-        </div>
-        <button type="button" class="btn" id="row-random" data-act="newpop">Skenario acak baru</button>
-        <span class="btn-row" id="row-pick" hidden>
+      <div class="sub-title">Sumber skenario</div>
+      <div class="seg2" role="radiogroup" aria-label="Sumber skenario">
+        <button type="button" role="radio" aria-checked="true" data-act="mode" data-v="default">Skenario bawaan</button>
+        <button type="button" role="radio" aria-checked="false" data-act="mode" data-v="pick">Pilih skenario sendiri</button>
+      </div>
+    </div>
+    <div id="scn-default">
+      <div class="sub">
+        <div class="sub-title">Skenario</div>
+        <div class="box">Seorang peneliti memantau bobot badan 12 sapi Bali yang ditimbang pada empat waktu, yaitu awal penelitian, pekan 2, pekan 4, dan pekan 6. Setiap sapi diukur pada keempat waktu tersebut, sehingga data dari sapi yang sama saling berkaitan. Pertanyaannya: apakah rerata bobot badan berbeda antarwaktu pengukuran?</div>
+      </div>
+    </div>
+    <div id="scn-own" hidden>
+      <div class="sub">
+        <div class="sub-title">Pilih konteks data</div>
+        <div class="btn-row">
           <span class="dd" id="dd-scn"></span>
+          <button type="button" class="btn" data-act="randscn">Acak skenario</button>
           <button type="button" class="btn" data-act="newpop">Populasi baru dengan skenario ini</button>
-        </span>
+        </div>
+        <p class="hint">Ada tidaknya efek kondisi pada populasi diacak dan disembunyikan sampai kamu membuka tahap Keseluruhan data pada populasi.</p>
       </div>
     </div>
     <div class="sub" id="scn-sum"></div>
-    <div class="sub">
+    <div class="sub" id="scn-demo">
+      <p class="hint" style="margin:0 0 12px">Data yang tampil pada tahap berikutnya adalah 48 pengukuran bobot badan (12 sapi, 4 waktu). Tombol "Tarik ulang sampel" di bagian kanan atas halaman mengambil 12 sapi lain secara acak dari populasi dengan pola yang sama. Tombol di bawah ini mengembalikan data semula (default).</p>
+      <div class="demo-row"><button type="button" class="btn" data-act="demo">Kembali ke data contoh</button></div>
+    </div>
+    <div class="sub" id="scn-n" hidden>
       <div class="field-row"><label for="nrange" class="lbl">Jumlah subjek dalam sampel</label><span class="nval" id="nval">n = 12 subjek</span></div>
       <input type="range" id="nrange" min="5" max="40" step="1" value="12">
       <p class="hint">Jumlah subjek menentukan kekuatan uji. Subjek yang sedikit membuat uji normalitas dan sferisitas lemah. Geser untuk menarik sampel baru.</p>
@@ -1701,13 +1715,15 @@ applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dar
 
 /* ===== Konteks skenario ===== */
 var SCN = [
-    { id: 1, subj: 'Sapi', cond: 'Waktu pengukuran', vName: 'Bobot badan', unit: 'kg', popn: 'sapi Bali', conds: ['Awal', 'Pekan 2', 'Pekan 4', 'Pekan 6'], ordered: true, mu: 200, sd: 18, dec: 1, note: 'Sapi ditimbang pada empat waktu' },
+    { id: 1, fixedOK: true, subj: 'Sapi', cond: 'Waktu pengukuran', vName: 'Bobot badan', unit: 'kg', popn: 'sapi Bali', conds: ['Awal', 'Pekan 2', 'Pekan 4', 'Pekan 6'], ordered: true, mu: 200, sd: 18, dec: 1, note: 'Sapi ditimbang pada empat waktu' },
     { id: 2, subj: 'Anjing', cond: 'Waktu setelah makan', vName: 'Kadar glukosa darah', unit: 'mg/dL', popn: 'anjing dewasa sehat', conds: ['0 menit', '30 menit', '60 menit', '120 menit'], ordered: true, mu: 105, sd: 12, dec: 0, note: 'Glukosa darah anjing pada empat waktu' },
     { id: 3, subj: 'Kucing', cond: 'Waktu pascaoperasi', vName: 'Skor nyeri', unit: 'skala 0 sampai 10', popn: 'kucing yang menjalani ovariohisterektomi', conds: ['6 jam', '24 jam', '48 jam'], ordered: true, mu: 5, sd: 1.4, dec: 1, lo: 0, hi: 10, note: 'Skor nyeri kucing pada tiga waktu' },
     { id: 4, subj: 'Kuda', cond: 'Waktu pengukuran', vName: 'Suhu rektal', unit: '°C', popn: 'kuda dewasa sehat', conds: ['Pagi', 'Siang', 'Sore'], ordered: false, mu: 37.8, sd: 0.35, dec: 2, note: 'Suhu rektal kuda pada tiga waktu' },
     { id: 5, subj: 'Kambing', cond: 'Fase transportasi', vName: 'Denyut jantung', unit: 'kali/menit', popn: 'kambing kacang', conds: ['Sebelum', 'Saat transportasi', 'Sesudah'], ordered: false, mu: 90, sd: 10, dec: 0, note: 'Denyut jantung kambing pada tiga fase' }
 ];
-var state = { mode: 'random', ctxId: null, n: 12, pop: null, sample: null, an: null, revealed: false, history: [], sim: null, adj: 'holm' };
+var DEF_N = 12;
+var DEF_DATA = [[193.5, 198.2, 205.9, 209.9], [196.1, 200.9, 210.9, 214.4], [202.9, 204.0, 220.1, 224.9], [198.6, 205.4, 216.1, 223.5], [200.7, 209.6, 213.8, 222.9], [200.2, 214.8, 219.1, 227.1], [183.7, 192.0, 200.7, 209.1], [198.5, 203.9, 213.3, 224.9], [183.9, 191.4, 193.3, 204.2], [210.5, 222.9, 231.6, 235.3], [203.8, 206.3, 221.6, 227.1], [215.7, 219.3, 226.5, 228.0]];
+var state = { mode: 'default', ctxId: null, n: DEF_N, nOwn: 12, pin: true, pop: null, sample: null, an: null, revealed: false, history: [], sim: null, adj: 'holm' };
 
 /* ===== Populasi dan sampel ===== */
 function sunflower(K, R) { var pts = []; for (var i = 0; i < K; i++) { var r = R * Math.sqrt((i + 0.5) / K), t = i * 2.399963229728653; pts.push([r * Math.cos(t), r * Math.sin(t)]); } return pts; }
@@ -1717,7 +1733,20 @@ function contrast(k, ord, dir) {
     var s; do { s = shuffle(u); } while (s.every(function (x, q) { return x === u[q]; }));
     return s;
 }
+function makePopFixedRM(ctx) {
+    var D = DEF_DATA, k = ctx.conds.length, nf = D.length, i, j, tm = [], rm = [], gm = 0, ss = 0, df = 0;
+    for (j = 0; j < k; j++) { var c = 0; D.forEach(function (r) { c += r[j]; }); tm.push(c / nf); }
+    D.forEach(function (r) { var m = r.reduce(function (a, b) { return a + b; }, 0) / k; rm.push(m); gm += m / nf; });
+    var sdS = Math.sqrt(rm.reduce(function (a, m) { return a + (m - gm) * (m - gm); }, 0) / (nf - 1));
+    D.forEach(function (r, q) { for (j = 0; j < k; j++) { var e = r[j] - tm[j] - (rm[q] - gm); ss += e * e; } df += k - 1; });
+    var sdE = Math.sqrt(ss / ((nf - 1) * (k - 1)));
+    var M = D.map(function (r) { return r.slice(); });
+    for (i = nf; i < NC; i++) { var so = sdS * randn(), row = []; for (j = 0; j < k; j++) row.push(+(tm[j] + so + sdE * randn()).toFixed(ctx.dec)); M.push(row); }
+    var layout = sunflower(KD, 26);
+    return { ctx: ctx, M: M, k: k, tm: tm, tr: true, str: 1, shape: 'normal', layout: layout, dotOrder: shuffle(layout.map(function (_, q) { return q; })) };
+}
 function makePopRM(ctx) {
+    if (state.mode === 'default' && ctx.fixedOK) return makePopFixedRM(ctx);
     var k = ctx.conds.length, i, j;
     var str = wpick([[0, 3], [0.4, 2], [0.8, 2], [1.4, 2]]);
     var shape = wpick([['normal', 5], ['hetero', 2.5], ['skew', 2.5]]);
@@ -1762,7 +1791,9 @@ function quickP(data) {
     return { p: rec === 'anova' ? o0.an.p : rec === 'gg' ? o0.gg.p : rec === 'hf' ? o0.hf.p : o0.fr.p, rec: rec };
 }
 function drawSample() {
-    var idx = sampleIdx(NC, state.n);
+    var pinned = state.pin && state.mode === 'default' && state.pop.ctx.fixedOK;
+    state.pin = false;
+    var idx = pinned ? DEF_DATA.map(function (_, q) { return q; }) : sampleIdx(NC, state.n);
     state.sample = { idx: idx, hl: shuffle(state.pop.dotOrder) };
     state.an = analyzeData(dataOfIdx(idx));
     state.history.push({ p: state.an.p, n: state.n });
@@ -1770,8 +1801,9 @@ function drawSample() {
 }
 
 /* ===== Tahap: skenario dan populasi ===== */
-function chooseCtx() {
-    if (state.mode === 'pick' && state.ctxId) return SCN.filter(function (s) { return s.id === state.ctxId; })[0];
+function chooseCtx(forceRandom) {
+    if (state.mode === 'default') return SCN[0];
+    if (!forceRandom && state.mode === 'pick' && state.ctxId) return SCN.filter(function (s) { return s.id === state.ctxId; })[0];
     var alt = SCN.filter(function (s) { return !state.pop || s !== state.pop.ctx; });
     return pick(alt.length ? alt : SCN);
 }
@@ -1788,13 +1820,14 @@ function scnMenuItems() {
 function renderScenario() {
     var c = state.pop.ctx;
     $$('[data-act="mode"]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.v === state.mode ? 'true' : 'false'); });
-    $('row-random').hidden = state.mode !== 'random'; $('row-pick').hidden = state.mode !== 'pick';
-    if (state.mode === 'pick') ddRender('dd-scn', scnMenuItems(), String(c.id));
+    var def = state.mode === 'default';
+    $('scn-default').hidden = !def; $('scn-demo').hidden = !def; $('scn-own').hidden = def; $('scn-n').hidden = def;
+    if (!def) ddRender('dd-scn', scnMenuItems(), String(c.id));
     $('scn-sum').innerHTML = '<div class="box"><div class="concl-title">Skenario aktif</div>' +
         statRow('Subjek', esc(c.subj)) + statRow('Kondisi', esc(c.cond) + ' (' + esc(c.conds.join(', ')) + ')') +
         statRow('Variabel numeris', esc(c.vName) + (c.unit ? ' (' + esc(c.unit) + ')' : '')) +
         statRow('Populasi sasaran', esc(c.popn)) + statRow('Ukuran populasi', fmtInt(NC) + ' subjek, tiap subjek diukur pada ' + c.conds.length + ' kondisi') + '</div>';
-    setChip('chip-scn', c.conds.length + ' kondisi' + (state.mode === 'pick' ? ', dipilih sendiri' : ', acak'));
+    setChip('chip-scn', c.conds.length + ' kondisi' + (def ? ', skenario bawaan' : ', dipilih sendiri'));
 }
 var ARROW = '<svg class="pop-arrow" viewBox="0 0 22 34" aria-hidden="true"><path d="M11 2v26M4 21l7 8 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function circleSvg(cls, col, hlCount, style) {
@@ -2137,9 +2170,11 @@ function drawCharts() {
     });
 }
 function renderAll() { renderScenario(); renderPop(); renderHyp(); renderDesc(); renderAsm(); renderPick(); renderTest(); renderEff(); renderPost(); renderConcl(); renderMulti(); renderTruth(); renumber(); drawCharts(); }
-function newPop() {
-    var ctx = chooseCtx();
+function newPop(forceRandom) {
+    var ctx = chooseCtx(forceRandom === true);
+    state.ctxId = state.mode === 'pick' ? ctx.id : null;
     state.pop = makePopRM(ctx);
+    state.pin = state.mode === 'default';
     state.history = []; state.revealed = false; state.sim = null;
     drawSample(); renderAll();
 }
@@ -2153,7 +2188,9 @@ document.addEventListener('click', function (e) {
     if (a === 'theme') toggleTheme();
     else if (a === 'resample') resample();
     else if (a === 'newpop') newPop();
-    else if (a === 'mode') { state.mode = t.dataset.v; if (state.mode === 'pick') state.ctxId = state.pop.ctx.id; renderScenario(); }
+    else if (a === 'mode') { var tv = t.dataset.v; if (tv === state.mode) return; applyModeState(tv); state.ctxId = null; newPop(); }
+    else if (a === 'randscn') { state.ctxId = null; newPop(true); }
+    else if (a === 'demo') { state.pin = true; resample(); }
     else if (a === 'reveal') { state.revealed = true; renderTruth(); renderMulti(); drawCharts(); }
     else if (a === 'sim') { runSim(); renderMulti(); drawCharts(); }
     else if (a === 'adj') {
@@ -2169,6 +2206,12 @@ document.addEventListener('click', function (e) {
     }
 });
 var nr = $('nrange');
+function applyModeState(toMode) {
+    if (toMode === 'default') { if (state.mode !== 'default') state.nOwn = state.n; state.n = DEF_N; }
+    else if (state.mode === 'default') state.n = state.nOwn;
+    state.mode = toMode;
+    nr.value = state.n; $('nval').textContent = 'n = ' + state.n + ' subjek';
+}
 nr.addEventListener('input', function () { state.n = +nr.value; $('nval').textContent = 'n = ' + state.n + ' subjek'; });
 nr.addEventListener('change', function () { state.n = +nr.value; resample(); });
 DD_PICK['dd-scn'] = function (v) { state.ctxId = +v; state.mode = 'pick'; newPop(); };
