@@ -247,15 +247,15 @@ footer{margin-top:26px;font-size:12.5px;color:var(--text-muted);line-height:1.7}
 .org li::before{right:50%}
 .org li::after{left:50%}
 .org > li::before,.org > li::after{display:none}
-.org li:only-child::before,.org li:only-child::after{display:none}
-.org li:first-child::before{border:0}
-.org li:last-child::after{border:0}
-.org li:first-child::after{border-left:2px solid var(--ink3);border-radius:10px 0 0 0}
-.org li:last-child::before{border-right:2px solid var(--ink3);border-radius:0 10px 0 0}
+.org li:only-of-type::before,.org li:only-of-type::after{display:none}
+.org li:first-of-type::before{border:0}
+.org li:last-of-type::after{border:0}
+.org li:first-of-type::after{border-left:2px solid var(--ink3);border-radius:10px 0 0 0}
+.org li:last-of-type::before{border-right:2px solid var(--ink3);border-radius:0 10px 0 0}
 .org ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:2px solid var(--ink3)}
 .org ul.on::before{border-left-color:var(--hl-line)}
-.org li.on:first-child::after{border-top-color:var(--hl-line);border-left-color:var(--hl-line)}
-.org li.on:last-child::before{border-top-color:var(--hl-line);border-right-color:var(--hl-line)}
+.org li.on:first-of-type::after{border-top-color:var(--hl-line);border-left-color:var(--hl-line)}
+.org li.on:last-of-type::before{border-top-color:var(--hl-line);border-right-color:var(--hl-line)}
 .tnode{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:11px 12px;width:198px;font-size:13.5px;line-height:1.5;text-align:center}
 .tnode small{display:block;color:var(--text-muted);font-size:12px;font-weight:400;margin-top:2px}
 .tnode.res{width:170px;background:var(--soft-bg);font-weight:600;display:flex;align-items:center;justify-content:center;min-height:62px}
@@ -308,6 +308,8 @@ table.dt td.hlc{background:var(--hl);color:var(--hl-tx);font-weight:700}
 .dd-btn[aria-expanded="true"]{border-color:var(--accent-blue);color:var(--accent-blue)}
 .dd-menu{position:absolute;z-index:30;top:calc(100% + 6px);left:0;min-width:300px;max-width:min(380px,calc(100vw - 48px));max-height:60vh;overflow-y:auto;background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.16);padding:6px}
 .dd-menu[hidden]{display:none}
+.dd-grp{padding:8px 10px 4px;font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted)}
+.dd-grp:not(:first-child){border-top:1px solid var(--border-color);margin-top:4px;padding-top:10px}
 .dd-item{display:block;width:100%;text-align:left;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--text-main);background:transparent;border:none;border-radius:8px;padding:8px 10px;cursor:pointer}
 .dd-item small{display:block;font-size:11.5px;font-weight:500;color:var(--text-muted);margin-top:1px;white-space:normal}
 .dd-item:hover,.dd-item:focus-visible{background:var(--fill1);outline:none}
@@ -378,9 +380,9 @@ ol.plain-ol li b{color:var(--text-main)}
 .cmp-q + .cmp-item{padding-top:2px}
 .cmp-t{font-weight:600;font-size:13.5px;color:var(--text-main)}
 .box ul.rd.dark{margin:4px 0 10px}
-.org li:first-child::after,.org li:last-child::before{border-radius:0!important}
-.org li.on:first-child::after{border-top-color:var(--ink3)}
-.org li.on:last-child::before{border-top-color:var(--ink3)}
+.org li:first-of-type::after,.org li:last-of-type::before{border-radius:0!important}
+.org li.on:first-of-type::after{border-top-color:var(--ink3)}
+.org li.on:last-of-type::before{border-top-color:var(--ink3)}
 .hl-seg{position:absolute;top:22px;height:0;border-top:2px solid var(--hl-line);z-index:2;pointer-events:none}
 details.step-acc{background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:18px 24px;margin-bottom:18px}
 details.step-acc > summary{font-size:15px}
@@ -2474,7 +2476,7 @@ function effHtml(o) {
     h += '</tbody></table></div>';
     var rows = [['Sangat kecil', '< 0,01'], ['Kecil', '0,01 sampai < 0,06'], ['Sedang', '0,06 sampai < 0,14'], ['Besar', '≥ 0,14']];
     var wo = !!document.querySelector('#eff-cls[open]');
-    h += '<details class="inline" id="eff-cls"' + (wo ? ' open' : '') + ' style="margin-top:16px"><summary>Klasifikasi ukuran efek (η²<sub>p</sub> dan ω²<sub>p</sub>)</summary><div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Kategori</th><th>Rentang</th></tr></thead><tbody>';
+    h += '<details class="inline" id="eff-cls"' + (wo ? ' open' : '') + ' style="margin-top:16px"><summary><span>Klasifikasi ukuran efek (η²<sub>p</sub> dan ω²<sub>p</sub>)</span></summary><div><div class="tbl-wrap"><table class="dt"><thead><tr><th style="text-align:left;">Kategori</th><th>Rentang</th></tr></thead><tbody>';
     rows.forEach(function (r) { h += '<tr><th scope="row">' + r[0] + '</th><td>' + r[1] + '</td></tr>'; });
     h += '</tbody></table></div><p class="hint">Batas klasifikasi mengikuti catatan metode di bagian bawah halaman dan dibaca sebagai panduan kasar.' + (o.method === 'robust' ? ' Pada uji HC3, nilai dihitung dari statistik F robust sehingga bersifat perkiraan.' : '') + (o.method === 'art' ? ' Pada ART, nilai dihitung dari F pada peringkat selaras sehingga bersifat perkiraan.' : '') + '</p></div></details>';
     return h;
@@ -2564,6 +2566,7 @@ var SCN = [
  { id: 'probiotik', popn: 'ayam broiler', nA: 'Dosis probiotik', A: ['Tanpa', 'Rendah', 'Tinggi'], nB: 'Kepadatan kandang', B: ['Longgar', 'Sedang', 'Padat'], vName: 'Bobot badan umur 35 hari', unit: 'g', unitObs: 'ayam', mu: 1900, sd: 160, dec: 0, ordA: true, ordB: true, dirB: -1 }
 ];
 var state = { mode: 'default', ctxId: null, n: DEF_N, nOwn: 12, unbalOwn: false, pin: false, pop: null, sample: null, an: null, revealed: false, history: [], oA: [], oB: [], sim: null, pm: null, swap: false, hterm: 2, unbal: false, gap: false, gapPair: { a: [0, 1], b: [0, 1] }, boxSwap: false, cc: { a: 0.3, b: 0.2, g: 0, hl: 'none', pre: 3, swap: false }, ss: 'III', tbl: 'full', fterm: 2 };
+var ALLSCN = [DEFSCN].concat(SCN);
 var ctxK = function (c) { return c.A.length * c.B.length; };
 
 /* ===== Populasi dan sampel ===== */
@@ -2666,16 +2669,29 @@ function renderSchem() {
 /* ===== Tahap: skenario, populasi, hipotesis ===== */
 function chooseCtx(forceRandom) {
     if (state.mode === 'default') return DEFSCN;
-    if (!forceRandom && state.ctxId) { var f = SCN.filter(function (s) { return s.id === state.ctxId; })[0]; if (f) return f; }
-    var alt = SCN.filter(function (s) { return !state.pop || s !== state.pop.ctx; });
-    return pick(alt.length ? alt : SCN);
+    if (!forceRandom && state.ctxId) { var f = ALLSCN.filter(function (s) { return s.id === state.ctxId; })[0]; if (f) return f; }
+    var alt = ALLSCN.filter(function (s) { return !state.pop || s !== state.pop.ctx; });
+    return pick(alt.length ? alt : ALLSCN);
+}
+function scnMenuItems() {
+    var gs = {}, keys = [], out = [];
+    ALLSCN.forEach(function (x) { var k = x.A.length + ' × ' + x.B.length; if (!gs[k]) { gs[k] = []; keys.push(k); } gs[k].push(x); });
+    keys.sort(function (p, q) { var a = p.split(' × ').map(Number), b = q.split(' × ').map(Number); return a[0] * a[1] - b[0] * b[1] || a[0] - b[0]; });
+    keys.forEach(function (k) {
+        var n = k.split(' × ').map(Number);
+        out.push({ h: k + ' (' + (n[0] * n[1]) + ' sel)' });
+        gs[k].sort(function (a, b) { return a.nA.localeCompare(b.nA, 'id') || a.nB.localeCompare(b.nB, 'id'); }).forEach(function (x) {
+            out.push({ v: x.id, t: x.nA + ' × ' + lcFirst(x.nB), s: x === DEFSCN ? 'Skenario bawaan' : undefined });
+        });
+    });
+    return out;
 }
 function renderScenario() {
     var c = state.pop.ctx, def = state.mode === 'default';
     $$('[data-act="mode"]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.v === state.mode ? 'true' : 'false'); });
     $('scn-default').hidden = !def; $('scn-demo').hidden = !def;
     $('scn-own').hidden = def; $('scn-n').hidden = def;
-    if (!def) ddRender('dd-scn', SCN.slice().sort(function (a, b) { return ctxK(a) - ctxK(b) || a.nA.localeCompare(b.nA, 'id'); }).map(function (x) { return { v: x.id, t: x.nA + ' × ' + lcFirst(x.nB) + ' (' + x.A.length + ' × ' + x.B.length + ' sel)' }; }), c.id);
+    if (!def) ddRender('dd-scn', scnMenuItems(), c.id);
     $('scn-sum').innerHTML = '<div class="box"><div class="concl-title">Skenario aktif</div>' + statRow('Variabel kategoris (faktor A)', c.nA + ' (' + c.A.join(', ') + ')') + statRow('Variabel kategoris (faktor B)', c.nB + ' (' + c.B.join(', ') + ')') + statRow('Variabel numeris', c.vName + (c.unit ? ' (' + c.unit + ')' : '')) + statRow('Unit pengamatan', c.unitObs) + statRow('Jumlah sel', c.A.length + ' × ' + c.B.length + ' = ' + ctxK(c)) + '</div>';
     setChip('chip-scn', c.A.length + ' × ' + c.B.length + ' sel' + (def ? ', skenario bawaan' : ', dipilih sendiri'));
 }
@@ -3143,7 +3159,7 @@ function newPop(forceRandom) {
     state.ctxId = state.mode === 'pick' ? ctx.id : null;
     state.pop = makePop(ctx); state.oA = ctx.A.map(function (_, i) { return i; }); state.oB = ctx.B.map(function (_, i) { return i; });
     state.history = []; state.revealed = false; state.sim = null; state.pm = null; state.gapPair = { a: [0, 1], b: [0, 1] };
-    state.pin = !!ctx.fixed;
+    state.pin = state.mode === 'default' && !!ctx.fixed;
     drawSample(); renderAll();
 }
 function resample() { drawSample(); renderAll(); }
@@ -3218,7 +3234,7 @@ function ddRender(id, items, cur, label) {
     var w = $(id); if (!w) return;
     var it = items.filter(function (x) { return x.v === cur; })[0];
     w.setAttribute('data-dd', id);
-    w.innerHTML = '<button type="button" class="btn dd-btn" aria-haspopup="menu" aria-expanded="false"><span class="dd-label">' + esc(label || (it ? it.t : 'Pilih')) + '</span><span class="dd-chev" aria-hidden="true">&#9662;</span></button><div class="dd-menu" role="menu" hidden>' + items.map(function (x) { return '<button type="button" class="dd-item" role="menuitemradio" aria-checked="' + (x.v === cur) + '" data-v="' + esc(x.v) + '">' + esc(x.t) + (x.s ? '<small>' + esc(x.s) + '</small>' : '') + '</button>'; }).join('') + '</div>';
+    w.innerHTML = '<button type="button" class="btn dd-btn" aria-haspopup="menu" aria-expanded="false"><span class="dd-label">' + esc(label || (it ? it.t : 'Pilih')) + '</span><span class="dd-chev" aria-hidden="true">&#9662;</span></button><div class="dd-menu" role="menu" hidden>' + items.map(function (x) { if (x.h) return '<div class="dd-grp" role="presentation">' + esc(x.h) + '</div>'; return '<button type="button" class="dd-item" role="menuitemradio" aria-checked="' + (x.v === cur) + '" data-v="' + esc(x.v) + '">' + esc(x.t) + (x.s ? '<small>' + esc(x.s) + '</small>' : '') + '</button>'; }).join('') + '</div>';
 }
 function ddClose(w, back) { var m = w.querySelector('.dd-menu'), b = w.querySelector('.dd-btn'); if (!m || m.hidden) return; m.hidden = true; b.setAttribute('aria-expanded', 'false'); if (back) b.focus(); }
 function ddOpen(w) {
