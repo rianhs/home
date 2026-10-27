@@ -254,8 +254,9 @@ footer{margin-top:26px;font-size:12.5px;color:var(--text-muted);line-height:1.7}
 .org li:last-child::before{border-right:2px solid var(--ink3);border-radius:0 10px 0 0}
 .org ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:2px solid var(--ink3)}
 .org ul.on::before{border-left-color:var(--hl-line)}
-.org li.on:first-child::after{border-top-color:var(--hl-line);border-left-color:var(--hl-line)}
-.org li.on:last-child::before{border-top-color:var(--hl-line);border-right-color:var(--hl-line)}
+.org .hlseg{position:absolute;border-top:2px solid var(--hl-line);pointer-events:none}
+.org .hlseg.l{border-left:2px solid var(--hl-line);border-radius:10px 0 0 0}
+.org .hlseg.r{border-right:2px solid var(--hl-line);border-radius:0 10px 0 0}
 .tnode{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:11px 12px;width:198px;font-size:13.5px;line-height:1.5;text-align:center}
 .tnode small{display:block;color:var(--text-muted);font-size:12px;font-weight:400;margin-top:2px}
 .tnode.res{width:170px;background:var(--soft-bg);font-weight:600;display:flex;align-items:center;justify-content:center;min-height:62px}
@@ -354,7 +355,7 @@ table.cc-map{font-size:13px}
 
 .dd-grp{padding:8px 10px 4px;font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted)}
 .dd-grp:not(:first-child){border-top:1px solid var(--border-color);margin-top:4px;padding-top:10px}
-#sph-help{margin-top:20px!important}
+#sph-help,#tbl-help{margin-top:20px!important}
 
 /* ===== Revisi v6: tabel gaya perangkat lunak dan tabel pivot ===== */
 .sw-title{font-size:13.5px;font-weight:700;margin:0 0 6px}
@@ -424,7 +425,7 @@ table.dt.raw tbody th{font-weight:600;white-space:nowrap}
   <section class="step" id="st-scn" data-nav="Skenario" data-phase="Data">
     <div class="step-head"><span class="step-num"></span><h2 class="step-title">Skenario dan pengaturan</h2><span class="chip-status" id="chip-scn"></span></div>
     <p class="qline">Data apa yang akan dianalisis?</p>
-    <p class="step-intro">Skenario bawaan membahas bobot badan sapi Bali pada empat waktu. Untuk berlatih dengan konteks lain, pilih skenario sendiri. Ada tidaknya efek kondisi pada populasi diacak dan disembunyikan sampai kamu membuka tahap ke-13: Keseluruhan data pada populasi.</p>
+    <p class="step-intro">Skenario bawaan membahas denyut jantung kambing pada tiga fase transportasi. Untuk berlatih dengan konteks lain, pilih skenario sendiri. Ada tidaknya efek kondisi pada populasi diacak dan disembunyikan sampai kamu membuka tahap ke-13: Keseluruhan data pada populasi.</p>
     <div class="sub">
       <div class="sub-title">Sumber skenario</div>
       <div class="seg2" role="radiogroup" aria-label="Sumber skenario">
@@ -435,7 +436,7 @@ table.dt.raw tbody th{font-weight:600;white-space:nowrap}
     <div id="scn-default">
       <div class="sub">
         <div class="sub-title">Skenario</div>
-        <div class="box">Seorang peneliti memantau bobot badan 12 sapi Bali yang ditimbang pada empat waktu, yaitu awal penelitian, pekan 2, pekan 4, dan pekan 6. Setiap sapi diukur pada keempat waktu tersebut, sehingga data dari sapi yang sama saling berkaitan. Pertanyaannya: apakah rerata bobot badan berbeda antarwaktu pengukuran?</div>
+        <div class="box">Seorang peneliti memantau denyut jantung 12 kambing kacang yang diangkut dengan truk dari peternakan ke rumah potong hewan. Denyut jantung dihitung dengan stetoskop selama satu menit pada tiga fase, yaitu sebelum transportasi, saat transportasi, dan sesudah transportasi. Setiap kambing diukur pada ketiga fase tersebut, sehingga data dari kambing yang sama saling berkaitan. Pertanyaannya: apakah rerata denyut jantung berbeda antarfase transportasi?</div>
       </div>
     </div>
     <div id="scn-own" hidden>
@@ -451,7 +452,7 @@ table.dt.raw tbody th{font-weight:600;white-space:nowrap}
     </div>
     <div class="sub" id="scn-sum"></div>
     <div class="sub" id="scn-demo">
-      <p class="hint" style="margin:0 0 12px">Data yang tampil pada tahap berikutnya adalah 48 pengukuran bobot badan (12 sapi, 4 waktu). Tombol "Tarik ulang sampel" di bagian kanan atas halaman mengambil 12 sapi lain secara acak dari populasi dengan pola yang sama. Tombol di bawah ini mengembalikan data semula (default).</p>
+      <p class="hint" style="margin:0 0 12px">Data yang tampil pada tahap berikutnya adalah 36 pengukuran denyut jantung (12 kambing, 3 fase). Tombol "Tarik ulang sampel" di bagian kanan atas halaman mengambil 12 sapi lain secara acak dari populasi dengan pola yang sama. Tombol di bawah ini mengembalikan data semula (default).</p>
       <div class="demo-row"><button type="button" class="btn" data-act="demo">Kembali ke data contoh</button></div>
     </div>
     <div class="sub" id="scn-n" hidden>
@@ -1094,7 +1095,7 @@ function analyzeRM(data, method, adjMethod) {
 /* ---------- Glosarium (tooltip) ---------- */
 var GL = {
 'rm': 'Anova pengukuran berulang: uji statistika untuk membandingkan rerata sebuah variabel numeris pada ≥3 kondisi ketika subjek yang sama diukur secara berulang pada setiap kondisi.',
-'subjek': 'Subjek: unit yang diukur berulang kali, misalnya satu ekor hewan yang beratnya ditimbang pada beberapa waktu. Tiap subjek menjadi pembanding bagi dirinya sendiri.',
+'subjek': 'Subjek: unit yang diukur berulang kali, misalnya satu ekor hewan yang denyut jantungnya dihitung pada beberapa fase. Tiap subjek menjadi pembanding bagi dirinya sendiri.',
 'kondisi': 'Kondisi: situasi atau waktu ketika pengukuran dilakukan, misalnya sebelum, saat, dan sesudah perlakuan. Pada anova pengukuran berulang, kondisi disebut juga faktor within-subject.',
 'within': 'Within-subject: perbandingan dilakukan di dalam subjek yang sama. Lawannya between-subject, yaitu perbandingan antarkelompok subjek yang berbeda.',
 'h0': 'Hipotesis nol (H0): pernyataan bahwa tidak ada efek atau tidak ada perbedaan. Uji statistika mencari bukti untuk menolaknya.',
@@ -1118,7 +1119,7 @@ var GL = {
 'jk': 'Jumlah kuadrat (JK): ukuran total variasi, yaitu jumlah kuadrat selisih nilai terhadap rerata.',
 'kt': 'Kuadrat tengah (KT): jumlah kuadrat dibagi derajat bebasnya.',
 'galat': 'Galat: variasi yang tersisa setelah efek subjek dan efek kondisi dikeluarkan. Kuadrat tengah galat menjadi pembagi pada statistik F, dengan derajat bebas (n − 1)(k − 1).',
-'jkSubj': 'JK subjek: variasi yang berasal dari perbedaan tingkat dasar antarsubjek, misalnya sapi yang memang lebih berat sejak awal. Pada anova pengukuran berulang, bagian ini dikeluarkan dari galat.',
+'jkSubj': 'JK subjek: variasi yang berasal dari perbedaan tingkat dasar antarsubjek, misalnya kambing yang denyut jantungnya memang lebih cepat sejak awal. Pada anova pengukuran berulang, bagian ini dikeluarkan dari galat.',
 'omnibus': 'Uji omnibus: uji yang menjawab apakah suatu efek ada secara keseluruhan, tanpa menyebut kondisi atau pasangan mana yang berbeda.',
 'es': 'Ukuran efek: besarnya perbedaan atau hubungan, tidak bergantung pada jumlah data.',
 'etaP': 'Partial eta-squared (η²p): proporsi variasi kondisi terhadap gabungan variasi kondisi dan galat, setelah variasi antarsubjek dikeluarkan. Berkisar dari 0 sampai 1.',
@@ -1715,14 +1716,13 @@ applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dar
 
 /* ===== Konteks skenario ===== */
 var SCN = [
-    { id: 1, fixedOK: true, subj: 'Sapi', cond: 'Waktu pengukuran', vName: 'Bobot badan', unit: 'kg', popn: 'sapi Bali', conds: ['Awal', 'Pekan 2', 'Pekan 4', 'Pekan 6'], ordered: true, mu: 200, sd: 18, dec: 1, note: 'Sapi ditimbang pada empat waktu' },
+    { id: 1, fixedOK: true, subj: 'Kambing', cond: 'Fase transportasi', vName: 'Denyut jantung', unit: 'kali/menit', popn: 'kambing kacang', conds: ['Sebelum transportasi', 'Saat transportasi', 'Sesudah transportasi'], ordered: false, mu: 90, sd: 10, dec: 0, note: 'Denyut jantung kambing pada tiga fase transportasi (skenario bawaan)' },
     { id: 2, subj: 'Anjing', cond: 'Waktu setelah makan', vName: 'Kadar glukosa darah', unit: 'mg/dL', popn: 'anjing dewasa sehat', conds: ['0 menit', '30 menit', '60 menit', '120 menit'], ordered: true, mu: 105, sd: 12, dec: 0, note: 'Glukosa darah anjing pada empat waktu' },
     { id: 3, subj: 'Kucing', cond: 'Waktu pascaoperasi', vName: 'Skor nyeri', unit: 'skala 0 sampai 10', popn: 'kucing yang menjalani ovariohisterektomi', conds: ['6 jam', '24 jam', '48 jam'], ordered: true, mu: 5, sd: 1.4, dec: 1, lo: 0, hi: 10, note: 'Skor nyeri kucing pada tiga waktu' },
-    { id: 4, subj: 'Kuda', cond: 'Waktu pengukuran', vName: 'Suhu rektal', unit: '°C', popn: 'kuda dewasa sehat', conds: ['Pagi', 'Siang', 'Sore'], ordered: false, mu: 37.8, sd: 0.35, dec: 2, note: 'Suhu rektal kuda pada tiga waktu' },
-    { id: 5, subj: 'Kambing', cond: 'Fase transportasi', vName: 'Denyut jantung', unit: 'kali/menit', popn: 'kambing kacang', conds: ['Sebelum', 'Saat transportasi', 'Sesudah'], ordered: false, mu: 90, sd: 10, dec: 0, note: 'Denyut jantung kambing pada tiga fase' }
+    { id: 4, subj: 'Kuda', cond: 'Waktu pengukuran', vName: 'Suhu rektal', unit: '°C', popn: 'kuda dewasa sehat', conds: ['Pagi', 'Siang', 'Sore'], ordered: false, mu: 37.8, sd: 0.35, dec: 2, note: 'Suhu rektal kuda pada tiga waktu' }
 ];
 var DEF_N = 12;
-var DEF_DATA = [[193.5, 198.2, 205.9, 209.9], [196.1, 200.9, 210.9, 214.4], [202.9, 204.0, 220.1, 224.9], [198.6, 205.4, 216.1, 223.5], [200.7, 209.6, 213.8, 222.9], [200.2, 214.8, 219.1, 227.1], [183.7, 192.0, 200.7, 209.1], [198.5, 203.9, 213.3, 224.9], [183.9, 191.4, 193.3, 204.2], [210.5, 222.9, 231.6, 235.3], [203.8, 206.3, 221.6, 227.1], [215.7, 219.3, 226.5, 228.0]];
+var DEF_DATA = [[88,115,97],[78,97,93],[90,127,104],[97,131,89],[98,123,95],[94,117,100],[75,117,90],[100,122,100],[76,108,84],[80,111,79],[87,118,96],[98,121,90]];
 var state = { mode: 'default', ctxId: null, n: DEF_N, nOwn: 12, pin: true, pop: null, sample: null, an: null, revealed: false, history: [], sim: null, adj: 'holm' };
 
 /* ===== Populasi dan sampel ===== */
@@ -2154,7 +2154,24 @@ function centerNavLink(a) {
     n.scrollTo({ left: a.offsetLeft - (n.clientWidth - a.offsetWidth) / 2, behavior: 'smooth' });
 }
 function updateProgress() { var h = document.documentElement, max = h.scrollHeight - h.clientHeight, p = max > 0 ? h.scrollTop / max : 0; $('prog').style.width = (clamp(p, 0, 1) * 100).toFixed(1) + '%'; }
+/* Highlight garis pohon: segmen kuning dari titik sambung induk sampai pusat anak yang dipilih */
+function drawOrgHL() {
+    $$('.org .hlseg').forEach(function (e) { e.remove(); });
+    $$('.org ul.on').forEach(function (ul) {
+        var ur = ul.getBoundingClientRect(), host = ul.parentNode, hr = host.getBoundingClientRect(), px = ur.left - hr.left + ur.width / 2;
+        Array.prototype.forEach.call(ul.children, function (li) {
+            if (li.tagName !== 'LI' || !li.classList.contains('on')) return;
+            var lr = li.getBoundingClientRect(), cx = lr.left - hr.left + lr.width / 2, top = lr.top - hr.top;
+            if (Math.abs(cx - px) < 1) return;
+            var d = document.createElement('div'), left = cx < px;
+            d.className = 'hlseg ' + (left ? 'l' : 'r');
+            d.style.left = Math.min(cx, px) + 'px'; d.style.width = Math.abs(cx - px) + 'px'; d.style.top = top + 'px'; d.style.height = '22px';
+            host.appendChild(d);
+        });
+    });
+}
 function drawCharts() {
+    drawOrgHL();
     if (!state.an) return;
     var o = state.an.o, par = o.method !== 'friedman';
     $$('[data-chart]').forEach(function (el) {
@@ -2270,6 +2287,8 @@ document.addEventListener('keydown', function (e) {
 
 newPop();
 updateProgress();
+window.addEventListener("load", drawOrgHL);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawOrgHL);
 
 </script>
 </body>
