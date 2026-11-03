@@ -278,8 +278,8 @@ details[open]>summary::before{content:"\25BC"}
     <div class="body">
       <div class="testbar" data-varbar></div>
       <div class="up" data-k="r3img" data-cap="Tabel Descriptives" tabindex="0"></div>
-      <div class="fld"><div class="lab"><label for="r3t">Catatan data hilang atau nilai yang tidak wajar</label>
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Lihat baris Missing atau bandingkan N antarvariabel. N yang berbeda atau Missing lebih dari nol menandakan ada data hilang. Periksa juga kolom N pada tabel korelasi (langkah 6) untuk memastikan jumlah pengamatan tiap pasangan. Perhatikan nilai minimum dan maksimum yang tidak masuk akal secara biologis.">i</button></div>
+      <div class="fld"><div class="lab"><label for="r3t">Apakah ada data yang hilang atau nilai yang tidak wajar</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Lihat baris Missing atau bandingkan N antarvariabel. N yang berbeda atau Missing lebih dari nol menandakan ada data yang hilang. Periksa juga kolom N pada tabel korelasi (langkah 6) untuk memastikan jumlah pengamatan tiap pasangan. Perhatikan apakah ada nilai minimum dan maksimum yang tidak masuk akal secara biologis.">i</button></div>
         <textarea id="r3t" data-k="r3t" rows="3"></textarea></div>
     </div>
   </div>
@@ -836,7 +836,7 @@ function refresh(){
     $$("[data-k]",row).forEach(function(el){if(!isDone(el))ok=false});
     total++;if(ok){done++;row.classList.add("done")}
   });
-  $("#prog").textContent=done+" dari "+total+" baris terisi";
+  $("#prog").textContent=done+" dari "+total+" langkah terisi";
   var nm=$("#nama").value.trim();
   document.title="Templat isian korelasi"+(nomor?" - Soal "+nomor:"")+(nm?" - "+nm:"");
   autosize();
