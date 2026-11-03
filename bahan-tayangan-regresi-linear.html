@@ -315,6 +315,21 @@ ol.refl a:hover{text-decoration:underline}
   .verdict-status{font-size:calc(24px * var(--fs))}
 }
 
+
+/* ---------- Ilustrasi sederhana dan berganda ---------- */
+.ill{display:flex;flex-direction:column;align-items:center;max-width:620px;margin:18px auto 0}
+.ill[hidden]{display:none}
+.ill-node{background:var(--soft);border:1px solid var(--border);border-radius:14px;padding:14px 20px;text-align:center;min-width:150px;line-height:1.35}
+.ill-node b{display:block;font-size:calc(15px * var(--fs))}
+.ill-node small{display:block;font-size:calc(12.5px * var(--fs));color:var(--text-secondary);margin-top:2px}
+.ill-arr{width:24px;height:56px;color:var(--ink3);flex:none}
+.ill-arr2{width:100%;max-width:460px;height:56px;color:var(--ink3);flex:none}
+.ill-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:460px}
+.ill-row .ill-node{min-width:0}
+.ill-eq{width:100%;margin-top:18px;padding:14px 12px}
+.ill-eq .eq{white-space:nowrap;font-size:calc(16px * var(--fs))}
+@media (max-width:640px){.ill-eq .eq{white-space:normal}}
+
 /* ---------- Tambahan ---------- */
 .pickbtn{display:block;width:100%;text-align:left;margin-bottom:8px}
 .box.hl-on{background:var(--hl);color:var(--hl-tx);border-color:transparent}
@@ -365,17 +380,25 @@ ol.refl a:hover{text-decoration:underline}
     <p class="qline">Apakah regresi linear cocok untuk pertanyaan penelitian saya?</p>
     <p class="step-intro">Regresi linear menyatakan hubungan antara satu variabel hasil (<span class="gl" tabindex="0" data-g="respons">respons</span>, disebut variabel Y) dan satu atau beberapa variabel penjelas (<span class="gl" tabindex="0" data-g="prediktor">prediktor</span>, disebut variabel X) dalam bentuk persamaan. Persamaan itu memberi besar perubahan Y tiap perubahan X, ukuran seberapa baik model mencocokkan data, dan nilai prediksi Y untuk X tertentu.</p>
     <div class="sub">
-      <div class="sub-title">Setelah menyelesaikan halaman ini, kamu akan mampu</div>
-      <div class="box"><ul class="goals">
-        <li>menjelaskan regresi linear sebagai garis yang diletakkan pada data lalu ditulis sebagai persamaan;</li>
-        <li>menentukan respons dan prediktor, menilai apakah regresi linear sesuai, lalu merumuskan hipotesis;</li>
-        <li>memeriksa data lewat ringkasan angka dan grafik sebelum membangun model;</li>
-        <li>menjelaskan bahwa garis regresi dipilih lewat jumlah kuadrat residual terkecil;</li>
-        <li>memeriksa asumsi lewat residual, lalu memutuskan apakah model layak ditafsirkan;</li>
-        <li>menafsirkan uji F, R&sup2;, <span class="gl" tabindex="0" data-g="intersep">intersep</span>, <span class="gl" tabindex="0" data-g="kemiringan">kemiringan</span>, CI 95%, dan nilai p;</li>
-        <li>menyusun persamaan, prediksi, serta kesimpulan teknis dan kesimpulan awam;</li>
-        <li>menjelaskan apa yang berubah ketika prediktor kedua masuk ke model.</li>
-      </ul><p class="hint">Perangkat lunak menghitung semua angka secara otomatis. Hal yang dilatih di sini adalah logika model, pemeriksaan kelayakan, dan penafsiran keluaran.</p></div>
+      <div class="sub-title">Satu prediktor atau lebih</div>
+      <div class="seg2" role="radiogroup" aria-label="Jenis regresi linear">
+        <button type="button" role="radio" aria-checked="true" data-act="regtab" data-v="simple">Regresi linear sederhana</button>
+        <button type="button" role="radio" aria-checked="false" data-act="regtab" data-v="multi">Regresi linear berganda</button>
+      </div>
+      <div class="ill" id="ill-simple" aria-live="polite">
+        <div class="ill-node"><b>Variabel Y</b><small>respons</small></div>
+        <svg class="ill-arr" viewBox="0 0 24 56" aria-hidden="true"><path d="M12 54V6M4 14l8-9 8 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="ill-node"><b>Variabel X</b><small>prediktor</small></div>
+        <div class="box center ill-eq"><div class="concl-title">Persamaan</div><div class="eq">Y = <span class="gl" tabindex="0" data-g="intersep">intersep</span> + (<span class="gl" tabindex="0" data-g="kemiringan">kemiringan</span> &times; X)</div></div>
+        <p class="hint center">Satu prediktor menjelaskan Y. Hasilnya satu garis lurus pada diagram pencar.</p>
+      </div>
+      <div class="ill" id="ill-multi" hidden>
+        <div class="ill-node"><b>Variabel Y</b><small>respons</small></div>
+        <svg class="ill-arr2" viewBox="0 0 300 56" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="M75 54L138 10M126 12L138 10L136 24M225 54L162 10M174 12L162 10L164 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="ill-row"><div class="ill-node"><b>Variabel X<sub>1</sub></b><small>prediktor 1</small></div><div class="ill-node"><b>Variabel X<sub>2</sub></b><small>prediktor 2</small></div></div>
+        <div class="box center ill-eq"><div class="concl-title">Persamaan</div><div class="eq">Y = <span class="gl" tabindex="0" data-g="intersep">intersep</span> + (<span class="gl" tabindex="0" data-g="kemiringan">kemiringan</span><sub>1</sub> &times; X<sub>1</sub>) + (<span class="gl" tabindex="0" data-g="kemiringan">kemiringan</span><sub>2</sub> &times; X<sub>2</sub>)</div></div>
+        <p class="hint center">Tiap prediktor punya kemiringan sendiri, dibaca dengan prediktor lain <span class="gl" tabindex="0" data-g="dipertahankan">dipertahankan bernilai tetap</span>.</p>
+      </div>
     </div>
     <div class="sub">
       <div class="sub-title">Coba sendiri: letakkan garis pada data</div>
@@ -390,7 +413,7 @@ ol.refl a:hover{text-decoration:underline}
       <div class="box center" style="margin-top:12px"><div class="concl-title">Persamaan garis saat ini</div><div class="eq" id="ln-eq"></div></div>
       <div class="btn-row" style="margin-top:12px"><button type="button" class="btn sm" id="bestbtn" data-act="bestline">Tampilkan posisi garis yang menghasilkan SSE terkecil</button></div>
       <p class="hint" id="ln-read" aria-live="polite"></p>
-      <div class="box" style="margin-top:12px"><div class="concl-title">Tujuan regresi linear</div><p class="ip" style="margin:0">Regresi linear meletakkan garis terbaik pada data, lalu menuliskan garis itu sebagai persamaan: Y = intersep + kemiringan &times; X. Garis dan persamaan menggambarkan hal yang sama, yang satu berupa gambar dan yang lain berupa tulisan. Dengan persamaan, kita dapat menghitung Y untuk nilai X yang belum pernah diamati. Perangkat lunak mencari posisi garis dengan SSE terkecil, sedangkan di atas kamu mencarinya dengan tangan.</p></div>
+      <div class="box" style="margin-top:12px"><div class="concl-title">Tujuan regresi linear</div><p class="ip" style="margin:0">Regresi linear meletakkan garis terbaik pada data, lalu menuliskan garis itu sebagai persamaan: Y = intersep + (kemiringan &times; X). Garis dan persamaan menggambarkan hal yang sama, yang satu berupa gambar dan yang lain berupa tulisan. Dengan persamaan, kita dapat menghitung Y untuk nilai X yang belum pernah diamati. Perangkat lunak mencari posisi garis dengan SSE terkecil, sedangkan di atas kamu mencarinya dengan tangan.</p></div>
     </div>
     <div class="sub">
       <div class="sub-title">Tiga tujuan memakai regresi linear</div>
@@ -1128,6 +1151,10 @@ function copyText(txt, b, label) {
 
 /* ===== Glosarium ===== */
 var GL = {
+'linearitas': 'Linearitas: rerata Y berubah dengan laju tetap sepanjang X, sehingga hubungannya dapat digambarkan garis lurus, bukan lengkung.',
+'ragamres': 'Ragam residual konstan (homoskedastisitas): sebaran residual kurang lebih sama lebar di seluruh nilai prediksi, tidak melebar atau menyempit seperti corong.',
+'normalres': 'Normal: residual tersebar simetris berbentuk lonceng di sekitar nol. Yang diperiksa adalah residual model, bukan sebaran tiap variabel.',
+'titikpeng': 'Titik berpengaruh: subjek yang bila dihapus mengubah garis regresi cukup besar, biasanya karena letak X-nya jauh dari pusat data dan nilai Y-nya menyimpang dari garis.',
 'independensi': 'Independensi pengamatan: galat tiap pengamatan saling bebas. Dilanggar bila data berkelompok (beberapa hewan dari satu peternak) atau diukur berulang pada subjek yang sama. Dinilai dari cara pengumpulan data.',
 'median': 'Median: nilai tengah data setelah diurutkan. Tidak terpengaruh nilai ekstrem, sehingga membandingkannya dengan rerata membantu melihat kemiringan sebaran.',
 'logaritma': 'Transformasi logaritma: mengganti Y dengan ln(Y). Sering membantu bila sebaran miring ke kanan atau ragam residual membesar pada nilai besar. Koefisien lalu dibaca sebagai perubahan persentase.',
@@ -1448,6 +1475,12 @@ function oneDetail(id, title, inner) { return '<details class="inline" id="' + i
 
 /* ===== Tahap 1 ===== */
 var LDATA = { x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], y: [3.1, 3.4, 5.2, 4.9, 6.8, 6.6, 8.4, 8.1, 10.3, 9.8] };
+var regTab = 'simple';
+function setRegTab(v) {
+    regTab = v;
+    $('ill-simple').hidden = v !== 'simple'; $('ill-multi').hidden = v !== 'multi';
+    $$('[data-act="regtab"]').forEach(function (b) { b.setAttribute('aria-checked', b.getAttribute('data-v') === v ? 'true' : 'false'); });
+}
 function lineSse(b, a) { var s = 0; LDATA.x.forEach(function (x, i) { var e = LDATA.y[i] - (a + b * x); s += e * e; }); return s; }
 function updateLine() {
     var b = state.ln.b / 20, a = state.ln.i / 10, best = ols([LDATA.x], LDATA.y);
@@ -1623,13 +1656,13 @@ function renderR2() {
 /* ===== Tahap 8: diagnostik ===== */
 function nodeList(o) {
     var yv = V(o.yi), st = o.st, a = o, L = [];
-    L.push({ k: 'type', q: 'Y berupa angka hasil pengukuran?', st: 'ok', res: 'Ya. ' + yv.n + ' diukur dalam ' + (yv.u || 'satuan') + '.', act: 'Bila Y berupa kategori atau cacahan: ' + G('logistik', 'regresi logistik') + ' (dua kategori), ' + G('poisson', 'Poisson') + ' (cacahan), ' + G('ordinal', 'ordinal') + ' (urutan), atau keluarga ' + G('glm', 'GLM') + '.' });
-    L.push({ k: 'ind', q: 'Pengamatan saling bebas?', st: 'ok', res: 'Terpenuhi pada data ini: sampel diambil acak sederhana dan tiap baris adalah subjek yang berbeda.', act: 'Bila pengamatan berkelompok (beberapa hewan dari satu peternak) atau berulang pada subjek yang sama: model campuran atau galat baku terklaster, yang tidak diperagakan di halaman ini.' });
-    L.push({ k: 'lin', q: 'Hubungan X dan Y lurus?', st: st.lin, res: a.curv ? 'Uji kelengkungan: F = ' + fmt(a.curv.F, 2) + ', ' + pShort(a.curv.p) : 'Semua prediktor biner, tidak ada kelengkungan untuk diuji.', act: 'Bila melengkung: ' + G('transf', 'transformasi') + ' X (misal logaritma), tambahkan suku kuadrat (' + G('polinom', 'polinomial') + '), atau pakai ' + G('nonlinear', 'regresi nonlinear') + '. Interaksi antarprediktor juga dapat dicoba.' });
-    L.push({ k: 'het', q: 'Ragam residual konstan?', st: st.het, res: a.bp ? 'Breusch-Pagan: &chi;&sup2; = ' + fmt(a.bp.LM, 2) + ', ' + pShort(a.bp.p) : '-', act: 'Bila ragam tidak konstan: log-kan Y, pakai ' + G('hc3', 'galat baku robust (HC3)') + ' (ditampilkan pada tahap Uji koefisien), atau ' + G('wls', 'WLS') + '.' });
-    L.push({ k: 'norm', q: 'Residual mendekati normal?', st: st.norm, res: a.sw ? 'Shapiro-Wilk: W = ' + fmt(a.sw.W, 3) + ', ' + pShort(a.sw.p) : '-', act: 'Bila residual tidak normal: transformasi Y, ' + G('bootstrap', 'bootstrap') + ', atau ' + G('kuantil', 'regresi kuantil') + ' (tanpa asumsi bentuk sebaran galat).' });
-    L.push({ k: 'infl', q: 'Tidak ada titik yang terlalu berpengaruh?', st: st.infl, res: 'Jarak Cook terbesar = ' + fmt(a.maxCook, 2) + ' (subjek ' + sid(a.idx[a.iCook]) + ')', act: 'Periksa apakah titik itu salah catat atau berasal dari subjek yang berbeda. Laporkan hasil dengan dan tanpa titik tersebut.' });
-    L.push({ k: 'col', q: 'Prediktor bebas dari kolinearitas berat?', st: st.col, res: a.vif ? 'VIF terbesar = ' + (isFinite(a.maxVif) ? fmt(a.maxVif, 2) : 'tak hingga') : 'Satu prediktor, langkah ini berlaku untuk regresi berganda.', act: 'Bila kolinearitas berat: buang salah satu prediktor yang redundan, gabungkan dengan ' + G('pca', 'PCA') + ', atau pakai ' + G('ridge', 'ridge atau lasso') + '.' });
+    L.push({ k: 'type', q: G('respons', 'Y') + ' berupa angka hasil pengukuran?', st: 'ok', res: 'Ya. ' + yv.n + ' diukur dalam ' + (yv.u || 'satuan') + '.', act: 'Bila Y berupa kategori atau cacahan: ' + G('logistik', 'regresi logistik') + ' (dua kategori), ' + G('poisson', 'Poisson') + ' (cacahan), ' + G('ordinal', 'ordinal') + ' (urutan), atau keluarga ' + G('glm', 'GLM') + '.' });
+    L.push({ k: 'ind', q: G('independensi', 'Pengamatan saling bebas') + '?', st: 'ok', res: 'Terpenuhi pada data ini: sampel diambil acak sederhana dan tiap baris adalah subjek yang berbeda.', act: 'Bila pengamatan berkelompok (beberapa hewan dari satu peternak) atau berulang pada subjek yang sama: model campuran atau galat baku terklaster, yang tidak diperagakan di halaman ini.' });
+    L.push({ k: 'lin', q: G('linearitas', 'Hubungan X dan Y lurus') + '?', st: st.lin, res: a.curv ? G('kurv', 'Uji kelengkungan') + ': F = ' + fmt(a.curv.F, 2) + ', ' + pShort(a.curv.p) : 'Semua prediktor biner, tidak ada kelengkungan untuk diuji.', act: 'Bila melengkung: ' + G('transf', 'transformasi') + ' X (misal logaritma), tambahkan suku kuadrat (' + G('polinom', 'polinomial') + '), atau pakai ' + G('nonlinear', 'regresi nonlinear') + '. Interaksi antarprediktor juga dapat dicoba.' });
+    L.push({ k: 'het', q: G('ragamres', 'Ragam residual konstan') + '?', st: st.het, res: a.bp ? G('bp', 'Breusch-Pagan') + ': &chi;&sup2; = ' + fmt(a.bp.LM, 2) + ', ' + pShort(a.bp.p) : '-', act: 'Bila ragam tidak konstan: log-kan Y, pakai ' + G('hc3', 'galat baku robust (HC3)') + ' (ditampilkan pada tahap Uji koefisien), atau ' + G('wls', 'WLS') + '.' });
+    L.push({ k: 'norm', q: G('residual', 'Residual') + ' mendekati ' + G('normalres', 'normal') + '?', st: st.norm, res: a.sw ? G('shapiro', 'Shapiro-Wilk') + ': W = ' + fmt(a.sw.W, 3) + ', ' + pShort(a.sw.p) : '-', act: 'Bila residual tidak normal: transformasi Y, ' + G('bootstrap', 'bootstrap') + ', atau ' + G('kuantil', 'regresi kuantil') + ' (tanpa asumsi bentuk sebaran galat).' });
+    L.push({ k: 'infl', q: 'Tidak ada titik yang terlalu ' + G('titikpeng', 'berpengaruh') + '?', st: st.infl, res: G('cook', 'Jarak Cook') + ' terbesar = ' + fmt(a.maxCook, 2) + ' (subjek ' + sid(a.idx[a.iCook]) + ')', act: 'Periksa apakah titik itu salah catat atau berasal dari subjek yang berbeda. Laporkan hasil dengan dan tanpa titik tersebut.' });
+    L.push({ k: 'col', q: 'Prediktor bebas dari ' + G('multikol', 'kolinearitas') + ' berat?', st: st.col, res: a.vif ? G('vif', 'VIF') + ' terbesar = ' + (isFinite(a.maxVif) ? fmt(a.maxVif, 2) : 'tak hingga') : 'Satu prediktor, langkah ini berlaku untuk regresi berganda.', act: 'Bila kolinearitas berat: buang salah satu prediktor yang redundan, gabungkan dengan ' + G('pca', 'PCA') + ', atau pakai ' + G('ridge', 'ridge atau lasso') + '.' });
     return L;
 }
 function diagTabHtml(o, k) {
@@ -1885,7 +1918,7 @@ function renderViz() {
         if (q === 0) h += '<p class="ip">Tebak dulu pola hubungan ' + yn + ' dengan ' + lc(v.n) + ', lalu ' + (bin ? 'rerata tiap kelompok' : 'garis regresi') + ' akan muncul pada grafik.</p>';
         h += '<div class="chart-wrap"><div data-chart="vizP' + q + '"></div></div>';
         if (q === 0) {
-            var g = state.descGuess, opts = bin ? [['up', 'Rerata Y lebih tinggi pada ' + v.labels[1]], ['down', 'Rerata Y lebih rendah pada ' + v.labels[1]], ['none', 'Tidak ada beda yang jelas']] : [['up', 'Y lebih tinggi bila X lebih besar'], ['down', 'Y lebih rendah bila X lebih besar'], ['none', 'Tidak ada pola jelas']];
+            var g = state.descGuess, opts = bin ? [['up', 'Rerata Y lebih tinggi pada ' + v.labels[1]], ['down', 'Rerata Y lebih rendah pada ' + v.labels[1]], ['none', 'Tidak ada beda yang jelas']] : [['up', 'Makin besar X, makin besar pula Y'], ['down', 'Makin besar X, makin kecil Y'], ['none', 'Tidak ada pola yang jelas']];
             h += '<div class="seg2" role="radiogroup" aria-label="Tebakan arah hubungan">' + opts.map(function (p) { return '<button type="button" role="radio" aria-checked="' + (g === p[0]) + '" data-act="dguess" data-v="' + p[0] + '">' + p[1] + '</button>'; }).join('') + '</div>';
             if (g) {
                 var b = m1.f.beta[1], sig = m1.f.p[1] < 0.05, truth = !sig ? 'none' : (b > 0 ? 'up' : 'down'), r = (b >= 0 ? 1 : -1) * Math.sqrt(m1.f.r2);
@@ -1919,7 +1952,7 @@ function renderOk() {
         if (allPos) { lg = analyzeReg({ cols: o.d.cols, y: f.y.map(Math.log), bin: o.d.bin }); if (!lg.f) lg = null; }
         if (lg) {
             var det = function (a, k) { return k === 'lin' ? (a.curv ? pShort(a.curv.p) : '-') : (k === 'het' ? (a.bp ? pShort(a.bp.p) : '-') : (k === 'norm' ? (a.sw ? pShort(a.sw.p) : '-') : 'Cook maks = ' + fmt(a.maxCook, 2))); };
-            var rowsL = [['lin', 'Linearitas'], ['het', 'Ragam residual'], ['norm', 'Normalitas residual'], ['infl', 'Titik berpengaruh']];
+            var rowsL = [['lin', G('linearitas', 'Linearitas')], ['het', G('ragamres', 'Ragam residual')], ['norm', G('normalres', 'Normalitas') + ' ' + G('residual', 'residual')], ['infl', G('titikpeng', 'Titik berpengaruh')]];
             h += '<p class="ip">Transformasi ' + G('logaritma', 'logaritma') + ' pada Y sering membantu bila sebaran miring ke kanan. Hasilnya dibandingkan di bawah ini.</p><div class="tbl-wrap"><table class="dt"><thead><tr><th class="left" style="text-align:left">Asumsi</th><th>Model asli</th><th>Y dalam log</th></tr></thead><tbody>' + rowsL.map(function (r) { return '<tr><th scope="row">' + r[1] + '</th><td>' + stChip(o.st[r[0]]) + ' <span class="subv">' + det(o, r[0]) + '</span></td><td>' + stChip(lg.st[r[0]]) + ' <span class="subv">' + det(lg, r[0]) + '</span></td></tr>'; }).join('') + '</tbody></table></div>';
             var logParts = o.xis.map(function (xj, q) { var v = V(xj), bq = lg.f.beta[q + 1], pct = (Math.exp(bq) - 1) * 100; return 'kemiringan ' + lc(v.n) + ' = ' + fmt(bq, 3) + ' (' + pShort(lg.f.p[q + 1]) + '), artinya rerata ' + lc(V(o.yi).n) + ' berubah sekitar ' + sgn(pct, 1) + '% ' + (v.t === 'bin' ? 'pada ' + v.labels[1] + ' dibandingkan ' + v.labels[0] : 'tiap kenaikan 1 ' + (v.u || 'satuan')); });
             h += '<div class="box" style="margin-top:10px">' + (RANK[lg.worst] < RANK[o.worst] ? noteHtml('ok', 'Membaik.', 'Status terburuk turun dari ' + ST_LBL[o.worst] + ' menjadi ' + ST_LBL[lg.worst] + '.') : (RANK[lg.worst] === RANK[o.worst] ? noteHtml('warn', 'Belum berubah.', 'Status terburuk tetap ' + ST_LBL[o.worst] + '.') : noteHtml('warn', 'Memburuk.', 'Status terburuk naik menjadi ' + ST_LBL[lg.worst] + '.'))) + ' Pada skala log, ' + logParts.join('; ') + '. R&sup2; tidak dibandingkan langsung karena skalanya berbeda. Bila transformasi dipakai, koefisien dibaca sebagai perubahan persentase dan prediksi dikembalikan ke satuan asli dengan eksponen.</div>';
@@ -2206,7 +2239,7 @@ function newPop(kind, id) {
 }
 function resample() { state.pin = false; drawSample(); renderAll(); }
 function resetAll() {
-    state.asmTab = 'lin'; state.fitV = 18; state.ln = { b: 0, i: 70 }; state.showBest = false; state.showRead = false;
+    setRegTab('simple'); state.asmTab = 'lin'; state.fitV = 18; state.ln = { b: 0, i: 70 }; state.showBest = false; state.showRead = false;
     $$('main details[open]').forEach(function (d) { d.open = false; });
     newPop('demo'); updateLine();
 }
@@ -2246,6 +2279,7 @@ function doAct(act, v, t) {
     else if (act === 'focusj') { state.focusJ = +v; renderTest(); renderVar(); renderTruth(); drawCharts(); }
     else if (act === 'fitj') { state.fitJ = +v; renderFit(); }
     else if (act === 'fitbest') { state.fitV = 50; renderFit(); }
+    else if (act === 'regtab') setRegTab(v);
     else if (act === 'bestline') { state.showBest = !state.showBest; updateLine(); }
     else if (act === 'asm' || act === 'asmtab') { state.asmTab = v; renderDiag(); drawCharts($('st-diag')); }
     else if (act === 'pbin') { ensurePv(); state.pv[+t.getAttribute('data-j')] = +v; renderPred(); }
