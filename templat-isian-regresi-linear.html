@@ -20,48 +20,50 @@
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--font);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;letter-spacing:-.006em}
-.wrap{max-width:980px;margin:0 auto;padding:0 16px 80px}
+.wrap{max-width:1180px;margin:0 auto;padding:8px 16px 80px}
 h1{font-size:2rem;line-height:1.15;font-weight:700;letter-spacing:-.025em;margin:32px 0 6px}
-h2,h3{margin:0}
+h3{margin:0}
 .sub{color:var(--muted);margin:0 0 18px}
 button,input,select,textarea,summary,table,#tt{font-family:var(--font)}
 
 /* kotak seragam */
-.card,.box,.row,details.guide,.cardlike,.up,.need-fam,.info,.legend,.pred,.ppblock{border-radius:var(--r)}
-.box{background:var(--card);border:1px solid var(--line)}
-.cardlike,.need-fam,.info,.legend,details.guide,.up,.pred,.ppblock{background:var(--fill);border:1px solid var(--line)}
+.row,.panel,details.guide,.up,.need-fam,.info,.legend,.pred,.ppblock{border-radius:var(--r)}
+.panel{background:var(--card);border:1px solid var(--line)}
+.need-fam,.info,.legend,details.guide,.up,.pred,.ppblock{background:var(--fill);border:1px solid var(--line)}
 .need-fam,.info{padding:10px 14px;font-size:.92rem;color:var(--muted)}
 .info b{color:var(--ink)}
 
-/* toolbar */
-.toolbar{position:sticky;top:0;z-index:20;padding:10px 0;margin-bottom:8px;background:rgba(242,242,247,.78);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px)}
-.toolbar .box{padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
+/* tata letak: konten dan panel sejajar, panel sticky */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px;align-items:start}
+.panel{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.panel .prog{font-size:.9rem;font-weight:600;color:var(--ink);padding-bottom:10px;margin-bottom:2px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.panel .btn{width:100%;text-align:left}
+.panel .btn.danger{margin-top:6px}
+
 .btn{font:inherit;font-size:.9rem;font-weight:500;border:0;background:var(--fill);color:var(--blue);padding:8px 14px;border-radius:var(--rs);cursor:pointer;transition:background .15s}
 .btn:hover{background:var(--fill2)}
 .btn.primary{background:var(--blue);color:var(--blue-ink)}
 .btn.primary:hover{filter:brightness(1.08)}
 .btn.danger{color:#d70015}
 .btn.danger:hover{background:var(--danger-soft)}
-.prog{margin-left:auto;font-size:.88rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.syms{display:flex;flex-wrap:wrap;gap:6px;align-items:center;width:100%;padding-top:8px;border-top:1px solid var(--line)}
 .btn .tri{display:inline-block;font-size:.7em;margin-right:6px;vertical-align:1px}
-.syms span.t{font-size:.8rem;color:var(--muted);margin-right:4px}
+.syms{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.syms span.t{font-size:.8rem;color:var(--muted);margin-right:4px;width:100%}
 .sym{font:inherit;font-size:.9rem;min-width:36px;padding:3px 8px;border:0;background:var(--fill);border-radius:8px;cursor:pointer;color:var(--ink)}
 .sym:hover{background:var(--blue-soft);color:var(--blue)}
 .banner{background:var(--warn-soft);color:var(--warn);border-radius:var(--r);padding:10px 14px;margin:8px 0;font-size:.92rem}
 
 /* identitas */
 .head{display:grid;grid-template-columns:2fr 2fr 1fr;gap:12px;margin-bottom:12px}
-.head label,.lab{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:5px}
+.head label,.lab{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:6px}
 input[type=text],input[type=number],select,textarea{width:100%;font:inherit;color:var(--ink);background:#fff;border:1px solid var(--field);border-radius:var(--rs);padding:9px 12px}
 select{appearance:none;-webkit-appearance:none;padding-right:34px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%236c6c70' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center}
 textarea{resize:vertical;min-height:46px;overflow:hidden}
 input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,122,255,.22)}
-.up:focus-visible,.btn:focus-visible,.sym:focus-visible,summary:focus-visible,.tip:focus-visible,label.opt:focus-within{outline:3px solid rgba(0,122,255,.35);outline-offset:1px}
-:disabled{background:var(--fill);color:var(--muted)}
+.up:focus-visible,.btn:focus-visible,.sym:focus-visible,summary:focus-visible,.tip:focus-visible{outline:3px solid rgba(0,122,255,.35);outline-offset:1px}
 ::placeholder{color:#aeaeb2}
 
-/* baris */
+/* langkah */
 .rows{display:flex;flex-direction:column;gap:14px;margin-top:14px}
 .row{display:grid;grid-template-columns:160px 1fr;background:var(--card);border:1px solid var(--line);overflow:hidden}
 .c-k{padding:16px;background:#fafafc;border-right:1px solid var(--line)}
@@ -72,12 +74,14 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-s
 .c-k .note{font-size:.8rem;color:var(--muted);margin:8px 0 0}
 .c-i{padding:16px;min-width:0}
 .body>*+*{margin-top:14px}
+details.guide+.body{margin-top:14px}
 .sect{font-size:.95rem;font-weight:600;margin:0}
 .sect.gap{margin-top:30px!important;padding-top:20px;border-top:1px solid var(--line)}
 .ptype{font-weight:400;color:var(--muted);font-size:.85rem}
+.src{font-size:.82rem;color:var(--muted);margin:0 0 6px}
 
 /* panduan */
-details.guide{margin-bottom:14px}
+details.guide{margin-bottom:0}
 details.guide summary{padding:10px 14px;font-size:.92rem;font-weight:600;color:var(--blue);cursor:pointer}
 .gbody{padding:2px 14px 14px;font-size:.92rem}
 .gbody ol,.gbody ul{margin:.3em 0 .6em;padding-left:1.3em}
@@ -90,31 +94,22 @@ ul.chk li::before{content:"\2611";margin-right:.45em;color:var(--blue)}
 .testbar .chip{display:block;font-size:.82rem;font-weight:600;color:var(--blue);background:var(--blue-soft);padding:6px 12px;border-radius:var(--rs)}
 .testbar .chip.off{color:var(--muted);background:var(--fill2)}
 
-/* opsi */
-.opts{display:flex;flex-direction:column;gap:8px}
-.optw{display:flex;align-items:center;gap:8px}
-label.opt{display:flex;align-items:center;gap:11px;padding:9px 13px;border:1px solid var(--line);border-radius:var(--rs);background:#fff;cursor:pointer;flex:1;min-width:0;transition:background .12s,border-color .12s}
-label.opt:hover{background:var(--fill)}
-label.opt input{appearance:none;-webkit-appearance:none;display:grid;place-content:center;width:22px;height:22px;margin:0;flex:none;border:1.5px solid var(--field);background:#fff;cursor:pointer;transition:background .12s,border-color .12s}
-label.opt input[type=radio]{border-radius:50%}
-label.opt input[type=checkbox]{border-radius:7px}
-label.opt input:checked{background:var(--blue);border-color:var(--blue)}
-label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
-.optw.sel label.opt{border-color:var(--blue);background:var(--blue-soft)}
+/* isian */
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.fld .lab{display:flex;align-items:center;gap:6px}
+.fld .lab{display:flex;align-items:center;gap:6px;min-height:22px}
 .tip{flex:none;width:22px;height:22px;border-radius:50%;border:0;background:var(--fill2);color:var(--muted);font:600 .74rem/1 var(--font);cursor:help;padding:0}
 .tip:hover,.tip:focus{background:var(--blue);color:#fff}
-#tt{position:fixed;z-index:50;max-width:300px;background:rgba(28,28,30,.96);color:#fff;font-size:.85rem;line-height:1.45;padding:9px 12px;border-radius:var(--rs);pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.22)}
+#tt{position:fixed;z-index:50;max-width:340px;background:rgba(28,28,30,.96);color:#fff;font-size:.85rem;line-height:1.45;padding:9px 12px;border-radius:var(--rs);pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.22)}
 
 /* prediktor dan blok per prediktor */
-.pred,.ppblock{padding:12px;margin-top:10px}
-.pred:first-child,.ppblock:first-child{margin-top:0}
-.pred>*+*,.ppblock>*+*{margin-top:10px}
-.pgrid{display:grid;grid-template-columns:2fr 1.2fr 1.6fr auto;gap:10px;align-items:end}
+.preds,.perpred{display:flex;flex-direction:column;gap:12px}
+#predAdd{margin-top:12px}
+.pred,.ppblock{padding:14px;display:flex;flex-direction:column;gap:12px}
+.pgrid{display:grid;grid-template-columns:2fr 1.2fr 1.6fr auto;gap:12px;align-items:end}
+.ppblock select{max-width:520px}
 
-/* legenda kategori */
-.legend{padding:12px 14px;font-size:.88rem;margin-top:10px}
+/* legenda */
+.legend{padding:12px 14px;font-size:.88rem}
 .legend summary{font-weight:600;color:var(--blue);cursor:pointer}
 .legend table{margin-top:8px;border-collapse:collapse;width:100%}
 .legend td{padding:4px 0;vertical-align:top;border-top:1px solid var(--line)}
@@ -142,28 +137,32 @@ summary::-webkit-details-marker{display:none}
 summary::before{content:"\25B6";display:inline-block;margin-right:8px;font-size:.7em;vertical-align:1px}
 details[open]>summary::before{content:"\25BC"}
 
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .panel{position:static;max-height:none}
+}
 @media (max-width:700px){
   h1{font-size:1.65rem}
   .head{grid-template-columns:1fr}
   .row{grid-template-columns:1fr}
   .c-k{border-right:0;border-bottom:1px solid var(--line)}
   .pair,.pgrid{grid-template-columns:1fr}
-  .prog{margin-left:0;width:100%}
-  .legend td:first-child,.legend td:nth-child(2){width:auto}
+  .legend td:first-child,.legend td:nth-child(2){width:auto;white-space:normal}
 }
 
 /* cetak */
 @page{size:A4;margin:12mm}
 @media print{
   body{background:#fff;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .wrap{max-width:none;padding:0}
-  .toolbar,details.guide,.tip,#tt,.banner,.foot,.up .acts,.up .hint,.note,.legend,.info,.need-fam,.predbtn{display:none!important}
+  .layout{display:block}
+  .wrap{max-width:none;padding:0;margin:0}
+  .panel,details.guide,.tip,#tt,.banner,.foot,.up .acts,.up .hint,.note,.legend,.info,.need-fam,.predbtn,.src{display:none!important}
   h1{margin-top:0;font-size:16pt}
-  .sub{margin-bottom:8px}
-  .box,.row{border-color:#999;border-radius:4px}
+  .sub{display:none}
+  .row{border-color:#999;border-radius:4px}
   .rows{gap:8px;margin-top:8px}
   .row{break-inside:avoid;page-break-inside:avoid;grid-template-columns:130px 1fr}
-  .fld,.optw,.up,.sect,.c-k h3,.pred,.ppblock{break-inside:avoid;page-break-inside:avoid}
+  .fld,.up,.sect,.c-k h3,.pred,.ppblock{break-inside:avoid;page-break-inside:avoid}
   .sect,.lab,.c-k .no{break-after:avoid;page-break-after:avoid}
   .c-k h3{font-size:10.5pt}
   .c-k{background:#f3f3f3;border-color:#999}
@@ -171,23 +170,17 @@ details[open]>summary::before{content:"\25BC"}
   .testbar .chip{background:none;color:#000;padding:0;font-weight:600}
   .pred,.ppblock{background:none;border:1px solid #ccc;border-radius:4px}
   .pgrid{grid-template-columns:2fr 1.2fr 1.6fr}
-  input:not([type=radio]):not([type=checkbox]),select,textarea{border:0!important;border-bottom:1px solid #bbb!important;border-radius:0!important;padding:2px 0;background:transparent;box-shadow:none}
+  input,select,textarea{border:0!important;border-bottom:1px solid #bbb!important;border-radius:0!important;padding:2px 0;background:transparent;box-shadow:none}
   select{background-image:none;padding-right:0}
-  label.opt input{display:none}
-  label.opt::before{content:"\2610";font-size:13pt;line-height:1;margin-right:6px}
-  .optw.sel label.opt::before{content:"\2611"}
   textarea,input[type=text]{display:none!important}
   .pv{display:block!important;white-space:pre-wrap;overflow-wrap:anywhere;border-bottom:1px solid #bbb;min-height:1.7em;padding:2px 0}
   .head{gap:8px}
-  .optw:not(.sel){display:none!important}
-  label.opt,.optw.sel label.opt{border:0;padding:2px 0;background:none}
-  .opts{gap:2px}
+  .pair{gap:8px}
   .up,.up.has{border:0;padding:0;background:none;text-align:left}
   .up:not(.has) .empty{display:none}
   .up:not(.has)::after{content:"(gambar tidak diunggah)";font-style:italic;color:#666;font-size:10pt}
   .up img{max-height:100mm;width:auto;max-width:100%;break-inside:avoid;border-radius:0}
   .sect.gap{margin-top:14px!important;padding-top:10px}
-  :disabled{background:transparent}
 }
 </style>
 </head>
@@ -195,21 +188,12 @@ details[open]>summary::before{content:"\25BC"}
 <div class="wrap">
 
 <h1>Templat isian regresi linear berganda</h1>
-<p class="sub">Isi langsung di halaman ini. Setelah selesai, klik Cetak atau simpan PDF, lalu pilih "Simpan sebagai PDF".</p>
-
-<div class="toolbar" id="toolbar">
-  <div class="box">
-    <button class="btn primary" id="btnPrint" type="button">Cetak atau simpan PDF</button>
-    <button class="btn" id="btnOpen" type="button">Buka semua panduan</button>
-    <button class="btn" id="btnClose" type="button">Tutup semua panduan</button>
-    <button class="btn danger" id="btnReset" type="button">Kosongkan lembar ini</button>
-    <button class="btn" id="btnSym" type="button" aria-expanded="false" aria-controls="syms"><span class="tri">&#9654;</span>Simbol</button>
-    <span class="prog" id="prog" aria-live="polite"></span>
-    <div class="syms" id="syms" hidden><span class="t">Klik simbol untuk menyisipkannya ke kotak teks yang sedang aktif:</span></div>
-  </div>
-</div>
+<p class="sub">Isi langsung di halaman ini. Setelah selesai, klik Cetak atau simpan PDF pada panel, lalu pilih "Simpan sebagai PDF".</p>
 
 <div class="banner" id="warn" hidden>Penyimpanan otomatis di peramban penuh atau tidak tersedia. Cetak atau simpan PDF sebelum menutup halaman agar pekerjaan tidak hilang.</div>
+
+<div class="layout">
+<div class="content">
 
 <section id="head" class="head" aria-label="Identitas">
   <div><label for="nama">Nama mahasiswa atau kelompok</label><input type="text" id="nama" data-k="nama" autocomplete="off"></div>
@@ -244,7 +228,10 @@ details[open]>summary::before{content:"\25BC"}
       <div class="fld"><div class="lab">Variabel prediktor (X)
         <button type="button" class="tip" aria-label="Penjelasan" data-tip="Regresi berganda memerlukan minimum dua prediktor. Pilih prediktor berdasarkan teori atau pengetahuan ilmiah sebelum melihat hasil analisis. Mencoba prediktor satu per satu lalu menyimpan yang signifikan meningkatkan risiko temuan kebetulan.">i</button></div>
         <div class="preds" id="preds" data-k="r1p"></div>
-        <button class="btn predbtn" id="predAdd" type="button" style="margin-top:10px">Tambah prediktor</button></div>
+        <button class="btn predbtn" id="predAdd" type="button">Tambah prediktor</button></div>
+      <div class="fld"><div class="lab"><label for="r1why">Alasan memilih semua prediktor tersebut (dasar teori)</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Jelaskan mengapa tiap prediktor diduga berhubungan dengan luaran, berdasarkan teori, hasil penelitian sebelumnya, atau pengetahuan biologis. Tuliskan juga bila ada variabel numeris berskor (misalnya 1 sampai 5) yang Anda perlakukan sebagai numeris atau sebagai kategoris, beserta alasannya.">i</button></div>
+        <textarea id="r1why" data-k="r1why" rows="3"></textarea></div>
     </div>
   </div>
 </section>
@@ -290,7 +277,7 @@ details[open]>summary::before{content:"\25BC"}
       <div class="up" data-k="r3img1" data-cap="Tabel Descriptives (luaran dan prediktor numeris)" tabindex="0"></div>
       <div class="up" data-k="r3img2" data-cap="Tabel frekuensi (prediktor kategoris)" data-when="hascat" tabindex="0"></div>
       <div class="fld"><div class="lab"><label for="r3t">Catatan data hilang atau nilai yang tidak wajar</label>
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Lihat baris Missing atau bandingkan N antarvariabel. N yang berbeda atau Missing lebih dari nol menandakan ada data hilang. Jamovi membuang baris yang tidak lengkap saat menjalankan regresi, sehingga jumlah pengamatan dalam model bisa lebih kecil dari jumlah data. Perhatikan juga nilai minimum dan maksimum yang tidak masuk akal secara biologis.">i</button></div>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Lihat baris Missing atau bandingkan N antarvariabel pada tabel Descriptives. N yang berbeda atau Missing lebih dari nol menandakan ada data hilang. Jamovi membuang baris yang tidak lengkap saat menjalankan regresi, sehingga jumlah pengamatan dalam model bisa lebih kecil dari jumlah data. Perhatikan juga nilai minimum dan maksimum yang tidak masuk akal secara biologis.">i</button></div>
         <textarea id="r3t" data-k="r3t" rows="3"></textarea></div>
     </div>
   </div>
@@ -298,204 +285,198 @@ details[open]>summary::before{content:"\25BC"}
 
 <!-- 4 -->
 <section class="row" data-row="4">
-  <div class="c-k"><div class="no"><span class="mark">4</span></div><h3>Visualisasi data deskriptif</h3></div>
+  <div class="c-k"><div class="no"><span class="mark">4</span></div><h3>Kecocokan model secara keseluruhan</h3><p class="note">Langkah 4 sampai 6 memakai satu analisis Linear Regression yang sama.</p></div>
   <div class="c-i">
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
-      <h4>Histogram luaran</h4>
       <ol>
-        <li>Klik tab <b>Analyses → Exploration → Descriptives</b>. Masukkan luaran ke kotak <b>Variables</b>.</li>
-        <li>Pada panel <b>Plots</b>, centang <b>Histogram</b> dan matikan opsi lain.</li>
+        <li>Klik tab <b>Analyses → Regression → Linear Regression</b>.</li>
+        <li>Pindahkan luaran ke kotak <b>Dependent Variable</b>, prediktor numeris ke kotak <b>Covariates</b>, dan prediktor kategoris ke kotak <b>Factors</b>.</li>
+        <li>Pada panel <b>Reference Levels</b>, pilih kategori rujukan tiap variabel kategoris sesuai isian pada langkah 1.</li>
+        <li>Buka panel <b>Model Fit</b> dan centang opsi berikut:</li>
       </ol>
-      <h4>Diagram pencar (prediktor numeris)</h4>
-      <ol>
-        <li>Klik tab <b>Analyses → Exploration → Scatterplot</b>.</li>
-        <li>Masukkan prediktor numeris ke <b>X-Axis</b> dan luaran ke <b>Y-Axis</b>.</li>
-        <li>Pada <b>Regression Line</b>, pilih <b>Linear</b>.</li>
-        <li>Ulangi untuk tiap prediktor numeris.</li>
-      </ol>
-      <h4>Box plot (prediktor kategoris)</h4>
-      <ol>
-        <li>Pada analisis Descriptives, masukkan luaran ke kotak <b>Variables</b> dan prediktor kategoris ke kotak <b>Split by</b>.</li>
-        <li>Pada panel <b>Plots</b>, centang <b>Box plot</b> dan <b>Label outliers</b>, lalu matikan opsi lain.</li>
-      </ol>
-      <p>Ambil tangkapan layar tiap gambar yang terbentuk, lalu unggah di bawah ini.</p>
+      <div class="sub2">Fit Measures</div><ul class="chk"><li>R²</li><li>Adjusted R²</li></ul>
+      <div class="sub2">Overall Model Test</div><ul class="chk"><li>F test</li></ul>
+      <p>Ambil tangkapan layar tabel Model Fit Measures yang terbentuk, lalu unggah di bawah ini. Jangan hapus analisis ini di Jamovi karena dipakai kembali pada langkah 5 sampai 7.</p>
     </div></details>
     <div class="body">
       <div class="testbar" data-varbar></div>
-      <div class="up" data-k="r4img1" data-cap="Histogram luaran" tabindex="0"></div>
-      <div class="up" data-k="r4img2" data-cap="Diagram pencar luaran dengan prediktor numeris" data-when="hasnum" tabindex="0"></div>
-      <div class="up" data-k="r4img3" data-cap="Box plot luaran menurut kategori prediktor" data-when="hascat" tabindex="0"></div>
-      <div class="fld"><div class="lab"><label for="r4t">Interpretasi visualisasi</label>
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Histogram: bentuk sebaran luaran (simetris atau miring) dan nilai yang jauh dari kelompok data. Diagram pencar: apakah hubungan tampak lurus, arahnya naik atau turun, dan seberapa rapat titik di sekitar garis. Box plot: perbedaan median antarkategori dan keberadaan pencilan.">i</button></div>
-        <textarea id="r4t" data-k="r4t" rows="4" placeholder="Tuliskan hasil pengamatan Anda pada gambar-gambar di atas."></textarea></div>
+      <div class="up" data-k="r4img" data-cap="Tabel Model Fit Measures" tabindex="0"></div>
+      <div class="fld"><div class="lab"><label for="r4sig">Apakah model secara keseluruhan signifikan pada α = 0,05?</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dibaca dari nilai p uji F (Overall Model Test). Nilai p kurang dari atau sama dengan 0,05 berarti data memberi bukti bahwa minimal satu koefisien slope tidak sama dengan nol, yaitu minimal satu prediktor berhubungan dengan luaran. Uji ini tidak menunjukkan prediktor mana yang berhubungan dan tidak menunjukkan seberapa kuat modelnya.">i</button></div>
+        <p class="src">Dibaca dari nilai p pada tabel Model Fit Measures di atas.</p>
+        <select id="r4sig" data-k="r4sig" data-opts="sig"></select></div>
+      <div class="fld"><div class="lab"><label for="r4t">Tafsir R² dan adjusted R²</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="R² adalah proporsi variasi luaran yang dijelaskan oleh seluruh prediktor dalam model. Adjusted R² mengoreksi R² dengan jumlah prediktor, sehingga lebih tepat untuk membandingkan model dengan jumlah prediktor berbeda. R² tidak pernah turun saat prediktor ditambahkan, sedangkan adjusted R² dapat turun.">i</button></div>
+        <textarea id="r4t" data-k="r4t" rows="3" placeholder="Tuliskan nilai R² dan adjusted R² dari tabel Model Fit Measures, lalu tafsirkan."></textarea></div>
+      <p class="sect gap">Kategori kekuatan model (R²)</p>
+      <div class="fld"><label class="lab" for="r4kat">Kategori</label>
+        <select id="r4kat" data-k="r4kat"><option value="">Pilih</option><option>Sangat kecil (&lt; 0,02)</option><option>Kecil (0,02 sampai &lt; 0,13)</option><option>Sedang (0,13 sampai &lt; 0,26)</option><option>Besar (≥ 0,26)</option></select></div>
+      <details class="legend">
+        <summary>Cara menentukan kategori</summary>
+        <table>
+          <tr><td>Sangat kecil</td><td>kurang dari 0,02</td><td>Prediktor menjelaskan kurang dari 2% variasi luaran.</td></tr>
+          <tr><td>Kecil</td><td>0,02 sampai kurang dari 0,13</td><td>Prediktor menjelaskan 2% sampai kurang dari 13% variasi luaran.</td></tr>
+          <tr><td>Sedang</td><td>0,13 sampai kurang dari 0,26</td><td>Prediktor menjelaskan 13% sampai kurang dari 26% variasi luaran.</td></tr>
+          <tr><td>Besar</td><td>0,26 atau lebih</td><td>Prediktor menjelaskan 26% variasi luaran atau lebih.</td></tr>
+        </table>
+        <p>Batas ini diturunkan dari acuan Cohen untuk f² (0,02; 0,15; 0,35) yang dikonversi ke R² (0,02; 0,13; 0,26). Batas ini bukan batas mutlak. Ada beberapa cara klasifikasi nilai R² yang yang berbeda-beda antarkonteks bidang ilmu.</p>
+      </details>
     </div>
   </div>
 </section>
 
 <!-- 5 -->
 <section class="row" data-row="5">
-  <div class="c-k"><div class="no"><span class="mark">5</span></div><h3>Pemeriksaan asumsi</h3><p class="note">Asumsi diperiksa pada model yang sudah dijalankan.</p></div>
+  <div class="c-k"><div class="no"><span class="mark">5</span></div><h3>Koefisien regresi tiap prediktor</h3></div>
   <div class="c-i">
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
-      <ol>
-        <li>Klik tab <b>Analyses → Regression → Linear Regression</b>.</li>
-        <li>Pindahkan luaran ke kotak <b>Dependent Variable</b>, prediktor numeris ke kotak <b>Covariates</b>, dan prediktor kategoris ke kotak <b>Factors</b>.</li>
-        <li>Pada panel <b>Reference Levels</b>, pilih kategori rujukan tiap variabel kategoris sesuai baris 1.</li>
-        <li>Pada panel <b>Assumption Checks</b>, centang opsi berikut:</li>
-      </ol>
-      <div class="sub2">Assumption Checks</div><ul class="chk"><li>Collinearity statistics</li><li>Q-Q plot of residuals</li><li>Residual plots</li></ul>
-      <div class="sub2">Data Summary</div><ul class="chk"><li>Cook's distance</li></ul>
-      <p>Autocorrelation test tidak diperlukan karena uji ini untuk data yang berurutan menurut waktu. Normality test (Shapiro-Wilk) bersifat opsional.</p>
-      <p>Ambil tangkapan layar tabel Cook's distance dan Collinearity statistics, Q-Q plot, dan Residual plots, lalu unggah di bawah ini.</p>
-    </div></details>
-    <div class="body">
-      <div class="testbar" data-varbar></div>
-      <div class="up" data-k="r5img1" data-cap="Tabel Cook's distance dan Collinearity statistics" tabindex="0"></div>
-      <div class="up" data-k="r5img2" data-cap="Q-Q plot residual" tabindex="0"></div>
-      <div class="up" data-k="r5img3" data-cap="Residual plots" tabindex="0"></div>
-      <div class="pair">
-        <div class="fld"><div class="lab">Linearitas hubungan
-          <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dibaca dari plot residual terhadap nilai prediksi dan terhadap tiap prediktor numeris. Linearitas terpenuhi bila titik tersebar acak di sekitar garis nol tanpa pola melengkung.">i</button></div>
-          <div class="opts" data-k="r5lin"></div></div>
-        <div class="fld"><div class="lab">Homoskedastisitas (varians residual setara)
-          <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dibaca dari plot residual terhadap nilai prediksi. Terpenuhi bila lebar sebaran residual relatif sama di seluruh nilai prediksi. Pola corong (melebar atau menyempit) menandakan varians tidak setara.">i</button></div>
-          <div class="opts" data-k="r5hom"></div></div>
-      </div>
-      <div class="pair">
-        <div class="fld"><div class="lab">Normalitas residu
-          <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dibaca dari Q-Q plot residual: titik yang mengikuti garis diagonal menandakan residu mendekati normal. Uji Shapiro-Wilk dapat dipakai sebagai pelengkap, tetapi pada sampel besar uji ini sangat sensitif terhadap penyimpangan kecil, sehingga Q-Q plot diutamakan. Asumsi normalitas berlaku pada residu model; sebaran variabel individual tidak harus normal.">i</button></div>
-          <div class="opts" data-k="r5norm"></div></div>
-        <div class="fld"><div class="lab">Multikolinearitas
-          <button type="button" class="tip" aria-label="Penjelasan" data-tip="VIF (variance inflation factor) mengukur seberapa besar variasi suatu prediktor dapat dijelaskan oleh prediktor lain. VIF = 1 berarti tidak ada korelasi dengan prediktor lain. Acuan umum: di bawah 5 umumnya tidak mengkhawatirkan, 5 sampai 10 perlu dicermati, 10 atau lebih bermasalah. VIF tinggi membuat galat baku koefisien membesar dan estimasi menjadi tidak stabil. Tolerance sama dengan 1/VIF.">i</button></div>
-          <div class="opts" data-k="r5kol"></div></div>
-      </div>
-      <div class="pair">
-        <div class="fld"><div class="lab">Pencilan berpengaruh
-          <button type="button" class="tip" aria-label="Penjelasan" data-tip="Cook's distance mengukur seberapa besar koefisien model berubah bila satu pengamatan dikeluarkan. Tabel Cook's distance di Jamovi merangkum nilai rerata, median, simpangan baku, minimum, dan maksimum; baca nilai maksimum. Acuan umum: nilai 1 atau lebih menandai pengamatan yang sangat berpengaruh. Sebagian penulis memakai 4/n sebagai batas waspada. Tuliskan acuan yang Anda pakai pada kolom alasan baris 6.">i</button></div>
-          <div class="opts" data-k="r5out"></div></div>
-        <div class="fld"><div class="lab">Independensi pengamatan
-          <button type="button" class="tip" aria-label="Penjelasan" data-tip="Regresi linear mengasumsikan galat tiap pengamatan saling bebas. Pengamatan yang berkelompok (misalnya beberapa hewan dari satu peternak) atau pengukuran berulang pada subjek yang sama cenderung berkorelasi. Akibatnya galat baku terlalu kecil dan p-value terlalu optimis. Penilaian ini berdasarkan cara data dikumpulkan, bukan dari output Jamovi.">i</button></div>
-          <div class="opts" data-k="r5ind"></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 6 -->
-<section class="row" data-row="6">
-  <div class="c-k"><div class="no"><span class="mark">6</span></div><h3>Kelayakan model</h3><p class="note">Keputusan ini menentukan cara Anda menafsirkan baris 7 sampai 9.</p></div>
-  <div class="c-i"><div class="body">
-    <div class="fld"><div class="lab">Apakah model layak ditafsirkan?</div><div class="opts" data-k="r6"></div></div>
-    <div class="fld"><label class="lab" for="r6a">Alasan</label><textarea id="r6a" data-k="r6a" rows="3" placeholder="Rujuk hasil pemeriksaan asumsi pada baris 5."></textarea></div>
-    <div class="fld" data-when="r6:catatan"><label class="lab" for="r6c">Keterbatasan yang dicantumkan pada kesimpulan</label><textarea id="r6c" data-k="r6c" rows="3"></textarea></div>
-    <div class="info" data-when="r6:perlu">Jika model diperbaiki, kerjakan baris 7 sampai 9 menggunakan model akhir (setelah perbaikan).</div>
-    <div class="fld" data-when="r6:perlu"><div class="lab"><label for="r6p">Tindakan perbaikan dan alasannya</label>
-      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Contoh tindakan: transformasi luaran (misalnya logaritma) untuk residu yang miring atau varians yang tidak setara; mengeluarkan salah satu dari dua prediktor yang berkorelasi tinggi; memeriksa dan menjalankan ulang analisis tanpa pengamatan yang sangat berpengaruh, disertai laporan hasil dengan dan tanpa pengamatan itu. Pendekatan lain di luar Jamovi (misalnya model campuran untuk data berkelompok) dapat disebutkan sebagai saran. Setelah perbaikan, periksa kembali asumsi pada model akhir. Bila luaran ditransformasi, koefisien ditafsirkan pada skala hasil transformasi.">i</button></div>
-      <textarea id="r6p" data-k="r6p" rows="3"></textarea></div>
-    <div class="up" data-when="r6:perlu" data-k="r6img" data-cap="Tabel hasil model setelah perbaikan" tabindex="0"></div>
-    <div class="fld" data-when="r6:perlu"><label class="lab" for="r6h">Perbandingan hasil sebelum dan sesudah perbaikan</label><textarea id="r6h" data-k="r6h" rows="3"></textarea></div>
-  </div></div>
-</section>
-
-<!-- 7 -->
-<section class="row" data-row="7">
-  <div class="c-k"><div class="no"><span class="mark">7</span></div><h3>Kecocokan model secara keseluruhan</h3></div>
-  <div class="c-i">
-    <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
-      <ol><li>Masih di menu <b>Linear Regression</b>, buka panel <b>Model Fit</b> dan centang opsi berikut:</li></ol>
-      <div class="sub2">Fit Measures</div><ul class="chk"><li>R²</li><li>Adjusted R²</li></ul>
-      <div class="sub2">Overall Model Test</div><ul class="chk"><li>F test</li></ul>
-      <p>Ambil tangkapan layar tabel Model Fit Measures yang terbentuk, lalu unggah di bawah ini.</p>
-    </div></details>
-    <div class="body">
-      <div class="testbar" data-varbar></div>
-      <div class="up" data-k="r7img" data-cap="Tabel Model Fit Measures" tabindex="0"></div>
-      <div class="fld"><div class="lab">Apakah model secara keseluruhan signifikan pada α = 0,05?
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Uji F menguji H₀ bahwa semua koefisien slope sama dengan nol. Nilai p kurang dari atau sama dengan 0,05 berarti data memberi bukti bahwa minimal satu koefisien slope tidak sama dengan nol, yaitu minimal satu prediktor berhubungan dengan luaran. Uji ini tidak menunjukkan prediktor mana yang berhubungan dan tidak menunjukkan seberapa kuat modelnya.">i</button></div>
-        <div class="opts" data-k="r7sig"></div></div>
-      <div class="fld"><div class="lab"><label for="r7t">Tafsir R² dan adjusted R²</label>
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="R² adalah proporsi variasi luaran yang dijelaskan oleh seluruh prediktor dalam model. Adjusted R² mengoreksi R² dengan jumlah prediktor, sehingga lebih tepat untuk membandingkan model dengan jumlah prediktor berbeda. R² tidak pernah turun saat prediktor ditambahkan, sedangkan adjusted R² dapat turun.">i</button></div>
-        <textarea id="r7t" data-k="r7t" rows="3" placeholder="Tuliskan nilai R² dan adjusted R² dari tabel Model Fit Measures, lalu tafsirkan."></textarea></div>
-      <p class="sect gap">Kategori kekuatan model (R²)</p>
-      <div class="fld"><label class="lab" for="r7kat">Kategori</label>
-        <select id="r7kat" data-k="r7kat"><option value="">Pilih</option><option>Sangat kecil (&lt; 0,02)</option><option>Kecil (0,02 sampai &lt; 0,13)</option><option>Sedang (0,13 sampai &lt; 0,26)</option><option>Besar (≥ 0,26)</option></select></div>
-      <details class="legend">
-        <summary>Cara menentukan kategori</summary>
-        <table>
-          <tr><td>Sangat kecil</td><td>kurang dari 0,02</td><td>Prediktor menjelaskan kurang dari 2% variasi luaran.</td></tr>
-          <tr><td>Kecil</td><td>0,02 sampai kurang dari 0,13</td><td>Menjelaskan 2% sampai kurang dari 13% variasi luaran.</td></tr>
-          <tr><td>Sedang</td><td>0,13 sampai kurang dari 0,26</td><td>Menjelaskan 13% sampai kurang dari 26% variasi luaran.</td></tr>
-          <tr><td>Besar</td><td>0,26 atau lebih</td><td>Menjelaskan 26% variasi luaran atau lebih.</td></tr>
-        </table>
-        <p>Batas ini diturunkan dari acuan Cohen untuk f² (0,02; 0,15; 0,35) yang dikonversi ke R² (0,02; 0,13; 0,26). Batas ini bukan batas mutlak. Nilai R² yang dianggap tinggi berbeda antarbidang ilmu.</p>
-      </details>
-    </div>
-  </div>
-</section>
-
-<!-- 8 -->
-<section class="row" data-row="8">
-  <div class="c-k"><div class="no"><span class="mark">8</span></div><h3>Koefisien regresi tiap prediktor</h3></div>
-  <div class="c-i">
-    <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
-      <ol><li>Masih di menu <b>Linear Regression</b>, buka panel <b>Model Coefficients</b> dan centang opsi berikut:</li></ol>
-      <div class="sub2">Omnibus Test</div><ul class="chk"><li>ANOVA test</li></ul>
+      <ol><li>Masih di analisis <b>Linear Regression</b> yang sama (langkah 4), buka panel <b>Model Coefficients</b> dan centang opsi berikut:</li></ol>
+      <div class="sub2">Omnibus Test</div><ul class="chk"><li>ANOVA test (diperlukan bila ada prediktor kategoris)</li></ul>
       <div class="sub2">Estimate</div><ul class="chk"><li>Confidence interval (95%)</li></ul>
       <div class="sub2">Standardized Estimate</div><ul class="chk"><li>Standardized estimate</li></ul>
       <p>Ambil tangkapan layar tabel Model Coefficients dan tabel Omnibus ANOVA Test yang terbentuk, lalu unggah di bawah ini.</p>
     </div></details>
     <div class="body">
       <div class="testbar" data-varbar></div>
-      <div class="up" data-k="r8img1" data-cap="Tabel Model Coefficients" tabindex="0"></div>
-      <div class="up" data-k="r8img2" data-cap="Tabel Omnibus ANOVA Test" data-when="hascat" tabindex="0"></div>
+      <div class="up" data-k="r5img1" data-cap="Tabel Model Coefficients" tabindex="0"></div>
+      <div class="up" data-k="r5img2" data-cap="Tabel Omnibus ANOVA Test" data-when="hascat" tabindex="0"></div>
       <div class="fld"><div class="lab">Penilaian tiap prediktor
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Nilai p tiap prediktor dibaca setelah prediktor lain dikendalikan, sehingga dapat berbeda dari hasil regresi sederhana prediktor yang sama. Variabel yang tidak signifikan tetap dilaporkan dan ditafsirkan.">i</button></div>
-        <div class="perpred" data-k="r8c"></div></div>
-      <div class="fld" data-when="hasnum"><div class="lab"><label for="r8k">Prediktor numeris dengan pengaruh terbesar</label>
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Bandingkan nilai mutlak Standardized Estimate antarprediktor numeris. Nilai ini menyatakan perubahan luaran (dalam simpangan baku) untuk kenaikan satu simpangan baku prediktor, sehingga prediktor dengan satuan berbeda dapat dibandingkan. Dummy variable tidak dibandingkan dengan cara ini. Perbandingan kurang andal bila prediktor saling berkorelasi tinggi.">i</button></div>
-        <input type="text" id="r8k" data-k="r8k" autocomplete="off" placeholder="Nama prediktor dan nilai Standardized Estimate"></div>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Nilai p tiap prediktor dibaca setelah prediktor lain dikendalikan, sehingga dapat berbeda dari hasil regresi sederhana prediktor yang sama. Variabel yang tidak signifikan tetap dilaporkan dan ditafsirkan. Nilai koefisien (Estimate) dan selang kepercayaannya dituliskan pada persamaan di langkah 6.">i</button></div>
+        <div class="perpred" data-k="r5c"></div></div>
+      <div class="fld" data-when="hasnum"><div class="lab"><label for="r5k">Prediktor numeris dengan pengaruh terbesar</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Bandingkan nilai mutlak Standardized Estimate antarprediktor numeris pada tabel Model Coefficients. Nilai ini menyatakan perubahan luaran (dalam simpangan baku) untuk kenaikan satu simpangan baku prediktor, sehingga prediktor dengan satuan berbeda dapat dibandingkan. Dummy variable tidak dibandingkan dengan cara ini. Perbandingan kurang andal bila prediktor saling berkorelasi tinggi.">i</button></div>
+        <input type="text" id="r5k" data-k="r5k" autocomplete="off" placeholder="Nama prediktor dan nilai Standardized Estimate"></div>
     </div>
   </div>
 </section>
 
-<!-- 9 -->
-<section class="row" data-row="9">
-  <div class="c-k"><div class="no"><span class="mark">9</span></div><h3>Persamaan regresi dan prediksi</h3></div>
+<!-- 6 -->
+<section class="row" data-row="6">
+  <div class="c-k"><div class="no"><span class="mark">6</span></div><h3>Persamaan regresi</h3></div>
   <div class="c-i"><div class="body">
     <div class="testbar" data-varbar></div>
-    <div class="fld"><div class="lab"><label for="r9e">Persamaan regresi linear berganda</label>
-      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Tuliskan persamaan lengkap dengan semua prediktor yang masuk model: Ŷ = b₀ + b₁X₁ + b₂X₂ + ... Dummy variable bernilai 1 bila unit termasuk kategori itu dan 0 bila tidak. Menghapus suku yang tidak signifikan dari persamaan tanpa menjalankan ulang model akan mengubah hasil prediksi, karena koefisien lain perlu diestimasi ulang.">i</button></div>
-      <textarea id="r9e" data-k="r9e" rows="4" placeholder="Ŷ = ..."></textarea></div>
-    <div class="fld"><div class="lab"><label for="r9p">Skenario prediksi: nilai tiap prediktor</label>
-      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Pilih nilai prediktor numeris di dalam rentang data (lihat nilai minimum dan maksimum pada baris 3). Prediksi di luar rentang tersebut tidak dapat diandalkan. Untuk prediktor kategoris, sebutkan kategori yang dipilih. Bila luaran ditransformasi, ubah hasil prediksi kembali ke satuan asli.">i</button></div>
-      <textarea id="r9p" data-k="r9p" rows="3"></textarea></div>
-    <div class="fld"><label class="lab" for="r9h">Perhitungan dan hasil prediksi</label><textarea id="r9h" data-k="r9h" rows="4"></textarea></div>
+    <div class="fld"><div class="lab"><label for="r6e">Persamaan regresi linear berganda</label>
+      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Tuliskan persamaan lengkap dengan semua prediktor yang masuk model: Ŷ = b₀ + b₁X₁ + b₂X₂ + ... Nilai b dibaca dari kolom Estimate pada tabel Model Coefficients (langkah 5); b₀ adalah nilai pada baris Intercept. Dummy variable bernilai 1 bila unit termasuk kategori itu dan 0 bila termasuk kategori rujukan. Menghapus suku yang tidak signifikan dari persamaan tanpa menjalankan ulang model akan mengubah hasil, karena koefisien lain perlu diestimasi ulang.">i</button></div>
+      <p class="src">Koefisien dibaca dari kolom Estimate pada tabel Model Coefficients (langkah 5).</p>
+      <textarea id="r6e" data-k="r6e" rows="4" placeholder="Ŷ = ..."></textarea></div>
+  </div></div>
+</section>
+
+<!-- 7 -->
+<section class="row" data-row="7">
+  <div class="c-k"><div class="no"><span class="mark">7</span></div><h3>Pemeriksaan asumsi</h3><p class="note">Asumsi diperiksa pada model dari langkah 4. Pertanyaan diurutkan dari yang paling krusial.</p></div>
+  <div class="c-i">
+    <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
+      <ol>
+        <li>Masih di analisis <b>Linear Regression</b> yang sama (langkah 4), buka panel <b>Assumption Checks</b>.</li>
+        <li>Centang opsi berikut:</li>
+      </ol>
+      <div class="sub2">Assumption Checks</div><ul class="chk"><li>Residual plots</li><li>Collinearity statistics</li><li>Q-Q plot of residuals</li></ul>
+      <div class="sub2">Data Summary</div><ul class="chk"><li>Cook's distance</li></ul>
+      <p>Autocorrelation test tidak diperlukan karena uji ini untuk data yang berurutan menurut waktu. Normality test (Shapiro-Wilk) bersifat opsional.</p>
+      <div class="sub2">Memilih plot pada Residual plots</div>
+      <ul>
+        <li>Jamovi menampilkan beberapa plot sekaligus. Baca label sumbu X tiap plot.</li>
+        <li>Plot dengan sumbu X <b>Fitted</b> dipakai untuk linearitas dan homoskedastisitas.</li>
+        <li>Plot dengan sumbu X <b>prediktor numeris</b> dipakai untuk linearitas tiap prediktor.</li>
+        <li>Plot dengan sumbu X <b>variabel luaran</b> tidak dipakai. Residual terhadap luaran selalu tampak naik, dan pola itu tidak menandakan masalah pada model.</li>
+      </ul>
+      <p>Plot-plot ini panjang. Bila terpotong, ambil beberapa tangkapan layar dan gabungkan sebelum diunggah.</p>
+      <p>Ambil tangkapan layar tiap tabel dan gambar yang terbentuk, lalu unggah di bawah ini sesuai urutan A sampai D.</p>
+    </div></details>
+    <div class="body">
+      <div class="testbar" data-varbar></div>
+      <div class="up" data-k="r7imgA" data-cap="A. Residual plots: plot Fitted dan plot tiap prediktor numeris (untuk linearitas dan homoskedastisitas)" tabindex="0"></div>
+      <div class="up" data-k="r7imgB" data-cap="B. Tabel Cook's distance (untuk pencilan berpengaruh)" tabindex="0"></div>
+      <div class="up" data-k="r7imgC" data-cap="C. Tabel Collinearity statistics (untuk multikolinearitas)" tabindex="0"></div>
+      <div class="up" data-k="r7imgD" data-cap="D. Q-Q plot residual (untuk normalitas residu)" tabindex="0"></div>
+
+      <p class="sect gap">Penilaian asumsi</p>
+
+      <div class="fld"><div class="lab"><label for="r7lin">1. Linearitas hubungan</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Asumsi paling krusial: bila hubungan sebenarnya melengkung, model lurus memberi estimasi yang bias. Dibaca dari gambar A (Residual plots) pada dua jenis plot: plot dengan sumbu X Fitted (nilai prediksi) dan plot dengan sumbu X tiap prediktor numeris. Plot terhadap variabel luaran tidak dipakai. Pilih Terpenuhi bila titik tersebar acak di sekitar garis nol tanpa pola pada semua plot tersebut. Pilih Tidak terpenuhi bila salah satunya membentuk pola melengkung (huruf U atau n).">i</button></div>
+        <p class="src">Dibaca dari gambar A pada langkah ini: plot Fitted dan plot tiap prediktor numeris.</p>
+        <select id="r7lin" data-k="r7lin" data-opts="r7lin"></select></div>
+
+      <div class="fld"><div class="lab"><label for="r7out">2. Pencilan berpengaruh</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Cook's distance mengukur seberapa besar koefisien model berubah bila satu pengamatan dikeluarkan. Dibaca dari tabel B: Jamovi merangkum nilai rerata, median, simpangan baku, minimum, dan maksimum; baca nilai maksimum. Acuan umum: maksimum 1 atau lebih menandai pengamatan yang sangat berpengaruh. Sebagian penulis memakai 4/n sebagai batas waspada; bila Anda memakainya, tuliskan acuan itu pada kotak alasan di langkah 8.">i</button></div>
+        <p class="src">Dibaca dari nilai maksimum pada tabel B (Cook's distance) pada langkah ini.</p>
+        <select id="r7out" data-k="r7out" data-opts="r7out"></select></div>
+
+      <div class="fld"><div class="lab"><label for="r7hom">3. Homoskedastisitas (varians residual setara)</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dibaca dari gambar A, pada plot dengan sumbu X Fitted (nilai prediksi). Jamovi tidak menampilkan pita atau garis bantu, sehingga penilaiannya visual: bayangkan dua garis horizontal di tepi atas dan bawah awan titik, lalu lihat apakah jaraknya kira-kira sama dari kiri ke kanan. Pilih Terpenuhi bila ya. Pilih Tidak terpenuhi bila sebaran membentuk corong (melebar atau menyempit). Pada sampel kecil sebaran mudah tampak tidak rata, jadi pilih Tidak terpenuhi bila polanya jelas. Pelanggaran membuat galat baku dan p-value tidak akurat.">i</button></div>
+        <p class="src">Dibaca dari gambar A pada langkah ini: plot dengan sumbu X Fitted.</p>
+        <select id="r7hom" data-k="r7hom" data-opts="r7hom"></select></div>
+
+      <div class="fld"><div class="lab"><label for="r7kol">4. Multikolinearitas</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Dibaca dari tabel C (Collinearity statistics), kolom VIF (variance inflation factor) untuk tiap prediktor. VIF = 1 berarti tidak ada korelasi dengan prediktor lain. Acuan umum: di bawah 5 umumnya tidak mengkhawatirkan, 5 sampai 10 perlu dicermati, 10 atau lebih bermasalah. Pilih berdasarkan nilai VIF tertinggi. VIF tinggi membuat galat baku koefisien membesar dan estimasi tidak stabil. Tolerance sama dengan 1/VIF.">i</button></div>
+        <p class="src">Dibaca dari nilai VIF tertinggi pada tabel C (Collinearity statistics) pada langkah ini.</p>
+        <select id="r7kol" data-k="r7kol" data-opts="r7kol"></select></div>
+
+      <div class="fld"><div class="lab"><label for="r7norm">5. Normalitas residu</label>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Asumsi yang paling longgar, terutama pada sampel besar. Dibaca dari gambar D (Q-Q plot residual): titik yang mengikuti garis diagonal menandakan residu mendekati normal. Uji Shapiro-Wilk dapat dipakai sebagai pelengkap, tetapi pada sampel besar uji ini sangat sensitif terhadap penyimpangan kecil, sehingga Q-Q plot diutamakan. Asumsi normalitas berlaku pada residu model; sebaran variabel individual tidak harus normal.">i</button></div>
+        <p class="src">Dibaca dari gambar D (Q-Q plot residual) pada langkah ini.</p>
+        <select id="r7norm" data-k="r7norm" data-opts="r7norm"></select></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="row" data-row="8">
+  <div class="c-k"><div class="no"><span class="mark">8</span></div><h3>Kelayakan model</h3><p class="note">Keputusan ini menentukan cara Anda menafsirkan hasil pada langkah 4 sampai 6.</p></div>
+  <div class="c-i"><div class="body">
+    <div class="fld"><div class="lab"><label for="r8">Apakah model layak ditafsirkan?</label>
+      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Layak ditafsirkan: semua asumsi pada langkah 7 terpenuhi, atau pelanggarannya kecil dan tidak memengaruhi kesimpulan. Layak dengan catatan keterbatasan: ada asumsi yang kurang terpenuhi, tetapi model tetap ditafsirkan dengan mencantumkan keterbatasan pada kesimpulan. Perlu perbaikan: pelanggaran asumsi cukup besar sehingga model perlu diperbaiki, misalnya dengan transformasi atau mengeluarkan pengamatan yang sangat berpengaruh.">i</button></div>
+      <select id="r8" data-k="r8" data-opts="r8"></select></div>
+    <div class="fld"><div class="lab"><label for="r8a">Alasan</label></div>
+      <textarea id="r8a" data-k="r8a" rows="3" placeholder="Rujuk hasil penilaian asumsi pada langkah 7."></textarea></div>
+    <div class="fld" data-when="r8:catatan"><label class="lab" for="r8c">Keterbatasan yang dicantumkan pada kesimpulan</label><textarea id="r8c" data-k="r8c" rows="3"></textarea></div>
+    <div class="info" data-when="r8:perlu">Jika model diperbaiki, jalankan ulang analisis dengan model akhir, periksa kembali asumsinya, dan tulis kesimpulan pada langkah 9 dan 10 berdasarkan model akhir.</div>
+    <div class="fld" data-when="r8:perlu"><div class="lab"><label for="r8p">Tindakan perbaikan dan alasannya</label>
+      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Contoh tindakan: transformasi luaran (misalnya logaritma) untuk residu yang miring atau varians yang tidak setara; mengeluarkan salah satu dari dua prediktor yang berkorelasi tinggi; menjalankan ulang analisis tanpa pengamatan yang sangat berpengaruh, disertai laporan hasil dengan dan tanpa pengamatan itu. Pendekatan lain di luar Jamovi (misalnya model campuran untuk data berkelompok) dapat disebutkan sebagai saran. Bila luaran ditransformasi, koefisien ditafsirkan pada skala hasil transformasi.">i</button></div>
+      <textarea id="r8p" data-k="r8p" rows="3"></textarea></div>
+    <div class="up" data-when="r8:perlu" data-k="r8img1" data-cap="Tabel Model Fit Measures setelah perbaikan" tabindex="0"></div>
+    <div class="up" data-when="r8:perlu" data-k="r8img2" data-cap="Tabel Model Coefficients setelah perbaikan" tabindex="0"></div>
+    <div class="fld" data-when="r8:perlu"><label class="lab" for="r8e">Persamaan regresi model akhir</label><textarea id="r8e" data-k="r8e" rows="3" placeholder="Ŷ = ..."></textarea></div>
+    <div class="fld" data-when="r8:perlu"><label class="lab" for="r8h">Perbandingan hasil sebelum dan sesudah perbaikan</label><textarea id="r8h" data-k="r8h" rows="3"></textarea></div>
+  </div></div>
+</section>
+
+<!-- 9 -->
+<section class="row" data-row="9">
+  <div class="c-k"><div class="no"><span class="mark">9</span></div><h3>Kesimpulan statistika</h3></div>
+  <div class="c-i"><div class="body">
+    <div class="fld"><div class="lab"><label for="r9">Kesimpulan</label>
+      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Cantumkan: apakah model signifikan secara keseluruhan (F, df, p), nilai R² dan adjusted R², prediktor yang signifikan beserta arah dan besar koefisiennya, prediktor yang belum menunjukkan hubungan, serta catatan tentang asumsi dan keterbatasan. Bila model diperbaiki pada langkah 8, tulis berdasarkan model akhir.">i</button></div>
+      <textarea id="r9" data-k="r9" rows="5"></textarea></div>
   </div></div>
 </section>
 
 <!-- 10 -->
 <section class="row" data-row="10">
-  <div class="c-k"><div class="no"><span class="mark">10</span></div><h3>Kesimpulan statistika</h3></div>
+  <div class="c-k"><div class="no"><span class="mark">10</span></div><h3>Kesimpulan dengan bahasa awam</h3></div>
   <div class="c-i"><div class="body">
     <div class="fld"><div class="lab"><label for="r10">Kesimpulan</label>
-      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Cantumkan: apakah model signifikan secara keseluruhan (F, df, p), nilai R² dan adjusted R², prediktor yang signifikan beserta arah dan besar koefisiennya, prediktor yang belum menunjukkan hubungan, serta catatan tentang asumsi dan keterbatasan.">i</button></div>
-      <textarea id="r10" data-k="r10" rows="5"></textarea></div>
-  </div></div>
-</section>
-
-<!-- 11 -->
-<section class="row" data-row="11">
-  <div class="c-k"><div class="no"><span class="mark">11</span></div><h3>Kesimpulan dengan bahasa awam</h3></div>
-  <div class="c-i"><div class="body">
-    <div class="fld"><div class="lab"><label for="r11">Kesimpulan</label>
       <button type="button" class="tip" aria-label="Penjelasan" data-tip="Tulis tanpa istilah statistika. Gunakan kata seperti 'berkaitan dengan' dan hindari kata 'menyebabkan', karena data observasional tidak membuktikan sebab-akibat, kecuali desain penelitian mendukungnya.">i</button></div>
-      <textarea id="r11" data-k="r11" rows="5"></textarea></div>
+      <textarea id="r10" data-k="r10" rows="5"></textarea></div>
   </div></div>
 </section>
 
 </main>
 
 <p class="foot">Pekerjaan tersimpan otomatis di peramban pada perangkat ini dan tidak dikirim ke server mana pun. Tiap nomor soal punya lembar sendiri. Gambar yang diunggah ikut tercetak ke PDF.</p>
+</div>
+
+<aside class="panel" id="panel" aria-label="Panel alat">
+  <div class="prog" id="prog" aria-live="polite"></div>
+  <button class="btn primary" id="btnPrint" type="button">Cetak atau simpan PDF</button>
+  <button class="btn" id="btnOpen" type="button">Buka semua panduan</button>
+  <button class="btn" id="btnClose" type="button">Tutup semua panduan</button>
+  <button class="btn" id="btnSym" type="button" aria-expanded="false" aria-controls="syms"><span class="tri">&#9654;</span>Simbol</button>
+  <div class="syms" id="syms" hidden><span class="t">Klik simbol untuk menyisipkannya ke kotak teks yang sedang aktif:</span></div>
+  <button class="btn danger" id="btnReset" type="button">Kosongkan lembar ini</button>
+</aside>
+</div>
 </div>
 
 <div id="tt" role="tooltip" hidden></div>
@@ -507,35 +488,34 @@ var $=function(s,r){return (r||document).querySelector(s)};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]}).replace(/\n/g,"&#10;")}
 
-/* ---------- opsi ---------- */
+/* ---------- pilihan dropdown ---------- */
+var SIG=[["ya","Ya, signifikan (p ≤ 0,05)"],["tidak","Tidak signifikan (p > 0,05)"]];
 var OPTS={
-  r5lin:{items:[["ya","Terpenuhi"],["tidak","Tidak terpenuhi"]]},
-  r5hom:{items:[["ya","Terpenuhi"],["tidak","Tidak terpenuhi"]]},
-  r5norm:{items:[["normal","Residu mendekati normal"],["tidak","Residu tidak normal"]]},
-  r5kol:{items:[["tidak","Tidak ada multikolinearitas"],["ada","Ada multikolinearitas"]]},
-  r5out:{items:[["tidak","Tidak ada pencilan berpengaruh"],["ada","Ada pencilan berpengaruh"]]},
-  r5ind:{items:[["ya","Terpenuhi (tiap baris berasal dari subjek berbeda)"],["tidak","Tidak sepenuhnya (ada pengamatan berkelompok atau berulang)"]]},
-  r6:{items:[
-    ["layak","Layak ditafsirkan","Semua asumsi terpenuhi, atau pelanggarannya kecil dan tidak memengaruhi kesimpulan."],
-    ["catatan","Layak ditafsirkan dengan catatan keterbatasan","Ada asumsi yang kurang terpenuhi, tetapi model tetap ditafsirkan dengan mencantumkan keterbatasan pada kesimpulan."],
-    ["perlu","Perlu perbaikan sebelum ditafsirkan","Pelanggaran asumsi cukup besar sehingga model perlu diperbaiki, misalnya dengan transformasi atau mengeluarkan pengamatan yang sangat berpengaruh."]]},
-  r7sig:{items:[["ya","Ya"],["tidak","Tidak"]]}
+  sig:SIG,
+  r7lin:[["ya","Terpenuhi (titik tersebar acak di sekitar garis nol)"],["tidak","Tidak terpenuhi (ada pola melengkung)"]],
+  r7out:[["tidak","Tidak ada pencilan berpengaruh (Cook's distance maksimum < 1)"],["ada","Ada pencilan berpengaruh (Cook's distance maksimum ≥ 1)"]],
+  r7hom:[["ya","Terpenuhi (lebar sebaran residual relatif sama)"],["tidak","Tidak terpenuhi (sebaran membentuk corong)"]],
+  r7kol:[["tidak","Tidak ada masalah (semua VIF < 5)"],["cermat","Perlu dicermati (ada VIF 5 sampai < 10)"],["ada","Bermasalah (ada VIF ≥ 10)"]],
+  r7norm:[["normal","Residu mendekati normal (titik mengikuti garis diagonal)"],["tidak","Residu tidak normal (titik menyimpang dari garis)"]],
+  r8:[["layak","Layak ditafsirkan"],["catatan","Layak ditafsirkan dengan catatan keterbatasan"],["perlu","Perlu perbaikan sebelum ditafsirkan"]]
 };
 
-/* ---------- per prediktor ---------- */
+/* ---------- blok per prediktor ---------- */
 var PP={
   r2h:{fields:[
     {k:"txt",kind:"ta",label:"Kalimat H₀ dan H₁",ph:"H₀: ...\nH₁: ...",rows:3}
   ]},
-  r8c:{fields:[
-    {k:"sig",kind:"radio",label:"Apakah prediktor ini signifikan pada α = 0,05?",items:[["ya","Ya"],["tidak","Tidak"]],
+  r5c:{
+    hint:function(p){
+      if(p.type==="kat")return "Dibaca dari nilai p pada tabel Omnibus ANOVA Test (gambar kedua pada langkah ini).";
+      if(p.type==="num")return "Dibaca dari nilai p pada baris prediktor ini di tabel Model Coefficients (gambar pertama pada langkah ini).";
+      return "Pilih tipe prediktor ini pada langkah 1 agar sumber nilai p dapat ditentukan.";
+    },
+    fields:[
+    {k:"sig",kind:"sel",label:"Apakah prediktor ini signifikan pada α = 0,05?",items:SIG,
       tip:function(p){return p.type==="kat"?
-        "Prediktor kategoris diwakili beberapa dummy variable. Gunakan nilai p uji omnibus (tabel Omnibus ANOVA Test) untuk menilai variabel secara keseluruhan. Nilai p tiap dummy membandingkan satu kategori dengan kategori rujukan saja.":
-        "Baca nilai p pada baris prediktor ini di tabel Model Coefficients. Nilai p kurang dari atau sama dengan 0,05 berarti signifikan setelah prediktor lain dikendalikan."}},
-    {k:"txt",kind:"ta",label:"Tafsir koefisien",rows:3,
-      tip:function(p){return p.type==="kat"?
-        "Tuliskan selisih rerata luaran tiap kategori dibanding kategori rujukan, dengan prediktor lain dianggap tetap, beserta selang kepercayaan 95%. Selang yang mencakup nol menunjukkan data belum memberi bukti perbedaan.":
-        "Tuliskan perubahan rerata luaran untuk kenaikan satu satuan prediktor, dengan prediktor lain dianggap tetap, beserta selang kepercayaan 95%. Selang yang mencakup nol menunjukkan data belum memberi bukti hubungan. Hasil yang tidak signifikan tidak membuktikan bahwa hubungan itu tidak ada."}}
+        "Prediktor kategoris diwakili beberapa dummy variable. Gunakan nilai p uji omnibus (tabel Omnibus ANOVA Test) untuk menilai variabel secara keseluruhan. Nilai p tiap dummy pada tabel Model Coefficients membandingkan satu kategori dengan kategori rujukan saja. Nilai p kurang dari atau sama dengan 0,05 berarti signifikan.":
+        "Baca nilai p pada baris prediktor ini di tabel Model Coefficients. Nilai p kurang dari atau sama dengan 0,05 berarti signifikan setelah prediktor lain dikendalikan."}}
   ]}
 };
 
@@ -551,27 +531,17 @@ SYM.forEach(function(s){
 var lastText=null;
 document.addEventListener("focusin",function(e){var t=e.target;if(t&&(t.tagName==="TEXTAREA"||(t.tagName==="INPUT"&&t.type==="text")))lastText=t});
 function ins(t){
-  var e=lastText;if(!e||e.disabled||!document.body.contains(e)||e.offsetParent===null){return}
+  var e=lastText;if(!e||e.disabled||!document.body.contains(e)||e.offsetParent===null)return;
   var s=e.selectionStart,en=e.selectionEnd;e.focus();
   e.setRangeText(t,s,en,"end");
   e.dispatchEvent(new Event("input",{bubbles:true}));
 }
 
-/* ---------- bangun opsi statis ---------- */
+/* ---------- isi dropdown statis ---------- */
 var uid=0;
-$$(".opts[data-k]").forEach(function(box){
-  var k=box.dataset.k,cfg=OPTS[k];if(!cfg)return;
-  box.setAttribute("role","radiogroup");
-  cfg.items.forEach(function(it){
-    uid++;
-    var w=document.createElement("span");w.className="optw";
-    var l=document.createElement("label");l.className="opt";
-    var i=document.createElement("input");i.type="radio";i.name=k;i.value=it[0];i.id="o"+uid;
-    var sp=document.createElement("span");sp.textContent=it[1];
-    l.appendChild(i);l.appendChild(sp);w.appendChild(l);
-    if(it[2]){var b=document.createElement("button");b.type="button";b.className="tip";b.textContent="i";b.setAttribute("aria-label","Penjelasan "+it[1]);b.dataset.tip=it[2];w.appendChild(b)}
-    box.appendChild(w);
-  });
+$$("select[data-opts]").forEach(function(s){
+  var o=document.createElement("option");o.value="";o.textContent="Pilih";s.appendChild(o);
+  OPTS[s.dataset.opts].forEach(function(it){var q=document.createElement("option");q.value=it[0];q.textContent=it[1];s.appendChild(q)});
 });
 
 /* ---------- tooltip ---------- */
@@ -650,9 +620,12 @@ $$(".up").forEach(function(el){
   });
 });
 
-/* ---------- daftar prediktor (baris 1) ---------- */
+/* ---------- daftar prediktor (langkah 1) ---------- */
 var predSeq=1;
-var TIPTYPE="Numeris: variabel berupa angka dengan jarak yang bermakna (bobot, umur). Kategoris: variabel berupa kelompok (jenis kelamin, fase). Variabel berskor seperti 1 sampai 5 dapat diperlakukan sebagai numeris (satu koefisien, mengasumsikan jarak antarskor setara) atau kategoris (satu koefisien per kategori). Tuliskan pilihan Anda pada kolom alasan. Di Jamovi, numeris masuk kotak Covariates dan kategoris masuk kotak Factors.";
+var TIPTYPE="Numeris: variabel berupa angka dengan jarak yang bermakna (bobot, umur). Kategoris: variabel berupa kelompok (jenis kelamin, fase). Variabel berskor seperti 1 sampai 5 dapat diperlakukan sebagai numeris (satu koefisien, mengasumsikan jarak antarskor setara) atau kategoris (satu koefisien per kategori). Tuliskan pilihan Anda pada kotak alasan di bawah daftar prediktor. Di Jamovi, numeris masuk kotak Covariates dan kategoris masuk kotak Factors.";
+var TIPREF_KAT="Kategori rujukan adalah kelompok pembanding. Pilih kategori yang bermakna sebagai pembanding, misalnya kelompok kontrol atau kondisi normal, atau kategori dengan pengamatan terbanyak.";
+var TIPREF_NUM="Tuliskan satuan pengukuran prediktor numeris ini (misalnya kg atau bulan). Satuan diperlukan untuk menafsirkan koefisien: perubahan luaran untuk kenaikan satu satuan prediktor.";
+var TIPREF_NONE="Isi setelah memilih tipe prediktor. Untuk prediktor numeris: satuan pengukuran. Untuk prediktor kategoris: kategori rujukan (pembanding), yaitu kelompok yang dijadikan dasar perbandingan koefisien dummy variable.";
 function addPred(o){
   o=o||{};
   var id=(o.id!=null)?o.id:predSeq;if(id>=predSeq)predSeq=id+1;
@@ -664,23 +637,21 @@ function addPred(o){
       '<div class="fld"><label class="lab" for="'+u+'n">Nama variabel</label><input type="text" id="'+u+'n" data-f="name" autocomplete="off"></div>'+
       '<div class="fld"><div class="lab"><label for="'+u+'t">Tipe</label><button type="button" class="tip" aria-label="Penjelasan" data-tip="'+esc(TIPTYPE)+'">i</button></div>'+
         '<select id="'+u+'t" data-f="type"><option value="">Pilih</option><option value="num">Numeris</option><option value="kat">Kategoris</option></select></div>'+
-      '<div class="fld"><label class="lab" for="'+u+'r" data-lbl>Satuan atau kategori rujukan</label><input type="text" id="'+u+'r" data-f="ref" autocomplete="off"></div>'+
+      '<div class="fld"><div class="lab"><label for="'+u+'r" data-lbl>Satuan atau kategori rujukan</label><button type="button" class="tip" data-reftip aria-label="Penjelasan" data-tip="'+esc(TIPREF_NONE)+'">i</button></div><input type="text" id="'+u+'r" data-f="ref" autocomplete="off"></div>'+
       '<button type="button" class="btn danger predbtn" data-act="del">Hapus</button>'+
-    '</div>'+
-    '<div class="fld"><label class="lab" for="'+u+'w">Alasan memilih variabel ini (dasar teori)</label><textarea id="'+u+'w" data-f="why" rows="2"></textarea></div>';
+    '</div>';
   $("#preds").appendChild(c);
   $('[data-f="name"]',c).value=o.name||"";
   $('[data-f="type"]',c).value=o.type||"";
   $('[data-f="ref"]',c).value=o.ref||"";
-  $('[data-f="why"]',c).value=o.why||"";
 }
 function readPreds(){
   return $$("#preds .pred").map(function(c){
     function f(n){var e=$('[data-f="'+n+'"]',c);return e?e.value:""}
-    return {id:parseInt(c.dataset.id,10),name:f("name"),type:f("type"),ref:f("ref"),why:f("why")};
+    return {id:parseInt(c.dataset.id,10),name:f("name"),type:f("type"),ref:f("ref")};
   });
 }
-function nonBlank(p){return !!(p.name.trim()||p.type||p.ref.trim()||p.why.trim())}
+function nonBlank(p){return !!(p.name.trim()||p.type||p.ref.trim())}
 function namedPreds(){return readPreds().filter(function(p){return p.name.trim()})}
 function hasCat(){return namedPreds().some(function(p){return p.type==="kat"})}
 function hasNum(){return namedPreds().some(function(p){return p.type==="num"})}
@@ -694,7 +665,7 @@ function setPreds(v){
 function predsDone(){
   var ps=readPreds().filter(nonBlank);
   if(ps.length<2)return false;
-  return ps.every(function(p){return p.name.trim()&&p.type&&p.why.trim()&&(p.type!=="kat"||p.ref.trim())});
+  return ps.every(function(p){return p.name.trim()&&p.type&&(p.type!=="kat"||p.ref.trim())});
 }
 $("#predAdd").onclick=function(){addPred({});changed()};
 document.addEventListener("click",function(e){
@@ -704,45 +675,39 @@ document.addEventListener("click",function(e){
 });
 
 /* ---------- blok per prediktor ---------- */
-function sigOf(ps){return ps.map(function(p){return p.id+"|"+p.name+"|"+p.type}).join("\u00a6")}
+function sigOf(ps){return ps.map(function(p){return p.id+"|"+p.name+"|"+p.type}).join("¦")}
 function ppHarvest(el){
   el._data=el._data||{};
   $$(".ppblock",el).forEach(function(b){
     var o={};
-    $$("[data-f]",b).forEach(function(f){
-      if(f.classList.contains("opts")){var c=$("input:checked",f);o[f.dataset.f]=c?c.value:""}
-      else o[f.dataset.f]=f.value;
-    });
+    $$("[data-f]",b).forEach(function(f){o[f.dataset.f]=f.value});
     el._data[b.dataset.id]=o;
   });
+}
+function fieldHtml(f,p){
+  uid++;var u="pp"+uid;
+  var tip=f.tip?(typeof f.tip==="function"?f.tip(p):f.tip):"";
+  var tb=tip?'<button type="button" class="tip" aria-label="Penjelasan" data-tip="'+esc(tip)+'">i</button>':"";
+  if(f.kind==="sel"){
+    var s='<div class="fld"><div class="lab"><label for="'+u+'">'+esc(f.label)+'</label>'+tb+'</div><select id="'+u+'" data-f="'+f.k+'"><option value="">Pilih</option>';
+    f.items.forEach(function(it){s+='<option value="'+esc(it[0])+'">'+esc(it[1])+'</option>'});
+    return s+'</select></div>';
+  }
+  return '<div class="fld"><div class="lab"><label for="'+u+'">'+esc(f.label)+'</label>'+tb+'</div><textarea id="'+u+'" data-f="'+f.k+'" rows="'+(f.rows||3)+'" placeholder="'+esc(f.ph||"")+'"></textarea></div>';
 }
 function ppRender(el){
   var cfg=PP[el.dataset.k],ps=namedPreds();
   el._sig=sigOf(ps);el.innerHTML="";
-  if(!ps.length){el.innerHTML='<div class="need-fam">Isi nama prediktor pada baris 1 terlebih dahulu.</div>';return}
+  if(!ps.length){el.innerHTML='<div class="need-fam">Isi nama prediktor pada langkah 1 terlebih dahulu.</div>';return}
   ps.forEach(function(p){
     var b=document.createElement("div");b.className="ppblock";b.dataset.id=p.id;
     var h='<p class="sect">'+esc(p.name)+' <span class="ptype">('+(p.type==="kat"?"kategoris":(p.type==="num"?"numeris":"tipe belum dipilih"))+')</span></p>';
-    cfg.fields.forEach(function(f){
-      uid++;var u="pp"+uid;
-      var tip=f.tip?(typeof f.tip==="function"?f.tip(p):f.tip):"";
-      var tb=tip?'<button type="button" class="tip" aria-label="Penjelasan" data-tip="'+esc(tip)+'">i</button>':"";
-      if(f.kind==="radio"){
-        h+='<div class="fld"><div class="lab">'+esc(f.label)+tb+'</div><div class="opts" data-f="'+f.k+'" role="radiogroup">';
-        f.items.forEach(function(it){
-          h+='<span class="optw"><label class="opt"><input type="radio" name="pp_'+el.dataset.k+'_'+p.id+'_'+f.k+'" value="'+it[0]+'"><span>'+esc(it[1])+'</span></label></span>';
-        });
-        h+='</div></div>';
-      }else{
-        h+='<div class="fld"><div class="lab"><label for="'+u+'">'+esc(f.label)+'</label>'+tb+'</div><textarea id="'+u+'" data-f="'+f.k+'" rows="'+(f.rows||3)+'" placeholder="'+esc(f.ph||"")+'"></textarea></div>';
-      }
-    });
+    if(cfg.hint)h+='<p class="src">'+esc(cfg.hint(p))+'</p>';
+    cfg.fields.forEach(function(f){h+=fieldHtml(f,p)});
     b.innerHTML=h;el.appendChild(b);
     var d=(el._data||{})[p.id]||{};
     cfg.fields.forEach(function(f){
-      var t=$('[data-f="'+f.k+'"]',b);if(!t)return;
-      if(f.kind==="radio"){$$("input",t).forEach(function(i){i.checked=(i.value===d[f.k])})}
-      else t.value=d[f.k]||"";
+      var t=$('[data-f="'+f.k+'"]',b);if(t)t.value=d[f.k]||"";
     });
   });
 }
@@ -775,15 +740,13 @@ function isPP(el){return el.classList.contains("perpred")}
 function getVal(el){
   if(isPreds(el))return readPreds().filter(nonBlank);
   if(isPP(el))return ppGet(el);
-  if(el.classList.contains("opts")){var c=$$("input:checked",el).map(function(i){return i.value});return c[0]||""}
   if(el.classList.contains("up"))return el._img||"";
   return el.value;
 }
 function setVal(el,v){
   if(isPreds(el)){setPreds(v);return}
   if(isPP(el)){ppSet(el,v);return}
-  if(el.classList.contains("opts")){$$("input",el).forEach(function(i){i.checked=(i.value===v)})}
-  else if(el.classList.contains("up")){el._img=v||"";renderUp(el)}
+  if(el.classList.contains("up")){el._img=v||"";renderUp(el)}
   else{
     el.value=v||"";
     if(el.tagName==="SELECT"&&el.selectedIndex<0)el.selectedIndex=0;
@@ -820,9 +783,10 @@ function refresh(){
   $$("[data-when]").forEach(function(el){el.hidden=!match(el.dataset.when)});
   $$("#preds .pred").forEach(function(c,i){
     $("[data-num]",c).textContent="Prediktor "+(i+1);
-    var t=$('[data-f="type"]',c).value,l=$("[data-lbl]",c),r=$('[data-f="ref"]',c);
+    var t=$('[data-f="type"]',c).value,l=$("[data-lbl]",c),r=$('[data-f="ref"]',c),tp=$("[data-reftip]",c);
     l.textContent=t==="kat"?"Kategori rujukan (pembanding)":(t==="num"?"Satuan":"Satuan atau kategori rujukan");
     r.placeholder=t==="kat"?"Contoh: kontrol":(t==="num"?"Contoh: kg":"");
+    tp.dataset.tip=t==="kat"?TIPREF_KAT:(t==="num"?TIPREF_NUM:TIPREF_NONE);
   });
   var y=String(V("r1y")).trim(),ns=namedPreds().map(function(p){return p.name.trim()});
   $$("[data-varbar]").forEach(function(el){
@@ -831,7 +795,6 @@ function refresh(){
     c.textContent="Luaran (Y): "+(y||"belum diisi")+". Prediktor (X): "+(ns.length?ns.join(", "):"belum diisi");
     el.appendChild(c);
   });
-  $$(".optw").forEach(function(w){var i=$("input",w);w.classList.toggle("sel",!!(i&&i.checked))});
   var total=0,done=0;
   $$(".row").forEach(function(row){
     row.classList.remove("done");
@@ -839,7 +802,7 @@ function refresh(){
     $$("[data-k]",row).forEach(function(el){if(el.closest("[hidden]"))return;if(!isDone(el))ok=false});
     total++;if(ok){done++;row.classList.add("done")}
   });
-  $("#prog").textContent=done+" dari "+total+" baris terisi";
+  $("#prog").textContent=done+" dari "+total+" langkah terisi";
   var nm=$("#nama").value.trim();
   document.title="Templat isian regresi linear berganda"+(nomor?" - Soal "+nomor:"")+(nm?" - "+nm:"");
   autosize();
@@ -854,7 +817,7 @@ function mirror(){
 function autosize(){mirror();$$("textarea").forEach(function(t){if(t.offsetParent===null)return;t.style.height="auto";t.style.height=(t.scrollHeight+2)+"px"})}
 
 /* ---------- simpan ---------- */
-var KEY="lj-jamovi-regresi-v1:"+location.pathname,ST={head:{},sheets:{}},cur="0",tm=null;
+var KEY="lj-jamovi-regresi-v2:"+location.pathname,ST={head:{},sheets:{}},cur="0",tm=null;
 function curKey(){var n=parseInt($("#nomor").value,10);return n>0?String(n):"0"}
 function persist(){
   ST.head=getHead();ST.sheets[cur]=getSheet();
@@ -875,7 +838,7 @@ document.addEventListener("change",function(e){
 });
 window.addEventListener("pagehide",function(){clearTimeout(tm);persist()});
 
-/* ---------- tombol ---------- */
+/* ---------- panel dan tombol ---------- */
 $("#btnPrint").onclick=function(){
   $$("details.guide").forEach(function(d){d.open=false});
   refresh();persist();window.print();
@@ -884,7 +847,7 @@ $("#btnSym").onclick=function(){
   var open=$("#syms").hidden;
   $("#syms").hidden=!open;
   this.setAttribute("aria-expanded",open?"true":"false");
-  $(".tri",this).textContent=open?"\u25BC":"\u25B6";
+  $(".tri",this).textContent=open?"▼":"▶";
 };
 $("#btnOpen").onclick=function(){$$("details.guide").forEach(function(d){d.open=true})};
 $("#btnClose").onclick=function(){$$("details.guide").forEach(function(d){d.open=false})};
