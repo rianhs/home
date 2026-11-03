@@ -391,6 +391,19 @@ footer details.inline + details.inline{margin-top:10px}
 .sw input:checked + .sw-track::after{transform:translateX(18px)}
 .sw input:focus-visible + .sw-track{outline:3px solid rgba(var(--c-x-rgb),.45);outline-offset:2px}
 .panel .goals{font-size:calc(13px * var(--fs));line-height:1.6}
+
+/* ---------- Ilustrasi arah korelasi ---------- */
+.vd{display:flex;flex-direction:column;align-items:center;gap:16px}
+.vd-pair{display:flex;align-items:center;justify-content:center;gap:0;width:100%;max-width:520px}
+.vd-box{flex:1 1 0;min-width:0;background:var(--soft);border:1px solid var(--border);border-radius:14px;padding:16px 10px;text-align:center}
+.vd-name{font-weight:700;font-size:calc(16px * var(--fs))}
+.vd-ar{font-size:calc(26px * var(--fs));line-height:1.3;margin:6px 0 2px;color:var(--accent);transition:color .2s ease}
+.vd-cap{font-size:calc(12.5px * var(--fs));color:var(--text-secondary)}
+.vd-link{flex:none;width:56px;text-align:center;font-size:calc(22px * var(--fs));color:var(--ink3);font-weight:700}
+.vd-pair[data-dir="neg"] #vd-ay{color:var(--c-red)}
+.vd-pair[data-dir="none"] #vd-ay{color:var(--c-grey)}
+.vd-txt{margin:0;width:100%;max-width:520px;text-align:center}
+@media (max-width:640px){.vd-link{width:36px}}
 </style>
 </head>
 <body>
@@ -428,13 +441,19 @@ footer details.inline + details.inline{margin-top:10px}
     <p class="qline">Apakah korelasi cocok untuk pertanyaan penelitian saya?</p>
     <p class="step-intro">Korelasi menjawab apakah ada hubungan antara dua hal (dua variabel) yang berbeda dan bagaimana arah hubungan tersebut. Arah hubungan ini bisa searah (positif) atau berlawanan arah (negatif), dan bisa dinyatakan berkorelasi kuat atau lemah. Kita mulai dari melihat diagram, baru kemudian memilih alat uji yang tepat.</p>
     <div class="sub">
-      <div class="sub-title">Setelah halaman ini kamu dapat</div>
-      <div class="box"><ul class="goals">
-        <li>membaca arah dan kekuatan hubungan dari diagram pencar dan koefisien korelasi;</li>
-        <li>memilih antara uji <span class="gl" tabindex="0" data-g="pearson">Pearson</span>, <span class="gl" tabindex="0" data-g="spearman">Spearman</span>, dan <span class="gl" tabindex="0" data-g="kendall">Kendall tau-b</span> beserta alasannya;</li>
-        <li>menafsirkan koefisien korelasi, CI 95%, dan nilai p;</li>
-        <li>menuliskan kesimpulan dan mengenali keterbatasan uji korelasi.</li>
-      </ul><p class="hint">Perangkat lunak menghitung koefisien dan nilai p secara otomatis. Kamu tidak perlu menguasai cara menghitung secara manual. Hal yang dilatih di sini adalah logika statistika, pemilihan uji, dan penafsiran angka keluaran.</p></div>
+      <div class="vd">
+        <div class="seg2" id="vd-seg" role="radiogroup" aria-label="Arah hubungan dua variabel">
+          <button type="button" role="radio" aria-checked="true" data-vdir="pos">Korelasi positif</button>
+          <button type="button" role="radio" aria-checked="false" data-vdir="neg">Korelasi negatif</button>
+          <button type="button" role="radio" aria-checked="false" data-vdir="none">Tidak berpola</button>
+        </div>
+        <div class="vd-pair" id="vd-pair" data-dir="pos">
+          <div class="vd-box"><div class="vd-name">Variabel X</div><div class="vd-ar" id="vd-ax" aria-hidden="true">&#9650;</div><div class="vd-cap">nilai makin besar</div></div>
+          <div class="vd-link" id="vd-link" aria-hidden="true"></div>
+          <div class="vd-box"><div class="vd-name">Variabel Y</div><div class="vd-ar" id="vd-ay" aria-hidden="true">&#9650;</div><div class="vd-cap" id="vd-cy">nilai makin besar</div></div>
+        </div>
+        <p class="vd-txt box" id="vd-txt" aria-live="polite"></p>
+      </div>
     </div>
     <div class="sub">
       <div class="sub-title">Seperti apa korelasi itu</div>
@@ -2380,6 +2399,30 @@ function guessResult(pc) {
 document.addEventListener('input', function (e) {
     if (e.target && e.target.id === 'simguess') { state.simGuess = +e.target.value; var v = $('simguess-val'); if (v) v.textContent = state.simGuess + ' sampel'; }
 });
+
+
+/* ===== Ilustrasi arah korelasi (langkah 1) ===== */
+(function () {
+    var T = {
+        pos: ['Variabel X dan Y searah. Jika nilai X semakin besar, nilai Y juga semakin besar, dan sebaliknya.', '&#9650;', 'nilai makin besar', '&harr;'],
+        neg: ['Variabel X dan Y berlawanan arah. Jika nilai X semakin besar, nilai Y semakin kecil, dan sebaliknya.', '&#9660;', 'nilai makin kecil', '&harr;'],
+        none: ['Tidak ada pola yang jelas. Nilai X yang semakin besar tidak diikuti kenaikan maupun penurunan nilai Y.', '?', 'tidak menentu', '&#8943;']
+    };
+    function setDir(k) {
+        var t = T[k]; if (!t) return;
+        document.querySelectorAll('#vd-seg button').forEach(function (b) { b.setAttribute('aria-checked', b.getAttribute('data-vdir') === k ? 'true' : 'false'); });
+        document.getElementById('vd-pair').setAttribute('data-dir', k);
+        document.getElementById('vd-txt').textContent = t[0];
+        document.getElementById('vd-ay').innerHTML = t[1];
+        document.getElementById('vd-cy').textContent = t[2];
+        document.getElementById('vd-link').innerHTML = t[3];
+    }
+    document.addEventListener('click', function (e) {
+        var b = e.target.closest ? e.target.closest('[data-vdir]') : null;
+        if (b) setDir(b.getAttribute('data-vdir'));
+    });
+    setDir('pos');
+})();
 
 setTopVar();
 renderWhen();
