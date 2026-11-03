@@ -20,46 +20,47 @@
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--font);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;letter-spacing:-.006em}
-.wrap{max-width:980px;margin:0 auto;padding:0 16px 80px}
+.wrap{max-width:1180px;margin:0 auto;padding:8px 16px 80px}
 h1{font-size:2rem;line-height:1.15;font-weight:700;letter-spacing:-.025em;margin:32px 0 6px}
-h2,h3{margin:0}
+h3{margin:0}
 .sub{color:var(--muted);margin:0 0 18px}
 button,input,select,textarea,summary,table,#tt{font-family:var(--font)}
 
 /* kotak seragam */
-.card,.box,.row,details.guide,.cardlike,.up,.need-fam,.info,.legend,.pred,.ppblock{border-radius:var(--r)}
-.box{background:var(--card);border:1px solid var(--line)}
-.cardlike,.need-fam,.info,.legend,details.guide,.up,.pred,.ppblock{background:var(--fill);border:1px solid var(--line)}
+.row,.panel,details.guide,.up,.need-fam,.info,.legend,.pred,.ppblock,.step{border-radius:var(--r)}
+.panel{background:var(--card);border:1px solid var(--line)}
+.need-fam,.info,.legend,details.guide,.up,.pred,.ppblock,.step{background:var(--fill);border:1px solid var(--line)}
 .need-fam,.info{padding:10px 14px;font-size:.92rem;color:var(--muted)}
 .info b{color:var(--ink)}
 
-/* toolbar */
-.toolbar{position:sticky;top:0;z-index:20;padding:10px 0;margin-bottom:8px;background:rgba(242,242,247,.78);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px)}
-.toolbar .box{padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
+/* tata letak: konten dan panel sejajar, panel sticky */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px;align-items:start}
+.panel{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.panel .prog{font-size:.9rem;font-weight:600;color:var(--ink);padding-bottom:10px;margin-bottom:2px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.panel .btn{width:100%;text-align:left}
+.panel .btn.danger{margin-top:6px}
+
 .btn{font:inherit;font-size:.9rem;font-weight:500;border:0;background:var(--fill);color:var(--blue);padding:8px 14px;border-radius:var(--rs);cursor:pointer;transition:background .15s}
 .btn:hover{background:var(--fill2)}
 .btn.primary{background:var(--blue);color:var(--blue-ink)}
 .btn.primary:hover{filter:brightness(1.08)}
 .btn.danger{color:#d70015}
 .btn.danger:hover{background:var(--danger-soft)}
-.prog{margin-left:auto;font-size:.88rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.syms{display:flex;flex-wrap:wrap;gap:6px;align-items:center;width:100%;padding-top:8px;border-top:1px solid var(--line)}
 .btn .tri{display:inline-block;font-size:.7em;margin-right:6px;vertical-align:1px}
-.syms span.t{font-size:.8rem;color:var(--muted);margin-right:4px}
+.syms{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.syms span.t{font-size:.8rem;color:var(--muted);margin-right:4px;width:100%}
 .sym{font:inherit;font-size:.9rem;min-width:36px;padding:3px 8px;border:0;background:var(--fill);border-radius:8px;cursor:pointer;color:var(--ink)}
 .sym:hover{background:var(--blue-soft);color:var(--blue)}
 .banner{background:var(--warn-soft);color:var(--warn);border-radius:var(--r);padding:10px 14px;margin:8px 0;font-size:.92rem}
 
 /* identitas */
 .head{display:grid;grid-template-columns:2fr 2fr 1fr;gap:12px;margin-bottom:12px}
-.head label,.lab{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:5px}
+.head label,.lab{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:6px}
 input[type=text],input[type=number],select,textarea{width:100%;font:inherit;color:var(--ink);background:#fff;border:1px solid var(--field);border-radius:var(--rs);padding:9px 12px}
 select{appearance:none;-webkit-appearance:none;padding-right:34px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%236c6c70' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center}
 textarea{resize:vertical;min-height:46px;overflow:hidden}
 input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,122,255,.22)}
 .up:focus-visible,.btn:focus-visible,.sym:focus-visible,summary:focus-visible,.tip:focus-visible,label.opt:focus-within{outline:3px solid rgba(0,122,255,.35);outline-offset:1px}
-:disabled{background:var(--fill);color:var(--muted)}
-::placeholder{color:#aeaeb2}
 
 /* baris */
 .rows{display:flex;flex-direction:column;gap:14px;margin-top:14px}
@@ -72,13 +73,14 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-s
 .c-k .note{font-size:.8rem;color:var(--muted);margin:8px 0 0}
 .c-i{padding:16px;min-width:0}
 .body>*+*{margin-top:14px}
+details.guide+.body{margin-top:14px}
 .sect{font-size:.95rem;font-weight:600;margin:0}
 .ptype{font-weight:400;color:var(--muted);font-size:.85rem}
 p.ptype{margin:0}
 p.ptype:empty{display:none}
 
 /* panduan */
-details.guide{margin-bottom:14px}
+details.guide{margin-bottom:0}
 details.guide summary{padding:10px 14px;font-size:.92rem;font-weight:600;color:var(--blue);cursor:pointer}
 .gbody{padding:2px 14px 14px;font-size:.92rem}
 .gbody ol,.gbody ul{margin:.3em 0 .6em;padding-left:1.3em}
@@ -86,6 +88,8 @@ details.guide summary{padding:10px 14px;font-size:.92rem;font-weight:600;color:v
 .gbody .sub2{font-weight:600;margin:.8em 0 .1em}
 ul.chk{list-style:none;padding-left:.2em!important}
 ul.chk li::before{content:"\2611";margin-right:.45em;color:var(--blue)}
+.step{padding:14px;display:flex;flex-direction:column;gap:12px}
+.step details.guide{background:#fff}
 
 /* ringkasan variabel */
 .testbar .chip{display:block;font-size:.82rem;font-weight:600;color:var(--blue);background:var(--blue-soft);padding:6px 12px;border-radius:var(--rs)}
@@ -101,21 +105,21 @@ label.opt input[type=radio]{border-radius:50%}
 label.opt input:checked{background:var(--blue);border-color:var(--blue)}
 label.opt input:checked::after{content:"";width:10px;height:5px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
 .optw.sel label.opt{border-color:var(--blue);background:var(--blue-soft)}
-.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.fld .lab{display:flex;align-items:center;gap:6px}
+.fld .lab{display:flex;align-items:center;gap:6px;min-height:22px}
 .tip{flex:none;width:22px;height:22px;border-radius:50%;border:0;background:var(--fill2);color:var(--muted);font:600 .74rem/1 var(--font);cursor:help;padding:0}
 .tip:hover,.tip:focus{background:var(--blue);color:#fff}
 #tt{position:fixed;z-index:50;max-width:320px;background:rgba(28,28,30,.96);color:#fff;font-size:.85rem;line-height:1.45;padding:9px 12px;border-radius:var(--rs);pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.22)}
 
 /* variabel dan blok per pasangan */
-.pred,.ppblock{padding:12px;margin-top:10px}
-.pred:first-child,.ppblock:first-child{margin-top:0}
-.pred>*+*,.ppblock>*+*{margin-top:10px}
-.pgrid{display:grid;grid-template-columns:2fr 1.2fr 1.6fr auto;gap:10px;align-items:end}
-.pgrid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.preds,.perpred{display:flex;flex-direction:column;gap:12px}
+#predAdd{margin-top:12px}
+.pred,.ppblock{padding:14px;display:flex;flex-direction:column;gap:12px}
+.pgrid{display:grid;grid-template-columns:2fr 1.2fr auto;gap:12px;align-items:end}
+.ppblock select{max-width:520px}
+.ppblock.na .fld{display:none}
 
 /* legenda */
-.legend{padding:12px 14px;font-size:.88rem;margin-top:10px}
+.legend{padding:12px 14px;font-size:.88rem}
 .legend summary{font-weight:600;color:var(--blue);cursor:pointer}
 .legend table{margin-top:8px;border-collapse:collapse;width:100%}
 .legend td{padding:4px 0;vertical-align:top;border-top:1px solid var(--line)}
@@ -143,13 +147,16 @@ summary::-webkit-details-marker{display:none}
 summary::before{content:"\25B6";display:inline-block;margin-right:8px;font-size:.7em;vertical-align:1px}
 details[open]>summary::before{content:"\25BC"}
 
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .panel{position:static;max-height:none}
+}
 @media (max-width:700px){
   h1{font-size:1.65rem}
   .head{grid-template-columns:1fr}
   .row{grid-template-columns:1fr}
   .c-k{border-right:0;border-bottom:1px solid var(--line)}
-  .pair,.pgrid,.pgrid4{grid-template-columns:1fr}
-  .prog{margin-left:0;width:100%}
+  .pgrid{grid-template-columns:1fr}
   .legend td:first-child,.legend td:nth-child(2){width:auto;white-space:normal}
 }
 
@@ -157,22 +164,22 @@ details[open]>summary::before{content:"\25BC"}
 @page{size:A4;margin:12mm}
 @media print{
   body{background:#fff;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .wrap{max-width:none;padding:0}
-  .toolbar,details.guide,.tip,#tt,.banner,.foot,.up .acts,.up .hint,.note,.legend,.info,.need-fam,.predbtn,[data-hint]{display:none!important}
+  .layout{display:block}
+  .wrap{max-width:none;padding:0;margin:0}
+  .panel,details.guide,.tip,#tt,.banner,.foot,.up .acts,.up .hint,.note,.legend,.info,.need-fam,.predbtn,[data-hint]{display:none!important}
   h1{margin-top:0;font-size:16pt}
-  .sub{margin-bottom:8px}
-  .box,.row{border-color:#999;border-radius:4px}
+  .sub{display:none}
+  .row{border-color:#999;border-radius:4px}
   .rows{gap:8px;margin-top:8px}
   .row{break-inside:avoid;page-break-inside:avoid;grid-template-columns:130px 1fr}
-  .fld,.optw,.up,.sect,.c-k h3,.pred,.ppblock{break-inside:avoid;page-break-inside:avoid}
+  .fld,.optw,.up,.sect,.c-k h3,.pred,.ppblock,.step{break-inside:avoid;page-break-inside:avoid}
   .sect,.lab,.c-k .no{break-after:avoid;page-break-after:avoid}
   .c-k h3{font-size:10.5pt}
   .c-k{background:#f3f3f3;border-color:#999}
   .mark,.row.done .mark{border:1.5px solid #555;color:#000;background:#fff}
   .testbar .chip{background:none;color:#000;padding:0;font-weight:600}
-  .pred,.ppblock{background:none;border:1px solid #ccc;border-radius:4px}
-  .pgrid{grid-template-columns:2fr 1.2fr 1.6fr}
-  .pgrid4{grid-template-columns:repeat(4,1fr)}
+  .pred,.ppblock,.step{background:none;border:1px solid #ccc;border-radius:4px}
+  .pgrid{grid-template-columns:2fr 1fr}
   input:not([type=radio]):not([type=checkbox]),select,textarea{border:0!important;border-bottom:1px solid #bbb!important;border-radius:0!important;padding:2px 0;background:transparent;box-shadow:none}
   select{background-image:none;padding-right:0}
   label.opt input{display:none}
@@ -188,29 +195,21 @@ details[open]>summary::before{content:"\25BC"}
   .up:not(.has) .empty{display:none}
   .up:not(.has)::after{content:"(gambar tidak diunggah)";font-style:italic;color:#666;font-size:10pt}
   .up img{max-height:100mm;width:auto;max-width:100%;break-inside:avoid;border-radius:0}
-  :disabled{background:transparent}
 }
 </style>
 </head>
 <body>
+
+
 <div class="wrap">
 
 <h1>Templat isian korelasi</h1>
-<p class="sub">Isi langsung di halaman ini. Setelah selesai, klik Cetak atau simpan PDF, lalu pilih "Simpan sebagai PDF".</p>
-
-<div class="toolbar" id="toolbar">
-  <div class="box">
-    <button class="btn primary" id="btnPrint" type="button">Cetak atau simpan PDF</button>
-    <button class="btn" id="btnOpen" type="button">Buka semua panduan</button>
-    <button class="btn" id="btnClose" type="button">Tutup semua panduan</button>
-    <button class="btn danger" id="btnReset" type="button">Kosongkan lembar ini</button>
-    <button class="btn" id="btnSym" type="button" aria-expanded="false" aria-controls="syms"><span class="tri">&#9654;</span>Simbol</button>
-    <span class="prog" id="prog" aria-live="polite"></span>
-    <div class="syms" id="syms" hidden><span class="t">Klik simbol untuk menyisipkannya ke kotak teks yang sedang aktif:</span></div>
-  </div>
-</div>
+<p class="sub">Isi langsung di halaman ini. Setelah selesai, klik Cetak atau simpan PDF pada panel, lalu pilih "Simpan sebagai PDF".</p>
 
 <div class="banner" id="warn" hidden>Penyimpanan otomatis di peramban penuh atau tidak tersedia. Cetak atau simpan PDF sebelum menutup halaman agar pekerjaan tidak hilang.</div>
+
+<div class="layout">
+<div class="content">
 
 <section id="head" class="head" aria-label="Identitas">
   <div><label for="nama">Nama mahasiswa atau kelompok</label><input type="text" id="nama" data-k="nama" autocomplete="off"></div>
@@ -232,7 +231,7 @@ details[open]>summary::before{content:"\25BC"}
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
       <ol>
         <li>Masukkan data ke Jamovi. Satu baris mewakili satu unit pengamatan dan satu kolom mewakili satu variabel.</li>
-        <li>Klik dua kali tajuk kolom untuk mengatur tipe variabel: variabel numeris bertipe <b>Continuous</b> dan variabel berjenjang (skor atau peringkat) bertipe <b>Ordinal</b>.</li>
+        <li>Klik dua kali tajuk kolom untuk mengatur tipe variabel: variabel numeris bertipe <b>Continuous</b> dan variabel kategoris ordinal (skor atau peringkat) bertipe <b>Ordinal</b> di Jamovi.</li>
         <li>Variabel bertipe Nominal tidak dimasukkan ke analisis korelasi.</li>
       </ol>
     </div></details>
@@ -240,7 +239,9 @@ details[open]>summary::before{content:"\25BC"}
       <div class="fld"><div class="lab">Variabel
         <button type="button" class="tip" aria-label="Penjelasan" data-tip="Korelasi menilai keterkaitan dua variabel yang kedudukannya setara, tanpa variabel bebas dan terikat. Bila tujuannya memprediksi satu variabel dari variabel lain, regresi lebih sesuai. Pilih variabel berdasarkan teori atau pertanyaan penelitian sebelum melihat hasil. Setiap tambahan variabel menambah jumlah pasangan yang diuji.">i</button></div>
         <div class="preds" id="preds" data-k="r1v"></div>
-        <button class="btn predbtn" id="predAdd" type="button" style="margin-top:10px">Tambah variabel</button></div>
+        <button class="btn predbtn" id="predAdd" type="button">Tambah variabel</button></div>
+      <div class="fld"><div class="lab"><label for="r1why">Alasan memilih setiap variabel tersebut (dasar teori)</label></div>
+        <textarea id="r1why" data-k="r1why" rows="3"></textarea></div>
     </div>
   </div>
 </section>
@@ -278,7 +279,7 @@ details[open]>summary::before{content:"\25BC"}
       <div class="testbar" data-varbar></div>
       <div class="up" data-k="r3img" data-cap="Tabel Descriptives" tabindex="0"></div>
       <div class="fld"><div class="lab"><label for="r3t">Catatan data hilang atau nilai yang tidak wajar</label>
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Lihat baris Missing atau bandingkan N antarvariabel. N yang berbeda atau Missing lebih dari nol menandakan ada data hilang. Periksa juga kolom N pada tabel korelasi (baris 7) untuk memastikan jumlah pengamatan tiap pasangan. Perhatikan nilai minimum dan maksimum yang tidak masuk akal secara biologis.">i</button></div>
+        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Lihat baris Missing atau bandingkan N antarvariabel. N yang berbeda atau Missing lebih dari nol menandakan ada data hilang. Periksa juga kolom N pada tabel korelasi (langkah 6) untuk memastikan jumlah pengamatan tiap pasangan. Perhatikan nilai minimum dan maksimum yang tidak masuk akal secara biologis.">i</button></div>
         <textarea id="r3t" data-k="r3t" rows="3"></textarea></div>
     </div>
   </div>
@@ -286,102 +287,115 @@ details[open]>summary::before{content:"\25BC"}
 
 <!-- 4 -->
 <section class="row" data-row="4">
-  <div class="c-k"><div class="no"><span class="mark">4</span></div><h3>Visualisasi data</h3></div>
-  <div class="c-i">
-    <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
-      <h4>Histogram tiap variabel</h4>
-      <ol>
-        <li>Klik tab <b>Analyses → Exploration → Descriptives</b>. Masukkan semua variabel ke kotak <b>Variables</b>.</li>
-        <li>Pada panel <b>Plots</b>, bagian <b>Histograms</b>, centang <b>Histogram</b> dan matikan opsi lain.</li>
-      </ol>
-      <h4>Diagram pencar semua pasangan</h4>
-      <ol>
-        <li>Klik tab <b>Analyses → Regression → Correlation Matrix</b>.</li>
-        <li>Masukkan semua variabel ke kotak di sebelah kanan.</li>
-        <li>Pada panel <b>Plot</b>, centang <b>Correlation matrix</b> dan <b>Densities for variables</b>. Opsi <b>Statistics</b> tidak perlu dicentang.</li>
-      </ol>
-      <p>Ambil tangkapan layar tiap gambar yang terbentuk, lalu unggah di bawah ini.</p>
-    </div></details>
-    <div class="body">
-      <div class="testbar" data-varbar></div>
-      <div class="up" data-k="r4img1" data-cap="Histogram tiap variabel" tabindex="0"></div>
-      <div class="up" data-k="r4img2" data-cap="Matriks diagram pencar (Correlation matrix plot)" tabindex="0"></div>
-      <div class="fld"><div class="lab"><label for="r4t">Interpretasi visualisasi</label>
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Histogram: bentuk sebaran tiap variabel (simetris atau miring). Diagram pencar: apakah titik membentuk garis lurus, melengkung tetapi selalu naik atau turun, atau tidak berpola; arahnya naik atau turun; seberapa rapat titik; serta adakah titik yang jauh dari kelompok lain.">i</button></div>
-        <textarea id="r4t" data-k="r4t" rows="4" placeholder="Tuliskan hasil pengamatan Anda pada gambar-gambar di atas."></textarea></div>
+  <div class="c-k"><div class="no"><span class="mark">4</span></div><h3>Pemeriksaan syarat</h3><p class="note">Hasil pemeriksaan ini dipakai pada langkah 5.</p></div>
+  <div class="c-i"><div class="body">
+    <div class="testbar" data-varbar></div>
+
+    <div class="step">
+      <p class="sect">A. Diagram pencar semua pasangan</p>
+      <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
+        <ol>
+          <li>Klik tab <b>Analyses → Regression → Correlation Matrix</b>.</li>
+          <li>Masukkan semua variabel ke kotak di sebelah kanan.</li>
+          <li>Pada panel <b>Plot</b>, centang <b>Correlation matrix</b> dan <b>Densities for variables</b>. Opsi <b>Statistics</b> tidak perlu dicentang.</li>
+          <li>Ambil tangkapan layar gambar yang terbentuk, lalu unggah di bawah ini.</li>
+        </ol>
+      </div></details>
+      <div class="up" data-k="r4a" data-cap="Matriks diagram pencar (Correlation matrix plot)" tabindex="0"></div>
     </div>
-  </div>
+
+    <div class="step">
+      <p class="sect">B. Uji normalitas data dengan Shapiro-Wilk</p>
+      <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
+        <ol>
+          <li>Klik tab <b>Analyses → Exploration → Descriptives</b>.</li>
+          <li>Masukkan semua variabel ke kotak <b>Variables</b>.</li>
+          <li>Pada menu dropdown <b>Descriptives</b>, ubah <b>Variables across columns</b> menjadi <b>Variables across rows</b>.</li>
+          <li>Pada panel <b>Statistics</b>, centang opsi berikut dan pastikan opsi lainnya tidak tercentang:</li>
+        </ol>
+        <div class="sub2">Sample Size</div><ul class="chk"><li>N</li></ul>
+        <div class="sub2">Normality</div><ul class="chk"><li>Shapiro-Wilk</li></ul>
+        <p>Ambil tangkapan layar tabel yang terbentuk, lalu unggah di bawah ini.</p>
+      </div></details>
+      <div class="up" data-k="r4b" data-cap="Tabel Shapiro-Wilk" tabindex="0"></div>
+    </div>
+
+    <div class="step">
+      <p class="sect">C. Uji normalitas data dengan Q-Q plot</p>
+      <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
+        <ol>
+          <li>Klik tab <b>Analyses → Exploration → Descriptives</b>.</li>
+          <li>Masukkan semua variabel ke kotak <b>Variables</b>.</li>
+          <li>Pada panel <b>Plots</b>, bagian <b>Q-Q Plots</b>, centang <b>Q-Q</b>. Opsi lain boleh dimatikan.</li>
+          <li>Ambil tangkapan layar gambar yang terbentuk, lalu unggah di bawah ini.</li>
+        </ol>
+      </div></details>
+      <div class="up" data-k="r4c" data-cap="Q-Q plot tiap variabel" tabindex="0"></div>
+    </div>
+
+    <div class="step">
+      <p class="sect">D. Deteksi pencilan dengan box plot</p>
+      <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
+        <ol>
+          <li>Klik tab <b>Analyses → Exploration → Descriptives</b>.</li>
+          <li>Masukkan semua variabel ke kotak <b>Variables</b>.</li>
+          <li>Pada panel <b>Plots</b>, bagian <b>Box Plots</b>, centang <b>Box plot</b> dan <b>Label outliers</b>. Opsi lain boleh dimatikan.</li>
+          <li>Ambil tangkapan layar gambar yang terbentuk, lalu unggah di bawah ini.</li>
+        </ol>
+      </div></details>
+      <div class="up" data-k="r4d" data-cap="Box plot dengan label pencilan" tabindex="0"></div>
+    </div>
+  </div></div>
 </section>
 
 <!-- 5 -->
 <section class="row" data-row="5">
-  <div class="c-k"><div class="no"><span class="mark">5</span></div><h3>Pemeriksaan syarat</h3><p class="note">Hasil pemeriksaan ini menjadi dasar memilih koefisien pada baris 6.</p></div>
-  <div class="c-i">
-    <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
-      <ol>
-        <li>Buat analisis baru di <b>Analyses → Exploration → Descriptives</b>. Masukkan semua variabel ke kotak <b>Variables</b>.</li>
-        <li>Pada panel <b>Statistics</b>, bagian <b>Normality</b>, centang <b>Shapiro-Wilk</b>.</li>
-        <li>Pada panel <b>Plots</b>, centang <b>Q-Q</b> (bagian Q-Q Plots) dan <b>Box plot</b> beserta <b>Label outliers</b> (bagian Box Plots).</li>
-        <li>Opsi statistik lain boleh dimatikan.</li>
-      </ol>
-      <p>Bentuk hubungan dibaca dari matriks diagram pencar pada baris 4. Ambil tangkapan layar tabel Shapiro-Wilk, Q-Q plot, dan box plot, lalu unggah di bawah ini.</p>
-    </div></details>
-    <div class="body">
-      <div class="testbar" data-varbar></div>
-      <div class="up" data-k="r5img1" data-cap="Tabel Shapiro-Wilk" tabindex="0"></div>
-      <div class="up" data-k="r5img2" data-cap="Q-Q plot tiap variabel" tabindex="0"></div>
-      <div class="up" data-k="r5img3" data-cap="Box plot dengan label pencilan" tabindex="0"></div>
-      <div class="fld"><div class="lab">Independensi pengamatan
-        <button type="button" class="tip" aria-label="Penjelasan" data-tip="Korelasi mengasumsikan tiap baris berasal dari subjek yang berbeda dan saling bebas. Pengamatan yang berkelompok (misalnya beberapa hewan dari satu peternak) atau berulang pada subjek yang sama cenderung berkorelasi, sehingga p-value menjadi terlalu optimis. Penilaian ini berdasarkan cara data dikumpulkan, bukan dari output Jamovi.">i</button></div>
-        <div class="opts" data-k="r5ind"></div></div>
-      <div class="fld"><div class="lab">Pemeriksaan tiap pasangan variabel</div>
-        <div class="perpred" data-k="r5p"></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- 6 -->
-<section class="row" data-row="6">
-  <div class="c-k"><div class="no"><span class="mark">6</span></div><h3>Pemilihan koefisien korelasi</h3><p class="note">Keputusan ini menentukan koefisien yang dicentang di Jamovi.</p></div>
+  <div class="c-k"><div class="no"><span class="mark">5</span></div><h3>Pemilihan uji korelasi</h3><p class="note">Keputusan ini menentukan koefisien yang dicentang di Jamovi.</p></div>
   <div class="c-i"><div class="body">
-    <div class="fld"><div class="lab">Koefisien tiap pasangan variabel
-      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Pearson: kedua variabel numeris, hubungan linear, tanpa pencilan yang jelas, sebaran mendekati normal. Spearman: ada variabel ordinal, atau hubungan monotonik yang melengkung, atau ada pencilan, atau sebaran miring. Kendall's tau-b: situasinya seperti Spearman, tetapi sampel kecil atau banyak nilai kembar. Bila hubungan tidak monotonik (misalnya berbentuk U), ketiga koefisien tidak sesuai.">i</button></div>
-      <div class="perpred" data-k="r6p"></div></div>
+    <div class="fld"><div class="lab"><label for="r5ind">Independensi pengamatan</label>
+      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Korelasi mengasumsikan tiap baris berasal dari subjek yang berbeda dan saling bebas. Pengamatan yang berkelompok (misalnya beberapa hewan dari satu peternak) atau berulang pada subjek yang sama cenderung berkorelasi, sehingga p-value menjadi terlalu optimis. Penilaian ini berdasarkan cara data dikumpulkan, bukan dari output Jamovi.">i</button></div>
+      <select id="r5ind" data-k="r5ind">
+        <option value="">Pilih</option>
+        <option value="ya">Terpenuhi (tiap baris berasal dari subjek berbeda)</option>
+        <option value="tidak">Tidak sepenuhnya (ada pengamatan berkelompok atau berulang)</option>
+      </select></div>
+    <div class="fld"><div class="lab">Pemeriksaan dan pilihan uji tiap pasangan variabel</div>
+      <div class="perpred" data-k="r5p"></div></div>
     <details class="legend">
       <summary>Cara memilih koefisien</summary>
       <table>
         <tr><td>Pearson</td><td>Dua variabel numeris</td><td>Hubungan linear, tanpa pencilan yang jelas, sebaran kedua variabel mendekati normal.</td></tr>
-        <tr><td>Spearman</td><td>Numeris atau ordinal</td><td>Hubungan monotonik (boleh melengkung), atau ada pencilan, atau sebaran miring. Memakai peringkat data.</td></tr>
-        <tr><td>Kendall's tau-b</td><td>Numeris atau ordinal</td><td>Situasi seperti Spearman, tetapi sampel kecil atau banyak nilai kembar. Menyesuaikan nilai kembar.</td></tr>
-        <tr><td>Tidak ada yang sesuai</td><td>Hubungan tidak monotonik</td><td>Titik naik lalu turun atau tanpa pola. Koefisien yang mendekati nol tidak berarti tidak ada hubungan.</td></tr>
+        <tr><td>Spearman</td><td>Numeris atau kategoris ordinal</td><td>Hubungan monotonik (boleh melengkung), atau ada pencilan, atau sebaran miring. Memakai peringkat data.</td></tr>
+        <tr><td>Kendall's tau-b</td><td>Numeris atau kategoris ordinal</td><td>Situasi seperti Spearman, tetapi sampel kecil atau banyak nilai kembar. Menyesuaikan nilai kembar.</td></tr>
+        <tr><td>Uji korelasi tidak bisa dilakukan</td><td>Hubungan tidak monotonik</td><td>Titik naik lalu turun atau tanpa pola. Koefisien yang mendekati nol tidak berarti tidak ada hubungan.</td></tr>
       </table>
       <p>Bila pasangan berbeda memakai koefisien berbeda, centang semua koefisien yang dipakai di Jamovi, lalu baca nilai yang sesuai untuk tiap pasangan.</p>
     </details>
   </div></div>
 </section>
 
-<!-- 7 -->
-<section class="row" data-row="7">
-  <div class="c-k"><div class="no"><span class="mark">7</span></div><h3>Matriks korelasi dan tafsir tiap pasangan</h3></div>
+<!-- 6 -->
+<section class="row" data-row="6">
+  <div class="c-k"><div class="no"><span class="mark">6</span></div><h3>Matriks korelasi dan tafsir tiap pasangan</h3></div>
   <div class="c-i">
     <details class="guide"><summary>Panduan Jamovi</summary><div class="gbody">
       <ol>
         <li>Klik tab <b>Analyses → Regression → Correlation Matrix</b>.</li>
         <li>Masukkan semua variabel ke kotak di sebelah kanan.</li>
-        <li>Pada <b>Correlation Coefficients</b>, centang koefisien yang dipilih pada baris 6.</li>
+        <li>Pada <b>Correlation Coefficients</b>, centang koefisien yang dipilih pada langkah 5.</li>
         <li>Pada <b>Additional Options</b>, centang opsi berikut:</li>
       </ol>
-      <ul class="chk"><li>Report significance</li><li>N</li><li>Confidence intervals (Interval 95%)</li></ul>
+      <ul class="chk"><li>Report significance</li><li>N</li></ul>
       <ol start="5">
-        <li>Pada <b>Hypothesis</b>, pilih sesuai baris 2: <b>Correlated</b> (dua arah), <b>Correlated positively</b>, atau <b>Correlated negatively</b>.</li>
+        <li>Pada <b>Hypothesis</b>, pilih sesuai langkah 2: <b>Correlated</b> (dua arah), <b>Correlated positively</b>, atau <b>Correlated negatively</b>.</li>
       </ol>
       <p>Opsi Flag significant correlations boleh dicentang untuk membantu membaca tabel. Ambil tangkapan layar tabel Correlation Matrix yang terbentuk, lalu unggah di bawah ini.</p>
     </div></details>
     <div class="body">
       <div class="testbar" data-varbar></div>
-      <div class="up" data-k="r7img" data-cap="Tabel Correlation Matrix" tabindex="0"></div>
+      <div class="up" data-k="r6img" data-cap="Tabel Correlation Matrix" tabindex="0"></div>
       <div class="fld"><div class="lab">Hasil tiap pasangan variabel</div>
-        <div class="perpred" data-k="r7c"></div></div>
+        <div class="perpred" data-k="r6c"></div></div>
       <details class="legend">
         <summary>Cara menentukan kategori kekuatan</summary>
         <table>
@@ -390,29 +404,29 @@ details[open]>summary::before{content:"\25BC"}
           <tr><td>Sedang</td><td>0,30 sampai kurang dari 0,50</td><td>Hubungan cukup jelas.</td></tr>
           <tr><td>Besar</td><td>0,50 atau lebih</td><td>Hubungan kuat.</td></tr>
         </table>
-        <p>Batas ini mengikuti acuan Cohen (0,10; 0,30; 0,50) dan dibaca dari nilai mutlak koefisien tanpa memperhatikan tanda. Acuan ini dirancang untuk Pearson. Untuk Spearman dan Kendall, pakai sebagai pedoman kasar, dan nilai tau-b pada data yang sama umumnya lebih kecil daripada rho. Batas ini bukan batas mutlak, dan nilai yang dianggap tinggi berbeda antarbidang ilmu.</p>
+        <p>Batas ini mengikuti pedoman Cohen (1988) dan dibaca dari nilai mutlak koefisien tanpa memperhatikan tanda. Pedoman ini dirancang untuk Pearson. Untuk Spearman dan Kendall, pakai sebagai pedoman kasar, dan nilai tau-b pada data yang sama umumnya lebih kecil daripada rho. Batas ini bukan batas mutlak, dan nilai yang dianggap tinggi berbeda antarbidang ilmu.</p>
       </details>
     </div>
   </div>
 </section>
 
-<!-- 8 -->
-<section class="row" data-row="8">
-  <div class="c-k"><div class="no"><span class="mark">8</span></div><h3>Gambaran seluruh matriks</h3></div>
+<!-- 7 -->
+<section class="row" data-row="7">
+  <div class="c-k"><div class="no"><span class="mark">7</span></div><h3>Gambaran seluruh matriks</h3></div>
   <div class="c-i"><div class="body">
     <div class="info" id="multi"></div>
-    <div class="fld"><div class="lab"><label for="r8k">Pasangan dengan korelasi terkuat dan terlemah</label>
-      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Bandingkan nilai mutlak koefisien antarpasangan. Tuliskan nama pasangan dan nilainya. Bila koefisien yang dipakai berbeda jenis, perbandingan ini bersifat kasar.">i</button></div>
-      <input type="text" id="r8k" data-k="r8k" autocomplete="off" placeholder="Nama pasangan dan nilai koefisien"></div>
-    <div class="fld"><div class="lab"><label for="r8m">Sikap terhadap banyaknya pasangan yang diuji</label>
-      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Makin banyak pasangan yang diuji, makin besar peluang mendapat hasil signifikan karena kebetulan. Pilihan yang dapat dipakai: membandingkan tiap p dengan α/m (koreksi Bonferroni, m adalah jumlah pasangan), atau melaporkan hasil sebagai temuan eksploratif yang perlu dikonfirmasi. Tuliskan sikap Anda dan alasannya.">i</button></div>
-      <textarea id="r8m" data-k="r8m" rows="3"></textarea></div>
+    <div class="fld"><div class="lab"><label for="r7s">Pasangan dengan korelasi terkuat (nilai mutlak koefisien terbesar)</label>
+      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Terkuat berarti nilai mutlak koefisien paling besar, yaitu paling mendekati +1 atau -1. Tanda koefisien dan signifikansi tidak diperhitungkan. Bila koefisien yang dipakai berbeda jenis, perbandingan ini bersifat kasar.">i</button></div>
+      <select id="r7s" data-k="r7s" data-pair></select></div>
+    <div class="fld"><div class="lab"><label for="r7l">Pasangan dengan korelasi terlemah (nilai mutlak koefisien terkecil)</label>
+      <button type="button" class="tip" aria-label="Penjelasan" data-tip="Terlemah berarti nilai mutlak koefisien paling kecil, yaitu paling mendekati 0. Signifikansi tidak diperhitungkan. Bila koefisien yang dipakai berbeda jenis, perbandingan ini bersifat kasar.">i</button></div>
+      <select id="r7l" data-k="r7l" data-pair></select></div>
   </div></div>
 </section>
 
-<!-- 9 -->
-<section class="row" data-row="9">
-  <div class="c-k"><div class="no"><span class="mark">9</span></div><h3>Kesimpulan statistika</h3></div>
+<!-- 8 -->
+<section class="row" data-row="8">
+  <div class="c-k"><div class="no"><span class="mark">8</span></div><h3>Kesimpulan statistika</h3></div>
   <div class="c-i"><div class="body">
     <div class="fld"><div class="lab"><label for="r9">Kesimpulan</label>
       <button type="button" class="tip" aria-label="Penjelasan" data-tip="Cantumkan: koefisien yang dipakai dan alasannya; untuk tiap pasangan nilai koefisien, nilai p, arah, dan kekuatannya; pasangan yang signifikan dan yang belum menunjukkan hubungan; serta keterbatasan (pencilan, banyaknya uji, independensi pengamatan, kemungkinan hubungan non-monotonik).">i</button></div>
@@ -420,9 +434,9 @@ details[open]>summary::before{content:"\25BC"}
   </div></div>
 </section>
 
-<!-- 10 -->
-<section class="row" data-row="10">
-  <div class="c-k"><div class="no"><span class="mark">10</span></div><h3>Kesimpulan dengan bahasa awam</h3></div>
+<!-- 9 -->
+<section class="row" data-row="9">
+  <div class="c-k"><div class="no"><span class="mark">9</span></div><h3>Kesimpulan dengan bahasa awam</h3></div>
   <div class="c-i"><div class="body">
     <div class="fld"><div class="lab"><label for="r10">Kesimpulan</label>
       <button type="button" class="tip" aria-label="Penjelasan" data-tip="Tulis tanpa istilah statistika. Gunakan kata seperti 'berkaitan dengan' atau 'cenderung naik bersama', dan hindari kata 'menyebabkan', karena korelasi tidak membuktikan sebab-akibat.">i</button></div>
@@ -433,6 +447,18 @@ details[open]>summary::before{content:"\25BC"}
 </main>
 
 <p class="foot">Pekerjaan tersimpan otomatis di peramban pada perangkat ini dan tidak dikirim ke server mana pun. Tiap nomor soal punya lembar sendiri. Gambar yang diunggah ikut tercetak ke PDF.</p>
+</div>
+
+<aside class="panel" id="panel" aria-label="Panel alat">
+  <div class="prog" id="prog" aria-live="polite"></div>
+  <button class="btn primary" id="btnPrint" type="button">Cetak atau simpan PDF</button>
+  <button class="btn" id="btnOpen" type="button">Buka semua panduan</button>
+  <button class="btn" id="btnClose" type="button">Tutup semua panduan</button>
+  <button class="btn" id="btnSym" type="button" aria-expanded="false" aria-controls="syms"><span class="tri">&#9654;</span>Simbol</button>
+  <div class="syms" id="syms" hidden><span class="t">Klik simbol untuk menyisipkannya ke kotak teks yang sedang aktif:</span></div>
+  <button class="btn danger" id="btnReset" type="button">Kosongkan lembar ini</button>
+</aside>
+</div>
 </div>
 
 <div id="tt" role="tooltip" hidden></div>
@@ -446,48 +472,44 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp
 
 /* ---------- opsi ---------- */
 var OPTS={
-  r2a:{items:[["dua","Dua arah (Correlated)"],["pos","Satu arah positif (Correlated positively)"],["neg","Satu arah negatif (Correlated negatively)"]]},
-  r5ind:{items:[["ya","Terpenuhi (tiap baris berasal dari subjek berbeda)"],["tidak","Tidak sepenuhnya (ada pengamatan berkelompok atau berulang)"]]}
+  r2a:{items:[["dua","Dua arah (Correlated)"],["pos","Satu arah positif (Correlated positively)"],["neg","Satu arah negatif (Correlated negatively)"]]}
 };
 
 /* ---------- blok per pasangan ---------- */
 var STRENGTH=[["","Pilih"],["sangat kecil","Sangat kecil (< 0,10)"],["kecil","Kecil (0,10 sampai < 0,30)"],["sedang","Sedang (0,30 sampai < 0,50)"],["besar","Besar (≥ 0,50)"]];
 var PP={
   r2h:{fields:[
-    {k:"txt",kind:"ta",label:"Kalimat H₀ dan H₁",rows:3,ph:"H₀: ...\nH₁: ..."}
+    {k:"txt",kind:"ta",label:"Kalimat H₀ dan H₁",rows:3}
   ]},
-  r5p:{fields:[
-    {k:"bentuk",kind:"radio",label:"Bentuk hubungan pada diagram pencar",items:[["linear","Linear"],["monotonik","Monotonik tetapi melengkung"],["tidak","Tidak monotonik atau tanpa pola"]],
-      tip:"Lihat diagram pencar pasangan ini pada baris 4. Linear: titik mengikuti garis lurus. Monotonik tetapi melengkung: titik selalu naik atau selalu turun, tetapi garisnya melengkung. Tidak monotonik: titik naik lalu turun (bentuk U atau n) atau tidak berpola."},
-    {k:"pencilan",kind:"radio",label:"Pencilan yang jelas",items:[["tidak","Tidak ada"],["ada","Ada"]],
-      tip:"Lihat diagram pencar dan box plot dengan label pencilan. Pencilan adalah titik yang jauh dari kelompok titik lain. Satu titik dapat mengubah Pearson secara besar, sedangkan Spearman dan Kendall lebih tahan karena memakai peringkat."},
-    {k:"normal",kind:"radio",label:"Sebaran kedua variabel",items:[["normal","Keduanya mendekati normal"],["tidak","Salah satu atau keduanya miring atau tidak normal"]],
-      tip:"Lihat Q-Q plot dan Shapiro-Wilk tiap variabel. Titik yang mengikuti garis diagonal menandakan sebaran mendekati normal. Pada sampel besar Shapiro-Wilk sangat sensitif, sehingga Q-Q plot diutamakan. Asumsi yang sebenarnya adalah normalitas bersama kedua variabel (bivariat); memeriksa tiap variabel adalah pendekatan praktis."},
-    {k:"ties",kind:"radio",label:"Nilai kembar (ikatan)",items:[["sedikit","Sedikit"],["banyak","Banyak"]],
-      tip:"Nilai kembar adalah beberapa pengamatan dengan nilai yang sama pada satu variabel, umum pada skor berjenjang seperti 1 sampai 5. Bila jumlah nilai berbeda jauh lebih kecil daripada N, nilai kembarnya banyak. Kendall's tau-b dirancang untuk menyesuaikan nilai kembar."}
+  r5p:{hint:true,fields:[
+    {k:"bentuk",kind:"sel",label:"Bentuk hubungan pada diagram pencar",
+      items:[["","Pilih"],["mono","Monotonik"],["non","Tidak monotonik"]],
+      tip:"Lihat diagram pencar pasangan ini pada langkah 4A. Monotonik: titik selalu naik atau selalu turun, boleh lurus atau melengkung. Tidak monotonik: titik naik lalu turun (bentuk U atau n) atau tidak berpola. Pasangan yang tidak monotonik tidak sesuai dianalisis dengan korelasi."},
+    {k:"normal",kind:"sel",label:"Sebaran kedua variabel",
+      items:[["","Pilih"],["normal","Keduanya mendekati normal"],["tidak","Salah satu atau keduanya tidak normal"]],
+      tip:"Lihat Shapiro-Wilk dan Q-Q plot tiap variabel (langkah 4B dan 4C). Titik yang mengikuti garis diagonal menandakan sebaran mendekati normal. Pada sampel besar Shapiro-Wilk sangat sensitif, sehingga Q-Q plot diutamakan. Asumsi yang sebenarnya adalah normalitas bersama kedua variabel (bivariat); memeriksa tiap variabel adalah pendekatan praktis."},
+    {k:"pencilan",kind:"sel",label:"Pencilan",
+      items:[["","Pilih"],["tidak","Tidak ada pencilan yang jelas"],["ada","Ada pencilan yang jelas"]],
+      tip:"Lihat diagram pencar dan box plot dengan label pencilan (langkah 4A dan 4D). Pencilan adalah titik yang jauh dari kelompok titik lain. Satu titik dapat mengubah Pearson secara besar, sedangkan Spearman dan Kendall lebih tahan karena memakai peringkat."},
+    {k:"ties",kind:"sel",label:"Nilai kembar (ikatan)",
+      items:[["","Pilih"],["sedikit","Nilai kembar sedikit"],["banyak","Nilai kembar banyak"]],
+      tip:"Nilai kembar adalah beberapa pengamatan dengan nilai yang sama pada satu variabel, umum pada skor berjenjang seperti 1 sampai 5. Bila jumlah nilai berbeda jauh lebih kecil daripada N, nilai kembarnya banyak. Kendall's tau-b dirancang untuk menyesuaikan nilai kembar."},
+    {k:"koef",kind:"sel",label:"Pemilihan uji",
+      items:[["","Pilih"],["pearson","Pearson"],["spearman","Spearman"],["kendall","Kendall's tau-b"],["tidak","Uji korelasi tidak bisa dilakukan"]],
+      tip:"Rujuk empat hasil pemeriksaan sebelumnya dan tabel 'Cara memilih koefisien' di bawah. Pearson juga mensyaratkan hubungan yang lurus (linear). Pilih 'Uji korelasi tidak bisa dilakukan' bila hubungan tidak monotonik."}
   ]},
-  r6p:{hint:true,fields:[
-    {k:"koef",kind:"radio",label:"Koefisien yang dipilih",items:[["pearson","Pearson"],["spearman","Spearman"],["kendall","Kendall's tau-b"],["tidak","Tidak ada yang sesuai"]],
-      tip:"Rujuk hasil pemeriksaan pasangan ini pada baris 5 dan tabel 'Cara memilih koefisien' di bawah. Pilih 'Tidak ada yang sesuai' bila hubungan tidak monotonik."},
-    {k:"txt",kind:"ta",label:"Alasan pemilihan",rows:3,ph:"Rujuk hasil pemeriksaan pada baris 5."}
-  ]},
-  r7c:{hint:true,fields:[
-    {k:"nilai",kind:"in",grid:true,label:"Nilai koefisien",ph:"Contoh: 0,62",
-      tip:"Salin dari tabel Correlation Matrix, pada baris koefisien yang dipilih untuk pasangan ini. Nilainya berkisar dari -1 sampai +1."},
-    {k:"p",kind:"in",grid:true,label:"Nilai p",ph:"Contoh: < .001",tip:"Salin apa adanya dari tabel. Jamovi menuliskan < .001 bila nilai p sangat kecil."},
-    {k:"n",kind:"in",grid:true,label:"N pasangan",tip:"Jumlah pengamatan yang dipakai untuk pasangan ini (baris N pada tabel)."},
-    {k:"ci",kind:"in",grid:true,opt:true,label:"Selang kepercayaan 95%",ph:"Bila tersedia",
-      tip:"Salin selang kepercayaan 95% bila Jamovi menampilkannya untuk koefisien yang dipilih. Kosongkan bila tidak ada. Pada uji dua arah, selang yang mencakup nol sejalan dengan hasil tidak signifikan."},
-    {k:"sig",kind:"radio",label:"Apakah korelasi ini signifikan pada α = 0,05?",items:[["ya","Ya"],["tidak","Tidak"]],
-      tip:"Bandingkan nilai p dengan 0,05. Pada uji satu arah, pastikan tanda koefisien sesuai arah hipotesis. Bila tanda berlawanan dengan hipotesis, H₀ tidak ditolak."},
-    {k:"arah",kind:"radio",label:"Arah hubungan",items:[["pos","Positif"],["neg","Negatif"]],
+  r6c:{hint:true,fields:[
+    {k:"sig",kind:"sel",label:"Apakah korelasi ini signifikan pada α = 0,05?",
+      items:[["","Pilih"],["ya","Ya"],["tidak","Tidak"]],
+      tip:"Lihat nilai p pasangan ini pada tabel Correlation Matrix, lalu bandingkan dengan 0,05. Pada uji satu arah, pastikan tanda koefisien sesuai arah hipotesis. Bila tanda berlawanan dengan hipotesis, H₀ tidak ditolak."},
+    {k:"arah",kind:"sel",label:"Arah hubungan",
+      items:[["","Pilih"],["pos","Positif"],["neg","Negatif"]],
       tip:"Arah dibaca dari tanda koefisien. Positif: nilai satu variabel cenderung naik bersama nilai variabel lain. Negatif: bila satu naik, yang lain cenderung turun. Tanda tidak menunjukkan kekuatan."},
     {k:"kuat",kind:"sel",label:"Kategori kekuatan",items:STRENGTH,
-      tip:"Baca nilai mutlak koefisien, lalu cocokkan dengan tabel 'Cara menentukan kategori kekuatan' di bawah. Untuk hasil yang tidak signifikan, kategori tetap diisi, tetapi hubungan tidak disimpulkan ada."},
-    {k:"txt",kind:"ta",label:"Tafsir",rows:3,
-      tip:"Tuliskan arah, kekuatan, dan signifikansi dengan nama variabel. Hasil yang tidak signifikan tidak membuktikan bahwa hubungan itu tidak ada; sampel yang kecil dapat menjadi penyebabnya. Untuk Pearson, kuadrat koefisien (r²) menyatakan proporsi variasi yang dimiliki bersama kedua variabel. Hindari kata 'menyebabkan'."}
+      tip:"Panduan ini mengikuti Cohen (1988): kecil mulai 0,10, sedang mulai 0,30, besar mulai 0,50, dibaca dari nilai mutlak koefisien. Kategori sangat kecil dipakai untuk nilai di bawah 0,10. Pedoman ini dirancang untuk Pearson dan bersifat kasar untuk Spearman dan Kendall. Untuk hasil yang tidak signifikan, kategori tetap diisi, tetapi hubungan tidak disimpulkan ada."}
   ]}
 };
+var COEF={pearson:"Pearson",spearman:"Spearman",kendall:"Kendall's tau-b"};
 
 /* ---------- simbol ---------- */
 var SYM=["H₀","H₁","ρ","ρₛ","τ","r","r²","α","≠","≤","≥","<",">","−","±","₀","₁","₂","²"];
@@ -501,7 +523,7 @@ SYM.forEach(function(s){
 var lastText=null;
 document.addEventListener("focusin",function(e){var t=e.target;if(t&&(t.tagName==="TEXTAREA"||(t.tagName==="INPUT"&&t.type==="text")))lastText=t});
 function ins(t){
-  var e=lastText;if(!e||e.disabled||!document.body.contains(e)||e.offsetParent===null){return}
+  var e=lastText;if(!e||!document.body.contains(e)||e.offsetParent===null)return;
   var s=e.selectionStart,en=e.selectionEnd;e.focus();
   e.setRangeText(t,s,en,"end");
   e.dispatchEvent(new Event("input",{bubbles:true}));
@@ -599,9 +621,9 @@ $$(".up").forEach(function(el){
   });
 });
 
-/* ---------- daftar variabel (baris 1) ---------- */
+/* ---------- daftar variabel (langkah 1) ---------- */
 var varSeq=1;
-var TIPTYPE="Numeris (Continuous): angka dengan jarak yang bermakna, misalnya bobot atau suhu. Ordinal: kategori berurutan atau skor berjenjang, misalnya skor kondisi tubuh 1 sampai 5. Variabel nominal (misalnya jenis kelamin) tidak dikorelasikan dengan koefisien ini; gunakan uji asosiasi kategoris.";
+var TIPTYPE="Numeris (Continuous): angka dengan jarak yang bermakna, misalnya bobot atau suhu. Kategoris ordinal: kategori berurutan atau skor berjenjang, misalnya skor kondisi tubuh 1 sampai 5. Variabel nominal (misalnya jenis kelamin) tidak dikorelasikan dengan koefisien ini; gunakan uji asosiasi kategoris.";
 function addVar(o){
   o=o||{};
   var id=(o.id!=null)?o.id:varSeq;if(id>=varSeq)varSeq=id+1;
@@ -612,24 +634,20 @@ function addVar(o){
     '<div class="pgrid">'+
       '<div class="fld"><label class="lab" for="'+u+'n">Nama variabel</label><input type="text" id="'+u+'n" data-f="name" autocomplete="off"></div>'+
       '<div class="fld"><div class="lab"><label for="'+u+'t">Skala</label><button type="button" class="tip" aria-label="Penjelasan" data-tip="'+esc(TIPTYPE)+'">i</button></div>'+
-        '<select id="'+u+'t" data-f="type"><option value="">Pilih</option><option value="num">Numeris</option><option value="ord">Ordinal</option></select></div>'+
-      '<div class="fld"><label class="lab" for="'+u+'r" data-lbl>Satuan atau rentang skor</label><input type="text" id="'+u+'r" data-f="ref" autocomplete="off"></div>'+
+        '<select id="'+u+'t" data-f="type"><option value="">Pilih</option><option value="num">Numeris</option><option value="ord">Kategoris ordinal</option></select></div>'+
       '<button type="button" class="btn danger predbtn" data-act="del">Hapus</button>'+
-    '</div>'+
-    '<div class="fld"><label class="lab" for="'+u+'w">Alasan memilih variabel ini (dasar teori)</label><textarea id="'+u+'w" data-f="why" rows="2"></textarea></div>';
+    '</div>';
   $("#preds").appendChild(c);
   $('[data-f="name"]',c).value=o.name||"";
   $('[data-f="type"]',c).value=o.type||"";
-  $('[data-f="ref"]',c).value=o.ref||"";
-  $('[data-f="why"]',c).value=o.why||"";
 }
 function readVars(){
   return $$("#preds .pred").map(function(c){
     function f(n){var e=$('[data-f="'+n+'"]',c);return e?e.value:""}
-    return {id:parseInt(c.dataset.id,10),name:f("name"),type:f("type"),ref:f("ref"),why:f("why")};
+    return {id:parseInt(c.dataset.id,10),name:f("name"),type:f("type")};
   });
 }
-function nonBlank(p){return !!(p.name.trim()||p.type||p.ref.trim()||p.why.trim())}
+function nonBlank(p){return !!(p.name.trim()||p.type)}
 function namedVars(){return readVars().filter(function(p){return p.name.trim()})}
 function setVars(v){
   $("#preds").innerHTML="";varSeq=1;
@@ -641,7 +659,7 @@ function setVars(v){
 function varsDone(){
   var ps=readVars().filter(nonBlank);
   if(ps.length<2)return false;
-  return ps.every(function(p){return p.name.trim()&&p.type&&p.why.trim()});
+  return ps.every(function(p){return p.name.trim()&&p.type});
 }
 $("#predAdd").onclick=function(){addVar({});changed()};
 document.addEventListener("click",function(e){
@@ -658,60 +676,39 @@ function pairs(){
   }
   return out;
 }
-function scaleTxt(t){return t==="num"?"numeris":(t==="ord"?"ordinal":"skala belum dipilih")}
+function scaleTxt(t){return t==="num"?"numeris":(t==="ord"?"kategoris ordinal":"skala belum dipilih")}
 function sigOf(ps){return ps.map(function(p){return p.id+"|"+p.name+"|"+p.a.type+"|"+p.b.type}).join("\u00a6")}
 function ppHarvest(el){
   el._data=el._data||{};
   $$(".ppblock",el).forEach(function(b){
     var o={};
-    $$("[data-f]",b).forEach(function(f){
-      if(f.classList.contains("opts")){var c=$("input:checked",f);o[f.dataset.f]=c?c.value:""}
-      else o[f.dataset.f]=f.value;
-    });
+    $$("[data-f]",b).forEach(function(f){o[f.dataset.f]=f.value});
     el._data[b.dataset.id]=o;
   });
 }
-function fieldHtml(el,f,p){
+function fieldHtml(f){
   uid++;var u="pp"+uid;
   var tb=f.tip?'<button type="button" class="tip" aria-label="Penjelasan" data-tip="'+esc(f.tip)+'">i</button>':"";
-  if(f.kind==="radio"){
-    var h='<div class="fld"><div class="lab">'+esc(f.label)+tb+'</div><div class="opts" data-f="'+f.k+'" role="radiogroup">';
-    f.items.forEach(function(it){
-      h+='<span class="optw"><label class="opt"><input type="radio" name="pp_'+el.dataset.k+'_'+p.id+'_'+f.k+'" value="'+it[0]+'"><span>'+esc(it[1])+'</span></label></span>';
-    });
-    return h+'</div></div>';
-  }
-  if(f.kind==="in"){
-    return '<div class="fld"><div class="lab"><label for="'+u+'">'+esc(f.label)+'</label>'+tb+'</div><input type="text" id="'+u+'" data-f="'+f.k+'" autocomplete="off" placeholder="'+esc(f.ph||"")+'"></div>';
-  }
   if(f.kind==="sel"){
     var s='<div class="fld"><div class="lab"><label for="'+u+'">'+esc(f.label)+'</label>'+tb+'</div><select id="'+u+'" data-f="'+f.k+'">';
     f.items.forEach(function(it){s+='<option value="'+esc(it[0])+'">'+esc(it[1])+'</option>'});
     return s+'</select></div>';
   }
-  return '<div class="fld"><div class="lab"><label for="'+u+'">'+esc(f.label)+'</label>'+tb+'</div><textarea id="'+u+'" data-f="'+f.k+'" rows="'+(f.rows||3)+'" placeholder="'+esc(f.ph||"")+'"></textarea></div>';
+  return '<div class="fld"><div class="lab"><label for="'+u+'">'+esc(f.label)+'</label>'+tb+'</div><textarea id="'+u+'" data-f="'+f.k+'" rows="'+(f.rows||3)+'"></textarea></div>';
 }
 function ppRender(el){
   var cfg=PP[el.dataset.k],ps=pairs();
   el._sig=sigOf(ps);el.innerHTML="";
-  if(ps.length<1){el.innerHTML='<div class="need-fam">Isi minimal dua nama variabel pada baris 1 terlebih dahulu.</div>';return}
+  if(ps.length<1){el.innerHTML='<div class="need-fam">Isi minimal dua nama variabel pada langkah 1 terlebih dahulu.</div>';return}
   ps.forEach(function(p){
     var b=document.createElement("div");b.className="ppblock";b.dataset.id=p.id;
     var h='<p class="sect">'+esc(p.name)+' <span class="ptype">('+scaleTxt(p.a.type)+' dan '+scaleTxt(p.b.type)+')</span></p>';
     if(cfg.hint)h+='<p class="ptype" data-hint></p>';
-    var g=false;
-    cfg.fields.forEach(function(f){
-      if(f.grid&&!g){h+='<div class="pgrid4">';g=true}
-      if(!f.grid&&g){h+='</div>';g=false}
-      h+=fieldHtml(el,f,p);
-    });
-    if(g)h+='</div>';
+    cfg.fields.forEach(function(f){h+=fieldHtml(f)});
     b.innerHTML=h;el.appendChild(b);
     var d=(el._data||{})[p.id]||{};
     cfg.fields.forEach(function(f){
-      var t=$('[data-f="'+f.k+'"]',b);if(!t)return;
-      if(f.kind==="radio"){$$("input",t).forEach(function(i){i.checked=(i.value===d[f.k])})}
-      else t.value=d[f.k]||"";
+      var t=$('[data-f="'+f.k+'"]',b);if(t)t.value=d[f.k]||"";
     });
   });
 }
@@ -728,22 +725,44 @@ function ppGet(el){
   return out;
 }
 function ppSet(el,v){el._data=JSON.parse(JSON.stringify(v||{}));ppRender(el)}
+function chosenCoef(pid){
+  var el=$('[data-k="r5p"]');if(!el)return "";
+  ppHarvest(el);
+  var d=(el._data||{})[pid];return d?d.koef||"":"";
+}
 function ppDone(el){
   ppHarvest(el);
-  var ps=pairs(),cfg=PP[el.dataset.k];
+  var ps=pairs(),cfg=PP[el.dataset.k],key=el.dataset.k;
   if(!ps.length)return false;
   return ps.every(function(p){
+    if(key==="r6c"&&chosenCoef(p.id)==="tidak")return true;
     var d=el._data[p.id]||{};
-    return cfg.fields.every(function(f){return f.opt||String(d[f.k]||"").trim()!==""});
+    return cfg.fields.every(function(f){return String(d[f.k]||"").trim()!==""});
   });
 }
+
+/* ---------- pilihan pasangan (langkah 7) ---------- */
+function fillPair(s){
+  var ps=pairs(),cur=s._want||"";
+  var sg=ps.map(function(p){return p.id+"|"+p.name}).join("\u00a6");
+  if(s._sig!==sg){
+    s._sig=sg;s.innerHTML="";
+    var o=document.createElement("option");o.value="";o.textContent="Pilih";s.appendChild(o);
+    ps.forEach(function(p){var q=document.createElement("option");q.value=p.id;q.textContent=p.name;s.appendChild(q)});
+  }
+  var ok=ps.some(function(p){return p.id===cur});
+  s.value=ok?cur:"";
+}
+function syncPair(e){var t=e.target;if(t&&t.hasAttribute&&t.hasAttribute("data-pair"))t._want=t.value}
 
 /* ---------- nilai bidang ---------- */
 function isVars(el){return el.classList.contains("preds")}
 function isPP(el){return el.classList.contains("perpred")}
+function isPair(el){return el.hasAttribute&&el.hasAttribute("data-pair")}
 function getVal(el){
   if(isVars(el))return readVars().filter(nonBlank);
   if(isPP(el))return ppGet(el);
+  if(isPair(el)){var w=el._want||"";return pairs().some(function(p){return p.id===w})?w:""}
   if(el.classList.contains("opts")){var c=$$("input:checked",el).map(function(i){return i.value});return c[0]||""}
   if(el.classList.contains("up"))return el._img||"";
   return el.value;
@@ -751,6 +770,7 @@ function getVal(el){
 function setVal(el,v){
   if(isVars(el)){setVars(v);return}
   if(isPP(el)){ppSet(el,v);return}
+  if(isPair(el)){el._want=v||"";return}
   if(el.classList.contains("opts")){$$("input",el).forEach(function(i){i.checked=(i.value===v)})}
   else if(el.classList.contains("up")){el._img=v||"";renderUp(el)}
   else{
@@ -773,21 +793,13 @@ function setSheet(o){o=o||{};$$("#sheet [data-k]").forEach(function(el){setVal(e
 function getHead(){var o={};$$("#head [data-k]").forEach(function(el){o[el.dataset.k]=el.value});return o}
 
 /* ---------- refresh ---------- */
-var COEF={pearson:"Pearson",spearman:"Spearman",kendall:"Kendall's tau-b"};
-function chosenCoef(pid){
-  var el=$('[data-k="r6p"]');if(!el)return "";
-  ppHarvest(el);
-  var d=(el._data||{})[pid];return d?d.koef||"":"";
-}
 function refresh(){
   var nomor=$("#nomor").value.trim();
   var sg=sigOf(pairs());
   $$(".perpred").forEach(function(el){if(el._sig!==sg){ppHarvest(el);ppRender(el)}});
+  $$("select[data-pair]").forEach(fillPair);
   $$("#preds .pred").forEach(function(c,i){
     $("[data-num]",c).textContent="Variabel "+(i+1);
-    var t=$('[data-f="type"]',c).value,l=$("[data-lbl]",c),r=$('[data-f="ref"]',c);
-    l.textContent=t==="ord"?"Rentang skor":(t==="num"?"Satuan":"Satuan atau rentang skor");
-    r.placeholder=t==="ord"?"Contoh: skor 1 sampai 5":(t==="num"?"Contoh: kg":"");
   });
   var nv=namedVars(),k=nv.length,m=k*(k-1)/2;
   $$("[data-varbar]").forEach(function(el){
@@ -798,7 +810,7 @@ function refresh(){
   });
   var mb=$("#multi");
   if(mb){
-    if(k<2)mb.textContent="Isi minimal dua nama variabel pada baris 1 untuk melihat jumlah pasangan yang diuji.";
+    if(k<2)mb.textContent="Isi minimal dua nama variabel pada langkah 1 untuk melihat jumlah pasangan yang diuji.";
     else{
       var pr=Math.round((1-Math.pow(0.95,m))*100);
       mb.innerHTML="Jumlah pasangan yang diuji: <b>"+m+"</b>. Bila semua H₀ benar dan uji dianggap saling bebas, perkiraan kasar peluang minimal satu hasil signifikan karena kebetulan pada α = 0,05 adalah sekitar <b>"+pr+"%</b>.";
@@ -808,16 +820,13 @@ function refresh(){
   $$(".ppblock").forEach(function(b){
     var h=$("[data-hint]",b);if(!h)return;
     var key=b.parentNode.dataset.k,pid=b.dataset.id,pr=byId[pid];
-    if(key==="r6p"){
-      h.textContent=(pr&&(pr.a.type==="ord"||pr.b.type==="ord"))?"Ada variabel ordinal. Variabel ordinal umumnya dianalisis dengan Spearman atau Kendall's tau-b.":"";
-    }else{
-      var c=chosenCoef(pid);
-      h.textContent=!c?"Koefisien terpilih: belum dipilih pada baris 6.":(c==="tidak"?"Koefisien terpilih: tidak ada yang sesuai. Isi nilai Spearman sebagai gambaran dan jelaskan keterbatasannya pada tafsir.":"Koefisien terpilih: "+COEF[c]+".");
+    if(key==="r5p"){
+      h.textContent=(pr&&(pr.a.type==="ord"||pr.b.type==="ord"))?"Ada variabel kategoris ordinal. Variabel kategoris ordinal umumnya dianalisis dengan Spearman atau Kendall's tau-b.":"";
+    }else if(key==="r6c"){
+      var c=chosenCoef(pid),na=(c==="tidak");
+      b.classList.toggle("na",na);
+      h.textContent=!c?"Koefisien terpilih: belum dipilih pada langkah 5.":(na?"Uji korelasi tidak bisa dilakukan untuk pasangan ini (langkah 5), sehingga tidak ada yang perlu diisi.":"Koefisien terpilih: "+COEF[c]+".");
     }
-  });
-  $$("[data-k='r2h'] textarea").forEach(function(t){
-    var a=V("r2a");
-    t.placeholder=a==="pos"?"H₀: ρ ≤ 0\nH₁: ρ > 0":(a==="neg"?"H₀: ρ ≥ 0\nH₁: ρ < 0":"H₀: ρ = 0\nH₁: ρ ≠ 0");
   });
   $$(".optw").forEach(function(w){var i=$("input",w);w.classList.toggle("sel",!!(i&&i.checked))});
   var total=0,done=0;
@@ -832,7 +841,6 @@ function refresh(){
   document.title="Templat isian korelasi"+(nomor?" - Soal "+nomor:"")+(nm?" - "+nm:"");
   autosize();
 }
-function V(k){var el=$('#sheet [data-k="'+k+'"]');return el?getVal(el):""}
 function mirror(){
   $$("#sheet textarea,#sheet input[type=text],#head input[type=text]").forEach(function(t){
     var p=t._pv;
@@ -843,7 +851,7 @@ function mirror(){
 function autosize(){mirror();$$("textarea").forEach(function(t){if(t.offsetParent===null)return;t.style.height="auto";t.style.height=(t.scrollHeight+2)+"px"})}
 
 /* ---------- simpan ---------- */
-var KEY="lj-jamovi-korelasi-v1:"+location.pathname,ST={head:{},sheets:{}},cur="0",tm=null;
+var KEY="lj-jamovi-korelasi-v2:"+location.pathname,ST={head:{},sheets:{}},cur="0",tm=null;
 function curKey(){var n=parseInt($("#nomor").value,10);return n>0?String(n):"0"}
 function persist(){
   ST.head=getHead();ST.sheets[cur]=getSheet();
@@ -857,14 +865,15 @@ function switchSheet(){
   ST.sheets[old]=data;cur=nu;
   setSheet(ST.sheets[nu]||{});
 }
-document.addEventListener("input",function(){changed()});
+document.addEventListener("input",function(e){syncPair(e);changed()});
 document.addEventListener("change",function(e){
+  syncPair(e);
   if(e.target.id==="nomor")switchSheet();
   changed();
 });
 window.addEventListener("pagehide",function(){clearTimeout(tm);persist()});
 
-/* ---------- tombol ---------- */
+/* ---------- panel dan tombol ---------- */
 $("#btnPrint").onclick=function(){
   $$("details.guide").forEach(function(d){d.open=false});
   refresh();persist();window.print();
