@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator anova satu arah langkah demi langkah</title>
+<script>try{if(localStorage.getItem('tema-kalkulator')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg-color: #e7e8e6;
+    --card-bg: #f5f5f3;
+    --text-main: #26282b;
+    --text-muted: #666a70;
+    --text-soft: #40434a;
+    --accent-blue: #2f6fb8;
+    --green-dark: #2a8a4a;
+    --accent-red: #d6453b;
+    --border-color: #d2d4d2;
+    --shadow: 0 6px 18px rgba(30,35,40,0.07);
+    --fill1: #eaebe9; --fill2: #dcdedb; --soft-bg: #eceded; --input-bg: #eeefee; --input-focus: #f7f7f6;
+    --btn-bg: #eeefee; --grid-line: #e3e4e2;
+    --err-tx: #b3261e; --warn-tx: #8a5a00; --ok-tx: #1e7a3a;
+    color-scheme: light;
+}
+:root[data-theme="dark"] {
+    --bg-color: #000000; --card-bg: #1c1c1e; --text-main: #f5f5f7; --text-muted: #98989d; --text-soft: #d1d1d6;
+    --accent-blue: #3b9bff; --green-dark: #30d158; --accent-red: #ff6961; --border-color: #38383a;
+    --shadow: 0 0 0 0.5px rgba(255,255,255,0.06);
+    --fill1: #2c2c2e; --fill2: #3a3a3c; --soft-bg: #2c2c2e; --input-bg: #2c2c2e; --input-focus: #3a3a3c;
+    --btn-bg: #2c2c2e; --grid-line: #38383a;
+    --err-tx: #ff9a93; --warn-tx: #ffcc66; --ok-tx: #5ee08a;
+    color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; margin: 0; padding: 40px 20px;
+    display: flex; justify-content: center; -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 960px; width: 100%; min-width: 0; position: relative; }
+
+h1 { font-size: 28px; font-weight: 700; text-align: center; margin: 0 0 8px; letter-spacing: -0.5px; }
+p.subtitle { text-align: center; color: var(--text-muted); font-size: 16px; margin: 0 0 32px; }
+
+.card { background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow); padding: 26px 28px; margin-bottom: 18px; }
+.card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.card-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-blue); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex: none; }
+.card-title { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; margin: 0; flex: 1; min-width: 160px; }
+.card-intro { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin: -8px 0 18px; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.form-group label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+input.txt {
+    width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid var(--border-color); border-radius: 10px;
+    background: var(--input-bg); color: var(--text-main); font-family: 'Inter', sans-serif; transition: all 0.2s ease;
+}
+input.txt:focus, input.cell:focus, input.nm:focus {
+    outline: none; border-color: var(--accent-blue); background: var(--input-focus); box-shadow: 0 0 0 4px rgba(0,113,227,.15);
+}
+.hint { font-size: 12.5px; color: var(--text-muted); margin: 8px 0 0; line-height: 1.5; }
+
+.btn {
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 10px; cursor: pointer;
+    border: 1px solid var(--border-color); background: var(--btn-bg); color: var(--text-main); transition: all .2s ease;
+}
+.btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+.btn:focus-visible, details summary:focus-visible, .theme-btn:focus-visible, .gl:focus-visible { outline: 3px solid rgba(0,113,227,.35); outline-offset: 2px; }
+.btn.sm { padding: 6px 10px; font-size: 12px; }
+.btn-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* Tabel */
+.tbl-wrap { overflow-x: auto; }
+table.dt { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+table.dt th, table.dt td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--grid-line); white-space: nowrap; font-variant-numeric: tabular-nums; }
+table.dt thead th { color: var(--text-muted); font-weight: 600; font-size: 12.5px; }
+table.dt tbody th { text-align: left; font-weight: 600; white-space: normal; }
+table.dt tr.hlrow td, table.dt tr.hlrow th { background: var(--soft-bg); font-weight: 700; }
+table.dt tr.tot td, table.dt tr.tot th { border-top: 1px solid var(--border-color); font-weight: 700; }
+table.dt td.left, table.dt th.left { text-align: left; }
+table.dt td.ctr, table.dt th.ctr { text-align: center; }
+
+table.in { min-width: 640px; }
+table.in thead th { text-align: center; }
+table.in thead th.corner { text-align: left; }
+table.in tbody td, table.in tbody th { padding: 5px 6px; }
+table.in tbody th { padding-left: 10px; }
+input.cell, input.nm {
+    width: 100%; min-width: 70px; padding: 8px 8px; font-size: 13.5px; border: 1px solid var(--border-color); border-radius: 8px;
+    background: var(--input-bg); color: var(--text-main); font-family: 'Inter', sans-serif; text-align: right;
+    font-variant-numeric: tabular-nums; transition: all .2s ease;
+}
+input.nm { text-align: center; font-weight: 600; font-size: 12.5px; }
+input.cell.bad { border-color: var(--err-tx); background: var(--input-bg); box-shadow: 0 0 0 3px rgba(214,69,59,.18); }
+table.in tr.sumrow th, table.in tr.sumrow td { background: var(--soft-bg); font-weight: 700; padding: 9px 10px; border-bottom: 1px solid var(--border-color); }
+table.in tr.sumrow.first th, table.in tr.sumrow.first td { border-top: 1px solid var(--border-color); }
+table.in td.blank { background: transparent; }
+.status { font-size: 13px; color: var(--text-muted); min-height: 20px; margin: 12px 0 0; }
+.status.bad { color: var(--err-tx); }
+.status.ok { color: var(--ok-tx); }
+
+/* Kotak seragam */
+.box { background: var(--soft-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; }
+.box + .box { margin-top: 10px; }
+.box b { font-weight: 700; }
+.tag { font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; margin-right: 6px; }
+.tag-warn { color: var(--warn-tx); } .tag-err { color: var(--err-tx); }
+.empty-state { background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow); text-align: center; color: var(--text-muted); padding: 50px 20px; font-size: 15px; line-height: 1.7; margin-bottom: 18px; }
+
+.sub-title { font-size: 13.5px; font-weight: 700; margin: 22px 0 10px; }
+
+/* Kotak langkah */
+.cs-list { display: grid; gap: 10px; }
+.cs-list .box + .box { margin-top: 0; }
+.cs { display: grid; grid-template-columns: 28px 1fr auto; gap: 4px 14px; align-items: start; }
+.cs-n { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-blue); color: #fff; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.cs-name { font-weight: 700; font-size: 14.5px; }
+.cs-res { font-weight: 800; font-size: 16px; text-align: right; font-variant-numeric: tabular-nums; }
+.cs-f, .cs-sub { grid-column: 2 / 4; }
+.cs-f { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+.cs-sub { font-size: 13.5px; color: var(--text-soft); font-variant-numeric: tabular-nums; line-height: 1.6; word-break: break-word; }
+.cs-res small { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+
+/* Kesimpulan */
+.verdict-status { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: -0.8px; margin: 18px 0 6px; line-height: 1.15; }
+.verdict-status.reject { color: var(--accent-red); }
+.verdict-status.fail { color: var(--green-dark); }
+.verdict-sub { text-align: center; font-size: 14px; color: var(--text-soft); margin: 0 0 6px; }
+.concl-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; }
+.legend { font-size: 12.5px; color: var(--text-muted); margin: 10px 0 0; line-height: 1.8; }
+.star { font-weight: 800; color: var(--accent-red); }
+
+/* Akordeon */
+details.method { margin-top: 8px; background: var(--card-bg); border-radius: 20px; padding: 20px 28px; box-shadow: var(--shadow); font-size: 13.5px; color: var(--text-soft); }
+details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var(--text-main); list-style: none; display: flex; align-items: center; gap: 10px; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: "\25B6\FE0E"; flex: none; font-size: 11px; line-height: 1; color: var(--text-muted); }
+details[open] > summary::before { content: "\25BC\FE0E"; }
+details.method ul { padding-left: 20px; line-height: 1.7; margin: 12px 0 0; }
+details.inline { margin-top: 12px; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; background: var(--soft-bg); }
+details.inline > summary { font-size: 13.5px; }
+details.inline > div { margin-top: 12px; }
+
+/* Tema */
+.theme-btn { position: absolute; top: -22px; right: -6px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--btn-bg); color: var(--text-main); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s ease; padding: 0; }
+.theme-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+.theme-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+:root[data-theme="dark"] .ic-moon { display: none; }
+:root:not([data-theme="dark"]) .ic-sun { display: none; }
+
+/* Tooltip */
+.gl { border-bottom: 1.5px dotted var(--text-muted); cursor: help; }
+#tip { position: fixed; z-index: 100; max-width: 300px; background: var(--text-main); color: var(--card-bg); padding: 9px 12px; border-radius: 10px; font-size: 12.5px; line-height: 1.55; font-weight: 500; pointer-events: none; opacity: 0; transition: opacity .12s; box-shadow: 0 6px 20px rgba(0,0,0,.25); left: 0; top: 0; text-align: left; letter-spacing: 0; text-transform: none; }
+#tip.on { opacity: 1; }
+
+@media (max-width: 700px) {
+    body { padding: 28px 10px; }
+    h1 { font-size: 24px; }
+    .card { padding: 20px 14px; }
+    .field-row { grid-template-columns: 1fr; }
+    .verdict-status { font-size: 26px; }
+    details.method { padding: 18px 16px; }
+    .cs { grid-template-columns: 28px 1fr; }
+    .cs-res { grid-column: 2; text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <button type="button" class="theme-btn" id="themebtn" role="switch" aria-checked="false" aria-label="Mode gelap" title="Ganti mode terang atau gelap">
+        <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>
+        <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+    <h1>Kalkulator anova satu arah</h1>
+    <p class="subtitle">Hitung <span class="gl" tabindex="0" data-g="anova">anova</span> pada <span class="gl" tabindex="0" data-g="ral">rancangan acak lengkap</span> secara bertahap, dari tabel 5 perlakuan &times; 5 ulangan sampai kesimpulan</p>
+
+    <!-- Input -->
+    <section class="card" id="st-input">
+        <div class="card-head"><span class="card-num">1</span><h2 class="card-title">Input data</h2></div>
+        <div class="field-row">
+            <div class="form-group">
+                <label for="vn-value">Variabel yang diukur (opsional)</label>
+                <input type="text" id="vn-value" class="txt" placeholder="Contoh: pertambahan bobot badan (g/hari)" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="vn-factor">Faktor perlakuan (opsional)</label>
+                <input type="text" id="vn-factor" class="txt" placeholder="Contoh: jenis pakan" autocomplete="off">
+            </div>
+        </div>
+        <div class="tbl-wrap" id="in-wrap"></div>
+        <div class="status" id="status" aria-live="polite"></div>
+        <div class="btn-row" style="margin-top:12px;">
+            <button type="button" class="btn" id="btn-ex1">Contoh data 1 (berbeda nyata)</button>
+            <button type="button" class="btn" id="btn-ex2">Contoh data 2 (tidak berbeda nyata)</button>
+            <button type="button" class="btn" id="btn-clear">Kosongkan</button>
+        </div>
+        <div class="hint">Ketik angka pada tabel, atau salin blok angka dari Excel lalu tempel ke sel pertama. Desimal boleh memakai koma atau titik, tanpa pemisah ribuan. Nama perlakuan pada baris judul dapat diubah. Tombol Enter dan panah atas atau bawah memindahkan sel.</div>
+    </section>
+
+    <div id="empty-state" class="empty-state">Lengkapi seluruh 25 sel pada tabel,<br>lalu langkah perhitungan anova muncul di sini.</div>
+
+    <div id="results" style="display:none;">
+
+        <!-- Hipotesis dan langkah -->
+        <section class="card" id="st-steps">
+            <div class="card-head"><span class="card-num">2</span><h2 class="card-title">Langkah perhitungan</h2></div>
+            <p class="card-intro">Setiap langkah menampilkan rumus, angka yang dimasukkan, dan hasilnya. Arahkan kursor ke istilah bertitik untuk melihat definisi dan rumusnya (di layar sentuh, ketuk istilahnya).</p>
+            <div class="box" id="hyp-box"></div>
+            <div id="steps-body"></div>
+        </section>
+
+        <!-- Tabel anova -->
+        <section class="card" id="st-table">
+            <div class="card-head"><span class="card-num">3</span><h2 class="card-title">Tabel anova</h2></div>
+            <p class="card-intro">Ringkasan seluruh langkah dalam bentuk tabel yang lazim keluar dari perangkat lunak statistika.</p>
+            <div class="tbl-wrap" id="anova-table"></div>
+            <div class="legend" id="anova-legend"></div>
+            <div class="btn-row" style="margin-top:12px;"><button type="button" class="btn sm" id="btn-copy-tbl">Salin tabel anova</button></div>
+        </section>
+
+        <!-- Kesimpulan -->
+        <section class="card" id="st-concl">
+            <div class="card-head"><span class="card-num">4</span><h2 class="card-title">Kesimpulan</h2></div>
+            <p class="card-intro">Nilai p dari tabel anova dibandingkan dengan taraf nyata (&alpha;). Makin kecil &alpha; yang masih terlewati, makin banyak tanda bintang.</p>
+            <div id="alpha-table" class="tbl-wrap"></div>
+            <div id="verdict-status" class="verdict-status">&nbsp;</div>
+            <p class="verdict-sub" id="verdict-sub"></p>
+            <div class="box" style="margin-top:16px;">
+                <div class="concl-title">Kalimat kesimpulan</div>
+                <div id="concl-text">&nbsp;</div>
+                <div class="btn-row" style="margin-top:12px;"><button type="button" class="btn sm" id="btn-copy-concl">Salin kesimpulan</button></div>
+            </div>
+        </section>
+    </div>
+
+    <details class="method">
+        <summary><span>Catatan metode dan batasan</span></summary>
+        <ul>
+            <li>Kalkulator ini memakai rancangan acak lengkap satu faktor dengan 5 perlakuan dan 5 ulangan, sehingga jumlah ulangan sama untuk semua perlakuan.</li>
+            <li>Nilai p dihitung dari distribusi F dengan DB perlakuan (pembilang) dan DB galat (penyebut). F tabel pada &alpha; 5% dan 1% dihitung secara numerik dari distribusi yang sama, sehingga cocok dengan tabel baku F (pembulatan tabel cetak biasanya dua desimal).</li>
+            <li>Tampilan angka dibulatkan sampai 4 desimal, sedangkan perhitungan memakai angka penuh. Karena itu, selisih pembulatan 0,0001 pada hasil pengurangan atau pembagian yang tertulis di layar bisa muncul.</li>
+            <li>Asumsi anova (independensi, normalitas galat, dan kesetaraan varians) tidak diperiksa di sini. Untuk pemeriksaan asumsi, uji lanjut, dan ukuran efek, gunakan kalkulator uji perbedaan lebih dari dua kelompok yang lengkap.</li>
+            <li>Simbol pada tabel anova mengikuti konvensi umum: tn untuk p &ge; 0,05; * untuk p &lt; 0,05; ** untuk p &lt; 0,01; dan *** untuk p &lt; 0,001. Bila F hitung melebihi F tabel 5%, hasilnya nyata (*), dan bila melebihi F tabel 1%, hasilnya sangat nyata (**).</li>
+            <li>Bila H<sub>0</sub> ditolak, anova belum menyebut perlakuan mana yang berbeda. Pasangan perlakuan dibandingkan lewat uji lanjut (misalnya Tukey HSD, BNT, atau Duncan).</li>
+        </ul>
+    </details>
+</div>
+
+<div id="tip" role="tooltip"></div>
+
+<script>
+(function () {
+'use strict';
+
+var T = 5, R = 5, N = T * R;
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+/* ===================== Fungsi numeris: distribusi F ===================== */
+function lgamma(x) {
+    if (x >= 15) {
+        var x2 = x * x;
+        return (x - 0.5) * Math.log(x) - x + 0.9189385332046727 + 1 / (12 * x) - 1 / (360 * x * x2) + 1 / (1260 * x2 * x2 * x);
+    }
+    var c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+    var y = x, tmp = x + 5.5;
+    tmp -= (x + 0.5) * Math.log(tmp);
+    var ser = 1.000000000190015;
+    for (var j = 0; j < 6; j++) { y += 1; ser += c[j] / y; }
+    return -tmp + Math.log(2.5066282746310005 * ser / x);
+}
+function betacf(a, b, x) {
+    var MAXIT = 3000, EPS = 3e-16, FPMIN = 1e-300;
+    var qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < FPMIN) d = FPMIN;
+    d = 1 / d;
+    var h = d;
+    for (var m = 1; m <= MAXIT; m++) {
+        var m2 = 2 * m;
+        var aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+        d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+        c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+        d = 1 / d; h *= d * c;
+        aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+        d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+        c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+        d = 1 / d;
+        var del = d * c;
+        h *= del;
+        if (Math.abs(del - 1) < EPS) break;
+    }
+    return h;
+}
+function betai(a, b, x) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    var bt = Math.exp(lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+    if (x < (a + 1) / (a + b + 2)) return bt * betacf(a, b, x) / a;
+    return 1 - bt * betacf(b, a, 1 - x) / b;
+}
+function fRightTail(F, d1, d2) { if (F <= 0) return 1; return betai(d2 / 2, d1 / 2, d2 / (d2 + d1 * F)); }
+function critF(d1, d2, alpha) {
+    var lo = 0, hi = 1e5;
+    for (var i = 0; i < 200; i++) { var m = (lo + hi) / 2; if (fRightTail(m, d1, d2) > alpha) lo = m; else hi = m; }
+    return (lo + hi) / 2;
+}
+
+/* ===================== Format angka gaya Indonesia ===================== */
+var fmtCache = {};
+function fmt(x, d) {
+    if (x === null || x === undefined || typeof x !== 'number' || !isFinite(x)) return '–';
+    if (!fmtCache[d]) fmtCache[d] = new Intl.NumberFormat('id-ID', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: false });
+    var s = fmtCache[d].format(x);
+    if (/^-0(,0+)?$/.test(s)) s = s.slice(1);
+    return s.replace('-', '−');
+}
+function fmtSmart(x, maxD) {
+    if (x === null || x === undefined || typeof x !== 'number' || !isFinite(x)) return '–';
+    var f = Math.pow(10, maxD), rounded = Math.round(x * f) / f, d = 0;
+    for (var k = 0; k <= maxD; k++) {
+        var fk = Math.pow(10, k);
+        if (Math.abs(Math.round(rounded * fk) / fk - rounded) < 1e-9) { d = k; break; }
+    }
+    return fmt(rounded, d);
+}
+function fn(x) { return fmtSmart(x, 4); }
+function fF(x) { return fmt(x, 3); }
+function fmtP(p) { return p < 0.0001 ? '< 0,0001' : fmt(p, 4); }
+function lcFirst(s) { s = String(s); return /^[A-Z][a-z]/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s; }
+
+/* ===================== Tooltip istilah ===================== */
+var GL = {
+'anova': 'Anova (analisis ragam atau sidik ragam): uji untuk membandingkan rerata tiga kelompok atau lebih. Idenya membandingkan variasi antarperlakuan dengan variasi galat. Bila variasi antarperlakuan jauh lebih besar, rerata perlakuan dianggap berbeda.',
+'ral': 'Rancangan acak lengkap (RAL): satu faktor perlakuan, dan unit percobaan dialokasikan ke perlakuan secara acak. Kalkulator ini memakai jumlah ulangan yang sama pada tiap perlakuan.',
+'t': 'Banyaknya perlakuan (t). Pada tabel ini t = 5, yaitu jumlah kolom.',
+'r': 'Banyaknya ulangan (r) pada tiap perlakuan. Pada tabel ini r = 5, yaitu jumlah baris.',
+'n': 'N: total seluruh data. N = r × t, atau n1 + n2 + ... + nt bila ulangan tiap perlakuan tidak sama.',
+'yij': 'Yij: nilai pengamatan pada perlakuan ke-i dan ulangan ke-j. Satu sel pada tabel adalah satu Yij.',
+'yi': 'Yi.: jumlah seluruh ulangan pada perlakuan ke-i (jumlah per kolom). Rumus: Yi. = Σ Yij, dijumlahkan untuk j = 1 sampai r.',
+'yd': 'Y..: jumlah seluruh data (total umum). Rumus: Y.. = Σ Yi. = Σ Yij, dijumlahkan untuk semua i dan j.',
+'mean': 'Rata-rata perlakuan = Yi. / r. Pada kolom Umum, rata-rata seluruh data = Y.. / (r × t).',
+'umum': 'Kolom Umum berisi total seluruh data (Y..) pada baris Jumlah, dan rata-rata seluruh data pada baris Rata-rata.',
+'fk': 'Faktor koreksi (FK) = Y..² / (r × t), atau Y..² / N. Dipakai agar jumlah kuadrat yang dihitung mengukur variasi di sekitar rerata umum.',
+'sumsq': 'ΣYij²: jumlah kuadrat dari setiap data, yaitu semua Yij dikuadratkan lalu dijumlahkan.',
+'jkt': 'Jumlah kuadrat total (JKT): ukuran seluruh variasi data. Rumus: JKT = ΣYij² − FK.',
+'jkp': 'Jumlah kuadrat perlakuan (JKP): variasi yang berasal dari perbedaan antarperlakuan. Rumus: JKP = ΣYi.² / r − FK.',
+'jkg': 'Jumlah kuadrat galat (JKG): variasi di dalam perlakuan yang tidak dijelaskan oleh perlakuan. Rumus: JKG = JKT − JKP.',
+'dbt': 'Derajat bebas total (DBT) = r × t − 1. Banyaknya nilai yang bebas bervariasi pada seluruh data.',
+'dbp': 'Derajat bebas perlakuan (DBP) = t − 1.',
+'dbg': 'Derajat bebas galat (DBG) = t (r − 1). Nilainya sama dengan DBT − DBP.',
+'ktp': 'Kuadrat tengah perlakuan (KTP) = JKP / DBP. Ragam antarperlakuan.',
+'ktg': 'Kuadrat tengah galat (KTG) = JKG / DBG. Ragam di dalam perlakuan (galat).',
+'fh': 'F hitung = KTP / KTG. Makin besar F hitung, makin kuat indikasi bahwa rerata perlakuan berbeda.',
+'ft': 'F tabel: nilai kritis distribusi F pada taraf α tertentu, dengan DB pembilang = DBP dan DB penyebut = DBG. H0 ditolak bila F hitung lebih besar daripada F tabel.',
+'alpha': 'α (alfa): taraf nyata, yaitu peluang kesalahan tipe I yang diterima (menolak H0 padahal H0 benar). Nilai yang lazim adalah 0,05; 0,01; dan 0,001.',
+'pval': 'Nilai p: peluang mendapat F sebesar F hitung atau lebih ekstrem bila H0 benar. H0 ditolak bila nilai p lebih kecil daripada α.',
+'h0': 'Hipotesis nol (H0): semua rerata perlakuan sama, atau perlakuan tidak berpengaruh.',
+'h1': 'Hipotesis alternatif (H1): paling tidak ada satu rerata perlakuan yang berbeda dari yang lain.',
+'sk': 'Sumber keragaman: asal variasi data, yaitu perlakuan, galat, dan total.',
+'db': 'DB (derajat bebas): banyaknya nilai yang bebas bervariasi dalam perhitungan.',
+'jk': 'JK (jumlah kuadrat): ukuran variasi, yaitu jumlah kuadrat selisih data terhadap rerata.',
+'kt': 'KT (kuadrat tengah): JK dibagi DB. Disebut juga ragam.',
+'galat': 'Galat: variasi antarulangan di dalam perlakuan yang sama. Disebut juga sisa atau error.',
+'tn': 'tn = tidak nyata. Nilai p ≥ 0,05, jadi tidak ada bukti perbedaan antarperlakuan pada α = 0,05.',
+'s1': '* = nyata. Nilai p < 0,05 tetapi belum di bawah 0,01. F hitung melebihi F tabel 5%.',
+'s2': '** = sangat nyata. Nilai p < 0,01 tetapi belum di bawah 0,001. F hitung melebihi F tabel 1%.',
+'s3': '*** = nilai p < 0,001. Bukti perbedaan sangat kuat.'
+};
+function G(k, l) { return '<span class="gl" tabindex="0" data-g="' + k + '">' + (l || k) + '</span>'; }
+(function () {
+    var tip = $('tip'), cur = null;
+    function place(el) {
+        var r = el.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
+        var x = r.left + r.width / 2 - tw / 2; x = Math.max(8, Math.min(window.innerWidth - tw - 8, x));
+        var y = r.bottom + 8; if (y + th > window.innerHeight - 8) y = r.top - th - 8;
+        tip.style.left = x + 'px'; tip.style.top = Math.max(8, y) + 'px';
+    }
+    function show(el) { var t = GL[el.getAttribute('data-g')]; if (!t) return; cur = el; tip.textContent = t; tip.classList.add('on'); place(el); }
+    function hide() { cur = null; tip.classList.remove('on'); }
+    function of(e) { return e.target && e.target.closest ? e.target.closest('.gl') : null; }
+    document.addEventListener('mouseover', function (e) { var g = of(e); if (g) show(g); });
+    document.addEventListener('mouseout', function (e) { var g = of(e); if (g && !g.contains(e.relatedTarget)) hide(); });
+    document.addEventListener('focusin', function (e) { var g = of(e); if (g) show(g); });
+    document.addEventListener('focusout', function (e) { if (of(e)) hide(); });
+    document.addEventListener('click', function (e) { var g = of(e); if (g) { if (cur === g && tip.classList.contains('on') && e.pointerType === 'touch') hide(); else show(g); } else hide(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
+    window.addEventListener('scroll', hide, { passive: true });
+})();
+
+/* ===================== Tabel input ===================== */
+var DEFAULT_NAMES = ['P1', 'P2', 'P3', 'P4', 'P5'];
+var cells = [], nameInputs = [];
+
+function buildInputTable() {
+    var h = '<table class="dt in"><thead><tr><th class="corner" rowspan="2">' + G('r', 'Ulangan (r)') + '</th><th colspan="' + T + '">' + G('t', 'Perlakuan (t)') + '</th><th rowspan="2">' + G('umum', 'Umum') + '</th></tr><tr>';
+    for (var c = 0; c < T; c++) h += '<th><input type="text" class="nm" data-c="' + c + '" value="' + DEFAULT_NAMES[c] + '" maxlength="16" aria-label="Nama perlakuan ' + (c + 1) + '" autocomplete="off"></th>';
+    h += '</tr></thead><tbody>';
+    for (var r = 0; r < R; r++) {
+        h += '<tr><th scope="row">' + (r + 1) + '</th>';
+        for (c = 0; c < T; c++) h += '<td><input type="text" inputmode="decimal" class="cell" data-r="' + r + '" data-c="' + c + '" aria-label="Ulangan ' + (r + 1) + ', perlakuan ' + (c + 1) + '" autocomplete="off"></td>';
+        h += '<td class="blank"></td></tr>';
+    }
+    h += '<tr class="sumrow first"><th scope="row">' + G('yi', 'Jumlah (Yi.)') + '</th>';
+    for (c = 0; c < T; c++) h += '<td id="sum' + c + '">–</td>';
+    h += '<td id="sumT">–</td></tr>';
+    h += '<tr class="sumrow"><th scope="row">' + G('mean', 'Rata-rata') + '</th>';
+    for (c = 0; c < T; c++) h += '<td id="avg' + c + '">–</td>';
+    h += '<td id="avgT">–</td></tr></tbody></table>';
+    $('in-wrap').innerHTML = h;
+    for (r = 0; r < R; r++) cells.push([]);
+    $('in-wrap').querySelectorAll('input.cell').forEach(function (el) { cells[+el.dataset.r][+el.dataset.c] = el; });
+    $('in-wrap').querySelectorAll('input.nm').forEach(function (el) { nameInputs[+el.dataset.c] = el; });
+}
+
+function parseCell(s) {
+    s = String(s).trim().replace(',', '.');
+    if (s === '') return null;
+    if (!/^[+-]?(\d+(\.\d*)?|\.\d+)$/.test(s)) return NaN;
+    return parseFloat(s);
+}
+function names() { return nameInputs.map(function (e, c) { return e.value.trim() || DEFAULT_NAMES[c]; }); }
+
+/* ===================== Perhitungan anova satu arah (RAL seimbang) ===================== */
+function compute(M) {
+    var colSums = [], sq = 0, grand = 0, c, r, o = {};
+    for (c = 0; c < T; c++) {
+        var s = 0;
+        for (r = 0; r < R; r++) { s += M[r][c]; sq += M[r][c] * M[r][c]; }
+        colSums.push(s); grand += s;
+    }
+    var sumYi2 = 0;
+    colSums.forEach(function (s) { sumYi2 += s * s; });
+    var FK = grand * grand / N;
+    var JKT = sq - FK, JKP = sumYi2 / R - FK, JKG = JKT - JKP;
+    var tiny = 1e-9 * Math.max(1, Math.abs(JKT));
+    if (Math.abs(JKT) < tiny) JKT = 0;
+    if (Math.abs(JKP) < tiny) JKP = 0;
+    if (Math.abs(JKG) < tiny) JKG = 0;
+    var DBT = N - 1, DBP = T - 1, DBG = T * (R - 1);
+    var KTP = JKP / DBP, KTG = JKG / DBG;
+    var okF = KTG > 0, Fh = okF ? KTP / KTG : null, p = okF ? fRightTail(Fh, DBP, DBG) : null;
+    o = { M: M, colSums: colSums, grand: grand, sq: sq, sumYi2: sumYi2, FK: FK, JKT: JKT, JKP: JKP, JKG: JKG, DBT: DBT, DBP: DBP, DBG: DBG,
+          KTP: KTP, KTG: KTG, okF: okF, F: Fh, p: p, F05: critF(DBP, DBG, 0.05), F01: critF(DBP, DBG, 0.01) };
+    return o;
+}
+function starOf(p) { return p < 0.001 ? '***' : p < 0.01 ? '**' : p < 0.05 ? '*' : 'tn'; }
+function starKey(s) { return s === '***' ? 's3' : s === '**' ? 's2' : s === '*' ? 's1' : 'tn'; }
+
+/* ===================== Tampilan hasil ===================== */
+function box(n, nameHtml, formulaHtml, calcHtml, resHtml) {
+    return '<div class="box cs"><span class="cs-n">' + n + '</span><span class="cs-name">' + nameHtml + '</span><span class="cs-res">' + resHtml + '</span>' +
+        '<div class="cs-f">' + formulaHtml + '</div><div class="cs-sub">' + calcHtml + '</div></div>';
+}
+function squaresTable(o) {
+    var nm = names(), h = '<div class="tbl-wrap"><table class="dt"><thead><tr><th class="left"></th>', r, c;
+    nm.forEach(function (n) { h += '<th>' + esc(n) + '</th>'; });
+    h += '<th>Umum</th></tr></thead><tbody>';
+    var colSq = [0, 0, 0, 0, 0];
+    for (r = 0; r < R; r++) {
+        h += '<tr><th scope="row">' + (r + 1) + '</th>';
+        for (c = 0; c < T; c++) { var q = o.M[r][c] * o.M[r][c]; colSq[c] += q; h += '<td>' + fn(q) + '</td>'; }
+        h += '<td></td></tr>';
+    }
+    h += '<tr class="tot"><th scope="row">Jumlah</th>';
+    colSq.forEach(function (q) { h += '<td>' + fn(q) + '</td>'; });
+    h += '<td>' + fn(o.sq) + '</td></tr></tbody></table></div>';
+    return h;
+}
+function renderSteps(o) {
+    var V = $('vn-value').value.trim(), F = $('vn-factor').value.trim();
+    var vTxt = V ? esc(lcFirst(V)) : 'variabel yang diukur', fTxt = F ? ' (' + esc(lcFirst(F)) + ')' : '';
+    var nm = names().map(esc), mu = nm.map(function (n) { return 'μ<sub>' + n + '</sub>'; }).join(' = ');
+    $('hyp-box').innerHTML = '<div><b>' + G('h0', 'H<sub>0</sub>') + '</b>: ' + mu + '. Rerata ' + vTxt + ' sama pada semua perlakuan' + fTxt + '.</div>' +
+        '<div><b>' + G('h1', 'H<sub>1</sub>') + '</b>: paling tidak ada satu μ yang berbeda dari yang lain.</div>';
+    var dbp = o.DBP, dbg = o.DBG, h = '';
+    var YD = G('yd', 'Y..'), rr = G('r', 'r'), tt = G('t', 't');
+
+    h += '<div class="sub-title">Faktor koreksi dan jumlah kuadrat</div><div class="cs-list">';
+    h += box(1, G('fk', 'Faktor koreksi (FK)'), 'FK = ' + YD + '² / (' + rr + ' × ' + tt + ')',
+        'FK = ' + fn(o.grand) + '² / (' + R + ' × ' + T + ') = ' + fn(o.grand * o.grand) + ' / ' + N, 'FK = ' + fn(o.FK));
+    h += box(2, G('jkt', 'Jumlah kuadrat total (JKT)'), 'JKT = ' + G('sumsq', 'ΣY<sub>ij</sub>²') + ' − FK',
+        'JKT = ' + fn(o.sq) + ' − ' + fn(o.FK) + '<br>ΣY<sub>ij</sub>² adalah jumlah kuadrat seluruh 25 data (lihat tabel kuadrat di bawah).', 'JKT = ' + fn(o.JKT));
+    h += box(3, G('jkp', 'Jumlah kuadrat perlakuan (JKP)'), 'JKP = Σ' + G('yi', 'Y<sub>i.</sub>') + '² / ' + rr + ' − FK',
+        'JKP = (' + o.colSums.map(function (s) { return fn(s) + '²'; }).join(' + ') + ') / ' + R + ' − ' + fn(o.FK) + ' = ' + fn(o.sumYi2) + ' / ' + R + ' − ' + fn(o.FK), 'JKP = ' + fn(o.JKP));
+    h += box(4, G('jkg', 'Jumlah kuadrat galat (JKG)'), 'JKG = JKT − JKP',
+        'JKG = ' + fn(o.JKT) + ' − ' + fn(o.JKP), 'JKG = ' + fn(o.JKG));
+    h += '</div><details class="inline"><summary><span>Tabel kuadrat tiap data (Y<sub>ij</sub>²)</span></summary><div>' + squaresTable(o) + '</div></details>';
+
+    h += '<div class="sub-title">Derajat bebas</div><div class="cs-list">';
+    h += box(5, G('dbt', 'Derajat bebas total (DBT)'), 'DBT = ' + rr + ' × ' + tt + ' − 1', 'DBT = ' + R + ' × ' + T + ' − 1', 'DBT = ' + o.DBT);
+    h += box(6, G('dbp', 'Derajat bebas perlakuan (DBP)'), 'DBP = ' + tt + ' − 1', 'DBP = ' + T + ' − 1', 'DBP = ' + o.DBP);
+    h += box(7, G('dbg', 'Derajat bebas galat (DBG)'), 'DBG = ' + tt + ' (' + rr + ' − 1)', 'DBG = ' + T + ' × (' + R + ' − 1)', 'DBG = ' + o.DBG);
+    h += '</div>';
+
+    h += '<div class="sub-title">Kuadrat tengah</div><div class="cs-list">';
+    h += box(8, G('ktp', 'Kuadrat tengah perlakuan (KTP)'), 'KTP = JKP / DBP', 'KTP = ' + fn(o.JKP) + ' / ' + dbp, 'KTP = ' + fn(o.KTP));
+    h += box(9, G('ktg', 'Kuadrat tengah galat (KTG)'), 'KTG = JKG / DBG', 'KTG = ' + fn(o.JKG) + ' / ' + dbg, 'KTG = ' + fn(o.KTG));
+    h += '</div>';
+
+    h += '<div class="sub-title">Uji F</div><div class="cs-list">';
+    if (o.okF) h += box(10, G('fh', 'F hitung'), 'F hitung = KTP / KTG', 'F hitung = ' + fn(o.KTP) + ' / ' + fn(o.KTG), 'F = ' + fF(o.F));
+    else h += box(10, G('fh', 'F hitung'), 'F hitung = KTP / KTG', 'KTG bernilai 0 (semua ulangan dalam tiap perlakuan identik), sehingga F hitung tidak dapat dihitung.', 'F = –');
+    h += box(11, G('ft', 'F tabel'), 'F tabel pada α = 5% dan 1%, dengan DB pembilang = ' + dbp + ' (DBP) dan DB penyebut = ' + dbg + ' (DBG)',
+        'F tabel 5% = F(0,05; ' + dbp + '; ' + dbg + ') = ' + fF(o.F05) + '<br>F tabel 1% = F(0,01; ' + dbp + '; ' + dbg + ') = ' + fF(o.F01), '5%: ' + fF(o.F05) + '<br>1%: ' + fF(o.F01));
+    h += '</div>';
+    $('steps-body').innerHTML = h;
+}
+
+function anovaTableHtml(o) {
+    var sg = o.okF ? starOf(o.p) : '';
+    var fcell = o.okF ? fF(o.F) + (sg === 'tn' ? ' tn' : sg) : '–';
+    var h = '<table class="dt"><thead><tr><th class="left">' + G('sk', 'Sumber keragaman') + '</th><th>' + G('db', 'DB') + '</th><th>' + G('jk', 'JK') + '</th><th>' + G('kt', 'KT') + '</th><th>' + G('fh', 'F hitung') + '</th><th>' + G('ft', 'F tabel 5%') + '</th><th>' + G('ft', 'F tabel 1%') + '</th><th>' + G('pval', 'Nilai p') + '</th></tr></thead><tbody>';
+    h += '<tr' + (o.okF && sg !== 'tn' ? ' class="hlrow"' : '') + '><th scope="row" class="left">Perlakuan</th><td>' + o.DBP + '</td><td>' + fn(o.JKP) + '</td><td>' + fn(o.KTP) + '</td><td>' + fcell + '</td><td>' + fF(o.F05) + '</td><td>' + fF(o.F01) + '</td><td>' + (o.okF ? fmtP(o.p) : '–') + '</td></tr>';
+    h += '<tr><th scope="row" class="left">' + G('galat', 'Galat') + '</th><td>' + o.DBG + '</td><td>' + fn(o.JKG) + '</td><td>' + fn(o.KTG) + '</td><td></td><td></td><td></td><td></td></tr>';
+    h += '<tr class="tot"><th scope="row" class="left">Total</th><td>' + o.DBT + '</td><td>' + fn(o.JKT) + '</td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>';
+    return h;
+}
+function anovaTSV(o) {
+    var sg = o.okF ? starOf(o.p) : '';
+    return ['Sumber keragaman\tDB\tJK\tKT\tF hitung\tF tabel 5%\tF tabel 1%\tNilai p',
+        ['Perlakuan', o.DBP, fn(o.JKP), fn(o.KTP), o.okF ? fF(o.F) + (sg === 'tn' ? ' tn' : sg) : '', fF(o.F05), fF(o.F01), o.okF ? fmtP(o.p) : ''].join('\t'),
+        ['Galat', o.DBG, fn(o.JKG), fn(o.KTG), '', '', '', ''].join('\t'),
+        ['Total', o.DBT, fn(o.JKT), '', '', '', '', ''].join('\t')].join('\n');
+}
+function renderLegend() {
+    $('anova-legend').innerHTML = 'Keterangan: ' + G('tn', 'tn') + ' = tidak nyata (p ≥ 0,05); ' + G('s1', '<span class="star">*</span>') + ' = nyata (p &lt; 0,05); ' +
+        G('s2', '<span class="star">**</span>') + ' = sangat nyata (p &lt; 0,01); ' + G('s3', '<span class="star">***</span>') + ' = p &lt; 0,001. F hitung dibandingkan dengan F tabel, dan nilai p dibandingkan dengan ' + G('alpha', 'α') + '.';
+}
+
+var lastConcl = '', lastTSV = '';
+function renderConclusion(o) {
+    var V = $('vn-value').value.trim(), F = $('vn-factor').value.trim();
+    var vTxt = V ? lcFirst(V) : 'variabel yang diukur', fTxt = F ? ' (' + lcFirst(F) + ')' : '';
+    if (!o.okF) {
+        $('alpha-table').innerHTML = '';
+        $('verdict-status').textContent = 'F tidak dapat dihitung';
+        $('verdict-status').className = 'verdict-status fail';
+        $('verdict-sub').textContent = 'Kuadrat tengah galat bernilai 0, karena semua ulangan dalam tiap perlakuan bernilai sama.';
+        lastConcl = 'Anova tidak dapat dihitung karena kuadrat tengah galat bernilai 0.';
+        $('concl-text').textContent = lastConcl;
+        return;
+    }
+    var p = o.p, sg = starOf(p), rej = p < 0.05;
+    var alphas = [[0.05, '0,05', '*'], [0.01, '0,01', '**'], [0.001, '0,001', '***']];
+    var h = '<table class="dt"><thead><tr><th class="left">' + G('alpha', 'α') + '</th><th>' + G('pval', 'Nilai p') + '</th><th class="ctr">Perbandingan</th><th class="left">Keputusan</th><th class="ctr">Simbol</th></tr></thead><tbody>';
+    var top = -1;
+    alphas.forEach(function (a, i) { if (p < a[0]) top = i; });
+    alphas.forEach(function (a, i) {
+        var yes = p < a[0];
+        h += '<tr' + (i === top ? ' class="hlrow"' : '') + '><th scope="row" class="left">' + a[1] + '</th><td>' + fmtP(p) + '</td><td class="ctr">p ' + (yes ? '&lt;' : '≥') + ' α</td><td class="left">' +
+            (yes ? 'Tolak H<sub>0</sub>' : 'Gagal menolak H<sub>0</sub>') + '</td><td class="ctr">' + (yes ? '<span class="star">' + a[2] + '</span>' : '–') + '</td></tr>';
+    });
+    h += '</tbody></table>';
+    $('alpha-table').innerHTML = h;
+    var st = $('verdict-status');
+    st.innerHTML = rej ? 'Tolak H<sub>0</sub> <span style="white-space:nowrap">(' + sg + ')</span>' : 'Gagal menolak H<sub>0</sub> (tn)';
+    st.className = 'verdict-status ' + (rej ? 'reject' : 'fail');
+    var lvl = sg === '*' ? 'berbeda nyata (p < 0,05)' : sg === '**' ? 'berbeda sangat nyata (p < 0,01)' : sg === '***' ? 'berbeda sangat nyata (p < 0,001)' : 'tidak berbeda nyata (p ≥ 0,05)';
+    $('verdict-sub').textContent = 'Rerata ' + vTxt + ' antarperlakuan ' + lvl + '. F hitung = ' + fF(o.F) + (o.F > o.F01 ? ' melebihi F tabel 1% (' + fF(o.F01) + ')' : o.F > o.F05 ? ' melebihi F tabel 5% (' + fF(o.F05) + ') tetapi belum melebihi F tabel 1% (' + fF(o.F01) + ')' : ' tidak melebihi F tabel 5% (' + fF(o.F05) + ')') + '.';
+    var pTxt = p < 0.0001 ? 'p < 0,0001' : 'p = ' + fmt(p, 4), fx = 'F(' + o.DBP + '; ' + o.DBG + ') = ' + fF(o.F);
+    var s;
+    if (rej) {
+        s = 'Anova satu arah menunjukkan perbedaan rerata ' + vTxt + ' yang ' + (sg === '*' ? 'nyata' : 'sangat nyata') + ' antarperlakuan' + fTxt + ', ' + fx + ', ' + pTxt + ' (' + sg + '). H0 ditolak pada α = ' + (sg === '*' ? '0,05' : sg === '**' ? '0,01' : '0,001') + '. Uji lanjut diperlukan untuk mengetahui perlakuan mana yang berbeda.';
+    } else {
+        s = 'Anova satu arah tidak menunjukkan perbedaan rerata ' + vTxt + ' yang nyata antarperlakuan' + fTxt + ', ' + fx + ', ' + pTxt + ' (tn). H0 tidak ditolak pada α = 0,05. Bukti dari sampel belum cukup untuk menyatakan ada perbedaan, dan hal ini tidak membuktikan bahwa rerata populasi sama. Uji lanjut tidak diperlukan.';
+    }
+    lastConcl = s;
+    $('concl-text').textContent = s;
+}
+
+/* ===================== Alur utama ===================== */
+function update() {
+    var vals = [], filled = 0, invalid = 0, r, c, nums = [];
+    for (r = 0; r < R; r++) {
+        vals.push([]);
+        for (c = 0; c < T; c++) {
+            var v = parseCell(cells[r][c].value);
+            if (v !== null && isNaN(v)) { invalid++; cells[r][c].classList.add('bad'); }
+            else { cells[r][c].classList.remove('bad'); if (v !== null) filled++; }
+            vals[r].push(v);
+        }
+    }
+    var tot = 0, cnt = 0;
+    for (c = 0; c < T; c++) {
+        var s = 0, k = 0;
+        for (r = 0; r < R; r++) { var x = vals[r][c]; if (x !== null && !isNaN(x)) { s += x; k++; } }
+        $('sum' + c).textContent = k ? fn(s) : '–';
+        $('avg' + c).textContent = k ? fn(s / k) : '–';
+        tot += s; cnt += k;
+    }
+    $('sumT').textContent = cnt ? fn(tot) : '–';
+    $('avgT').textContent = cnt ? fn(tot / cnt) : '–';
+
+    var st = $('status');
+    if (invalid) { st.textContent = invalid + ' sel berisi teks yang bukan angka (disorot merah). Perbaiki dulu agar perhitungan berjalan.'; st.className = 'status bad'; }
+    else if (filled < N) { st.textContent = 'Terisi ' + filled + ' dari ' + N + ' sel. Lengkapi sisanya untuk melihat langkah perhitungan.'; st.className = 'status'; }
+    else { st.textContent = 'Seluruh ' + N + ' sel terisi.'; st.className = 'status ok'; }
+
+    if (!invalid && filled === N) {
+        var o = compute(vals);
+        $('results').style.display = 'block'; $('empty-state').style.display = 'none';
+        renderSteps(o);
+        $('anova-table').innerHTML = anovaTableHtml(o);
+        lastTSV = anovaTSV(o);
+        renderLegend();
+        renderConclusion(o);
+    } else {
+        $('results').style.display = 'none'; $('empty-state').style.display = 'block';
+    }
+}
+
+function setData(rows, nm, vName, fName) {
+    for (var r = 0; r < R; r++) for (var c = 0; c < T; c++) cells[r][c].value = rows ? String(rows[r][c]).replace('.', ',') : '';
+    for (var c2 = 0; c2 < T; c2++) nameInputs[c2].value = nm ? nm[c2] : DEFAULT_NAMES[c2];
+    $('vn-value').value = vName || ''; $('vn-factor').value = fName || '';
+    update();
+}
+function copyText(txt, b, label) {
+    function done() { b.textContent = 'Tersalin'; setTimeout(function () { b.textContent = label; }, 1600); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
+    else { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); done(); }
+}
+
+/* Contoh data: kolom = perlakuan, baris = ulangan */
+var EX1 = { nm: ['Pakan A', 'Pakan B', 'Pakan C', 'Pakan D', 'Pakan E'], v: 'Pertambahan bobot badan (g/hari)', f: 'Jenis pakan', rows: [
+    [38, 42, 47, 40, 36], [40, 44, 45, 42, 38], [37, 43, 48, 41, 35], [41, 41, 46, 39, 37], [39, 45, 49, 43, 39]] };
+var EX2 = { nm: ['Lokasi A', 'Lokasi B', 'Lokasi C', 'Lokasi D', 'Lokasi E'], v: 'Hematokrit (%)', f: 'Lokasi peternakan', rows: [
+    [40, 43, 41, 44, 39], [44, 39, 46, 40, 43], [38, 45, 38, 39, 41], [42, 40, 43, 42, 44], [41, 42, 40, 45, 40]] };
+
+/* ===================== Pemasangan peristiwa ===================== */
+buildInputTable();
+(function () {
+    var th = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    function ap(t) { document.documentElement.setAttribute('data-theme', t); $('themebtn').setAttribute('aria-checked', t === 'dark' ? 'true' : 'false'); }
+    ap(th);
+    $('themebtn').addEventListener('click', function () { th = th === 'dark' ? 'light' : 'dark'; ap(th); try { localStorage.setItem('tema-kalkulator', th); } catch (e) {} });
+})();
+var timer = null;
+function schedule() { clearTimeout(timer); timer = setTimeout(update, 80); }
+['vn-value', 'vn-factor'].forEach(function (id) { $(id).addEventListener('input', schedule); });
+nameInputs.forEach(function (e) { e.addEventListener('input', schedule); });
+for (var rr0 = 0; rr0 < R; rr0++) for (var cc0 = 0; cc0 < T; cc0++) (function (el) {
+    el.addEventListener('input', schedule);
+    el.addEventListener('keydown', function (e) {
+        var r = +el.dataset.r, c = +el.dataset.c, nr = r;
+        if (e.key === 'Enter' || e.key === 'ArrowDown') nr = r + 1;
+        else if (e.key === 'ArrowUp') nr = r - 1;
+        else return;
+        e.preventDefault();
+        if (nr >= 0 && nr < R) { cells[nr][c].focus(); cells[nr][c].select(); }
+        else if (e.key === 'Enter' && nr >= R && c + 1 < T) { cells[0][c + 1].focus(); cells[0][c + 1].select(); }
+    });
+    el.addEventListener('paste', function (e) {
+        var txt = (e.clipboardData || window.clipboardData).getData('text');
+        if (!txt) return;
+        var rows = txt.replace(/\r/g, '').split('\n');
+        while (rows.length && rows[rows.length - 1].trim() === '') rows.pop();
+        var grid = rows.map(function (l) { return l.split('\t'); });
+        if (grid.length === 1 && grid[0].length === 1) return;
+        e.preventDefault();
+        var r0 = +el.dataset.r, c0 = +el.dataset.c;
+        for (var i = 0; i < grid.length; i++) for (var j = 0; j < grid[i].length; j++) if (r0 + i < R && c0 + j < T) cells[r0 + i][c0 + j].value = grid[i][j].trim();
+        update();
+    });
+})(cells[rr0][cc0]);
+$('btn-ex1').addEventListener('click', function () { setData(EX1.rows, EX1.nm, EX1.v, EX1.f); });
+$('btn-ex2').addEventListener('click', function () { setData(EX2.rows, EX2.nm, EX2.v, EX2.f); });
+$('btn-clear').addEventListener('click', function () { setData(null, null, '', ''); cells[0][0].focus(); });
+$('btn-copy-tbl').addEventListener('click', function () { copyText(lastTSV, this, 'Salin tabel anova'); });
+$('btn-copy-concl').addEventListener('click', function () { copyText(lastConcl, this, 'Salin kesimpulan'); });
+update();
+})();
+</script>
+
+</body>
+</html>
