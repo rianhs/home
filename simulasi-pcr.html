@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulasi PCR untuk Biokimia Veteriner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:#F2F2F7; --card:#FFFFFF; --text:#1D1D1F; --muted:#6E6E73; --line:rgba(60,60,67,.13);
+  --fill:rgba(118,118,128,.12); --nav:rgba(242,242,247,.82); --navfade:rgba(242,242,247,.96);
+  --accent:#0071E3; --accent-soft:rgba(0,113,227,.10);
+  --green:#248A3D; --green-soft:rgba(52,199,89,.14);
+  --orange:#B25000; --orange-soft:rgba(255,149,0,.14);
+  --red:#D70015; --red-soft:rgba(255,59,48,.11);
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.04);
+  --tipbg:#1D1D1F; --tiptx:#F5F5F7;
+  --dna1:#2F6FDB; --dna2:#1F3B73; --pF:#1E9E63; --pR:#D9741F; --rna:#A64BC9;
+  --c-karbo:#E07A5F; --c-lipid:#E3B730; --c-prot:#8E6CCF; --c-garam:#8E96A3; --c-na:#2F6FDB;
+  --glass:rgba(60,60,67,.5); --liquid:rgba(120,170,230,.20); --gelc:#D9E3EB; --cell:#FFFFFF;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#000; --card:#1C1C1E; --text:#F5F5F7; --muted:#98989F; --line:rgba(84,84,88,.55);
+    --fill:rgba(118,118,128,.24); --nav:rgba(22,22,24,.82); --navfade:rgba(22,22,24,.96);
+    --accent:#2997FF; --accent-soft:rgba(41,151,255,.18);
+    --green:#30D158; --green-soft:rgba(48,209,88,.16);
+    --orange:#FF9F0A; --orange-soft:rgba(255,159,10,.16);
+    --red:#FF453A; --red-soft:rgba(255,69,58,.16);
+    --shadow:none;
+    --tipbg:#F5F5F7; --tiptx:#1D1D1F;
+    --dna1:#5B9BFF; --dna2:#9DB8F0; --pF:#34C77B; --pR:#FF9F43; --rna:#D08BF0;
+    --c-na:#5B9BFF; --glass:rgba(235,235,245,.45); --liquid:rgba(120,170,230,.16); --gelc:#3A4350; --cell:#2C2C2E;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","tnum"}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:10px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Tooltip */
+.tt{text-decoration:underline dotted;text-decoration-thickness:1.5px;text-underline-offset:3px;text-decoration-color:var(--muted);cursor:help;border-radius:4px;transition:background .15s}
+.tt:hover,.tt.on{background:var(--accent-soft)}
+#tip{position:fixed;z-index:100;max-width:min(320px,calc(100vw - 16px));background:var(--tipbg);color:var(--tiptx);font-size:14px;line-height:1.45;
+  padding:10px 12px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.25);display:none;pointer-events:none}
+#tip b{display:block;margin-bottom:3px}
+
+/* Navigasi atas */
+.nav{position:sticky;top:0;z-index:20;background:var(--nav);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--line);padding-top:env(safe-area-inset-top)}
+.nav-inner{max-width:1000px;margin:0 auto;padding:10px 20px}
+.nav-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:600;font-size:15px;line-height:1.3}
+.brand small{display:block;color:var(--muted);font-weight:400;font-size:13px}
+.linkbtn{background:none;border:0;color:var(--accent);font-size:15px;cursor:pointer;padding:6px 0}
+.progress{height:3px;background:var(--fill);border-radius:3px;margin-top:10px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .4s}
+.steps-wrap{position:relative;margin-top:10px}
+.steps-wrap::before,.steps-wrap::after{content:"";position:absolute;top:0;bottom:0;width:32px;z-index:2;pointer-events:none;opacity:0;transition:opacity .2s}
+.steps-wrap::before{left:0;background:linear-gradient(to right,var(--navfade),transparent)}
+.steps-wrap::after{right:0;background:linear-gradient(to left,var(--navfade),transparent)}
+.steps-wrap.fl::before,.steps-wrap.fr::after{opacity:1}
+.steps{position:relative;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;cursor:grab;touch-action:pan-x}
+.steps::-webkit-scrollbar{display:none}
+.steps.drag{cursor:grabbing;user-select:none;-webkit-user-select:none}
+.pill{flex:none;border:0;background:var(--fill);color:var(--muted);font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.pill.done{color:var(--text)}
+.pill.active{background:var(--accent);color:#fff}
+.pill:disabled{opacity:.4;cursor:default}
+
+main{max-width:1000px;margin:0 auto;padding:24px 20px 130px}
+.kicker{font-size:14px;color:var(--muted);margin:0 0 4px}
+h1{font-size:32px;line-height:1.15;letter-spacing:-.022em;margin:0 0 10px;font-weight:700}
+h2{font-size:19px;letter-spacing:-.012em;margin:0 0 6px;font-weight:600}
+h3{font-size:16px;margin:14px 0 6px;font-weight:600}
+p{margin:0 0 10px}
+.lead{color:var(--muted);font-size:17px;margin:0 0 22px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.card{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:20px;margin:0 0 14px}
+.card.locked{opacity:.45;pointer-events:none}
+.card .sub{color:var(--muted);font-size:15px;margin-bottom:14px}
+.step-no{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--fill);font-size:13px;font-weight:600;align-items:center;justify-content:center;margin-right:8px;vertical-align:1px}
+.card.complete .step-no{background:var(--green);color:#fff}
+.clean{margin:0;padding-left:20px}
+.clean li{margin:4px 0}
+
+.note{border-radius:14px;padding:13px 15px;margin:12px 0;font-size:15px;background:var(--accent-soft)}
+.note.warn{background:var(--orange-soft)}
+.note.ok{background:var(--green-soft)}
+.note.bad{background:var(--red-soft)}
+.note strong{display:block;margin-bottom:3px}
+.note p:last-child{margin:0}
+
+.btn{appearance:none;border:0;border-radius:12px;font-weight:600;font-size:16px;padding:12px 18px;cursor:pointer;background:var(--accent);color:#fff;transition:transform .1s,opacity .2s;line-height:1.2}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.tint{background:var(--accent-soft);color:var(--accent)}
+.btn.gray{background:var(--fill);color:var(--text)}
+.btn.sm{font-size:14px;padding:8px 13px;border-radius:10px}
+.btn.wide{width:100%}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.between{justify-content:space-between}
+.mt{margin-top:14px}
+
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--fill);border-radius:10px;padding:2px;gap:2px}
+.seg button{border:0;background:transparent;font-size:14px;font-weight:500;padding:7px 14px;border-radius:8px;cursor:pointer;color:var(--text)}
+.seg button.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+
+/* Akordeon dengan ikon segitiga */
+.acc{border-top:.5px solid var(--line)}
+.acc>summary{display:flex;align-items:center;gap:10px;padding:13px 0;font-weight:600;font-size:16px;cursor:pointer;list-style:none}
+.acc>summary::-webkit-details-marker{display:none}
+.acc>summary::before{content:"▶";font-size:11px;color:var(--accent);width:12px;flex:none}
+.acc[open]>summary::before{content:"▼"}
+.acc .accbody{padding:0 0 12px 22px;font-size:15px}
+
+/* Beranda */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 14px}
+.stats div{background:var(--card);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)}
+.stats b{display:block;font-size:16px;font-weight:600}
+.stats span{font-size:13px;color:var(--muted)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.fchip{background:var(--fill);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:500}
+.fchip.on{background:var(--accent);color:#fff}
+.fchip.on .tt{text-decoration-color:rgba(255,255,255,.7)}
+.fchip.past{background:var(--green-soft);color:var(--green)}
+.fchip.skip{opacity:.5}
+.farr{color:var(--muted);font-size:14px}
+.flow.mini{margin:0 0 14px}
+.flow.mini .fchip{font-size:12px;padding:3px 10px}
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.case{text-align:left;border:1.5px solid transparent;background:var(--fill);border-radius:14px;padding:14px 16px;cursor:pointer;color:var(--text);font-size:15px}
+.case.on{border-color:var(--accent);background:var(--accent-soft)}
+.case b{display:block;font-size:16px;margin-bottom:4px}
+.case span{color:var(--muted);font-size:14px;display:block;line-height:1.45}
+
+/* Panggung visual */
+.split{display:grid;gap:14px;grid-template-columns:minmax(0,1fr);margin:0 0 14px}
+@media (min-width:900px){.split{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
+.split>.card{margin:0}
+.stage{background:var(--fill);border-radius:14px;padding:10px}
+.stage svg{display:block;width:100%;height:auto}
+.svt{font-size:12px;fill:var(--muted);font-family:inherit}
+.svl{font-size:11.5px;fill:var(--muted);font-family:inherit}
+.svb{font-size:13px;font-weight:600;fill:var(--text);font-family:inherit}
+.glass{fill:none;stroke:var(--glass);stroke-width:1.5}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:12px}
+.tile{display:flex;gap:10px;align-items:center;background:var(--fill);border-radius:12px;padding:8px 11px;transition:opacity .4s,background .4s}
+.tile svg{flex:none}
+.tile b{display:block;font-weight:600;font-size:14px;line-height:1.3}
+.tile span{color:var(--muted);font-size:13px;line-height:1.3;display:block}
+.tile.gone{opacity:.45}
+.tile.gone b{text-decoration:line-through}
+.tile.keep{background:var(--green-soft)}
+
+.seq{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.seqbtn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:12px;background:var(--fill);color:var(--text);padding:10px 14px;font-size:15px;font-weight:500;cursor:pointer;line-height:1.3}
+.seqbtn .num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.seqbtn.next{background:var(--accent);color:#fff}
+.seqbtn.next .num{background:rgba(255,255,255,.25);color:#fff}
+.seqbtn.done{background:var(--green-soft);color:var(--green);cursor:pointer}
+.seqbtn.done .num{background:var(--green);color:#fff}
+.seqbtn.wait{opacity:.45;cursor:default}
+.subchoice{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 2px 38px}
+.stepnav{display:flex;gap:8px;margin:12px 0 0}
+.stepnav .btn{flex:1}
+.stepnav .btn:first-child{flex:0 0 auto}
+.tile .was{font-size:12px;opacity:.85}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:16px;height:4px;border-radius:2px;margin-right:4px;vertical-align:middle}
+
+.popts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.popt{border:1.5px solid transparent;background:var(--fill);border-radius:12px;padding:8px 8px 10px;cursor:pointer;color:var(--text);text-align:center;font-size:14px;font-weight:600}
+.popt svg{display:block;width:100%;height:auto;margin-bottom:4px}
+.popt.ok{border-color:var(--green);background:var(--green-soft)}
+.popt.no{border-color:var(--orange);background:var(--orange-soft)}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.cbtn{border:0;background:var(--fill);color:var(--text);border-radius:10px;padding:8px 12px;font-size:14px;font-weight:500;cursor:pointer}
+.cbtn.on{background:var(--accent);color:#fff}
+.cbtn.ok{background:var(--green-soft);color:var(--green);cursor:default}
+.cbtn.no{background:var(--orange-soft);color:var(--orange)}
+.cbtn:disabled{cursor:default}
+.cbtn.lane{min-width:46px;text-align:center}
+.mixgrid{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;align-items:start}
+.mixgrid svg{width:96px;height:auto;display:block}
+
+.srow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:.5px solid var(--line)}
+.srow:first-of-type{border-top:0}
+.thermo{display:flex;align-items:baseline;gap:10px;margin:2px 0 6px}
+.thermo b{font-size:36px;font-weight:600;letter-spacing:-.02em}
+.thermo span{color:var(--muted);font-size:15px}
+.pick{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--fill);margin:6px 0;cursor:pointer;border:1.5px solid transparent;width:100%;text-align:left;font-size:15px;color:var(--text)}
+.pick.on{border-color:var(--accent);background:var(--accent-soft)}
+.pick:disabled{cursor:default}
+.calc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.calc{background:var(--fill);border-radius:14px;padding:12px 14px}
+.calc span{font-size:13px;color:var(--muted);display:block}
+.calc b{font-size:20px;font-weight:600;display:block;margin-top:2px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+
+/* Layar qPCR */
+.screen{background:#0F1216;color:#E6E8EB;border-radius:16px;padding:14px}
+.shead{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#9AA4AF;margin-bottom:12px;gap:10px;flex-wrap:wrap}
+.shead b{color:#E6E8EB;font-size:14px;font-weight:600}
+.qwrap{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){.qwrap{grid-template-columns:190px minmax(0,1fr);align-items:start}}
+.qgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+@media (min-width:900px){.qgrid{grid-template-columns:repeat(4,1fr)}}
+.well{aspect-ratio:1;border-radius:50%;background:#1E242C;border:1px solid #2C343E;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#9AA4AF;transition:background .3s}
+.well.lit{color:#0F1216;border-color:transparent}
+.qplot svg{display:block;width:100%;height:auto}
+.ctgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.ctgrid div{background:var(--fill);border-radius:10px;padding:8px 10px;font-size:13px}
+.ctgrid b{display:block;font-size:16px}
+.ctgrid .neg b{color:var(--muted);font-size:14px;font-weight:500}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:.5px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:13px}
+tr.hl td{background:var(--accent-soft)}
+
+/* Kuis */
+.q{margin-top:18px}
+.qt{font-weight:500}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:11px 14px;margin:6px 0;font-size:15px;cursor:pointer;color:var(--text)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--green);background:var(--green-soft)}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+
+/* Navigasi bawah */
+.footer-nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:var(--nav);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-top:.5px solid var(--line);padding:10px 20px calc(10px + env(safe-area-inset-bottom))}
+.foot-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.foot-hint{font-size:13px;color:var(--muted);text-align:center;flex:1}
+footer.credit{font-size:13px;color:var(--muted);margin-top:24px;text-align:center}
+
+@media (max-width:560px){
+  h1{font-size:27px}
+  .stats{grid-template-columns:1fr}
+  .calc-grid{grid-template-columns:1fr}
+  .foot-hint{display:none}
+  .card{padding:18px 16px}
+  .mixgrid{grid-template-columns:70px minmax(0,1fr)}
+  .mixgrid svg{width:70px}
+  .subchoice{margin-left:0}
+}
+@media print{
+  .nav,.footer-nav,.noprint{display:none!important}
+  body{background:#fff;color:#000}
+  main{padding:0}
+  .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="nav" id="nav"></header>
+<main id="app"></main>
+<nav class="footer-nav" id="foot"></nav>
+<div id="tip" role="tooltip"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Utilitas ---------- */
+const KEY='pcr-sim-v1';
+const SUPMAP={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+const sup=n=>String(n).split('').map(c=>SUPMAP[c]||c).join('');
+const fmt=n=>Number(n).toLocaleString('id-ID');
+const dec1=n=>n.toFixed(1).replace('.',',');
+function sci(x){if(x<1e4)return fmt(Math.round(x));let e=Math.floor(Math.log10(x));let m=x/Math.pow(10,e);m=Math.round(m*10)/10;if(m>=10){m/=10;e++;}return m.toFixed(1).replace('.',',')+' × 10'+sup(e);}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const newSeed=()=>Math.floor(Math.random()*1e9);
+const $=id=>document.getElementById(id);
+const val=x=>typeof x==='function'?x():x;
+const REDUCED=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+const sleep=ms=>new Promise(r=>setTimeout(r,REDUCED?Math.min(ms,60):ms));
+function tween(ms,f){return new Promise(res=>{if(REDUCED){f(1);res();return;}const t0=performance.now();const s=t=>{const k=Math.min(1,(t-t0)/ms);f(k);if(k<1)requestAnimationFrame(s);else res();};requestAnimationFrame(s);});}
+let BUSY=false;
+function lockUI(){document.querySelectorAll('#app button,#foot button,#nav button').forEach(b=>b.disabled=true);}
+
+/* ---------- Kasus ---------- */
+const KASUS={
+  dna:{nama:'Kasus DNA',agen:'<i>Salmonella</i>',sampel:'swab kloaka ayam',target:'gen <i>invA</i>',asam:'DNA',bp:284,pcr:'PCR',qpcr:'qPCR',tmpl:'DNA'},
+  rna:{nama:'Kasus RNA',agen:'virus influenza A (avian influenza)',sampel:'swab orofaring ayam',target:'gen M',asam:'RNA',bp:245,pcr:'RT-PCR',qpcr:'RT-qPCR',tmpl:'cDNA'}
+};
+const K=()=>KASUS[S.kasus||'dna'];
+
+const STEPS=[
+  {id:'beranda',t:'Beranda'},
+  {id:'isolasi',t:'Isolasi asam nukleat'},
+  {id:'rt',t:'Transkripsi balik'},
+  {id:'reaksi',t:'Primer dan reaksi'},
+  {id:'siklus',t:'Siklus suhu'},
+  {id:'gel',t:'Gel elektroforesis'},
+  {id:'qpcr',t:'qPCR'},
+  {id:'penutup',t:'Penutup'}
+];
+
+/* ---------- Glosarium untuk tooltip ---------- */
+const GL={
+  asamnukleat:['Asam nukleat','Molekul pembawa informasi genetik, yaitu DNA dan RNA. Keduanya tersusun atas nukleotida.'],
+  kit:['Kit isolasi','Paket reagen dan kolom siap pakai dari produsen. Setiap kit punya protokol sendiri, tetapi prinsipnya serupa: lisis, pengikatan, pencucian, dan elusi.'],
+  lisis:['Lisis','Pemecahan membran sel dan inti sehingga isinya keluar. Buffer lisis biasanya berisi deterjen dan garam kaotropik (misalnya guanidin) yang juga menonaktifkan enzim perusak asam nukleat.'],
+  proteinasek:['Proteinase K','Enzim yang mencerna protein, termasuk DNase dan RNase yang dapat merusak asam nukleat.'],
+  silika:['Membran silika','Membran di dasar kolom kit. Dalam kondisi garam tinggi, asam nukleat menempel pada silika, sedangkan komponen lain lolos.'],
+  sentrifugasi:['Sentrifugasi','Pemutaran tabung dengan kecepatan tinggi sehingga cairan terdorong melewati membran kolom.'],
+  pencuci:['Buffer pencuci','Larutan berbasis etanol yang membersihkan garam dan pengotor tanpa melepas asam nukleat dari membran.'],
+  elusi:['Elusi','Pelepasan asam nukleat dari membran silika memakai buffer bergaram rendah atau air bebas nuklease.'],
+  tabung15:['Tabung mikrosentrifus 1,5 mL','Tabung plastik kecil bertutup. Sering disebut tabung Eppendorf, mengikuti nama salah satu produsennya.'],
+  rnase:['RNase','Enzim pengurai RNA. Enzim ini ada di kulit, debu, dan permukaan alat, serta sangat stabil. Karena itu RNA dikerjakan dengan sarung tangan, tip berfilter, dan di atas es.'],
+  alikuot:['Alikuot','Membagi larutan ke beberapa tabung kecil. Setiap kali perlu, cukup satu tabung yang dicairkan.'],
+  bekucair:['Beku-cair berulang','Membekukan dan mencairkan sampel berkali-kali. Proses ini dapat memotong-motong asam nukleat, terutama RNA.'],
+  kemurnian:['Kemurnian','Kemurnian dapat dicek dengan spektrofotometer. Rasio A260/A280 sekitar 1,8 untuk DNA dan sekitar 2,0 untuk RNA dianggap murni.'],
+  rt:['Transkripsi balik (RT)','Reverse transcription, yaitu pembentukan DNA dari cetakan RNA. Polimerase PCR tidak dapat memakai RNA sebagai cetakan, sehingga RNA diubah dulu menjadi cDNA.'],
+  revtrans:['Reverse transcriptase','Enzim yang menyusun untai DNA dengan RNA sebagai cetakan. Enzim ini awalnya ditemukan pada retrovirus.'],
+  cdna:['cDNA','Complementary DNA, yaitu DNA yang urutannya komplementer dengan RNA cetakannya. cDNA menjadi template PCR.'],
+  onestep:['Satu tahap atau dua tahap','Pada RT-PCR satu tahap, RT dan PCR berlangsung di tabung yang sama. Pada cara dua tahap, cDNA dibuat dulu di tabung terpisah, lalu sebagian dipakai untuk PCR.'],
+  primerrt:['Primer untuk RT','RT juga memerlukan primer: primer spesifik gen target, oligo-dT (menempel pada ekor poli-A mRNA), atau random hexamer (menempel acak).'],
+  miqe:['MIQE','Minimum Information for Publication of Quantitative Real-Time PCR Experiments (Bustin dkk., 2009), pedoman pelaporan qPCR. Pedoman ini memakai istilah RT-qPCR dan menyarankan singkatan RT khusus untuk reverse transcription.'],
+  pcr:['PCR','Polymerase chain reaction (reaksi berantai polimerase). Teknik untuk memperbanyak potongan DNA tertentu sampai jutaan kali lipat.'],
+  qpcr:['qPCR','PCR kuantitatif, disebut juga real-time PCR. Jumlah produk dipantau lewat fluoresensi di setiap siklus.'],
+  target:()=>S.kasus==='rna'?['Gen M','Gen matriks pada segmen 7 genom virus influenza A. Urutannya relatif terlestarikan antarsubtipe. Primer M52C dan M253R (Fouchier dkk., 2000) menghasilkan amplikon sekitar 245 bp.']:
+    ['Gen invA','Gen invasi pada Salmonella yang lazim dipakai sebagai penanda genus. Primer 139 dan 141 (Rahn dkk., 1992) menghasilkan amplikon 284 bp.'],
+  primer:['Primer','Potongan DNA untai tunggal yang pendek, umumnya 18 sampai 25 nukleotida. Primer menempel pada urutan komplementer di tepi daerah target, lalu diperpanjang oleh polimerase.'],
+  pf:['Primer forward','Primer yang menempel pada untai bawah dan memanjang searah untai atas.'],
+  pr:['Primer reverse','Primer yang menempel pada untai atas dan memanjang ke arah sebaliknya. Urutannya ditulis sebagai komplemen balik dari untai atas.'],
+  amplikon:['Amplikon','Produk PCR, yaitu potongan DNA yang dibatasi kedua primer. Panjangnya dihitung dari ujung primer forward sampai ujung primer reverse.'],
+  bp:['bp','Base pair atau pasang basa, satuan panjang DNA untai ganda. 1 kb = 1.000 bp.'],
+  ujung3:["Ujung 5' dan 3'","Penanda arah untai DNA. Polimerase selalu menambahkan nukleotida di ujung 3', sehingga untai baru tumbuh dari arah 5' ke 3'. Kedua untai DNA berpasangan dengan arah berlawanan (antiparalel)."],
+  template:['Template','Cetakan, yaitu DNA atau cDNA dari sampel yang mungkin mengandung urutan target.'],
+  dntp:['dNTP','Deoksinukleotida trifosfat (dATP, dTTP, dGTP, dCTP), bahan penyusun untai DNA baru.'],
+  taq:['Taq polimerase','DNA polimerase dari bakteri Thermus aquaticus yang hidup di sumber air panas. Enzim ini tahan pemanasan 95 °C dan bekerja optimal sekitar 72 °C.'],
+  buffer:['Buffer dan MgCl₂','Buffer menjaga pH reaksi. Ion Mg²⁺ diperlukan polimerase untuk bekerja, dan kadarnya memengaruhi efisiensi serta spesifisitas reaksi.'],
+  air:['Air bebas nuklease','Air murni yang bebas enzim pengurai DNA dan RNA. Dipakai untuk mencukupkan volume reaksi.'],
+  mastermix:['Master mix','Campuran siap pakai berisi buffer, MgCl₂, dNTP, dan polimerase. Pengguna tinggal menambahkan primer, air, dan template.'],
+  volume:['Volume reaksi','Umumnya 20 sampai 25 µL per tabung PCR 0,2 mL, dengan template sekitar 1 sampai 5 µL. Ikuti petunjuk kit.'],
+  kpos:['Kontrol positif (K+)','Tabung berisi template yang pasti mengandung target. Bila tidak muncul produk, reaksi gagal dan hasil negatif pada sampel tidak dapat dipercaya.'],
+  ntc:['NTC (no template control)','Kontrol negatif (K−) berisi semua komponen kecuali template, diganti air. Bila muncul produk, ada kontaminasi dan hasil run tidak valid.'],
+  thermal:['Thermal cycler','Mesin PCR yang menaikkan dan menurunkan suhu blok tabung secara otomatis sesuai program.'],
+  denaturasi:['Denaturasi','Pemisahan DNA untai ganda menjadi untai tunggal dengan pemanasan sekitar 94 sampai 95 °C. Ikatan hidrogen antarbasa putus.'],
+  annealing:['Annealing','Penempelan primer pada urutan komplementernya di untai tunggal. Suhunya bergantung pada primer, umumnya 50 sampai 65 °C (sekitar Tm dikurangi 5 °C).'],
+  ekstensi:['Ekstensi','Pemanjangan primer oleh polimerase pada sekitar 72 °C dengan menambahkan dNTP sesuai pasangan basanya. Lamanya kira-kira 1 menit per 1.000 bp.'],
+  tm:['Tm','Melting temperature, suhu saat separuh primer terlepas dari pasangannya. Nilainya dipengaruhi panjang primer dan kandungan basa G dan C.'],
+  program:()=>S.kasus==='rna'?['Program lengkap','Pada RT-PCR satu tahap, program diawali tahap RT (sekitar 42 sampai 55 °C selama 10 sampai 30 menit, mengikuti kit). Pemanasan 95 °C lalu mengaktifkan polimerase dan menonaktifkan reverse transcriptase, diikuti 35 sampai 40 siklus PCR.']:
+    ['Program lengkap','Contoh untuk gen invA: denaturasi awal 94 °C 1 menit; 35 siklus 94 °C 30 detik, 60 sampai 64 °C 30 detik, 72 °C 30 detik; ekstensi akhir 72 °C 4 menit; lalu ditahan pada 4 °C.'],
+  produkpendek:['Produk sepanjang target','Pada siklus pertama, untai baru masih lebih panjang dari daerah target. Untai yang tepat dibatasi kedua primer mulai muncul pada siklus ketiga, lalu menjadi produk utama karena jumlahnya berlipat dua setiap siklus.'],
+  eksponensial:['Eksponensial','Jumlah salinan berlipat dua setiap siklus: 2, 4, 8, 16, dan seterusnya. Setelah n siklus jumlahnya 2ⁿ kali lipat.'],
+  plateau:['Plateau','Fase akhir saat produk tidak lagi bertambah berarti, karena primer dan dNTP menipis, polimerase melemah, dan produk saling menempel kembali.'],
+  elektroforesis:['Elektroforesis','Pemisahan molekul bermuatan di dalam gel dengan medan listrik. DNA yang bermuatan negatif bergerak menuju kutub positif.'],
+  agarosa:['Gel agarosa','Gel dari polisakarida rumput laut yang membentuk jaring berpori. Gel 1% cocok untuk fragmen besar (sekitar 500 sampai 10.000 bp). Gel 2% memisahkan fragmen kecil (sekitar 100 sampai 1.000 bp) dengan lebih jelas.'],
+  sumur:['Sumur','Cekungan kecil di ujung gel tempat sampel dimasukkan.'],
+  loading:['Loading dye','Pewarna pemberat yang dicampur ke sampel. Gliserol di dalamnya membuat sampel tenggelam ke sumur, dan warnanya menunjukkan sejauh mana elektroforesis berjalan. Pewarna ini tidak mewarnai DNA.'],
+  marker:['Marker (DNA ladder)','Campuran fragmen DNA dengan ukuran yang sudah diketahui, misalnya kelipatan 100 bp. Ukuran pita sampel ditaksir dengan membandingkannya dengan pita marker.'],
+  katoda:['Katoda dan anoda','Katoda adalah kutub negatif (kabel hitam), anoda adalah kutub positif (kabel merah). Sumur diletakkan di sisi katoda.'],
+  fosfat:['Gugus fosfat','Bagian tulang punggung DNA yang bermuatan negatif. Setiap nukleotida membawa muatan yang sama, sehingga kecepatan gerak di gel ditentukan oleh ukuran fragmen.'],
+  pewarna:['Pewarna DNA','Senyawa yang menyelip di antara pasangan basa dan berpendar di bawah sinar UV atau cahaya biru. Contohnya etidium bromida (bersifat mutagenik) dan alternatif yang lebih aman seperti SYBR Safe atau GelRed.'],
+  uv:['Transiluminator UV','Alat penyinar dari bawah gel. Sinar UV merusak mata dan kulit, jadi gunakan pelindung wajah atau kaca penyaring.'],
+  pita:['Pita','Kumpulan jutaan molekul DNA berukuran sama yang berkumpul di satu posisi dan tampak sebagai garis menyala.'],
+  nonspesifik:['Pita nonspesifik','Pita dengan ukuran berbeda dari target. Muncul bila primer menempel di tempat lain, misalnya karena suhu annealing terlalu rendah.'],
+  primerdimer:['Primer-dimer','Produk pendek (umumnya di bawah 100 bp) dari primer yang saling menempel. Pita ini tidak dibaca sebagai pita target.'],
+  fluoresensi:['Fluoresensi','Pendaran cahaya dari pewarna atau probe. Makin banyak produk PCR, makin kuat pendarannya.'],
+  sybr:['SYBR Green','Pewarna yang berpendar bila terselip di DNA untai ganda. Harganya murah, tetapi ikut berpendar pada produk nonspesifik, sehingga biasanya disertai analisis kurva leleh (melt curve).'],
+  probe:['Probe (misalnya TaqMan)','Potongan DNA pendek berlabel fluoresen yang menempel khusus pada daerah target. Sinyal muncul saat probe dipotong polimerase, sehingga lebih spesifik daripada SYBR Green.'],
+  threshold:['Threshold (ambang)','Garis batas sinyal fluoresensi di atas latar belakang. Titik saat kurva memotong garis ini menentukan nilai Ct.'],
+  ct:['Ct atau Cq','Cycle threshold atau quantification cycle, yaitu nomor siklus saat sinyal melewati ambang. Makin banyak target awal, makin kecil Ct. Selisih 1 siklus setara sekitar dua kali lipat jumlah target.'],
+  baseline:['Baseline','Sinyal latar belakang pada siklus awal, sebelum produk cukup banyak untuk terdeteksi.'],
+  kurvastd:['Kurva standar','Seri pengenceran dengan jumlah salinan yang diketahui. Ct sampel dibandingkan dengan kurva ini untuk menghitung jumlah salinan target.'],
+  cutoff:['Batas Ct','Setiap protokol menetapkan batas, misalnya Ct di atas 35 sampai 40 dianggap negatif atau meragukan. Ikuti batas pada protokol yang dipakai.'],
+  sequencer:['Sequencer','Mesin pembaca urutan basa DNA.'],
+  sanger:['Sekuensing Sanger','Metode klasik untuk membaca satu fragmen DNA, misalnya amplikon PCR, sepanjang sekitar 800 sampai 1.000 basa.'],
+  ngs:['NGS','Next-generation sequencing, membaca jutaan fragmen sekaligus. Dipakai untuk genom utuh atau banyak target dalam satu kali run.'],
+  genbank:['GenBank dan BLAST','GenBank adalah basis data urutan DNA milik NCBI. BLAST adalah alat untuk mencari urutan yang mirip dengan urutan hasil sekuensing.'],
+  dnamati:()=>S.kasus==='rna'?['RNA dari virus tidak aktif','PCR mendeteksi asam nukleat. Virus yang sudah tidak aktif masih dapat memberi hasil positif. Untuk memastikan virus masih hidup dan menular, diperlukan isolasi virus.']:['DNA dari organisme mati','PCR mendeteksi asam nukleat. Bakteri yang sudah mati masih dapat memberi hasil positif. Untuk memastikan organisme hidup, diperlukan kultur.'],
+  subtipe:['Subtipe H dan N','Subtipe virus influenza A ditentukan oleh gen hemaglutinin (H) dan neuraminidase (N), misalnya H5N1 atau H9N2. Gen M dimiliki semua subtipe, sehingga tidak dapat membedakannya.']
+};
+const T=(k,label)=>'<span class="tt" tabindex="0" data-k="'+k+'">'+(label||val(GL[k])[0])+'</span>';
+
+/* ---------- Kuis ---------- */
+const QUIZ={
+  isolasi:[
+    {q:'Apa tujuan utama isolasi asam nukleat sebelum PCR?',
+     c:'Memisahkan asam nukleat dari komponen sel lain',
+     w:['Memperbanyak DNA target di dalam sampel hingga jutaan kali lipat','Mengubah RNA menjadi DNA','Mewarnai DNA supaya terlihat di bawah sinar UV'],
+     e:'Karbohidrat, lipid, dan protein dapat menghambat kerja polimerase. Isolasi menyisakan asam nukleat sebagai template yang bersih.'},
+    {q:'Mengapa RNA disimpan pada −80 °C, lebih dingin daripada DNA?',
+     c:'RNA lebih mudah terurai oleh RNase',
+     w:['RNA lebih berat sehingga perlu suhu yang lebih rendah agar tidak mengendap','RNA berubah menjadi DNA pada suhu −20 °C','RNA baru membeku pada suhu yang lebih rendah daripada DNA'],
+     e:'RNase ada di mana-mana dan sangat stabil. Gugus OH pada gula ribosa juga membuat RNA kurang stabil secara kimia dan mudah terpotong. Suhu −80 °C memperlambat kerusakan ini.'}
+  ],
+  rt:[
+    {q:'Singkatan RT pada RT-PCR berarti …',c:'Reverse transcription',w:['Real-time','Room temperature','Rapid test'],
+     e:'RT adalah reverse transcription, yaitu pembentukan cDNA dari RNA. Real-time PCR disingkat qPCR.'},
+    {q:'Virus RNA dideteksi dengan PCR yang hasilnya dipantau setiap siklus. Istilah yang digunakan adalah …',c:'RT-qPCR',w:['RT-PCR','qPCR','PCR konvensional'],
+     e:'Ada dua proses: transkripsi balik (RT) dan PCR kuantitatif real-time (qPCR). MIQE memakai RT-qPCR. Istilah qRT-PCR juga sering ditemui di artikel.'}
+  ],
+  reaksi:[
+    {q:'Mengapa PCR memerlukan dua primer, forward dan reverse?',c:'Supaya kedua untai disalin dan target diapit dari dua sisi',
+     w:['Supaya reaksi berlangsung dua kali lebih cepat','Karena satu primer khusus DNA dan satu lagi khusus RNA','Supaya salah satu primer menjadi cadangan apabila primer lainnya gagal menempel'],
+     e:'Primer forward menyalin satu untai dan primer reverse menyalin untai pasangannya. Produk yang terbentuk dibatasi kedua primer, sehingga ukurannya tetap.'},
+    {q:()=>'Tabung '+T('ntc','NTC')+' berisi semua bahan kecuali template. Apa artinya bila NTC menghasilkan produk?',c:'Ada kontaminasi, hasil run tidak valid',
+     w:['Primer bekerja sangat baik sehingga produk muncul walau tanpa template','Sampel mengandung target dalam jumlah tinggi','Hal normal yang tidak perlu dicatat'],
+     e:'Tanpa template, seharusnya tidak ada produk. Produk di NTC berarti ada DNA pencemar, misalnya dari produk PCR sebelumnya atau reagen yang tercemar.'}
+  ],
+  siklus:[
+    {q:'Urutan tahap dalam satu siklus PCR adalah …',c:'Denaturasi, annealing, ekstensi',w:['Annealing, denaturasi, ekstensi','Ekstensi, annealing, denaturasi','Denaturasi, ekstensi, annealing'],
+     e:'Untai dipisahkan dulu (denaturasi), primer menempel (annealing), lalu polimerase memperpanjang primer (ekstensi).'},
+    {q:'Mengapa PCR memakai enzim polimerase dari bakteri termofilik seperti Taq?',c:'Enzim ini tidak rusak oleh pemanasan berulang',
+     w:['Enzim ini dapat memakai RNA sebagai cetakan','Enzim ini bekerja paling baik pada suhu ruang, sehingga reaksi hemat energi','Enzim ini sekaligus berfungsi sebagai primer'],
+     e:'Thermus aquaticus hidup di sumber air panas. Polimerasenya tahan tahap denaturasi 95 °C yang berulang, sehingga tidak perlu ditambahkan ulang di setiap siklus.'}
+  ],
+  gel:[
+    {q:'Fragmen DNA 100 bp dan 1.000 bp dielektroforesis bersama. Mana yang bergerak lebih jauh dari sumur?',c:'100 bp, karena fragmen kecil lebih mudah menembus pori gel',
+     w:['1.000 bp, karena muatannya lebih besar','Keduanya sama jauh karena sama-sama DNA','1.000 bp, karena lebih berat sehingga lebih cepat turun'],
+     e:'Muatan negatif sebanding dengan panjang fragmen. Pori gel menghambat fragmen besar lebih kuat, sehingga fragmen kecil bergerak lebih jauh.'},
+    {q:()=>'Satu lajur sampel menunjukkan pita pada sekitar 600 bp, sedangkan K+ pada '+K().bp+' bp. Bagaimana sampel ini dibaca?',c:'Pita nonspesifik, sampel tidak dibaca positif',
+     w:['Positif, karena ada pita yang menyala di bawah sinar UV pada lajur sampel','Positif kuat, karena ukuran pitanya lebih besar','Kontrol positif pasti tertukar dengan sampel'],
+     e:'Sampel positif harus memiliki pita sejajar dengan kontrol positif. Pita pada ukuran lain berasal dari penempelan primer di lokasi yang salah.'}
+  ],
+  qpcr:[
+    {q:'Sampel A memiliki Ct 18 dan sampel B memiliki Ct 30. Mana yang mengandung target awal lebih banyak?',c:'Sampel A, karena sinyalnya melewati ambang lebih awal',
+     w:['Sampel B, karena nilai Ct-nya lebih besar','Keduanya sama, karena Ct tidak terkait jumlah target','Tidak dapat dibandingkan tanpa gel elektroforesis'],
+     e:'Selisih 12 siklus setara sekitar 2¹² ≈ 4.000 kali lipat, bila efisiensi reaksi mendekati 100%.'},
+    {q:'Mengapa qPCR tidak memerlukan gel elektroforesis untuk membaca hasil?',c:'Produk dipantau lewat fluoresensi saat reaksi',
+     w:['Produk qPCR terlalu kecil untuk dapat masuk ke dalam pori gel agarosa','Mesin qPCR sekaligus membaca urutan basa produk','qPCR tidak menghasilkan produk DNA'],
+     e:'Pewarna atau probe berpendar sebanding dengan jumlah produk. Mesin membaca pendaran itu di setiap siklus, sehingga tabung tidak perlu dibuka.'}
+  ],
+  penutup:[
+    {q:()=>'Dua sampel sama-sama positif PCR '+K().target+'. Bagaimana mengetahui apakah urutan gen keduanya sama?',c:'Sekuensing amplikon, lalu membandingkan urutannya',
+     w:['Membandingkan ketebalan pita di gel','Membandingkan nilai Ct kedua sampel','Mengulang PCR dengan jumlah siklus lebih banyak'],
+     e:'Pita dan Ct menunjukkan keberadaan dan jumlah target. Urutan basa dibaca dengan sekuensing, lalu dibandingkan, misalnya lewat BLAST.'},
+    {q:'Swab dari kandang yang sudah didesinfeksi memberi hasil PCR positif. Kesimpulan yang tepat adalah …',c:'Asam nukleat terdeteksi, organisme hidup belum tentu ada',
+     w:['Organisme target masih hidup dan dapat menular ke hewan lain','Desinfeksi tidak berjalan sama sekali','Hasil positif palsu karena sampel terkontaminasi'],
+     e:'PCR mendeteksi asam nukleat. Sisa DNA atau RNA dari organisme yang sudah mati masih dapat terdeteksi. Kultur atau isolasi virus diperlukan untuk membuktikan organisme hidup.'}
+  ]
+};
+const QCACHE={};
+/* Posisi jawaban benar diatur agar sebaran A sampai D merata (indeks 0 sampai 3) */
+const QPOS={'isolasi-0':2,'isolasi-1':0,'rt-0':3,'rt-1':1,'reaksi-0':1,'reaksi-1':3,'siklus-0':0,'siklus-1':2,'gel-0':3,'gel-1':1,'qpcr-0':2,'qpcr-1':0,'penutup-0':3,'penutup-1':1};
+function qopts(id,qi){
+  const k=id+'-'+qi;if(QCACHE[k])return QCACHE[k];
+  const q=QUIZ[id][qi];const arr=[q.c].concat(q.w).map((t,i)=>({t,ok:i===0}));
+  const r=mulberry32(hashStr(k+'#pcr'));
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;}
+  const tp=QPOS[k];if(tp!==undefined){const cur=arr.findIndex(x=>x.ok);const t=arr[tp];arr[tp]=arr[cur];arr[cur]=t;}
+  return QCACHE[k]={o:arr,a:arr.findIndex(x=>x.ok)};
+}
+
+/* ---------- State ---------- */
+function fresh(){
+  return {step:0,done:{},kasus:null,seed:newSeed(),open:{},
+    iso:{ph:0,max:0,store:null},
+    rt:{done:false},
+    re:{pick:null,add:{},msg:null},
+    cy:{asg:{},ph:0,played:false,pred:null,n:30},
+    gel:{ph:0,max:0,dir:null,marks:{},chk:null},
+    qp:{run:false,marks:{},chk:null,most:null},
+    quiz:{}};
+}
+let S;
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);const f=fresh();S=Object.assign(f,o);['iso','rt','re','cy','gel','qp'].forEach(k=>{S[k]=Object.assign(fresh()[k],o[k]||{});});S.iso.max=Math.max(S.iso.max||0,S.iso.ph||0);S.gel.max=Math.max(S.gel.max||0,S.gel.ph||0);}}catch(e){}
+  if(!S)S=fresh();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* Data sampel: 3 dari 10 sampel positif, nilai Ct acak tetapi konsisten antara gel dan qPCR */
+let DT=null,DTk=null;
+function data(){
+  if(DT&&DTk===S.seed)return DT;
+  const r=mulberry32(S.seed);
+  const idx=[0,1,2,3,4,5,6,7,8,9];
+  for(let i=9;i>0;i--){const j=Math.floor(r()*(i+1));const t=idx[i];idx[i]=idx[j];idx[j]=t;}
+  const pos=idx.slice(0,3).sort((a,b)=>a-b);
+  const c1=17+r()*3,c2=c1+3+r()*2.5,c3=c2+3+r()*2.5;
+  const cts=[c1,c2,c3].map(v=>Math.round(v*10)/10);
+  for(let i=2;i>0;i--){const j=Math.floor(r()*(i+1));const t=cts[i];cts[i]=cts[j];cts[j]=t;}
+  const ct={};pos.forEach((p,k)=>{ct[p]=cts[k];});
+  const kpos=Math.round((21+r()*2)*10)/10;
+  const fmax={};for(let i=0;i<10;i++)fmax[i]=0.9+r()*0.15;
+  const most=pos.reduce((a,b)=>ct[a]<=ct[b]?a:b);
+  DT={pos,ct,kpos,fmax,fk:0.95+r()*0.1,most};DTk=S.seed;return DT;
+}
+const sampList=arr=>{const a=arr.map(i=>i+1);return a.length<3?a.join(' dan '):a.slice(0,-1).join(', ')+', dan '+a[a.length-1];};
+
+/* ---------- Komponen tampilan ---------- */
+const FLOW=['Isolasi','RT','PCR','Deteksi','Sekuensing'];
+const STAGEOF={isolasi:0,rt:1,reaksi:2,siklus:2,gel:3,qpcr:3,penutup:4};
+function flowMini(){
+  const cur=STAGEOF[STEPS[S.step].id];
+  return '<div class="flow mini" aria-label="Posisi dalam alur kerja">'+FLOW.map((f,i)=>{
+    const skip=i===1&&S.kasus==='dna';
+    return '<span class="fchip'+(i===cur?' on':(i<cur?' past':''))+(skip?' skip':'')+'">'+f+(skip?' (dilewati)':'')+'</span>'+(i<FLOW.length-1?'<span class="farr">→</span>':'');}).join('')+'</div>';
+}
+const head=(t,lead)=>flowMini()+'<p class="kicker">Langkah '+S.step+' dari '+(STEPS.length-1)+' · '+K().nama+'</p><h1>'+t+'</h1>'+(lead?'<p class="lead">'+lead+'</p>':'');
+const note=m=>m?'<div class="note '+(m.k||'')+'">'+(m.h?'<strong>'+m.h+'</strong>':'')+m.t+'</div>':'';
+const det=(key,sum,body)=>'<details class="acc" data-key="'+key+'"'+(S.open[key]?' open':'')+'><summary>'+sum+'</summary><div class="accbody">'+body+'</div></details>';
+const stepCard=(n,title,body,o)=>{o=o||{};return '<div class="card'+(o.locked?' locked':'')+(o.complete?' complete':'')+'"><h2>'+(n===null&&!o.complete?'':'<span class="step-no">'+(o.complete?'✓':n)+'</span>')+title+'</h2>'+body+'</div>';};
+function quizHTML(id){
+  const qs=QUIZ[id];if(!qs)return '';
+  return '<div class="card"><h2>Cek pemahaman</h2><p class="sub">Tidak dinilai. Pilih jawaban untuk melihat penjelasannya.</p>'+
+  qs.map((q,qi)=>{const key=id+'-'+qi,ans=S.quiz[key],has=ans!==undefined;const op=qopts(id,qi);
+    return '<div class="q"><p class="qt">'+(qi+1)+'. '+val(q.q)+'</p>'+
+      op.o.map((o,oi)=>{let c='';if(has){if(oi===op.a)c='correct';else if(oi===ans)c='wrong';}
+        return '<button class="opt '+c+'" data-act="quiz" data-k="'+key+'" data-v="'+oi+'"'+(has?' disabled':'')+'>'+val(o.t)+'</button>';}).join('')+
+      (has?'<div class="note '+(ans===op.a?'ok':'warn')+'"><strong>'+(ans===op.a?'Tepat.':'Belum tepat.')+'</strong>'+q.e+'</div><button class="linkbtn" data-act="qreset" data-k="'+key+'">Jawab ulang</button>':'')+
+    '</div>';}).join('')+'</div>';
+}
+function arrow(x1,x2,y,col,w){const d=x2>x1?1:-1;w=w||4;
+  return '<line x1="'+x1+'" y1="'+y+'" x2="'+(x2-d*7)+'" y2="'+y+'" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round"/><polygon points="'+x2+','+y+' '+(x2-d*10)+','+(y-6)+' '+(x2-d*10)+','+(y+6)+'" fill="'+col+'"/>';}
+
+/* Stepper maju-mundur */
+function stepper(p,titles,ph,max){
+  return '<ol class="seq">'+titles.map((t,i)=>{const n=i+1;const st=n===ph?'next':(n<=max?'done':'wait');
+    return '<li><button class="seqbtn '+st+'" data-act="sjump" data-p="'+p+'" data-i="'+n+'"'+(n<=max?'':' disabled')+(n===ph?' aria-current="step"':'')+'><span class="num">'+(n!==ph&&n<=max?'✓':n)+'</span><span class="tx">'+t+'</span></button></li>';}).join('')+'</ol>';
+}
+function stepNav(p,ph,titles,off){
+  const tot=titles.length;
+  return '<div class="stepnav"><button class="btn gray" data-act="sprev" data-p="'+p+'"'+(ph<=0?' disabled':'')+'>Sebelumnya</button>'+
+    '<button class="btn" data-act="snext" data-p="'+p+'"'+((ph>=tot||off)?' disabled':'')+'>'+(ph<tot?'Berikutnya: '+titles[ph]:'Semua tahap selesai')+'</button></div>';
+}
+
+/* Ikon komponen sel */
+function hexPts(x,y,r){const p=[];for(let i=0;i<6;i++){const a=Math.PI/3*i;p.push((x+r*Math.cos(a)).toFixed(1)+','+(y+r*Math.sin(a)).toFixed(1));}return p.join(' ');}
+const SH={
+  karbo:(x,y)=>'<polygon points="'+hexPts(x,y,6)+'" fill="var(--c-karbo)"/>',
+  lipid:(x,y)=>'<circle cx="'+x+'" cy="'+y+'" r="5" fill="var(--c-lipid)"/>',
+  prot:(x,y,s)=>{s=s||1;return '<ellipse cx="'+x+'" cy="'+y+'" rx="'+(7*s)+'" ry="'+(4.5*s)+'" transform="rotate(-25 '+x+' '+y+')" fill="var(--c-prot)"/>';},
+  garam:(x,y)=>'<circle cx="'+(x-3)+'" cy="'+y+'" r="2.2" fill="var(--c-garam)"/><circle cx="'+(x+3)+'" cy="'+(y-2)+'" r="2.2" fill="var(--c-garam)"/><circle cx="'+x+'" cy="'+(y+3)+'" r="2.2" fill="var(--c-garam)"/>',
+  na:(x,y,w)=>{w=w||24;return '<path d="M'+(x-w/2)+' '+y+' q'+(w/8)+' -5 '+(w/4)+' 0 t'+(w/4)+' 0 t'+(w/4)+' 0 t'+(w/4)+' 0" fill="none" stroke="var(--c-na)" stroke-width="2.4" stroke-linecap="round"/>';}
+};
+const icon=k=>'<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">'+(k==='prot'?SH.prot(13,13):k==='na'?SH.na(13,13,20):SH[k](13,13))+'</svg>';
+
+/* ---------- Beranda ---------- */
+const VIEWS={};
+VIEWS.beranda=()=>{
+  const c=S.kasus;
+  const caseBtn=(id,t,d)=>'<button class="case'+(c===id?' on':'')+'" data-act="kasus" data-v="'+id+'" aria-pressed="'+(c===id)+'"><b>'+t+'</b><span>'+d+'</span></button>';
+  return '<p class="kicker">Biokimia Veteriner</p><h1>Simulasi PCR dari sampel sampai hasil</h1>'+
+  '<p class="lead">Ikuti perjalanan '+T('asamnukleat','asam nukleat')+' dari sampel hewan sampai terbaca sebagai hasil positif atau negatif. Fokusnya prinsip kerja tiap tahap. Detail protokol disimpan di penjelasan istilah.</p>'+
+  '<div class="stats"><div><b>± 15 menit</b><span>Perkiraan durasi</span></div><div><b>10 sampel + 2 kontrol</b><span>Data latihan</span></div><div><b>Visualisasi gel dan qPCR</b><span>Dua cara membaca hasil</span></div></div>'+
+  '<div class="card"><h2>Alur kerja</h2><p class="sub">Teks bergaris bawah putus-putus dapat diklik atau disorot untuk melihat penjelasannya.</p><div class="flow">'+
+  ['Sampel','Isolasi '+T('asamnukleat','asam nukleat'),T('rt','RT')+' (khusus RNA)',T('pcr','PCR'),'Deteksi: gel atau '+T('qpcr','qPCR'),'Sekuensing (bila perlu)']
+    .map((x,i,a)=>'<span class="fchip">'+x+'</span>'+(i<a.length-1?'<span class="farr">→</span>':'')).join('')+'</div></div>'+
+  '<div class="card"><h2>Pilih kasus</h2><p class="sub">Sepuluh sampel dari satu peternakan diuji untuk satu target. Kasus menentukan apakah target berupa DNA atau RNA.</p><div class="cases">'+
+  caseBtn('dna','Kasus DNA','Salmonella pada swab kloaka ayam. Target gen invA (DNA). Deteksi dengan PCR dan qPCR.')+
+  caseBtn('rna','Kasus RNA','Virus influenza A pada swab orofaring ayam. Target gen M (RNA). Deteksi dengan RT-PCR dan RT-qPCR.')+'</div>'+
+  (c?note({k:'ok',t:K().nama+' dipilih. Mengganti kasus nanti akan menghapus progres.'}):'')+'</div>'+
+  '<div class="card"><h2>Tujuan</h2><p class="muted">Setelah menyelesaikan simulasi ini, Anda diharapkan mampu:</p><ol class="clean">'+
+  '<li>menjelaskan prinsip isolasi asam nukleat dan cara menyimpannya;</li>'+
+  '<li>membedakan PCR, RT-PCR, qPCR, dan RT-qPCR;</li>'+
+  '<li>menjelaskan peran primer forward dan reverse serta tiga tahap suhu dalam satu siklus;</li>'+
+  '<li>membaca hasil gel elektroforesis dan kurva amplifikasi qPCR;</li>'+
+  '<li>menjelaskan batas informasi PCR dan peran sekuensing.</li></ol></div>'+
+  '<div class="card"><h2>Cara memakai</h2><ul class="clean">'+
+  '<li>Kerjakan langkah secara berurutan. Tombol Lanjut aktif setelah kegiatan di langkah itu selesai.</li>'+
+  '<li>Progres tersimpan otomatis di peramban ini.</li>'+
+  '<li>Soal cek pemahaman tidak dinilai.</li>'+
+  '<li>Istilah teknis ditulis dalam bahasa Inggris, sesuai yang lazim dipakai di laboratorium.</li></ul>'+
+  det('metode','Catatan metode','<ul class="clean small"><li>Posisi sampel positif dan nilai Ct dibuat acak untuk latihan.</li><li>Ukuran amplikon mengikuti literatur: gen invA 284 bp dengan primer 139 dan 141 (Rahn dkk., 1992); gen M sekitar 245 bp dengan primer M52C dan M253R (Fouchier dkk., 2000).</li><li>Suhu, waktu, dan volume adalah nilai umum. Ikuti protokol kit dan SOP laboratorium.</li><li>Istilah RT-qPCR mengikuti pedoman MIQE (Bustin dkk., 2009).</li></ul>')+'</div>'+
+  '<button class="btn wide" data-act="next"'+(c?'':' disabled')+'>'+(c?'Mulai simulasi':'Pilih kasus terlebih dahulu')+'</button>'+
+  '<footer class="credit">Simulasi pembelajaran untuk mata kuliah Biokimia Veteriner.</footer>';
+};
+
+/* ---------- Isolasi ---------- */
+const ISO=[
+  {t:'Lisis sel',c:()=>'Buffer '+T('lisis','lisis')+' memecah membran sel sehingga isinya terlepas. '+T('proteinasek','Proteinase K')+' mencerna protein, termasuk enzim yang dapat merusak asam nukleat.'},
+  {t:'Ikat ke kolom silika',c:()=>'Lisat dimasukkan ke kolom lalu '+T('sentrifugasi','disentrifugasi')+'. '+K().asam+' menempel pada '+T('silika','membran silika')+', sedangkan karbohidrat, lipid, dan sisa protein lolos ke tabung penampung lalu dibuang.'},
+  {t:'Cuci kolom',c:()=>T('pencuci','Buffer pencuci')+' membersihkan garam dan pengotor yang tersisa. '+K().asam+' tetap menempel di membran.'},
+  {t:'Elusi',c:()=>'Buffer '+T('elusi','elusi')+' melepaskan '+K().asam+' dari membran ke tabung baru. Hasilnya larutan '+K().asam+' yang siap menjadi template.'}
+];
+const COMPS=[{k:'karbo',n:'Karbohidrat'},{k:'lipid',n:'Lipid'},{k:'prot',n:'Protein'},{k:'garam',n:'Garam dan pengotor'},{k:'na',n:null}];
+function compStat(k,ph){
+  if(k==='na')return ph===0?['Di dalam sel','']:ph===1?['Terlepas ke lisat','']:ph<4?['Menempel di membran silika','keep']:['Terlarut di tabung baru','keep'];
+  if(ph===0)return ['Di dalam sel',''];
+  if(ph===1)return [k==='prot'?'Dicerna proteinase K':'Terlepas ke lisat',''];
+  if(k==='garam')return ph===2?['Masih tertinggal di kolom','']:['Tercuci dan dibuang','gone'];
+  return ['Lolos dan dibuang','gone'];
+}
+function isoSVG(ph){
+  let s='<svg viewBox="0 0 330 230" aria-hidden="true">';
+  const tubeP='M105 18 h90 v140 l-27 42 q-18 12 -36 0 l-27 -42 z';
+  if(ph<=1){
+    s+='<path d="M105 70 h90 v88 l-27 42 q-18 12 -36 0 l-27 -42 z" fill="var(--liquid)"/><path d="'+tubeP+'" class="glass"/>';
+    if(ph===0){
+      [[132,96],[170,118],[146,150]].forEach(([x,y])=>{
+        s+='<circle cx="'+x+'" cy="'+y+'" r="20" fill="var(--cell)" stroke="var(--glass)" stroke-width="1.2"/>'+SH.na(x,y-6,16)+SH.karbo(x-9,y+7)+SH.lipid(x+9,y+7)+SH.prot(x+1,y+8,.6);});
+      s+='<text x="212" y="100" class="svl">Sel utuh di dalam</text><text x="212" y="115" class="svl">sampel</text>';
+    }else{
+      s+=SH.karbo(122,92)+SH.karbo(172,152)+SH.lipid(166,86)+SH.lipid(126,142)+SH.prot(148,104,.45)+SH.prot(118,120,.45)+SH.prot(180,120,.45)+SH.prot(152,166,.45)+
+        SH.garam(140,128)+SH.garam(168,170)+SH.na(150,138,28)+SH.na(134,168,22)+SH.na(162,96,20);
+      s+='<text x="212" y="100" class="svl">Lisat: semua</text><text x="212" y="115" class="svl">komponen bebas</text>';
+    }
+  }else if(ph<=3){
+    s+='<path d="M100 132 h100 v62 l-22 26 q-28 10 -56 0 l-22 -26 z" class="glass"/><path d="M100 170 h100 v24 l-22 26 q-28 10 -56 0 l-22 -26 z" fill="var(--liquid)"/>';
+    s+='<path d="M108 14 h84 v96 l-10 16 h-64 l-10 -16 z" class="glass"/><rect x="112" y="92" width="76" height="10" rx="2" fill="var(--fill)" stroke="var(--glass)"/>';
+    s+=SH.na(126,88,20)+SH.na(150,88,20)+SH.na(174,88,20);
+    if(ph===2){s+=SH.garam(132,72)+SH.garam(166,70)+SH.karbo(122,190)+SH.lipid(148,182)+SH.prot(174,192,.5)+SH.karbo(160,204)+SH.lipid(136,204)+SH.prot(118,182,.5);}
+    else{s+=SH.garam(130,190)+SH.garam(166,186)+SH.garam(150,204);}
+    s+='<text x="210" y="50" class="svl">Kolom silika</text><text x="210" y="100" class="svl">Membran: '+K().asam+'</text><text x="210" y="114" class="svl">tertahan</text><text x="210" y="176" class="svl">Tabung penampung,</text><text x="210" y="191" class="svl">isinya dibuang</text>';
+  }else{
+    s+='<path d="M105 128 h90 v30 l-27 42 q-18 12 -36 0 l-27 -42 z" fill="var(--liquid)"/><path d="'+tubeP+'" class="glass"/><rect x="99" y="10" width="102" height="10" rx="4" fill="var(--fill)" stroke="var(--glass)"/>';
+    s+=SH.na(136,150,22)+SH.na(164,146,22)+SH.na(150,168,22)+SH.na(150,184,16);
+    s+='<text x="212" y="150" class="svl">'+K().asam+' murni dalam</text><text x="212" y="165" class="svl">buffer elusi</text>';
+  }
+  return s+'</svg>';
+}
+function storeFb(v){
+  const dna=S.kasus==='dna';
+  if(v==='ruang')return {k:'bad',t:'Terlalu hangat. Sisa enzim pengurai dan reaksi kimia akan merusak '+K().asam+' dalam waktu singkat.'};
+  if(v==='4')return dna?{k:'warn',t:'Cukup untuk beberapa hari sebelum dipakai. Untuk jangka panjang, DNA disimpan pada −20 °C.'}:{k:'warn',t:'Terlalu hangat untuk RNA. RNA mudah terurai oleh '+T('rnase','RNase')+', sehingga disimpan pada −80 °C.'};
+  if(v==='-20')return dna?{k:'ok',h:'Tepat.',t:'DNA stabil pada −20 °C untuk penyimpanan jangka panjang.'}:{k:'warn',t:'Masih bisa untuk waktu singkat, tetapi RNA jauh lebih mudah rusak daripada DNA. Untuk jangka panjang, RNA disimpan pada −80 °C.'};
+  return dna?{k:'ok',h:'Tepat.',t:'DNA juga aman pada −80 °C, walaupun −20 °C sudah cukup.'}:{k:'ok',h:'Tepat.',t:'RNA disimpan pada −80 °C karena lebih mudah terurai daripada DNA.'};
+}
+const storeOk=()=>{const v=S.iso.store;return S.kasus==='dna'?(v==='-20'||v==='-80'):v==='-80';};
+function tubeLabelSVG(){
+  const d=new Date();const tg=String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+  return '<svg width="70" height="130" viewBox="0 0 70 130" aria-hidden="true"><rect x="9" y="4" width="52" height="10" rx="4" fill="var(--fill)" stroke="var(--glass)"/><path d="M14 14 h42 v66 l-12 30 q-9 8 -18 0 l-12 -30 z" class="glass"/><path d="M14 72 h42 v8 l-12 30 q-9 8 -18 0 l-12 -30 z" fill="var(--liquid)"/>'+
+    '<rect x="17" y="24" width="36" height="34" rx="3" fill="#fff" stroke="var(--glass)" stroke-width=".8"/><text x="35" y="36" text-anchor="middle" font-size="8" fill="#333">S-01</text><text x="35" y="46" text-anchor="middle" font-size="8" fill="#333">'+K().asam+'</text><text x="35" y="55" text-anchor="middle" font-size="7" fill="#333">'+tg+'</text></svg>';
+}
+VIEWS.isolasi=()=>{
+  const I=S.iso,k=K(),ph=I.ph;
+  const isoT=ISO.map(s=>s.t);
+  const cap=ph===0?{t:'Sampel '+k.sampel+' berisi sel dengan banyak komponen selain '+k.asam+'. Tekan Berikutnya untuk memulai tahap 1.'}:{k:ph===4?'ok':'',h:ISO[ph-1].t,t:ISO[ph-1].c()};
+  const tiles=COMPS.map(c=>{const st=compStat(c.k,ph);const pv=ph>0?compStat(c.k,ph-1):null;const chg=pv&&pv[0]!==st[0];
+    return '<div class="tile '+st[1]+'">'+icon(c.k)+'<div><b>'+(c.n||k.asam)+'</b><span>'+st[0]+'</span>'+(chg?'<span class="was">Sebelumnya: '+pv[0]+'</span>':'')+'</div></div>';}).join('');
+  const opts=[['ruang','Suhu ruang'],['4','4 °C'],['-20','−20 °C'],['-80','−80 °C']];
+  const sOk=storeOk();
+  return head('Isolasi asam nukleat','Prinsipnya: pecahkan sel, lalu buang komponen selain asam nukleat. Pekerjaan ini memakai '+T('kit','kit isolasi')+' siap pakai.')+
+  '<div class="split"><div class="card"><h2>Di dalam tabung</h2><div class="stage">'+isoSVG(ph)+'</div>'+(ph>0?'<p class="small muted" style="margin:12px 0 0">Komponen yang berubah pada tahap ini diberi keterangan "Sebelumnya".</p>':'')+'<div class="tiles">'+tiles+'</div></div>'+
+  '<div class="card"><h2>Tahap kit</h2><p class="sub">'+(ph===0?'Keadaan awal':'Tahap '+ph+' dari 4')+'. Maju dan mundur sesuka Anda untuk membandingkan tiap tahap.</p>'+stepper('iso',isoT,ph,I.max)+stepNav('iso',ph,isoT,false)+note(cap)+'</div></div>'+
+  stepCard(null,'Simpan hasil isolasi','<div class="mixgrid">'+tubeLabelSVG()+'<div><p class="sub" style="margin-bottom:10px">'+k.asam+' hasil isolasi belum langsung dipakai. Pada suhu berapa '+k.asam+' disimpan untuk jangka panjang?</p>'+
+    '<div class="seg">'+opts.map(o=>'<button class="'+(I.store===o[0]?'on':'')+'" data-act="store" data-v="'+o[0]+'">'+o[1]+'</button>').join('')+'</div>'+note(I.store?storeFb(I.store):null)+
+    '<ul class="clean small"><li>Wadah: '+T('tabung15','tabung mikrosentrifus 1,5 mL')+' yang tertutup rapat.</li><li>Label: kode sampel, jenis asam nukleat, dan tanggal isolasi.</li>'+
+    '<li>Bagi menjadi beberapa '+T('alikuot','alikuot')+' supaya tidak mengalami '+T('bekucair','beku-cair berulang')+'.</li>'+
+    (S.kasus==='rna'?'<li>Kerjakan RNA di atas es dan cegah kontaminasi '+T('rnase','RNase')+'.</li>':'')+
+    '<li>Mutu hasil isolasi dapat dicek. Lihat '+T('kemurnian','kemurnian')+'.</li></ul></div></div>',{locked:I.max<4,complete:sOk})+
+  quizHTML('isolasi');
+};
+
+/* ---------- Transkripsi balik ---------- */
+function rtSVG(done){
+  const x0=40,x1=480,xe=done?x0:x1;
+  let s='<svg viewBox="0 0 520 150" aria-hidden="true"><defs><clipPath id="rtclip"><rect id="rtcr" x="'+xe+'" y="60" width="'+(x1-xe)+'" height="34"/></clipPath></defs>';
+  s+='<text x="'+x0+'" y="30" class="svl" fill="var(--rna)" style="fill:var(--rna)">RNA target (untai tunggal)</text>';
+  s+='<line x1="'+x0+'" y1="50" x2="'+x1+'" y2="50" stroke="var(--rna)" stroke-width="4" stroke-linecap="round"/>';
+  for(let x=x0+8;x<x1;x+=16)s+='<line x1="'+x+'" y1="50" x2="'+x+'" y2="60" stroke="var(--rna)" stroke-width="2"/>';
+  s+="<text x='"+(x0-8)+"' y='54' text-anchor='end' class='svt'>5'</text><text x='"+(x1+8)+"' y='54' class='svt'>3'</text>";
+  s+='<g clip-path="url(#rtclip)"><line x1="'+x0+'" y1="80" x2="'+x1+'" y2="80" stroke="var(--dna1)" stroke-width="4"/>';
+  for(let x=x0+8;x<x1;x+=16)s+='<line x1="'+x+'" y1="68" x2="'+x+'" y2="80" stroke="var(--dna1)" stroke-width="2"/>';
+  s+='</g><line x1="'+x1+'" y1="80" x2="'+(x1-30)+'" y2="80" stroke="var(--pF)" stroke-width="5" stroke-linecap="round"/>';
+  s+='<g id="rtenz" style="opacity:0"><ellipse cx="'+x1+'" cy="76" rx="17" ry="12" fill="var(--c-prot)" opacity=".9"/><text x="'+x1+'" y="80" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">RT</text></g>';
+  if(done)s+="<text x='"+(x0-8)+"' y='84' text-anchor='end' class='svt'>3'</text><text x='"+(x1+8)+"' y='84' class='svt'>5'</text><text x='"+x0+"' y='116' class='svl' style='fill:var(--dna1)'>cDNA (untai komplementer), siap menjadi template PCR</text>";
+  else s+='<text x="'+(x1-30)+'" y="104" class="svl">primer</text>';
+  return s+'</svg>';
+}
+function nomenCard(){
+  const k=K(),rna=S.kasus==='rna';
+  const rows=[['PCR','DNA','Visualisasi gel setelah reaksi PCR selesai',!rna],['RT-PCR','RNA → cDNA','Visualisasi gel setelah reaksi PCR selesai',rna],['qPCR','DNA','Fluoresensi di setiap siklus di mesin PCR',!rna],['RT-qPCR','RNA → cDNA','Fluoresensi di setiap siklus di mesin PCR',rna]];
+  return '<div class="card"><h2>RT dan real-time adalah dua hal berbeda</h2><div class="table-wrap"><table><thead><tr><th>Istilah</th><th>Template awal</th><th>Cara membaca hasil PCR</th></tr></thead><tbody>'+
+    rows.map(r=>'<tr'+(r[3]?' class="hl"':'')+'><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('')+'</tbody></table></div>'+
+    '<p class="small mt">Huruf RT selalu berarti '+T('rt','reverse transcription')+'. Real-time ditandai huruf q (kuantitatif).</p>'+
+    '<p class="small" style="margin:0">Baris yang diberi warna sesuai kasus Anda: <b>'+k.pcr+'</b> dibaca dengan gel, <b>'+k.qpcr+'</b> dibaca secara real-time.</p></div>';
+}
+VIEWS.rt=()=>{
+  const k=K();
+  if(S.kasus==='dna')return head('Transkripsi balik (RT)','Tahap ini dibutuhkan bila target berupa RNA.')+
+    '<div class="card"><h2>Langkah ini dilewati pada kasus DNA</h2><p>Target kasus Anda, '+T('target',k.target)+' pada '+k.agen+', berupa DNA. Hasil isolasi langsung dapat menjadi '+T('template','template')+' PCR.</p>'+
+    '<p class="muted" style="margin:0">Pada target RNA, misalnya genom virus influenza, RNA diubah dulu menjadi '+T('cdna','cDNA')+' karena polimerase PCR tidak dapat memakai RNA sebagai cetakan.</p></div>'+nomenCard()+quizHTML('rt');
+  const d=S.rt.done;
+  return head('Transkripsi balik (RT)','Polimerase PCR membutuhkan cetakan DNA. RNA virus diubah dulu menjadi '+T('cdna','cDNA')+'.')+
+  '<div class="split"><div class="card"><h2>Dari RNA menjadi cDNA</h2><div class="stage" id="rtStage">'+rtSVG(d)+'</div></div>'+
+  '<div class="card"><h2>Tambahkan enzim</h2><p class="sub">'+T('revtrans','Reverse transcriptase')+' menyusun untai DNA dengan RNA sebagai cetakan. Penyusunan dimulai dari '+T('primerrt','primer')+' yang menempel pada RNA.</p>'+
+  '<button class="btn" data-act="rtgo"'+(d?' disabled':'')+'>'+(d?'cDNA sudah terbentuk':'Tambahkan reverse transcriptase')+'</button>'+
+  (d?note({k:'ok',h:'cDNA terbentuk.',t:'Untai cDNA menjadi template PCR. Pada kit RT-PCR '+T('onestep','satu tahap')+', RT dan PCR berlangsung di tabung yang sama.'}):'')+'</div></div>'+
+  nomenCard()+quizHTML('rt');
+};
+
+/* ---------- Primer dan reaksi ---------- */
+const POPT=[{v:'same',t:'Pasangan A'},{v:'face',t:'Pasangan B'},{v:'away',t:'Pasangan C'}];
+function primerMini(type){
+  let s='<svg viewBox="0 0 240 70" aria-hidden="true"><rect x="80" y="8" width="80" height="54" rx="4" fill="var(--accent-soft)"/>';
+  s+='<line x1="10" y1="29" x2="230" y2="29" stroke="var(--dna1)" stroke-width="3"/><line x1="10" y1="41" x2="230" y2="41" stroke="var(--dna2)" stroke-width="3"/>';
+  if(type==='face')s+=arrow(40,80,55,'var(--pF)')+arrow(200,160,15,'var(--pR)');
+  else if(type==='same')s+=arrow(40,80,55,'var(--pF)')+arrow(160,200,15,'var(--pR)');
+  else s+=arrow(80,40,55,'var(--pF)')+arrow(160,200,15,'var(--pR)');
+  return s+'<text x="60" y="68" text-anchor="middle" class="svl">F</text><text x="180" y="9" text-anchor="middle" class="svl">R</text></svg>';
+}
+function ampSVG(){
+  const bp=K().bp;
+  return "<svg viewBox='0 0 540 124' aria-hidden='true'><rect x='150' y='18' width='240' height='52' rx='4' fill='var(--accent-soft)'/>"+
+    "<line x1='30' y1='38' x2='510' y2='38' stroke='var(--dna1)' stroke-width='4'/><line x1='30' y1='52' x2='510' y2='52' stroke='var(--dna2)' stroke-width='4'/>"+
+    "<text x='22' y='42' text-anchor='end' class='svt'>5'</text><text x='518' y='42' class='svt'>3'</text><text x='22' y='56' text-anchor='end' class='svt'>3'</text><text x='518' y='56' class='svt'>5'</text>"+
+    arrow(150,190,66,'var(--pF)',5)+arrow(390,350,24,'var(--pR)',5)+
+    "<text x='170' y='84' text-anchor='middle' class='svl'>primer forward</text><text x='370' y='14' text-anchor='middle' class='svl'>primer reverse</text>"+
+    "<line x1='150' y1='98' x2='390' y2='98' stroke='var(--text)' stroke-width='1.5'/><line x1='150' y1='92' x2='150' y2='104' stroke='var(--text)' stroke-width='1.5'/><line x1='390' y1='92' x2='390' y2='104' stroke='var(--text)' stroke-width='1.5'/>"+
+    "<text x='270' y='118' text-anchor='middle' class='svb'>amplikon "+bp+" bp</text></svg>";
+}
+const MIX=[
+  {k:'tmpl',n:()=>'Template '+K().tmpl,g:'template'},
+  {k:'pf',n:()=>'Primer forward',g:'pf'},
+  {k:'dntp',n:()=>'dNTP',g:'dntp'},
+  {k:'pr',n:()=>'Primer reverse',g:'pr'},
+  {k:'taq',n:()=>'Taq polimerase',g:'taq'},
+  {k:'buf',n:()=>'Buffer dan MgCl₂',g:'buffer'},
+  {k:'air',n:()=>'Air bebas nuklease',g:'air'}
+];
+const MIXOK=MIX.filter(m=>!m.bad).map(m=>m.k);
+function pcrTubeSVG(f){
+  const y=138-f*92;
+  return '<svg viewBox="0 0 90 150" aria-hidden="true"><defs><clipPath id="tclip"><path d="M24 32 h42 v38 l-13 62 q-8 9 -16 0 l-13 -62 z"/></clipPath></defs>'+
+    '<rect x="20" y="20" width="50" height="12" rx="3" fill="var(--fill)" stroke="var(--glass)"/><path d="M70 22 q14 -16 0 -20" fill="none" stroke="var(--glass)" stroke-width="1.5"/>'+
+    '<rect x="0" y="'+y.toFixed(1)+'" width="90" height="150" fill="var(--liquid)" clip-path="url(#tclip)" style="transition:y .4s"/>'+
+    '<path d="M24 32 h42 v38 l-13 62 q-8 9 -16 0 l-13 -62 z" class="glass"/><text x="45" y="148" text-anchor="middle" class="svl">0,2 mL</text></svg>';
+}
+VIEWS.reaksi=()=>{
+  const R=S.re,k=K();const pOk=R.pick==='face';
+  const pfb={same:{k:'warn',h:'Belum tepat.',t:'Kedua primer memanjang ke arah yang sama. Daerah target tidak terapit, sehingga produk tidak berlipat ganda.'},
+    away:{k:'warn',h:'Belum tepat.',t:'Kedua primer memanjang menjauhi daerah target. Bagian di antara keduanya tidak pernah tersalin.'},
+    face:{k:'ok',h:'Tepat.',t:'Primer forward dan reverse menempel pada untai yang berlawanan dan saling berhadapan. Polimerase memperpanjang primer dari '+T('ujung3',"ujung 3'")+', sehingga produk dibatasi oleh kedua primer.'}};
+  const added=MIXOK.filter(x=>R.add[x]).length;const allMix=added===MIXOK.length;
+  return head('Primer dan campuran reaksi','Primer menentukan bagian DNA mana yang diperbanyak. Setelah itu, semua bahan reaksi dicampur dalam satu tabung.')+
+  stepCard(1,'Pilih pasangan primer','<p class="sub">Daerah target ('+T('target',k.target)+', kotak biru) diapit dua '+T('primer','primer')+': '+T('pf','forward')+' (F) dan '+T('pr','reverse')+' (R). Ujung panah adalah arah pemanjangan. Pasangan mana yang akan menghasilkan produk?</p>'+
+    '<div class="popts">'+POPT.map(o=>{let c='popt';if(R.pick===o.v)c+=o.v==='face'?' ok':' no';return '<button class="'+c+'" data-act="primer" data-v="'+o.v+'"'+(pOk?' disabled':'')+'>'+primerMini(o.v)+o.t+'</button>';}).join('')+'</div>'+
+    note(R.pick?pfb[R.pick]:null)+
+    (pOk?'<div class="stage">'+ampSVG()+'</div><p class="small mt" style="margin-bottom:0">Produk yang dibatasi kedua primer disebut '+T('amplikon','amplikon')+'. Pada kasus ini panjangnya '+k.bp+' '+T('bp','bp')+'. Primer yang baik umumnya sepanjang 18 sampai 25 basa dengan '+T('tm','Tm')+' yang mirip.</p>':''),{complete:pOk})+
+  stepCard(2,'Susun campuran reaksi','<p class="sub">Ketuk setiap bahan untuk memasukkannya ke tabung PCR.</p>'+
+    '<div class="mixgrid">'+pcrTubeSVG(added/MIXOK.length)+'<div><div class="chips">'+MIX.map(m=>{const on=R.add[m.k];return '<button class="cbtn'+(on?' ok':'')+'" data-act="mix" data-k="'+m.k+'"'+(on?' disabled':'')+'>'+(on?'✓ ':'')+m.n()+'</button>';}).join('')+'</div>'+
+    '<p class="small muted mt" style="margin-bottom:4px">Isi tabung ('+added+' dari '+MIXOK.length+'):</p><p class="small" style="margin:0">'+(added?MIX.filter(m=>R.add[m.k]).map(m=>T(m.g,m.n())).join(', '):'belum ada')+'</p></div></div>'+
+    note(R.msg)+(allMix?note({k:'ok',h:'Campuran reaksi lengkap.',t:'Selain 10 tabung sampel, disiapkan juga '+T('kpos','kontrol positif')+' dan '+T('ntc','NTC')+'. Dalam praktik, sebagian bahan sudah tercampur dalam '+T('mastermix','master mix')+'. Lihat juga '+T('volume','volume reaksi')+'.'}):''),
+    {locked:!pOk,complete:allMix})+
+  quizHTML('reaksi');
+};
+
+/* ---------- Siklus suhu ---------- */
+const STG=[{k:'den',g:'denaturasi',n:'Denaturasi',ok:95},{k:'ann',g:'annealing',n:'Annealing',ok:60},{k:'ext',g:'ekstensi',n:'Ekstensi',ok:72}];
+const TEMPS=[60,72,95];
+function stgFb(k,v){
+  const F={
+    den:{95:{k:'ok',t:'Pada 95 °C ikatan hidrogen antarbasa putus, sehingga DNA untai ganda terpisah menjadi untai tunggal.'},60:{k:'warn',t:'Suhu ini belum cukup untuk memisahkan kedua untai DNA.'},72:{k:'warn',t:'Suhu ini belum cukup untuk memisahkan kedua untai DNA.'}},
+    ann:{60:{k:'ok',t:'Suhu diturunkan supaya primer dapat menempel pada urutan pasangannya. Suhu annealing bergantung pada primer.'},95:{k:'warn',t:'Pada 95 °C untai justru terpisah, sehingga primer tidak dapat menempel.'},72:{k:'warn',t:'Untuk primer kasus ini, 72 °C terlalu tinggi sehingga primer sulit menempel dengan stabil.'}},
+    ext:{72:{k:'ok',t:'Taq polimerase bekerja optimal sekitar 72 °C dan memperpanjang primer dengan menambahkan dNTP.'},95:{k:'warn',t:'Pada 95 °C untai terpisah kembali sebelum polimerase sempat memperpanjang primer.'},60:{k:'warn',t:'Polimerase masih bekerja, tetapi lambat. Suhu optimal Taq polimerase sekitar 72 °C.'}}};
+  return F[k][v];
+}
+const asgOk=()=>STG.every(s=>S.cy.asg[s.k]===s.ok);
+function profileSVG(){
+  const Y=t=>150-t/100*118;
+  const pts=[[20,95],[90,95],[160,95],[175,60],[235,60],[250,72],[320,72],[400,72],[420,4],[530,4]];
+  let s='<svg viewBox="0 0 550 180" aria-hidden="true">';
+  s+='<rect x="90" y="4" width="230" height="160" rx="6" fill="var(--accent-soft)"/><text x="205" y="18" text-anchor="middle" class="svb">diulang 30 sampai 40 kali</text>';
+  s+='<polyline points="'+pts.map(p=>p[0]+','+Y(p[1]).toFixed(1)).join(' ')+'" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"/>';
+  [[55,95,'Denaturasi','awal'],[125,95,'Denaturasi',''],[205,60,'Annealing',''],[285,72,'Ekstensi',''],[360,72,'Ekstensi','akhir'],[475,4,'Simpan','']].forEach(a=>{
+    s+='<text x="'+a[0]+'" y="'+(Y(a[1])-7).toFixed(1)+'" text-anchor="middle" class="svt">'+a[1]+' °C</text><text x="'+a[0]+'" y="'+(a[3]?162:172)+'" text-anchor="middle" class="svl">'+a[2]+'</text>'+(a[3]?'<text x="'+a[0]+'" y="175" text-anchor="middle" class="svl">'+a[3]+'</text>':'');});
+  return s+'</svg>';
+}
+const CYC={0:['–','Siap','Tekan tombol untuk memutar satu siklus.'],1:['95 °C','Denaturasi','Kedua untai DNA terpisah.'],2:['60 °C','Annealing','Primer forward dan reverse menempel pada untai pasangannya.'],
+  3:['72 °C','Ekstensi',"Taq polimerase memperpanjang primer dari ujung 3' dengan menambahkan dNTP."],4:['× 2','Satu siklus selesai','Satu molekul menjadi dua. Setiap untai baru diawali primer.']};
+function cycSVG(ph,p){
+  p=p===undefined?1:p;
+  let s='<svg viewBox="0 0 520 200" aria-hidden="true"><rect x="160" y="8" width="200" height="184" rx="6" fill="var(--accent-soft)"/><text x="260" y="196" text-anchor="middle" class="svl">daerah target</text>';
+  const strand=(y,col,x1,x2)=>'<line x1="'+(x1||40)+'" y1="'+y+'" x2="'+(x2||480)+'" y2="'+y+'" stroke="'+col+'" stroke-width="4" stroke-linecap="round"/>';
+  const rungs=(y1,y2,a,b)=>{let r='';for(let x=(a||48);x<=(b||472);x+=14)r+='<line x1="'+x+'" y1="'+(y1+3)+'" x2="'+x+'" y2="'+(y2-3)+'" stroke="var(--line)" stroke-width="2"/>';return r;};
+  const ends=(yt,yb)=>"<text x='30' y='"+(yt+4)+"' text-anchor='end' class='svt'>5'</text><text x='490' y='"+(yt+4)+"' class='svt'>3'</text><text x='30' y='"+(yb+4)+"' text-anchor='end' class='svt'>3'</text><text x='490' y='"+(yb+4)+"' class='svt'>5'</text>";
+  if(ph===0){s+=rungs(88,112)+strand(88,'var(--dna1)')+strand(112,'var(--dna2)')+ends(88,112);}
+  else if(ph<4){
+    s+=strand(46,'var(--dna1)')+strand(154,'var(--dna2)')+ends(46,154);
+    if(ph>=2){
+      if(ph===3){s+='<line id="nsR" x1="320" y1="60" x2="'+(320-280*p)+'" y2="60" stroke="var(--pR)" stroke-width="4" stroke-linecap="round" opacity=".75"/>';
+        s+='<line id="nsF" x1="200" y1="140" x2="'+(200+280*p)+'" y2="140" stroke="var(--pF)" stroke-width="4" stroke-linecap="round" opacity=".75"/>';}
+      s+=arrow(360,320,60,'var(--pR)',5)+arrow(160,200,140,'var(--pF)',5);
+    }
+  }else{
+    s+=rungs(36,58,48,472)+strand(36,'var(--dna1)')+strand(58,'var(--pR)',40,360)+'<line x1="320" y1="58" x2="360" y2="58" stroke="var(--pR)" stroke-width="6" stroke-linecap="round"/>';
+    s+=rungs(142,164,48,472)+strand(142,'var(--pF)',160,480)+'<line x1="160" y1="142" x2="200" y2="142" stroke="var(--pF)" stroke-width="6" stroke-linecap="round"/>'+strand(164,'var(--dna2)');
+    s+='<text x="40" y="84" class="svl">Salinan 1: untai atas lama + untai baru dari primer reverse</text><text x="40" y="126" class="svl">Salinan 2: untai bawah lama + untai baru dari primer forward</text>';
+  }
+  return s+'</svg>';
+}
+const REAL=(()=>{const a=[1];let N=1;const Kc=1e10;for(let n=1;n<=40;n++){N=N+N*(1-N/Kc);a.push(N);}return a;})();
+function chartSVG(n){
+  const X=c=>50+c/40*480,Y=l=>186-l/12*166;
+  let s='<svg viewBox="0 0 560 220" aria-hidden="true">';
+  for(let l=0;l<=12;l+=3)s+='<line x1="50" x2="530" y1="'+Y(l)+'" y2="'+Y(l)+'" stroke="var(--line)"/><text x="44" y="'+(Y(l)+4)+'" text-anchor="end" class="svt">10'+sup(l)+'</text>';
+  for(let c=0;c<=40;c+=10)s+='<text x="'+X(c)+'" y="204" text-anchor="middle" class="svt">'+c+'</text>';
+  s+='<text x="530" y="218" text-anchor="end" class="svl">siklus</text>';
+  let pi='',pr='';for(let c=0;c<=40;c++){pi+=(c?' ':'')+X(c).toFixed(1)+','+Y(c*Math.LOG10E*Math.log(2)).toFixed(1);pr+=(c?' ':'')+X(c).toFixed(1)+','+Y(Math.log10(REAL[c])).toFixed(1);}
+  s+='<polyline points="'+pi+'" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/><polyline points="'+pr+'" fill="none" stroke="var(--accent)" stroke-width="3"/>';
+  s+='<line x1="'+X(n)+'" x2="'+X(n)+'" y1="16" y2="186" stroke="var(--orange)" stroke-width="1.5"/>';
+  s+='<circle cx="'+X(n)+'" cy="'+Y(n*Math.log10(2))+'" r="4" fill="var(--muted)"/><circle cx="'+X(n)+'" cy="'+Y(Math.log10(REAL[n]))+'" r="5" fill="var(--accent)"/>';
+  s+='<line x1="60" y1="24" x2="84" y2="24" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/><text x="90" y="28" class="svl">ideal (2ⁿ)</text><line x1="60" y1="42" x2="84" y2="42" stroke="var(--accent)" stroke-width="3"/><text x="90" y="46" class="svl">dengan keterbatasan reagen</text>';
+  return s+'</svg>';
+}
+function updCy(){
+  const n=S.cy.n;const a=$('cyN'),b=$('cyIdeal'),c=$('cyReal'),d=$('cyChart');
+  if(a)a.textContent=n;if(b)b.textContent=sci(Math.pow(2,n))+' salinan';if(c)c.textContent=sci(REAL[n])+' salinan';if(d)d.innerHTML=chartSVG(n);
+}
+function mcSVG(){
+  const O1='var(--dna1)',O2='var(--dna2)',N1='var(--pR)',N2='var(--pF)',mw=88;
+  const mol=(cx,y,t,b)=>{let s='';for(let x=cx-mw/2+8;x<=cx+mw/2-8;x+=10)s+='<line x1="'+x+'" y1="'+(y+3)+'" x2="'+x+'" y2="'+(y+11)+'" stroke="var(--line)" stroke-width="2"/>';
+    return s+'<line x1="'+(cx-mw/2)+'" y1="'+y+'" x2="'+(cx+mw/2)+'" y2="'+y+'" stroke="'+t+'" stroke-width="4" stroke-linecap="round"/><line x1="'+(cx-mw/2)+'" y1="'+(y+14)+'" x2="'+(cx+mw/2)+'" y2="'+(y+14)+'" stroke="'+b+'" stroke-width="4" stroke-linecap="round"/>';};
+  const link=(x1,y1,x2,y2,d)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="var(--glass)" stroke-width="1.2"'+(d?' stroke-dasharray="4 4"':'')+'/>';
+  const lab=(y,a,b)=>'<text x="0" y="'+(y+4)+'" class="svb">'+a+'</text><text x="0" y="'+(y+20)+'" class="svl">'+b+'</text>';
+  let s='<svg viewBox="0 0 560 276" aria-label="Penggandaan DNA selama dua siklus">';
+  s+=lab(20,'Awal','1 molekul')+mol(344,20,O1,O2);
+  s+=link(344,40,244,100)+link(344,40,444,100);
+  s+=lab(106,'Setelah siklus 1','2 molekul')+mol(244,106,O1,N1)+mol(444,106,N1,O2);
+  [[244,194],[244,294],[444,394],[444,494]].forEach(a=>{s+=link(a[0],126,a[1],186);});
+  s+=lab(192,'Setelah siklus 2','4 molekul')+mol(194,192,O1,N2)+mol(294,192,N2,N1)+mol(394,192,N1,N2)+mol(494,192,N2,O2);
+  [194,294,394,494].forEach(x=>{s+=link(x,212,x,232,true);});
+  s+='<text x="344" y="248" text-anchor="middle" class="svb">⋮</text><text x="344" y="268" text-anchor="middle" class="svl">dan seterusnya: 8, 16, 32, …</text>';
+  return s+'</svg>';
+}
+function mcCard(){
+  return '<div class="card"><h2>Setelah beberapa siklus</h2><p class="sub">Satu molekul DNA menjadi 2 molekul setelah siklus pertama, lalu 4 molekul setelah siklus kedua. Setiap untai, baik yang lama maupun yang baru, menjadi cetakan di siklus berikutnya, sehingga jumlahnya terus berlipat dua ('+T('eksponensial','eksponensial')+').</p>'+
+    '<div class="stage">'+mcSVG()+'</div>'+
+    '<div class="legend"><span><i style="background:var(--dna1)"></i><i style="background:var(--dna2)"></i>Untai asli</span><span><i style="background:var(--pR)"></i>Untai baru siklus 1</span><span><i style="background:var(--pF)"></i>Untai baru siklus 2</span></div>'+
+    '<p class="small muted mt" style="margin-bottom:0">Diagram disederhanakan dan tidak menggambarkan panjang untai. Lihat '+T('produkpendek','produk sepanjang target')+'.</p></div>';
+}
+VIEWS.siklus=()=>{
+  const C=S.cy;const aOk=asgOk();const ph=C.played?4:0;const cy=CYC[ph];
+  const PRED=['60 salinan (30 × 2)','900 salinan (30²)','Sekitar 1 miliar (2³⁰)'];
+  return head('Siklus suhu','Mesin '+T('thermal','thermal cycler')+' mengulang tiga tahap suhu. Setiap siklus menggandakan DNA target.')+
+  stepCard(1,'Atur suhu tiap tahap','<p class="sub">Pilih suhu yang sesuai untuk tiap tahap dalam satu siklus.</p>'+
+    STG.map((s,i)=>{const v=C.asg[s.k];return '<div class="srow"><b>'+(i+1)+'. '+T(s.g,s.n)+'</b><div class="seg">'+TEMPS.map(t=>'<button class="'+(v===t?'on':'')+'" data-act="asg" data-s="'+s.k+'" data-v="'+t+'">'+t+' °C</button>').join('')+'</div></div>'+(v?note(stgFb(s.k,v)):'');}).join('')+
+    (aOk?'<div class="stage mt">'+profileSVG()+'</div><p class="small mt" style="margin-bottom:0">Satu reaksi lengkap diawali denaturasi awal dan ditutup ekstensi akhir. Lihat '+T('program','program lengkap')+'.</p>':''),{complete:aOk})+
+  '<div class="split'+(aOk?'':' locked')+'" style="'+(aOk?'':'opacity:.45;pointer-events:none')+'"><div class="card"><h2><span class="step-no" style="'+(C.played?'background:var(--green);color:#fff':'')+'">'+(C.played?'✓':2)+'</span>Satu siklus di dalam tabung</h2><div class="stage" id="cycStage">'+cycSVG(ph)+'</div></div>'+
+  '<div class="card"><div class="thermo"><b id="cycTemp">'+cy[0]+'</b><span id="cycName">'+cy[1]+'</span></div><p id="cycCap">'+cy[2]+'</p>'+
+  (C.played?'<p class="small muted">Untai baru di siklus pertama masih lebih panjang dari target. Lihat '+T('produkpendek','produk sepanjang target')+'.</p>':'')+
+  '<button class="btn" data-act="cyplay">'+(C.played?'Putar ulang':'Putar satu siklus')+'</button></div></div>'+
+  (C.played?mcCard():'')+
+  stepCard(3,'Berapa banyak salinannya?','<p class="sub">Dari 1 molekul DNA target, kira-kira berapa salinan setelah 30 siklus?</p>'+
+    PRED.map((t,i)=>'<button class="pick'+(C.pred===i?' on':'')+'" data-act="pred" data-v="'+i+'"'+(C.pred!==null?' disabled':'')+'>'+t+'</button>').join('')+
+    (C.pred!==null?note(C.pred===2?{k:'ok',h:'Tepat.',t:'Jumlah salinan berlipat dua setiap siklus ('+T('eksponensial','eksponensial')+'), sehingga 2³⁰ ≈ 1,07 × 10⁹ salinan.'}:{k:'warn',h:'Belum tepat.',t:'Jumlah salinan berlipat dua setiap siklus ('+T('eksponensial','eksponensial')+'). Setelah 30 siklus hasilnya 2³⁰ ≈ 1,07 × 10⁹ salinan.'})+
+      '<p class="sub mt" style="margin-bottom:6px">Geser untuk melihat pertambahan salinan.</p><div class="row between"><span>Siklus</span><b id="cyN">'+C.n+'</b></div><input type="range" min="0" max="40" step="1" value="'+C.n+'" data-in="cyn" aria-label="Jumlah siklus">'+
+      '<div class="calc-grid mt"><div class="calc"><span>Ideal (2ⁿ)</span><b id="cyIdeal"></b></div><div class="calc"><span>Dengan keterbatasan reagen</span><b id="cyReal"></b></div></div>'+
+      '<div class="stage mt" id="cyChart"></div><p class="small muted mt" style="margin-bottom:0">Menjelang akhir, pertambahan melambat dan mencapai '+T('plateau','plateau')+'. Bentuk kurva ini akan muncul lagi di layar qPCR. Nilai plateau di grafik bersifat ilustratif.</p>':''),
+    {locked:!C.played,complete:C.pred!==null})+
+  quizHTML('siklus');
+};
+
+/* ---------- Gel elektroforesis ---------- */
+const GELS=['Muat sampel ke sumur','Pasang elektroda','Jalankan elektroforesis','Lihat di bawah sinar UV'];
+const LADDER=[100,200,300,400,500,600,700,800,900,1000];
+const bandY=bp=>60+(Math.log10(1200)-Math.log10(bp))/(Math.log10(1200)-Math.log10(70))*200;
+function gelSVG(){
+  const G=S.gel,D=data(),bp=K().bp;const W=580,x0=56,gw=W-x0-14,lw=gw/13;const cx=i=>x0+lw*(i+0.5);const uv=G.ph>=4;
+  const labels=['M','K+','K−','1','2','3','4','5','6','7','8','9','10'];
+  let s='<svg viewBox="0 0 '+W+' 302" aria-label="Gel elektroforesis"><defs><filter id="glow" x="-30%" y="-300%" width="160%" height="700%"><feGaussianBlur stdDeviation="2"/></filter></defs>';
+  labels.forEach((l,i)=>{const mk=i>=3&&G.marks[i-3];if(mk)s+='<rect x="'+(cx(i)-13)+'" y="2" width="26" height="18" rx="6" fill="var(--accent)"/>';
+    s+='<text x="'+cx(i)+'" y="15" text-anchor="middle" class="svt"'+(mk?' style="fill:#fff;font-weight:600"':'')+'>'+l+'</text>';});
+  if(G.ph>=2)s+='<rect x="'+(x0-4)+'" y="23" width="'+(gw+8)+'" height="4" rx="2" fill="#3A3A3C"/><text x="'+(x0-10)+'" y="30" text-anchor="end" class="svb">−</text><rect x="'+(x0-4)+'" y="281" width="'+(gw+8)+'" height="4" rx="2" fill="#E5302A"/><text x="'+(x0-10)+'" y="289" text-anchor="end" class="svb" style="fill:#E5302A">+</text>';
+  s+='<rect x="'+(x0-4)+'" y="30" width="'+(gw+8)+'" height="248" rx="6" fill="'+(uv?'#121419':'var(--gelc)')+'"/>';
+  labels.forEach((l,i)=>{s+='<rect x="'+(cx(i)-lw*.32)+'" y="38" width="'+(lw*.64)+'" height="7" rx="1.5" fill="'+(uv?'#23262E':'rgba(0,0,0,.18)')+'"/>';});
+  if(G.ph>=1&&!uv){s+='<g id="dye" style="transform:translateY('+(G.ph>=3?214:0)+'px)">';labels.forEach((l,i)=>{s+='<rect x="'+(cx(i)-lw*.32)+'" y="38" width="'+(lw*.64)+'" height="6" rx="1.5" fill="#3D5BD9" opacity=".8"/>';});s+='</g>';}
+  if(uv){
+    const band=(i,b,op,h)=>{const y=bandY(b);h=h||4;return '<rect x="'+(cx(i)-lw*.34)+'" y="'+(y-h/2-1)+'" width="'+(lw*.68)+'" height="'+(h+2)+'" fill="#FF9F43" opacity="'+(op*.7)+'" filter="url(#glow)"/><rect x="'+(cx(i)-lw*.32)+'" y="'+(y-h/2)+'" width="'+(lw*.64)+'" height="'+h+'" rx="1" fill="#FFC27A" opacity="'+op+'"/>';};
+    LADDER.forEach(b=>{s+=band(0,b,b===500?1:.7,b===500?5:3.5);});
+    [100,200,300,500,1000].forEach(b=>{s+='<text x="'+(x0-8)+'" y="'+(bandY(b)+4)+'" text-anchor="end" class="svl">'+b+'</text>';});
+    s+=band(1,bp,.95);
+    D.pos.forEach(p=>{const op=clamp(1.15-(D.ct[p]-17)*0.05,.45,1);s+=band(p+3,bp,op);});
+    s+='<text x="'+(x0-8)+'" y="58" text-anchor="end" class="svl">bp</text>';
+  }
+  return s+'</svg>';
+}
+VIEWS.gel=()=>{
+  const G=S.gel,k=K(),D=data(),ph=G.ph;
+  const needDir=ph===1&&G.max<2;
+  const dirBox=needDir?'<div class="subchoice" style="margin:0 0 4px"><button class="btn tint sm" data-act="gdir" data-v="neg">Sumur di dekat kutub negatif (−)</button><button class="btn tint sm" data-act="gdir" data-v="pos">Sumur di dekat kutub positif (+)</button></div>':'';
+  const brightBody='<p>Terang pita menggambarkan banyaknya DNA di pita itu. Sampel dengan target awal lebih banyak menghasilkan lebih banyak amplikon sehingga pitanya cenderung lebih terang.</p>'+
+    '<p>Gel hanya memberi gambaran kasar jumlah target, sebab gel dibaca setelah reaksi selesai, saat reagen menipis dan produk mendekati '+T('plateau','plateau')+'. Untuk perkiraan jumlah, gunakan '+T('qpcr','qPCR')+'.</p>'+
+    '<p style="margin:0">Terang pita juga dipengaruhi volume sampel yang dimuat, efisiensi tiap tabung, dan banyaknya pewarna.</p>';
+  const caps=[
+    {t:'Gel '+T('agarosa','agarosa')+' sudah dicetak dan direndam buffer di dalam tangki. Hasil '+k.pcr+' siap dimasukkan ke '+T('sumur','sumur')+'.'},
+    {t:'Sampel dicampur '+T('loading','loading dye')+', lalu dimasukkan secara berurutan: '+T('marker','marker')+' (M), '+T('kpos','kontrol positif')+' (K+), '+T('ntc','NTC')+' (K−), dan sampel 1 sampai 10.'+(G.max<2?' Berikutnya, di dekat kutub mana sumur diletakkan?':'')},
+    {k:'ok',h:'Tepat.',t:'DNA bermuatan negatif karena '+T('fosfat','gugus fosfat')+', sehingga bergerak dari '+T('katoda','katoda (−) menuju anoda (+)')+'.'},
+    {t:'Pewarna loading sudah bergerak jauh dari sumur. Pita DNA belum terlihat karena DNA tidak berwarna. Gel diberi '+T('pewarna','pewarna DNA')+', lalu disinari UV.'},
+    {k:'ok',h:'Pita DNA terlihat.',t:'Pita berpendar di atas '+T('uv','transiluminator UV')+'. Fragmen kecil bergerak lebih jauh dari sumur daripada fragmen besar.'}
+  ];
+  const cap=G.dir==='pos'&&needDir?{k:'bad',h:'Belum tepat.',t:'Bila sumur di dekat kutub positif, DNA yang bermuatan negatif bergerak keluar dari gel ke buffer, sehingga tidak ada pita yang terbaca.'}:caps[ph];
+  const ok=G.chk===true;
+  return head('Deteksi dengan gel elektroforesis','Pada '+k.pcr+' konvensional, produk dilihat setelah reaksi selesai. '+T('elektroforesis','Elektroforesis')+' memisahkan DNA menurut ukurannya, lalu pita DNA dilihat di bawah sinar UV.')+
+  '<div class="split"><div class="card"><h2>Gel</h2><div class="stage" id="gelStage">'+gelSVG()+'</div>'+
+  (ph>=4?'<p class="small muted mt" style="margin-bottom:0">Angka di kiri adalah ukuran pita marker dalam bp. M: marker, K+: kontrol positif, K−: '+T('ntc','NTC')+'.</p>':'')+'</div>'+
+  '<div class="card"><h2>Langkah</h2><p class="sub">'+(ph===0?'Keadaan awal':'Langkah '+ph+' dari 4')+'. Maju dan mundur untuk membandingkan tiap langkah.</p>'+stepper('gel',GELS,ph,G.max)+stepNav('gel',ph,GELS,needDir)+note(cap)+dirBox+'</div></div>'+
+  stepCard(null,'Baca hasil gel','<ol class="clean small"><li>Periksa kontrol. K+ berpita pada '+k.bp+' bp, yaitu di antara pita marker 200 dan 300 bp. K− tanpa pita. Kedua kontrol sesuai, jadi run valid.</li>'+
+    '<li>Bandingkan setiap lajur sampel dengan K+. Sampel positif memiliki '+T('pita','pita')+' yang sejajar dengan K+.</li><li>Ketuk nomor lajur sampel yang positif, lalu periksa.</li></ol>'+det('gelterang','Mengapa ada pita yang lebih terang daripada pita lain?',brightBody)+
+    '<div class="chips mt">'+[0,1,2,3,4,5,6,7,8,9].map(i=>'<button class="cbtn lane'+(G.marks[i]?' on':'')+'" data-act="glane" data-i="'+i+'"'+(ok?' disabled':'')+' aria-pressed="'+(!!G.marks[i])+'">'+(i+1)+'</button>').join('')+'</div>'+
+    '<div class="row mt"><button class="btn tint" data-act="gcheck"'+(ok?' disabled':'')+'>Periksa</button></div>'+
+    (G.chk===true?note({k:'ok',h:'Tepat.',t:'Sampel '+sampList(D.pos)+' positif. Perbedaan terang antarpita tidak mengubah hasil positif, lihat penjelasannya di atas. Pita dengan ukuran lain disebut '+T('nonspesifik','pita nonspesifik')+' atau '+T('primerdimer','primer-dimer')+' dan tidak dibaca positif.'}):
+     G.chk?note({k:'warn',h:'Belum tepat.',t:G.chk}):''),{locked:G.max<4,complete:ok})+
+  quizHTML('gel');
+};
+
+/* ---------- qPCR ---------- */
+const TH=0.1;
+const WELLS=[{id:'kp',l:'K+'},{id:'ntc',l:'NTC'}].concat([0,1,2,3,4,5,6,7,8,9].map(i=>({id:i,l:String(i+1)})));
+function wellCol(w){const D=data();if(w==='kp')return '#30B0C7';if(w==='ntc'||D.ct[w]===undefined)return '#5A6470';return ['#FF6B6B','#5B9BFF','#F5A623'][D.pos.indexOf(w)];}
+function fluor(w,c){
+  const D=data();let ct=null,fm=1;
+  if(w==='kp'){ct=D.kpos;fm=D.fk;}else if(w!=='ntc'&&D.ct[w]!==undefined){ct=D.ct[w];fm=D.fmax[w];}
+  const sd=(w==='kp'?11:w==='ntc'?12:w)+1;
+  const noise=0.004*(Math.sin(c*1.3+sd*2.1)+Math.sin(c*.7+sd))+0.01;
+  if(ct===null)return noise;
+  const s=1.5,m=ct+s*Math.log(fm/(TH-0.01)-1);
+  return noise+fm/(1+Math.exp(-(c-m)/s));
+}
+function qSVG(c){
+  const X=v=>48+v/40*522,Y=f=>262-f/1.2*240;
+  let s='<svg viewBox="0 0 590 292" aria-label="Kurva amplifikasi">';
+  for(let v=0;v<=40;v+=5)s+='<line x1="'+X(v)+'" x2="'+X(v)+'" y1="22" y2="262" stroke="rgba(255,255,255,.07)"/>'+(v%10===0?'<text x="'+X(v)+'" y="278" text-anchor="middle" font-size="11" fill="#8A949E">'+v+'</text>':'');
+  for(let f=0;f<=1.2001;f+=0.2)s+='<line x1="48" x2="570" y1="'+Y(f)+'" y2="'+Y(f)+'" stroke="rgba(255,255,255,.07)"/><text x="42" y="'+(Y(f)+4)+'" text-anchor="end" font-size="11" fill="#8A949E">'+f.toFixed(1).replace('.',',')+'</text>';
+  s+='<text x="570" y="290" text-anchor="end" font-size="11" fill="#8A949E">siklus</text><text x="10" y="14" font-size="11" fill="#8A949E">fluoresensi (ΔRn)</text>';
+  s+='<line x1="48" x2="570" y1="'+Y(TH)+'" y2="'+Y(TH)+'" stroke="#FFB020" stroke-width="1.5" stroke-dasharray="6 4"/><text x="566" y="'+(Y(TH)-6)+'" text-anchor="end" font-size="11" fill="#FFB020">threshold</text>';
+  const order=WELLS.slice().sort((a,b)=>(wellCol(a.id)==='#5A6470'?0:1)-(wellCol(b.id)==='#5A6470'?0:1));
+  order.forEach(w=>{if(c<=0)return;let p='';for(let x=0;x<=c+1e-9;x+=0.5)p+=(x?' ':'')+X(x).toFixed(1)+','+Y(Math.min(1.2,fluor(w.id,x))).toFixed(1);
+    s+='<polyline points="'+p+'" fill="none" stroke="'+wellCol(w.id)+'" stroke-width="'+(wellCol(w.id)==='#5A6470'?1.5:2.5)+'"/>';});
+  return s+'</svg>';
+}
+function wellsHTML(c){return WELLS.map(w=>{const lit=c>0&&fluor(w.id,c)>=TH;return '<div class="well'+(lit?' lit':'')+'" style="'+(lit?'background:'+wellCol(w.id):'')+'">'+w.l+'</div>';}).join('');}
+function qDraw(c){const p=$('qPlot');if(p)p.innerHTML=qSVG(c);const g=$('qGrid');if(g)g.innerHTML=wellsHTML(c);const t=$('qCyc');if(t)t.textContent='Siklus '+c+' dari 40';}
+VIEWS.qpcr=()=>{
+  const Q=S.qp,k=K(),D=data();const c=Q.run?40:0;const ok1=Q.chk===true;const ok2=Q.most===D.most;
+  return head('Deteksi real-time dengan '+k.qpcr,'Mesin qPCR memantau '+T('fluoresensi','fluoresensi')+' di setiap siklus, sehingga produk terlihat bertambah selama reaksi berjalan. Gel tidak diperlukan.')+
+  '<div class="card"><div class="screen"><div class="shead"><b>Layar mesin '+k.qpcr+' · amplification plot</b><span id="qCyc">Siklus '+c+' dari 40</span></div>'+
+  '<div class="qwrap"><div class="qgrid" id="qGrid">'+wellsHTML(c)+'</div><div class="qplot" id="qPlot">'+qSVG(c)+'</div></div></div>'+
+  '<p class="small muted mt">Sinyal berasal dari '+T('sybr','SYBR Green')+' atau '+T('probe','probe')+'. Garis putus-putus kuning adalah '+T('threshold','threshold')+'. Siklus saat kurva memotong garis ini disebut '+T('ct','Ct')+'. Sinyal datar di siklus awal disebut '+T('baseline','baseline')+'.</p>'+
+  '<button class="btn" data-act="qrun"'+(Q.run?' disabled':'')+'>'+(Q.run?'Run selesai':'Mulai run (40 siklus)')+'</button></div>'+
+  (Q.run?
+   '<div class="card"><h2>Nilai Ct</h2><div class="ctgrid">'+WELLS.map(w=>{const ct=w.id==='kp'?D.kpos:(w.id==='ntc'?null:D.ct[w.id]);return '<div class="'+(ct?'':'neg')+'">'+(w.id==='kp'?'K+':w.id==='ntc'?'NTC':'Sampel '+w.l)+'<b>'+(ct?dec1(ct):'tidak terdeteksi')+'</b></div>';}).join('')+'</div>'+
+   '<p class="small muted mt" style="margin-bottom:0">Jumlah salinan dapat dihitung dari Ct dengan '+T('kurvastd','kurva standar')+'.</p></div>'+
+   stepCard(1,'Tentukan sampel positif','<p class="sub">Kontrol sesuai: K+ memotong threshold (Ct '+dec1(D.kpos)+') dan '+T('ntc','NTC')+' tidak. Sampel positif adalah sampel yang kurvanya memotong threshold. Lihat juga '+T('cutoff','batas Ct')+'.</p>'+
+     '<div class="chips">'+[0,1,2,3,4,5,6,7,8,9].map(i=>'<button class="cbtn lane'+(Q.marks[i]?' on':'')+'" data-act="qlane" data-i="'+i+'"'+(ok1?' disabled':'')+' aria-pressed="'+(!!Q.marks[i])+'">'+(i+1)+'</button>').join('')+'</div>'+
+     '<div class="row mt"><button class="btn tint" data-act="qcheck"'+(ok1?' disabled':'')+'>Periksa</button></div>'+
+     (ok1?note({k:'ok',h:'Tepat.',t:'Sampel '+sampList(D.pos)+' positif, sama dengan hasil gel.'}):Q.chk?note({k:'warn',h:'Belum tepat.',t:Q.chk}):''),{complete:ok1})+
+   stepCard(2,'Bandingkan jumlah target','<p class="sub">Di antara sampel positif, sampel mana yang mengandung target awal paling banyak?</p>'+
+     '<div class="chips">'+D.pos.map(i=>'<button class="cbtn lane'+(Q.most===i?(ok2?' ok':' no'):'')+'" data-act="qmost" data-i="'+i+'"'+(ok2?' disabled':'')+'>Sampel '+(i+1)+'</button>').join('')+'</div>'+
+     (Q.most!==null?note(ok2?{k:'ok',h:'Tepat.',t:'Sampel '+(D.most+1)+' memiliki Ct terkecil ('+dec1(D.ct[D.most])+'). Sinyalnya melewati ambang paling awal karena salinan target awalnya paling banyak.'}:{k:'warn',h:'Belum tepat.',t:'Perhatikan nilai Ct. Makin kecil Ct, makin cepat sinyal melewati ambang, dan makin banyak target awal.'}):'')+
+     (ok1&&ok2?note({t:'Dibanding gel, qPCR memantau produk selama reaksi, tabung tidak perlu dibuka sehingga risiko kontaminasi lebih kecil, dan nilai Ct memberi perkiraan jumlah target.'}):''),{locked:!ok1,complete:ok2})
+   :'')+
+  quizHTML('qpcr');
+};
+
+/* ---------- Penutup ---------- */
+VIEWS.penutup=()=>{
+  const k=K(),D=data(),rna=S.kasus==='rna';
+  const total=Object.values(QUIZ).reduce((s,q)=>s+q.length,0);const answered=Object.keys(S.quiz).length;
+  const tgl=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+  return head('Penutup dan ringkasan','PCR menjawab pertanyaan "apakah target ada?". Untuk pertanyaan "bagaimana urutan basanya?", dibutuhkan sekuensing.')+
+  '<div class="card"><h2>Apa yang diketahui dari tiap metode</h2><div class="table-wrap"><table><thead><tr><th>Metode</th><th>Hal yang diketahui</th><th>Hal yang belum diketahui</th></tr></thead><tbody>'+
+  '<tr><td><b>'+k.pcr+'</b> (gel)</td><td>Ada atau tidaknya target, serta ukuran amplikon</td><td>Jumlah target dan urutan basa</td></tr>'+
+  '<tr><td><b>'+k.qpcr+'</b></td><td>Ada atau tidaknya target, serta perkiraan jumlah lewat Ct</td><td>Urutan basa</td></tr>'+
+  '<tr><td><b>Sekuensing</b></td><td>Urutan basa (A, T, G, C)</td><td>–</td></tr></tbody></table></div></div>'+
+  '<div class="card"><h2>Mengetahui urutan DNA dengan sekuensing</h2>'+
+  (rna?'<p>Hasil positif gen M menyatakan virus influenza A ada di sampel. Hasil ini belum menunjukkan '+T('subtipe','subtipe')+', misalnya H5 atau H9. Subtipe ditentukan dengan PCR lain yang menargetkan gen H dan N, atau dengan sekuensing.</p>':
+    '<p>Dua isolat <i>Salmonella</i> dapat sama-sama memberi pita 284 bp, padahal urutan gen keduanya bisa berbeda. Pita yang sama belum berarti galurnya sama.</p>')+
+  '<p>Untuk membaca urutan basa, amplikon dimurnikan lalu dibaca dengan '+T('sequencer','mesin sequencer')+', misalnya dengan metode '+T('sanger','Sanger')+'. Untuk genom utuh atau banyak target sekaligus dipakai '+T('ngs','NGS')+'.</p>'+
+  '<p style="margin:0">Urutan hasil sekuensing dibandingkan dengan '+T('genbank','basis data')+' untuk identifikasi galur, penelusuran sumber wabah, atau analisis filogenetik.</p></div>'+
+  note({h:'Hasil positif belum tentu organisme hidup',t:'PCR mendeteksi asam nukleat target, termasuk yang berasal dari '+T('dnamati')+'. Karena itu hasil positif belum membuktikan organisme masih hidup.'})+
+  '<div class="card"><h2>Ringkasan simulasi</h2><div class="table-wrap"><table><tbody>'+
+  '<tr><th>Tanggal</th><td>'+tgl+'</td></tr>'+
+  '<tr><th>Kasus</th><td>'+k.nama+': '+k.agen+' pada '+k.sampel+'</td></tr>'+
+  '<tr><th>Target</th><td>'+k.target+' ('+k.asam+'), amplikon '+k.bp+' bp</td></tr>'+
+  '<tr><th>Penyimpanan</th><td>'+(k.asam==='DNA'?'−20 °C (jangka panjang)':'−80 °C')+'</td></tr>'+
+  '<tr><th>Hasil '+k.pcr+' (gel)</th><td>'+(S.gel.chk===true?'Positif: sampel '+sampList(D.pos)+'. Negatif: 7 sampel lainnya.':'–')+'</td></tr>'+
+  '<tr><th>Hasil '+k.qpcr+'</th><td>'+(S.qp.chk===true?D.pos.map(p=>'sampel '+(p+1)+' (Ct '+dec1(D.ct[p])+')').join(', ')+'; K+ Ct '+dec1(D.kpos)+'; NTC tidak terdeteksi':'–')+'</td></tr>'+
+  '<tr><th>Soal latihan</th><td>Terjawab '+answered+' dari '+total+' soal</td></tr>'+
+  '</tbody></table></div></div>'+
+  quizHTML('penutup')+
+  '<div class="row noprint mt"><button class="btn" data-act="print">Cetak atau simpan PDF</button><button class="btn tint" data-act="again">Ulangi deteksi dengan data baru</button></div>';
+};
+
+/* ---------- Render ---------- */
+const nav=$('nav'),app=$('app'),foot=$('foot');
+function updDone(){
+  const d=S.done;
+  d[0]=!!S.kasus;
+  d[1]=S.iso.max>=4&&storeOk();
+  d[2]=S.kasus==='dna'?true:S.rt.done;
+  d[3]=S.re.pick==='face'&&MIXOK.every(x=>S.re.add[x]);
+  d[4]=asgOk()&&S.cy.played&&S.cy.pred!==null;
+  d[5]=S.gel.chk===true;
+  d[6]=S.qp.chk===true&&S.qp.most===data().most;
+  d[7]=d[7]||S.step===7;
+}
+const canEnter=i=>{for(let j=0;j<i;j++)if(!S.done[j])return false;return true;};
+let lastStep=-1;
+function updFade(pc){const w=$('swrap');if(!w||!pc)return;w.classList.toggle('fl',pc.scrollLeft>4);w.classList.toggle('fr',pc.scrollLeft<pc.scrollWidth-pc.clientWidth-4);}
+function setupStrip(pc){
+  let down=false,sx=0,sl=0,moved=false;
+  pc.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;down=true;moved=false;sx=e.clientX;sl=pc.scrollLeft;});
+  pc.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(!moved&&Math.abs(dx)>4){moved=true;pc.classList.add('drag');try{pc.setPointerCapture(e.pointerId);}catch(_){}}if(moved)pc.scrollLeft=sl-dx;});
+  const end=()=>{if(!down)return;down=false;pc.classList.remove('drag');};
+  pc.addEventListener('pointerup',end);pc.addEventListener('pointercancel',end);
+  pc.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
+  pc.addEventListener('wheel',e=>{if(pc.scrollWidth<=pc.clientWidth)return;if(Math.abs(e.deltaY)<=Math.abs(e.deltaX))return;const max=pc.scrollWidth-pc.clientWidth;
+    if((e.deltaY<0&&pc.scrollLeft<=0)||(e.deltaY>0&&pc.scrollLeft>=max-1))return;pc.scrollLeft+=e.deltaY;e.preventDefault();},{passive:false});
+  pc.addEventListener('scroll',()=>updFade(pc),{passive:true});
+}
+function focusKey(el){if(!el||!el.dataset||!el.dataset.act)return null;const d=el.dataset;return ['act','p','i','k','v','s'].filter(x=>d[x]!==undefined).map(x=>'[data-'+x+'="'+d[x]+'"]').join('');}
+function render(){
+  const fsel=focusKey(document.activeElement);
+  updDone();tipHide();
+  const doneCount=STEPS.filter((s,i)=>S.done[i]).length;
+  const old=$('pills');const keep=old?old.scrollLeft:0;
+  nav.innerHTML='<div class="nav-inner"><div class="nav-top"><div class="brand">Simulasi PCR<small>'+STEPS[S.step].t+(S.kasus?' · '+K().nama:'')+'</small></div><button class="linkbtn" data-act="reset">Mulai ulang</button></div>'+
+    '<div class="progress"><i style="width:'+(doneCount/STEPS.length*100)+'%"></i></div>'+
+    '<div class="steps-wrap" id="swrap"><div class="steps" id="pills">'+STEPS.map((s,i)=>'<button class="pill'+(i===S.step?' active':'')+(S.done[i]?' done':'')+'" data-act="go" data-i="'+i+'"'+(canEnter(i)?'':' disabled')+(i===S.step?' aria-current="step"':'')+'>'+i+'. '+s.t+'</button>').join('')+'</div></div></div>';
+  app.innerHTML=VIEWS[STEPS[S.step].id]();
+  const last=S.step===STEPS.length-1;
+  foot.innerHTML='<div class="foot-inner"><button class="btn gray" data-act="prev"'+(S.step===0?' disabled':'')+'>Kembali</button>'+
+    '<span class="foot-hint">'+(S.done[S.step]||last?'':'Selesaikan kegiatan di langkah ini untuk melanjutkan.')+'</span>'+
+    (last?'<span></span>':'<button class="btn" data-act="next"'+(S.done[S.step]?'':' disabled')+'>Lanjut</button>')+'</div>';
+  const pc=$('pills');pc.scrollLeft=keep;
+  const act=pc.querySelector('.pill.active');
+  if(act&&S.step!==lastStep){const target=Math.max(0,act.offsetLeft-pc.clientWidth/2+act.clientWidth/2);if(lastStep===-1||REDUCED)pc.scrollLeft=target;else pc.scrollTo({left:target,behavior:'smooth'});}
+  lastStep=S.step;setupStrip(pc);updFade(pc);
+  if(STEPS[S.step].id==='siklus'&&S.cy.pred!==null)updCy();
+  if(fsel){const el=document.querySelector(fsel);if(el&&!el.disabled){try{el.focus({preventScroll:true});}catch(_){}}}
+}
+function go(i){
+  if(i<0||i>=STEPS.length)return;
+  if(i>S.step&&!canEnter(i))return;
+  S.step=i;save();render();window.scrollTo(0,0);
+}
+
+/* ---------- Tooltip ---------- */
+const tip=$('tip');let tipEl=null,tipPin=false;
+function tipShow(el){
+  const g=GL[el.dataset.k];if(!g)return;const v=val(g);
+  tip.innerHTML='<b>'+v[0]+'</b>'+v[1];tip.style.display='block';
+  if(tipEl&&tipEl!==el)tipEl.classList.remove('on');tipEl=el;el.classList.add('on');
+  const r=el.getBoundingClientRect();const w=tip.offsetWidth,h=tip.offsetHeight;
+  let x=clamp(r.left+r.width/2-w/2,8,window.innerWidth-w-8);let y=r.bottom+8;
+  if(y+h>window.innerHeight-8)y=Math.max(8,r.top-h-8);
+  tip.style.left=x+'px';tip.style.top=y+'px';
+}
+function tipHide(){tip.style.display='none';if(tipEl)tipEl.classList.remove('on');tipEl=null;tipPin=false;}
+document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse'||tipPin)return;const t=e.target.closest&&e.target.closest('.tt');if(t)tipShow(t);});
+document.addEventListener('pointerout',e=>{if(e.pointerType!=='mouse'||tipPin)return;const t=e.target.closest&&e.target.closest('.tt');if(t&&!(e.relatedTarget&&t.contains(e.relatedTarget)))tipHide();});
+document.addEventListener('focusin',e=>{const t=e.target.closest&&e.target.closest('.tt');if(t&&!tipPin)tipShow(t);});
+document.addEventListener('focusout',e=>{const t=e.target.closest&&e.target.closest('.tt');if(t&&!tipPin)tipHide();});
+window.addEventListener('scroll',()=>{if(tipEl)tipHide();},{passive:true});
+
+/* ---------- Aksi ---------- */
+const A={
+  go:d=>go(+d.i), next:()=>go(S.step+1), prev:()=>go(S.step-1),
+  reset:()=>{if(confirm('Mulai ulang simulasi? Semua progres akan dihapus.')){S=fresh();DT=null;lastStep=-1;save();render();window.scrollTo(0,0);}},
+  kasus:d=>{if(S.kasus===d.v)return;if(S.kasus&&!confirm('Mengganti kasus akan menghapus progres. Lanjutkan?'))return;S=fresh();S.kasus=d.v;DT=null;render();},
+  store:d=>{S.iso.store=d.v;render();},
+  rtgo:async()=>{
+    if(S.rt.done)return;BUSY=true;lockUI();
+    const e=$('rtenz');if(e)e.style.opacity=1;
+    await tween(2200,p=>{const x=480-440*p;const r=$('rtcr');if(r){r.setAttribute('x',x.toFixed(1));r.setAttribute('width',(480-x).toFixed(1));}const z=$('rtenz');if(z)z.setAttribute('transform','translate('+(x-480).toFixed(1)+',0)');});
+    await sleep(250);S.rt.done=true;BUSY=false;save();render();
+  },
+  primer:d=>{if(S.re.pick==='face')return;S.re.pick=d.v;render();},
+  mix:d=>{const m=MIX.find(x=>x.k===d.k);if(!m)return;
+    S.re.add[m.k]=true;S.re.msg=null;
+    render();},
+  asg:d=>{S.cy.asg[d.s]=+d.v;render();},
+  cyplay:async()=>{
+    BUSY=true;lockUI();
+    const set=(ph,p)=>{const st=$('cycStage');if(st)st.innerHTML=cycSVG(ph,p);const c=CYC[ph];const a=$('cycTemp'),b=$('cycName'),x=$('cycCap');if(a)a.textContent=c[0];if(b)b.textContent=c[1];if(x)x.textContent=c[2];};
+    set(0);await sleep(500);set(1);await sleep(1500);set(2);await sleep(1500);set(3,0);
+    await tween(1800,p=>{const f=$('nsF'),r=$('nsR');if(f)f.setAttribute('x2',(200+280*p).toFixed(1));if(r)r.setAttribute('x2',(320-280*p).toFixed(1));});
+    await sleep(500);set(4);await sleep(400);
+    S.cy.played=true;BUSY=false;save();render();
+  },
+  pred:d=>{if(S.cy.pred!==null)return;S.cy.pred=+d.v;render();},
+  sjump:d=>{const o=d.p==='gel'?S.gel:S.iso;const i=+d.i;if(i<=o.max&&i!==o.ph){o.ph=i;render();}},
+  sprev:d=>{const o=d.p==='gel'?S.gel:S.iso;if(o.ph>0){o.ph--;render();}},
+  snext:d=>{
+    if(d.p!=='gel'){const I=S.iso;if(I.ph<4){I.ph++;I.max=Math.max(I.max,I.ph);render();}return;}
+    const G=S.gel;
+    if(G.ph===1&&G.max<2)return;
+    if(G.ph===2&&G.max<3){BUSY=true;lockUI();const dye=$('dye');
+      if(dye&&!REDUCED){dye.style.transition='transform 2.4s ease-in-out';void dye.getBoundingClientRect();requestAnimationFrame(()=>{dye.style.transform='translateY(214px)';});}
+      sleep(2500).then(()=>{G.ph=3;G.max=Math.max(G.max,3);BUSY=false;save();render();});return;}
+    if(G.ph<4){G.ph++;G.max=Math.max(G.max,G.ph);render();}
+  },
+  gdir:d=>{const G=S.gel;if(G.ph!==1||G.max>=2)return;G.dir=d.v;if(d.v==='neg'){G.ph=2;G.max=Math.max(G.max,2);}render();},
+  glane:d=>{const G=S.gel;if(G.chk===true)return;const i=+d.i;G.marks[i]=!G.marks[i];G.chk=null;render();},
+  gcheck:()=>{const G=S.gel,D=data();const picked=[0,1,2,3,4,5,6,7,8,9].filter(i=>G.marks[i]);
+    const miss=D.pos.filter(p=>!G.marks[p]).length,extra=picked.filter(p=>!D.pos.includes(p)).length;
+    G.chk=(!miss&&!extra)?true:((miss?'Masih ada lajur positif yang belum ditandai. ':'')+(extra?'Ada lajur tanpa pita sejajar K+ yang ikut ditandai. ':'')+'Bandingkan lagi setiap lajur dengan K+.');render();},
+  qrun:async()=>{
+    if(S.qp.run)return;BUSY=true;lockUI();
+    for(let c=0;c<=40;c+=(REDUCED?40:1)){qDraw(c);await sleep(85);}
+    S.qp.run=true;BUSY=false;save();render();
+  },
+  qlane:d=>{const Q=S.qp;if(Q.chk===true)return;const i=+d.i;Q.marks[i]=!Q.marks[i];Q.chk=null;render();},
+  qcheck:()=>{const Q=S.qp,D=data();const picked=[0,1,2,3,4,5,6,7,8,9].filter(i=>Q.marks[i]);
+    const miss=D.pos.filter(p=>!Q.marks[p]).length,extra=picked.filter(p=>!D.pos.includes(p)).length;
+    Q.chk=(!miss&&!extra)?true:((miss?'Masih ada sampel dengan Ct yang belum ditandai. ':'')+(extra?'Ada sampel yang kurvanya tidak memotong threshold ikut ditandai. ':'')+'Lihat kembali tabel Ct.');render();},
+  qmost:d=>{if(S.qp.most===data().most)return;S.qp.most=+d.i;render();},
+  quiz:d=>{S.quiz[d.k]=+d.v;render();},
+  qreset:d=>{delete S.quiz[d.k];render();},
+  print:()=>window.print(),
+  again:()=>{S.seed=newSeed();DT=null;S.gel=fresh().gel;S.qp=fresh().qp;S.done[5]=false;S.done[6]=false;go(5);}
+};
+
+document.addEventListener('click',e=>{
+  const tt=e.target.closest('.tt');
+  if(tt){if(tipPin&&tipEl===tt)tipHide();else{tipShow(tt);tipPin=true;}return;}
+  if(tipEl)tipHide();
+  const t=e.target.closest('[data-act]');if(!t||t.disabled||BUSY)return;
+  const f=A[t.dataset.act];if(f){f(t.dataset);save();}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&tipEl){tipHide();return;}
+  if((e.key==='ArrowRight'||e.key==='ArrowLeft')&&!BUSY&&!e.altKey&&!e.ctrlKey&&!e.metaKey){
+    const sid=STEPS[S.step].id,tg=e.target;
+    if((sid==='isolasi'||sid==='gel')&&!(tg.matches&&tg.matches('input,select,textarea'))){e.preventDefault();A[e.key==='ArrowRight'?'snext':'sprev']({p:sid==='gel'?'gel':'iso'});save();return;}
+  }
+  const t=e.target.closest&&e.target.closest('.tt');
+  if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();if(tipPin&&tipEl===t)tipHide();else{tipShow(t);tipPin=true;}}
+});
+document.addEventListener('input',e=>{
+  const t=e.target;const k=t.dataset&&t.dataset.in;if(!k)return;
+  if(k==='cyn'){S.cy.n=+t.value;updCy();}
+  save();
+});
+document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.dataset&&d.dataset.key){S.open[d.dataset.key]=d.open;save();}},true);
+let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{tipHide();updFade($('pills'));},150);});
+
+load();render();
+})();
+</script>
+</body>
+</html>
