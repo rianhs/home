@@ -344,18 +344,18 @@ const GL={
   bp:['bp','Base pair atau pasang basa, satuan panjang DNA untai ganda. 1 kb = 1.000 bp.'],
   ujung3:["Ujung 5' dan 3'","Penanda arah untai DNA. Polimerase selalu menambahkan nukleotida di ujung 3', sehingga untai baru tumbuh dari arah 5' ke 3'. Kedua untai DNA berpasangan dengan arah berlawanan (antiparalel)."],
   template:['Template','Cetakan, yaitu DNA atau cDNA dari sampel yang mungkin mengandung urutan target.'],
-  dntp:['dNTP','Deoksinukleotida trifosfat (dATP, dTTP, dGTP, dCTP), bahan penyusun untai DNA baru.'],
-  taq:['Taq polimerase','DNA polimerase dari bakteri Thermus aquaticus yang hidup di sumber air panas. Enzim ini tahan pemanasan 95 °C dan bekerja optimal sekitar 72 °C.'],
-  buffer:['Buffer dan MgCl₂','Buffer menjaga pH reaksi. Ion Mg²⁺ diperlukan polimerase untuk bekerja, dan kadarnya memengaruhi efisiensi serta spesifisitas reaksi.'],
-  air:['Air bebas nuklease','Air murni yang bebas enzim pengurai DNA dan RNA. Dipakai untuk mencukupkan volume reaksi.'],
+  dntp:['dNTP','Deoksinukleotida trifosfat (dATP, dTTP, dGTP, dCTP), yaitu bahan penyusun untai DNA baru.'],
+  taq:['Taq polimerase','DNA polimerase dari bakteri Thermus aquaticus yang hidup di sumber air panas. Enzim ini tahan pada pemanasan 95 °C dan bekerja optimal pada sekitar 72 °C.'],
+  buffer:['Buffer dan MgCl₂','Buffer yang menjaga pH reaksi. Ion Mg²⁺ diperlukan oleh polimerase untuk bekerja, dan kadarnya memengaruhi efisiensi serta spesifisitas reaksi.'],
+  air:['Air bebas nuklease','Air murni yang bebas dari enzim pengurai DNA dan RNA. Dipakai untuk mencukupkan volume reaksi.'],
   mastermix:['Master mix','Campuran siap pakai berisi buffer, MgCl₂, dNTP, dan polimerase. Pengguna tinggal menambahkan primer, air, dan template.'],
   volume:['Volume reaksi','Umumnya 20 sampai 25 µL per tabung PCR 0,2 mL, dengan template sekitar 1 sampai 5 µL. Ikuti petunjuk kit.'],
   kpos:['Kontrol positif (K+)','Tabung berisi template yang pasti mengandung target. Bila tidak muncul produk, reaksi gagal dan hasil negatif pada sampel tidak dapat dipercaya.'],
-  ntc:['NTC (no template control)','Kontrol negatif (K−) berisi semua komponen kecuali template, diganti air. Bila muncul produk, ada kontaminasi dan hasil run tidak valid.'],
+  ntc:['NTC (no template control)','Kontrol negatif (K−) berisi semua komponen kecuali template, diganti air. Bila muncul produk, ada kontaminasi dan hasil PCR tidak valid.'],
   thermal:['Thermal cycler','Mesin PCR yang menaikkan dan menurunkan suhu blok tabung secara otomatis sesuai program.'],
   denaturasi:['Denaturasi','Pemisahan DNA untai ganda menjadi untai tunggal dengan pemanasan sekitar 94 sampai 95 °C. Ikatan hidrogen antarbasa putus.'],
   annealing:['Annealing','Penempelan primer pada urutan komplementernya di untai tunggal. Suhunya bergantung pada primer, umumnya 50 sampai 65 °C (sekitar Tm dikurangi 5 °C).'],
-  ekstensi:['Ekstensi','Pemanjangan primer oleh polimerase pada sekitar 72 °C dengan menambahkan dNTP sesuai pasangan basanya. Lamanya kira-kira 1 menit per 1.000 bp.'],
+  ekstensi:['Ekstensi','Pemanjangan primer oleh polimerase pada suhu sekitar 72 °C dengan menambahkan dNTP sesuai pasangan basanya. Lamanya kira-kira 1 menit per 1.000 bp.'],
   tm:['Tm','Melting temperature, suhu saat separuh primer terlepas dari pasangannya. Nilainya dipengaruhi panjang primer dan kandungan basa G dan C.'],
   program:()=>S.kasus==='rna'?['Program lengkap','Pada RT-PCR satu tahap, program diawali tahap RT (sekitar 42 sampai 55 °C selama 10 sampai 30 menit, mengikuti kit). Pemanasan 95 °C lalu mengaktifkan polimerase dan menonaktifkan reverse transcriptase, diikuti 35 sampai 40 siklus PCR.']:
     ['Program lengkap','Contoh untuk gen invA: denaturasi awal 94 °C 1 menit; 35 siklus 94 °C 30 detik, 60 sampai 64 °C 30 detik, 72 °C 30 detik; ekstensi akhir 72 °C 4 menit; lalu ditahan pada 4 °C.'],
@@ -395,11 +395,11 @@ const T=(k,label)=>'<span class="tt" tabindex="0" data-k="'+k+'">'+(label||val(G
 const QUIZ={
   isolasi:[
     {q:'Apa tujuan utama isolasi asam nukleat sebelum PCR?',
-     c:'Memisahkan asam nukleat dari komponen sel lain',
+     c:'Memisahkan asam nukleat dari komponen sel lainnya',
      w:['Memperbanyak DNA target di dalam sampel hingga jutaan kali lipat','Mengubah RNA menjadi DNA','Mewarnai DNA supaya terlihat di bawah sinar UV'],
      e:'Karbohidrat, lipid, dan protein dapat menghambat kerja polimerase. Isolasi menyisakan asam nukleat sebagai template yang bersih.'},
-    {q:'Mengapa RNA disimpan pada −80 °C, lebih dingin daripada DNA?',
-     c:'RNA lebih mudah terurai oleh RNase',
+    {q:'Mengapa RNA disimpan pada −80 °C, yang jauh lebih dingin daripada penyimpanan DNA?',
+     c:'RNA lebih mudah terurai oleh enzim RNase',
      w:['RNA lebih berat sehingga perlu suhu yang lebih rendah agar tidak mengendap','RNA berubah menjadi DNA pada suhu −20 °C','RNA baru membeku pada suhu yang lebih rendah daripada DNA'],
      e:'RNase ada di mana-mana dan sangat stabil. Gugus OH pada gula ribosa juga membuat RNA kurang stabil secara kimia dan mudah terpotong. Suhu −80 °C memperlambat kerusakan ini.'}
   ],
@@ -410,10 +410,10 @@ const QUIZ={
      e:'Ada dua proses: transkripsi balik (RT) dan PCR kuantitatif real-time (qPCR). MIQE memakai RT-qPCR. Istilah qRT-PCR juga sering ditemui di artikel.'}
   ],
   reaksi:[
-    {q:'Mengapa PCR memerlukan dua primer, forward dan reverse?',c:'Supaya kedua untai disalin dan target diapit dari dua sisi',
+    {q:'Mengapa PCR memerlukan dua primer, forward dan reverse?',c:'Supaya kedua untai DNA disalin dan target diapit dari dua sisi',
      w:['Supaya reaksi berlangsung dua kali lebih cepat','Karena satu primer khusus DNA dan satu lagi khusus RNA','Supaya salah satu primer menjadi cadangan apabila primer lainnya gagal menempel'],
      e:'Primer forward menyalin satu untai dan primer reverse menyalin untai pasangannya. Produk yang terbentuk dibatasi kedua primer, sehingga ukurannya tetap.'},
-    {q:()=>'Tabung '+T('ntc','NTC')+' berisi semua bahan kecuali template. Apa artinya bila NTC menghasilkan produk?',c:'Ada kontaminasi, hasil run tidak valid',
+    {q:()=>'Tabung '+T('ntc','NTC')+' berisi semua bahan kecuali template. Apa artinya bila NTC menghasilkan produk?',c:'Ada kontaminasi, hasil PCR tidak valid',
      w:['Primer bekerja sangat baik sehingga produk muncul walau tanpa template','Sampel mengandung target dalam jumlah tinggi','Hal normal yang tidak perlu dicatat'],
      e:'Tanpa template, seharusnya tidak ada produk. Produk di NTC berarti ada DNA pencemar, misalnya dari produk PCR sebelumnya atau reagen yang tercemar.'}
   ],
@@ -513,7 +513,7 @@ const det=(key,sum,body)=>'<details class="acc" data-key="'+key+'"'+(S.open[key]
 const stepCard=(n,title,body,o)=>{o=o||{};return '<div class="card'+(o.locked?' locked':'')+(o.complete?' complete':'')+'"><h2>'+(n===null&&!o.complete?'':'<span class="step-no">'+(o.complete?'✓':n)+'</span>')+title+'</h2>'+body+'</div>';};
 function quizHTML(id){
   const qs=QUIZ[id];if(!qs)return '';
-  return '<div class="card"><h2>Cek pemahaman</h2><p class="sub">Tidak dinilai. Pilih jawaban untuk melihat penjelasannya.</p>'+
+  return '<div class="card"><h2>Cek pemahaman</h2><p class="sub">Jawabanmu tidak diberi skor. Pilih salah satu opsi.</p>'+
   qs.map((q,qi)=>{const key=id+'-'+qi,ans=S.quiz[key],has=ans!==undefined;const op=qopts(id,qi);
     return '<div class="q"><p class="qt">'+(qi+1)+'. '+val(q.q)+'</p>'+
       op.o.map((o,oi)=>{let c='';if(has){if(oi===op.a)c='correct';else if(oi===ans)c='wrong';}
@@ -551,15 +551,15 @@ const VIEWS={};
 VIEWS.beranda=()=>{
   const c=S.kasus;
   const caseBtn=(id,t,d)=>'<button class="case'+(c===id?' on':'')+'" data-act="kasus" data-v="'+id+'" aria-pressed="'+(c===id)+'"><b>'+t+'</b><span>'+d+'</span></button>';
-  return '<p class="kicker">Biokimia Veteriner</p><h1>Simulasi PCR dari sampel sampai hasil</h1>'+
-  '<p class="lead">Ikuti perjalanan '+T('asamnukleat','asam nukleat')+' dari sampel hewan sampai terbaca sebagai hasil positif atau negatif. Fokusnya prinsip kerja tiap tahap. Detail protokol disimpan di penjelasan istilah.</p>'+
+  return '<p class="kicker">Biokimia Veteriner</p><h1>Simulasi PCR</h1>'+
+  '<p class="lead">Ikuti perjalanan '+T('asamnukleat','asam nukleat')+' dari sampel sampai terbaca sebagai hasil positif atau negatif.</p>'+
   '<div class="stats"><div><b>± 15 menit</b><span>Perkiraan durasi</span></div><div><b>10 sampel + 2 kontrol</b><span>Data latihan</span></div><div><b>Visualisasi gel dan qPCR</b><span>Dua cara membaca hasil</span></div></div>'+
   '<div class="card"><h2>Alur kerja</h2><p class="sub">Teks bergaris bawah putus-putus dapat diklik atau disorot untuk melihat penjelasannya.</p><div class="flow">'+
   ['Sampel','Isolasi '+T('asamnukleat','asam nukleat'),T('rt','RT')+' (khusus RNA)',T('pcr','PCR'),'Deteksi: gel atau '+T('qpcr','qPCR'),'Sekuensing (bila perlu)']
     .map((x,i,a)=>'<span class="fchip">'+x+'</span>'+(i<a.length-1?'<span class="farr">→</span>':'')).join('')+'</div></div>'+
-  '<div class="card"><h2>Pilih kasus</h2><p class="sub">Sepuluh sampel dari satu peternakan diuji untuk satu target. Kasus menentukan apakah target berupa DNA atau RNA.</p><div class="cases">'+
-  caseBtn('dna','Kasus DNA','Salmonella pada swab kloaka ayam. Target gen invA (DNA). Deteksi dengan PCR dan qPCR.')+
-  caseBtn('rna','Kasus RNA','Virus influenza A pada swab orofaring ayam. Target gen M (RNA). Deteksi dengan RT-PCR dan RT-qPCR.')+'</div>'+
+  '<div class="card"><h2>Pilih kasus</h2><p class="sub">Kamu mengambil 10 sampel dari satu peternakan ayam. Tentukan apakah targetmu berupa DNA atau RNA.</p><div class="cases">'+
+  caseBtn('dna','Kasus DNA','Salmonella pada swab kloaka ayam. Targetnya adalah gen invA (DNA). Deteksi dengan PCR dan qPCR.')+
+  caseBtn('rna','Kasus RNA','Virus influenza A pada swab orofaring ayam. Targetnya adalah gen M (RNA). Deteksi dengan RT-PCR dan RT-qPCR.')+'</div>'+
   (c?note({k:'ok',t:K().nama+' dipilih. Mengganti kasus nanti akan menghapus progres.'}):'')+'</div>'+
   '<div class="card"><h2>Tujuan</h2><p class="muted">Setelah menyelesaikan simulasi ini, Anda diharapkan mampu:</p><ol class="clean">'+
   '<li>menjelaskan prinsip isolasi asam nukleat dan cara menyimpannya;</li>'+
@@ -641,15 +641,15 @@ VIEWS.isolasi=()=>{
     return '<div class="tile '+st[1]+'">'+icon(c.k)+'<div><b>'+(c.n||k.asam)+'</b><span>'+st[0]+'</span>'+(chg?'<span class="was">Sebelumnya: '+pv[0]+'</span>':'')+'</div></div>';}).join('');
   const opts=[['ruang','Suhu ruang'],['4','4 °C'],['-20','−20 °C'],['-80','−80 °C']];
   const sOk=storeOk();
-  return head('Isolasi asam nukleat','Prinsipnya: pecahkan sel, lalu buang komponen selain asam nukleat. Pekerjaan ini memakai '+T('kit','kit isolasi')+' siap pakai.')+
+  return head('Isolasi asam nukleat','Prinsipnya: pecahkan sel, lalu buang komponen selain asam nukleat. Kita memakai '+T('kit','kit isolasi')+' komersial.')+
   '<div class="split"><div class="card"><h2>Di dalam tabung</h2><div class="stage">'+isoSVG(ph)+'</div>'+(ph>0?'<p class="small muted" style="margin:12px 0 0">Komponen yang berubah pada tahap ini diberi keterangan "Sebelumnya".</p>':'')+'<div class="tiles">'+tiles+'</div></div>'+
-  '<div class="card"><h2>Tahap kit</h2><p class="sub">'+(ph===0?'Keadaan awal':'Tahap '+ph+' dari 4')+'. Maju dan mundur sesuka Anda untuk membandingkan tiap tahap.</p>'+stepper('iso',isoT,ph,I.max)+stepNav('iso',ph,isoT,false)+note(cap)+'</div></div>'+
+  '<div class="card"><h2>Tahap kit</h2><p class="sub">'+(ph===0?'Keadaan awal':'Tahap '+ph+' dari 4')+'.</p>'+stepper('iso',isoT,ph,I.max)+stepNav('iso',ph,isoT,false)+note(cap)+'</div></div>'+
   stepCard(null,'Simpan hasil isolasi','<div class="mixgrid">'+tubeLabelSVG()+'<div><p class="sub" style="margin-bottom:10px">'+k.asam+' hasil isolasi belum langsung dipakai. Pada suhu berapa '+k.asam+' disimpan untuk jangka panjang?</p>'+
     '<div class="seg">'+opts.map(o=>'<button class="'+(I.store===o[0]?'on':'')+'" data-act="store" data-v="'+o[0]+'">'+o[1]+'</button>').join('')+'</div>'+note(I.store?storeFb(I.store):null)+
     '<ul class="clean small"><li>Wadah: '+T('tabung15','tabung mikrosentrifus 1,5 mL')+' yang tertutup rapat.</li><li>Label: kode sampel, jenis asam nukleat, dan tanggal isolasi.</li>'+
     '<li>Bagi menjadi beberapa '+T('alikuot','alikuot')+' supaya tidak mengalami '+T('bekucair','beku-cair berulang')+'.</li>'+
     (S.kasus==='rna'?'<li>Kerjakan RNA di atas es dan cegah kontaminasi '+T('rnase','RNase')+'.</li>':'')+
-    '<li>Mutu hasil isolasi dapat dicek. Lihat '+T('kemurnian','kemurnian')+'.</li></ul></div></div>',{locked:I.max<4,complete:sOk})+
+    '<li>Mutu hasil isolasi dapat dicek dengan uji '+T('kemurnian','kemurnian')+'.</li></ul></div></div>',{locked:I.max<4,complete:sOk})+
   quizHTML('isolasi');
 };
 
@@ -672,9 +672,9 @@ function rtSVG(done){
 function nomenCard(){
   const k=K(),rna=S.kasus==='rna';
   const rows=[['PCR','DNA','Visualisasi gel setelah reaksi PCR selesai',!rna],['RT-PCR','RNA → cDNA','Visualisasi gel setelah reaksi PCR selesai',rna],['qPCR','DNA','Fluoresensi di setiap siklus di mesin PCR',!rna],['RT-qPCR','RNA → cDNA','Fluoresensi di setiap siklus di mesin PCR',rna]];
-  return '<div class="card"><h2>RT dan real-time adalah dua hal berbeda</h2><div class="table-wrap"><table><thead><tr><th>Istilah</th><th>Template awal</th><th>Cara membaca hasil PCR</th></tr></thead><tbody>'+
+  return '<div class="card"><h2>Apa saja singkatan yang berhubungan dengan PCR?</h2><div class="table-wrap"><table><thead><tr><th>Istilah</th><th>Template awal</th><th>Cara membaca hasil PCR</th></tr></thead><tbody>'+
     rows.map(r=>'<tr'+(r[3]?' class="hl"':'')+'><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('')+'</tbody></table></div>'+
-    '<p class="small mt">Huruf RT selalu berarti '+T('rt','reverse transcription')+'. Real-time ditandai huruf q (kuantitatif).</p>'+
+    '<p class="small mt">Huruf RT berarti '+T('rt','reverse transcription')+'. Real-time ditandai dengan huruf q (quantitative).</p>'+
     '<p class="small" style="margin:0">Baris yang diberi warna sesuai kasus Anda: <b>'+k.pcr+'</b> dibaca dengan gel, <b>'+k.qpcr+'</b> dibaca secara real-time.</p></div>';
 }
 VIEWS.rt=()=>{
@@ -683,9 +683,9 @@ VIEWS.rt=()=>{
     '<div class="card"><h2>Langkah ini dilewati pada kasus DNA</h2><p>Target kasus Anda, '+T('target',k.target)+' pada '+k.agen+', berupa DNA. Hasil isolasi langsung dapat menjadi '+T('template','template')+' PCR.</p>'+
     '<p class="muted" style="margin:0">Pada target RNA, misalnya genom virus influenza, RNA diubah dulu menjadi '+T('cdna','cDNA')+' karena polimerase PCR tidak dapat memakai RNA sebagai cetakan.</p></div>'+nomenCard()+quizHTML('rt');
   const d=S.rt.done;
-  return head('Transkripsi balik (RT)','Polimerase PCR membutuhkan cetakan DNA. RNA virus diubah dulu menjadi '+T('cdna','cDNA')+'.')+
+  return head('Transkripsi balik (RT)','Polimerase pada PCR membutuhkan cetakan DNA. RNA virus harus diubah dulu menjadi '+T('cdna','cDNA')+'.')+
   '<div class="split"><div class="card"><h2>Dari RNA menjadi cDNA</h2><div class="stage" id="rtStage">'+rtSVG(d)+'</div></div>'+
-  '<div class="card"><h2>Tambahkan enzim</h2><p class="sub">'+T('revtrans','Reverse transcriptase')+' menyusun untai DNA dengan RNA sebagai cetakan. Penyusunan dimulai dari '+T('primerrt','primer')+' yang menempel pada RNA.</p>'+
+  '<div class="card"><h2>Tambahkan enzim</h2><p class="sub">'+T('revtrans','Reverse transcriptase')+' menyusun untai DNA dengan menggunakan RNA sebagai cetakan. Penyusunan dimulai dari '+T('primerrt','primer')+' yang menempel pada RNA.</p>'+
   '<button class="btn" data-act="rtgo"'+(d?' disabled':'')+'>'+(d?'cDNA sudah terbentuk':'Tambahkan reverse transcriptase')+'</button>'+
   (d?note({k:'ok',h:'cDNA terbentuk.',t:'Untai cDNA menjadi template PCR. Pada kit RT-PCR '+T('onestep','satu tahap')+', RT dan PCR berlangsung di tabung yang sama.'}):'')+'</div></div>'+
   nomenCard()+quizHTML('rt');
@@ -732,17 +732,17 @@ VIEWS.reaksi=()=>{
   const R=S.re,k=K();const pOk=R.pick==='face';
   const pfb={same:{k:'warn',h:'Belum tepat.',t:'Kedua primer memanjang ke arah yang sama. Daerah target tidak terapit, sehingga produk tidak berlipat ganda.'},
     away:{k:'warn',h:'Belum tepat.',t:'Kedua primer memanjang menjauhi daerah target. Bagian di antara keduanya tidak pernah tersalin.'},
-    face:{k:'ok',h:'Tepat.',t:'Primer forward dan reverse menempel pada untai yang berlawanan dan saling berhadapan. Polimerase memperpanjang primer dari '+T('ujung3',"ujung 3'")+', sehingga produk dibatasi oleh kedua primer.'}};
+    face:{k:'ok',h:'Tepat.',t:'Primer forward dan reverse menempel pada untai yang berlawanan dan saling berhadapan. Enzim polimerase memperpanjang primer dari '+T('ujung3',"ujung 3'")+', sehingga produk dibatasi oleh kedua primer.'}};
   const added=MIXOK.filter(x=>R.add[x]).length;const allMix=added===MIXOK.length;
   return head('Primer dan campuran reaksi','Primer menentukan bagian DNA mana yang diperbanyak. Setelah itu, semua bahan reaksi dicampur dalam satu tabung.')+
-  stepCard(1,'Pilih pasangan primer','<p class="sub">Daerah target ('+T('target',k.target)+', kotak biru) diapit dua '+T('primer','primer')+': '+T('pf','forward')+' (F) dan '+T('pr','reverse')+' (R). Ujung panah adalah arah pemanjangan. Pasangan mana yang akan menghasilkan produk?</p>'+
+  stepCard(1,'Pilih pasangan primer','<p class="sub">Daerah target ('+T('target',k.target)+', kotak biru) diapit dua '+T('primer','primer')+', yaitu '+T('pf','forward')+' (F) dan '+T('pr','reverse')+' (R). Ujung panah adalah arah pemanjangan. Pasangan mana yang akan menghasilkan produk?</p>'+
     '<div class="popts">'+POPT.map(o=>{let c='popt';if(R.pick===o.v)c+=o.v==='face'?' ok':' no';return '<button class="'+c+'" data-act="primer" data-v="'+o.v+'"'+(pOk?' disabled':'')+'>'+primerMini(o.v)+o.t+'</button>';}).join('')+'</div>'+
     note(R.pick?pfb[R.pick]:null)+
-    (pOk?'<div class="stage">'+ampSVG()+'</div><p class="small mt" style="margin-bottom:0">Produk yang dibatasi kedua primer disebut '+T('amplikon','amplikon')+'. Pada kasus ini panjangnya '+k.bp+' '+T('bp','bp')+'. Primer yang baik umumnya sepanjang 18 sampai 25 basa dengan '+T('tm','Tm')+' yang mirip.</p>':''),{complete:pOk})+
+    (pOk?'<div class="stage">'+ampSVG()+'</div><p class="small mt" style="margin-bottom:0">Produk yang dibatasi kedua primer disebut '+T('amplikon','amplikon')+'. Pada kasus ini panjangnya adalah '+k.bp+' '+T('bp','bp')+'. Primer yang baik umumnya sepanjang 18 sampai 25 basa dengan '+T('tm','Tm')+' yang mirip.</p>':''),{complete:pOk})+
   stepCard(2,'Susun campuran reaksi','<p class="sub">Ketuk setiap bahan untuk memasukkannya ke tabung PCR.</p>'+
     '<div class="mixgrid">'+pcrTubeSVG(added/MIXOK.length)+'<div><div class="chips">'+MIX.map(m=>{const on=R.add[m.k];return '<button class="cbtn'+(on?' ok':'')+'" data-act="mix" data-k="'+m.k+'"'+(on?' disabled':'')+'>'+(on?'✓ ':'')+m.n()+'</button>';}).join('')+'</div>'+
     '<p class="small muted mt" style="margin-bottom:4px">Isi tabung ('+added+' dari '+MIXOK.length+'):</p><p class="small" style="margin:0">'+(added?MIX.filter(m=>R.add[m.k]).map(m=>T(m.g,m.n())).join(', '):'belum ada')+'</p></div></div>'+
-    note(R.msg)+(allMix?note({k:'ok',h:'Campuran reaksi lengkap.',t:'Selain 10 tabung sampel, disiapkan juga '+T('kpos','kontrol positif')+' dan '+T('ntc','NTC')+'. Dalam praktik, sebagian bahan sudah tercampur dalam '+T('mastermix','master mix')+'. Lihat juga '+T('volume','volume reaksi')+'.'}):''),
+    note(R.msg)+(allMix?note({k:'ok',h:'Campuran reaksi lengkap.',t:'Selain 10 tabung sampel, disiapkan juga '+T('kpos','kontrol positif')+' dan '+T('ntc','NTC')+'. Pada umumnya, sebagian bahan sudah tercampur dalam '+T('mastermix','master mix')+'. Lihat juga '+T('volume','volume reaksi')+'.'}):''),
     {locked:!pOk,complete:allMix})+
   quizHTML('reaksi');
 };
@@ -826,7 +826,7 @@ function mcSVG(){
   return s+'</svg>';
 }
 function mcCard(){
-  return '<div class="card"><h2>Setelah beberapa siklus</h2><p class="sub">Satu molekul DNA menjadi 2 molekul setelah siklus pertama, lalu 4 molekul setelah siklus kedua. Setiap untai, baik yang lama maupun yang baru, menjadi cetakan di siklus berikutnya, sehingga jumlahnya terus berlipat dua ('+T('eksponensial','eksponensial')+').</p>'+
+  return '<div class="card"><h2>Setelah beberapa siklus</h2><p class="sub">Satu molekul DNA menjadi 2 molekul DNA setelah siklus pertama selesai, lalu 4 molekul setelah siklus kedua selesai. Setiap untai, baik yang lama maupun yang baru, menjadi cetakan bagi siklus berikutnya, sehingga jumlahnya terus berlipat dua ('+T('eksponensial','eksponensial')+').</p>'+
     '<div class="stage">'+mcSVG()+'</div>'+
     '<div class="legend"><span><i style="background:var(--dna1)"></i><i style="background:var(--dna2)"></i>Untai asli</span><span><i style="background:var(--pR)"></i>Untai baru siklus 1</span><span><i style="background:var(--pF)"></i>Untai baru siklus 2</span></div>'+
     '<p class="small muted mt" style="margin-bottom:0">Diagram disederhanakan dan tidak menggambarkan panjang untai. Lihat '+T('produkpendek','produk sepanjang target')+'.</p></div>';
@@ -834,7 +834,7 @@ function mcCard(){
 VIEWS.siklus=()=>{
   const C=S.cy;const aOk=asgOk();const ph=C.played?4:0;const cy=CYC[ph];
   const PRED=['60 salinan (30 × 2)','900 salinan (30²)','Sekitar 1 miliar (2³⁰)'];
-  return head('Siklus suhu','Mesin '+T('thermal','thermal cycler')+' mengulang tiga tahap suhu. Setiap siklus menggandakan DNA target.')+
+  return head('Siklus suhu','Mesin '+T('thermal','thermal cycler')+' meningkatkan dan menurunkan suhu secara berulang-ulang selama 30–40 siklus. Setiap siklus menggandakan DNA target.')+
   stepCard(1,'Atur suhu tiap tahap','<p class="sub">Pilih suhu yang sesuai untuk tiap tahap dalam satu siklus.</p>'+
     STG.map((s,i)=>{const v=C.asg[s.k];return '<div class="srow"><b>'+(i+1)+'. '+T(s.g,s.n)+'</b><div class="seg">'+TEMPS.map(t=>'<button class="'+(v===t?'on':'')+'" data-act="asg" data-s="'+s.k+'" data-v="'+t+'">'+t+' °C</button>').join('')+'</div></div>'+(v?note(stgFb(s.k,v)):'');}).join('')+
     (aOk?'<div class="stage mt">'+profileSVG()+'</div><p class="small mt" style="margin-bottom:0">Satu reaksi lengkap diawali denaturasi awal dan ditutup ekstensi akhir. Lihat '+T('program','program lengkap')+'.</p>':''),{complete:aOk})+
@@ -843,7 +843,7 @@ VIEWS.siklus=()=>{
   (C.played?'<p class="small muted">Untai baru di siklus pertama masih lebih panjang dari target. Lihat '+T('produkpendek','produk sepanjang target')+'.</p>':'')+
   '<button class="btn" data-act="cyplay">'+(C.played?'Putar ulang':'Putar satu siklus')+'</button></div></div>'+
   (C.played?mcCard():'')+
-  stepCard(3,'Berapa banyak salinannya?','<p class="sub">Dari 1 molekul DNA target, kira-kira berapa salinan setelah 30 siklus?</p>'+
+  stepCard(3,'Berapa banyak salinannya?','<p class="sub">Dari 1 molekul DNA target, kira-kira berapa salinan yang terbentuk setelah 30 siklus?</p>'+
     PRED.map((t,i)=>'<button class="pick'+(C.pred===i?' on':'')+'" data-act="pred" data-v="'+i+'"'+(C.pred!==null?' disabled':'')+'>'+t+'</button>').join('')+
     (C.pred!==null?note(C.pred===2?{k:'ok',h:'Tepat.',t:'Jumlah salinan berlipat dua setiap siklus ('+T('eksponensial','eksponensial')+'), sehingga 2³⁰ ≈ 1,07 × 10⁹ salinan.'}:{k:'warn',h:'Belum tepat.',t:'Jumlah salinan berlipat dua setiap siklus ('+T('eksponensial','eksponensial')+'). Setelah 30 siklus hasilnya 2³⁰ ≈ 1,07 × 10⁹ salinan.'})+
       '<p class="sub mt" style="margin-bottom:6px">Geser untuk melihat pertambahan salinan.</p><div class="row between"><span>Siklus</span><b id="cyN">'+C.n+'</b></div><input type="range" min="0" max="40" step="1" value="'+C.n+'" data-in="cyn" aria-label="Jumlah siklus">'+
@@ -893,11 +893,11 @@ VIEWS.gel=()=>{
   ];
   const cap=G.dir==='pos'&&needDir?{k:'bad',h:'Belum tepat.',t:'Bila sumur di dekat kutub positif, DNA yang bermuatan negatif bergerak keluar dari gel ke buffer, sehingga tidak ada pita yang terbaca.'}:caps[ph];
   const ok=G.chk===true;
-  return head('Deteksi dengan gel elektroforesis','Pada '+k.pcr+' konvensional, produk dilihat setelah reaksi selesai. '+T('elektroforesis','Elektroforesis')+' memisahkan DNA menurut ukurannya, lalu pita DNA dilihat di bawah sinar UV.')+
+  return head('Deteksi produk PCR dengan gel elektroforesis','Pada '+k.pcr+' konvensional, produk dilihat setelah reaksi selesai. '+T('elektroforesis','Elektroforesis')+' memisahkan DNA menurut ukurannya, lalu pita DNA dilihat di bawah sinar UV.')+
   '<div class="split"><div class="card"><h2>Gel</h2><div class="stage" id="gelStage">'+gelSVG()+'</div>'+
   (ph>=4?'<p class="small muted mt" style="margin-bottom:0">Angka di kiri adalah ukuran pita marker dalam bp. M: marker, K+: kontrol positif, K−: '+T('ntc','NTC')+'.</p>':'')+'</div>'+
-  '<div class="card"><h2>Langkah</h2><p class="sub">'+(ph===0?'Keadaan awal':'Langkah '+ph+' dari 4')+'. Maju dan mundur untuk membandingkan tiap langkah.</p>'+stepper('gel',GELS,ph,G.max)+stepNav('gel',ph,GELS,needDir)+note(cap)+dirBox+'</div></div>'+
-  stepCard(null,'Baca hasil gel','<ol class="clean small"><li>Periksa kontrol. K+ berpita pada '+k.bp+' bp, yaitu di antara pita marker 200 dan 300 bp. K− tanpa pita. Kedua kontrol sesuai, jadi run valid.</li>'+
+  '<div class="card"><h2>Langkah</h2><p class="sub">'+(ph===0?'Keadaan awal':'Langkah '+ph+' dari 4')+'.</p>'+stepper('gel',GELS,ph,G.max)+stepNav('gel',ph,GELS,needDir)+note(cap)+dirBox+'</div></div>'+
+  stepCard(null,'Baca hasil gel','<ol class="clean small"><li>Periksa kontrol. K+ berpita pada '+k.bp+' bp, yaitu di antara pita marker 200 dan 300 bp. K− tanpa pita. Kedua kontrol sesuai, jadi proses PCR-nya valid.</li>'+
     '<li>Bandingkan setiap lajur sampel dengan K+. Sampel positif memiliki '+T('pita','pita')+' yang sejajar dengan K+.</li><li>Ketuk nomor lajur sampel yang positif, lalu periksa.</li></ol>'+det('gelterang','Mengapa ada pita yang lebih terang daripada pita lain?',brightBody)+
     '<div class="chips mt">'+[0,1,2,3,4,5,6,7,8,9].map(i=>'<button class="cbtn lane'+(G.marks[i]?' on':'')+'" data-act="glane" data-i="'+i+'"'+(ok?' disabled':'')+' aria-pressed="'+(!!G.marks[i])+'">'+(i+1)+'</button>').join('')+'</div>'+
     '<div class="row mt"><button class="btn tint" data-act="gcheck"'+(ok?' disabled':'')+'>Periksa</button></div>'+
@@ -935,7 +935,7 @@ function wellsHTML(c){return WELLS.map(w=>{const lit=c>0&&fluor(w.id,c)>=TH;retu
 function qDraw(c){const p=$('qPlot');if(p)p.innerHTML=qSVG(c);const g=$('qGrid');if(g)g.innerHTML=wellsHTML(c);const t=$('qCyc');if(t)t.textContent='Siklus '+c+' dari 40';}
 VIEWS.qpcr=()=>{
   const Q=S.qp,k=K(),D=data();const c=Q.run?40:0;const ok1=Q.chk===true;const ok2=Q.most===D.most;
-  return head('Deteksi real-time dengan '+k.qpcr,'Mesin qPCR memantau '+T('fluoresensi','fluoresensi')+' di setiap siklus, sehingga produk terlihat bertambah selama reaksi berjalan. Gel tidak diperlukan.')+
+  return head('Deteksi real-time dengan '+k.qpcr,'Mesin qPCR memantau '+T('fluoresensi','fluoresensi')+' di setiap siklus, sehingga kita bisa melihat produk bertambah seiring dengan berjalannya reaksi. Kita tidak perlu menggunakan gel untuk memvisualisasikan produk PCR.')+
   '<div class="card"><div class="screen"><div class="shead"><b>Layar mesin '+k.qpcr+' · amplification plot</b><span id="qCyc">Siklus '+c+' dari 40</span></div>'+
   '<div class="qwrap"><div class="qgrid" id="qGrid">'+wellsHTML(c)+'</div><div class="qplot" id="qPlot">'+qSVG(c)+'</div></div></div>'+
   '<p class="small muted mt">Sinyal berasal dari '+T('sybr','SYBR Green')+' atau '+T('probe','probe')+'. Garis putus-putus kuning adalah '+T('threshold','threshold')+'. Siklus saat kurva memotong garis ini disebut '+T('ct','Ct')+'. Sinyal datar di siklus awal disebut '+T('baseline','baseline')+'.</p>'+
@@ -960,8 +960,8 @@ VIEWS.penutup=()=>{
   const k=K(),D=data(),rna=S.kasus==='rna';
   const total=Object.values(QUIZ).reduce((s,q)=>s+q.length,0);const answered=Object.keys(S.quiz).length;
   const tgl=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
-  return head('Penutup dan ringkasan','PCR menjawab pertanyaan "apakah target ada?". Untuk pertanyaan "bagaimana urutan basanya?", dibutuhkan sekuensing.')+
-  '<div class="card"><h2>Apa yang diketahui dari tiap metode</h2><div class="table-wrap"><table><thead><tr><th>Metode</th><th>Hal yang diketahui</th><th>Hal yang belum diketahui</th></tr></thead><tbody>'+
+  return head('Penutup dan ringkasan','PCR menjawab pertanyaan "apakah target ada?". Untuk pertanyaan "bagaimana urutan basanya?", kita memerlukan sekuensing.')+
+  '<div class="card"><h2>Apa hal yang diketahui dari tiap metode</h2><div class="table-wrap"><table><thead><tr><th>Metode</th><th>Hal yang diketahui</th><th>Hal yang belum diketahui</th></tr></thead><tbody>'+
   '<tr><td><b>'+k.pcr+'</b> (gel)</td><td>Ada atau tidaknya target, serta ukuran amplikon</td><td>Jumlah target dan urutan basa</td></tr>'+
   '<tr><td><b>'+k.qpcr+'</b></td><td>Ada atau tidaknya target, serta perkiraan jumlah lewat Ct</td><td>Urutan basa</td></tr>'+
   '<tr><td><b>Sekuensing</b></td><td>Urutan basa (A, T, G, C)</td><td>–</td></tr></tbody></table></div></div>'+
@@ -969,8 +969,8 @@ VIEWS.penutup=()=>{
   (rna?'<p>Hasil positif gen M menyatakan virus influenza A ada di sampel. Hasil ini belum menunjukkan '+T('subtipe','subtipe')+', misalnya H5 atau H9. Subtipe ditentukan dengan PCR lain yang menargetkan gen H dan N, atau dengan sekuensing.</p>':
     '<p>Dua isolat <i>Salmonella</i> dapat sama-sama memberi pita 284 bp, padahal urutan gen keduanya bisa berbeda. Pita yang sama belum berarti galurnya sama.</p>')+
   '<p>Untuk membaca urutan basa, amplikon dimurnikan lalu dibaca dengan '+T('sequencer','mesin sequencer')+', misalnya dengan metode '+T('sanger','Sanger')+'. Untuk genom utuh atau banyak target sekaligus dipakai '+T('ngs','NGS')+'.</p>'+
-  '<p style="margin:0">Urutan hasil sekuensing dibandingkan dengan '+T('genbank','basis data')+' untuk identifikasi galur, penelusuran sumber wabah, atau analisis filogenetik.</p></div>'+
-  note({h:'Hasil positif belum tentu organisme hidup',t:'PCR mendeteksi asam nukleat target, termasuk yang berasal dari '+T('dnamati')+'. Karena itu hasil positif belum membuktikan organisme masih hidup.'})+
+  '<p style="margin:0">Urutan hasil sekuensing dibandingkan dengan '+T('genbank','basis data')+' untuk mengidentifikasi galur (strain), menelusuri sumber wabah, atau menganalisis hubungan kekerabatan.</p></div>'+
+  note({h:'Hasil positif belum tentu organisme hidup',t:'PCR mendeteksi asam nukleat target, termasuk yang berasal dari '+T('dnamati')+'. Karena itu hasil positif belum membuktikan organisme target masih hidup atau masih aktif.'})+
   '<div class="card"><h2>Ringkasan simulasi</h2><div class="table-wrap"><table><tbody>'+
   '<tr><th>Tanggal</th><td>'+tgl+'</td></tr>'+
   '<tr><th>Kasus</th><td>'+k.nama+': '+k.agen+' pada '+k.sampel+'</td></tr>'+
