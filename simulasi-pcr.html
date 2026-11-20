@@ -296,8 +296,8 @@ function lockUI(){document.querySelectorAll('#app button,#foot button,#nav butto
 
 /* ---------- Kasus ---------- */
 const KASUS={
-  dna:{nama:'Kasus DNA',agen:'<i>Salmonella</i>',sampel:'swab kloaka ayam',target:'gen <i>invA</i>',asam:'DNA',bp:284,pcr:'PCR',qpcr:'qPCR',tmpl:'DNA'},
-  rna:{nama:'Kasus RNA',agen:'virus influenza A (avian influenza)',sampel:'swab orofaring ayam',target:'gen M',asam:'RNA',bp:245,pcr:'RT-PCR',qpcr:'RT-qPCR',tmpl:'cDNA'}
+  dna:{nama:'Fragmen DNA',agen:'<i>Salmonella</i>',sampel:'swab kloaka ayam',target:'gen <i>invA</i>',asam:'DNA',bp:284,pcr:'PCR',qpcr:'qPCR',tmpl:'DNA'},
+  rna:{nama:'Fragmen RNA',agen:'virus influenza A (avian influenza)',sampel:'swab orofaring ayam',target:'gen M',asam:'RNA',bp:245,pcr:'RT-PCR',qpcr:'RT-qPCR',tmpl:'cDNA'}
 };
 const K=()=>KASUS[S.kasus||'dna'];
 
@@ -532,7 +532,7 @@ function stepper(p,titles,ph,max){
 function stepNav(p,ph,titles,off){
   const tot=titles.length;
   return '<div class="stepnav"><button class="btn gray" data-act="sprev" data-p="'+p+'"'+(ph<=0?' disabled':'')+'>Sebelumnya</button>'+
-    '<button class="btn" data-act="snext" data-p="'+p+'"'+((ph>=tot||off)?' disabled':'')+'>'+(ph<tot?'Berikutnya: '+titles[ph]:'Semua tahap selesai')+'</button></div>';
+    '<button class="btn" data-act="snext" data-p="'+p+'"'+((ph>=tot||off)?' disabled':'')+'>'+(ph<tot?'Berikutnya':'Semua tahap selesai')+'</button></div>';
 }
 
 /* Ikon komponen sel */
@@ -552,15 +552,14 @@ VIEWS.beranda=()=>{
   const c=S.kasus;
   const caseBtn=(id,t,d)=>'<button class="case'+(c===id?' on':'')+'" data-act="kasus" data-v="'+id+'" aria-pressed="'+(c===id)+'"><b>'+t+'</b><span>'+d+'</span></button>';
   return '<p class="kicker">Biokimia Veteriner</p><h1>Simulasi PCR</h1>'+
-  '<p class="lead">Ikuti perjalanan '+T('asamnukleat','asam nukleat')+' dari sampel sampai terbaca sebagai hasil positif atau negatif.</p>'+
-  '<div class="stats"><div><b>± 15 menit</b><span>Perkiraan durasi</span></div><div><b>10 sampel + 2 kontrol</b><span>Data latihan</span></div><div><b>Visualisasi gel dan qPCR</b><span>Dua cara membaca hasil</span></div></div>'+
+  '<p class="lead">Kita akan mendeteksi '+T('asamnukleat','asam nukleat')+', mulai dari sampel sampai pembacaan hasil (positif atau negatif).</p>'+
   '<div class="card"><h2>Alur kerja</h2><p class="sub">Teks bergaris bawah putus-putus dapat diklik atau disorot untuk melihat penjelasannya.</p><div class="flow">'+
-  ['Sampel','Isolasi '+T('asamnukleat','asam nukleat'),T('rt','RT')+' (khusus RNA)',T('pcr','PCR'),'Deteksi: gel atau '+T('qpcr','qPCR'),'Sekuensing (bila perlu)']
+  ['Sampel','Isolasi '+T('asamnukleat','asam nukleat'),T('rt','RT')+' (khusus RNA)',T('pcr','PCR'),'Visualisasi','Sekuensing (bila perlu)']
     .map((x,i,a)=>'<span class="fchip">'+x+'</span>'+(i<a.length-1?'<span class="farr">→</span>':'')).join('')+'</div></div>'+
-  '<div class="card"><h2>Pilih kasus</h2><p class="sub">Kamu mengambil 10 sampel dari satu peternakan ayam. Tentukan apakah targetmu berupa DNA atau RNA.</p><div class="cases">'+
-  caseBtn('dna','Kasus DNA','Salmonella pada swab kloaka ayam. Targetnya adalah gen invA (DNA). Deteksi dengan PCR dan qPCR.')+
-  caseBtn('rna','Kasus RNA','Virus influenza A pada swab orofaring ayam. Targetnya adalah gen M (RNA). Deteksi dengan RT-PCR dan RT-qPCR.')+'</div>'+
-  (c?note({k:'ok',t:K().nama+' dipilih. Mengganti kasus nanti akan menghapus progres.'}):'')+'</div>'+
+  '<div class="card"><h2>Pilih kasus</h2><p class="sub">Kamu mengambil 10 sampel dari satu peternakan ayam. Apakah target yang ingin kamu deteksi berupa DNA atau RNA?</p><div class="cases">'+
+  caseBtn('dna','Fragmen DNA','Salmonella pada swab kloaka ayam. Targetnya adalah gen invA (DNA). Deteksi dengan PCR dan qPCR.')+
+  caseBtn('rna','Fragmen RNA','Virus influenza A pada swab orofaring ayam. Targetnya adalah gen M (RNA). Deteksi dengan RT-PCR dan RT-qPCR.')+'</div>'+
+  (c?note({k:'ok',t:K().nama+' dipilih sebagai kasus. Mengganti kasus nanti akan menghapus progres.'}):'')+'</div>'+
   '<div class="card"><h2>Tujuan</h2><p class="muted">Setelah menyelesaikan simulasi ini, Anda diharapkan mampu:</p><ol class="clean">'+
   '<li>menjelaskan prinsip isolasi asam nukleat dan cara menyimpannya;</li>'+
   '<li>membedakan PCR, RT-PCR, qPCR, dan RT-qPCR;</li>'+
@@ -641,7 +640,7 @@ VIEWS.isolasi=()=>{
     return '<div class="tile '+st[1]+'">'+icon(c.k)+'<div><b>'+(c.n||k.asam)+'</b><span>'+st[0]+'</span>'+(chg?'<span class="was">Sebelumnya: '+pv[0]+'</span>':'')+'</div></div>';}).join('');
   const opts=[['ruang','Suhu ruang'],['4','4 °C'],['-20','−20 °C'],['-80','−80 °C']];
   const sOk=storeOk();
-  return head('Isolasi asam nukleat','Prinsipnya: pecahkan sel, lalu buang komponen selain asam nukleat. Kita memakai '+T('kit','kit isolasi')+' komersial.')+
+  return head('Isolasi asam nukleat','Prinsip kerja: pecahkan sel, lalu buang komponen selain asam nukleat. Kita memakai '+T('kit','kit isolasi')+' komersial.')+
   '<div class="split"><div class="card"><h2>Di dalam tabung</h2><div class="stage">'+isoSVG(ph)+'</div>'+(ph>0?'<p class="small muted" style="margin:12px 0 0">Komponen yang berubah pada tahap ini diberi keterangan "Sebelumnya".</p>':'')+'<div class="tiles">'+tiles+'</div></div>'+
   '<div class="card"><h2>Tahap kit</h2><p class="sub">'+(ph===0?'Keadaan awal':'Tahap '+ph+' dari 4')+'.</p>'+stepper('iso',isoT,ph,I.max)+stepNav('iso',ph,isoT,false)+note(cap)+'</div></div>'+
   stepCard(null,'Simpan hasil isolasi','<div class="mixgrid">'+tubeLabelSVG()+'<div><p class="sub" style="margin-bottom:10px">'+k.asam+' hasil isolasi belum langsung dipakai. Pada suhu berapa '+k.asam+' disimpan untuk jangka panjang?</p>'+
@@ -683,7 +682,7 @@ VIEWS.rt=()=>{
     '<div class="card"><h2>Langkah ini dilewati pada kasus DNA</h2><p>Target kasus Anda, '+T('target',k.target)+' pada '+k.agen+', berupa DNA. Hasil isolasi langsung dapat menjadi '+T('template','template')+' PCR.</p>'+
     '<p class="muted" style="margin:0">Pada target RNA, misalnya genom virus influenza, RNA diubah dulu menjadi '+T('cdna','cDNA')+' karena polimerase PCR tidak dapat memakai RNA sebagai cetakan.</p></div>'+nomenCard()+quizHTML('rt');
   const d=S.rt.done;
-  return head('Transkripsi balik (RT)','Polimerase pada PCR membutuhkan cetakan DNA. RNA virus harus diubah dulu menjadi '+T('cdna','cDNA')+'.')+
+  return head('Transkripsi balik (RT)','Polimerase pada PCR membutuhkan cetakan DNA. Oleh karena itu, RNA virus harus diubah dulu menjadi '+T('cdna','cDNA')+'.')+
   '<div class="split"><div class="card"><h2>Dari RNA menjadi cDNA</h2><div class="stage" id="rtStage">'+rtSVG(d)+'</div></div>'+
   '<div class="card"><h2>Tambahkan enzim</h2><p class="sub">'+T('revtrans','Reverse transcriptase')+' menyusun untai DNA dengan menggunakan RNA sebagai cetakan. Penyusunan dimulai dari '+T('primerrt','primer')+' yang menempel pada RNA.</p>'+
   '<button class="btn" data-act="rtgo"'+(d?' disabled':'')+'>'+(d?'cDNA sudah terbentuk':'Tambahkan reverse transcriptase')+'</button>'+
@@ -714,8 +713,8 @@ function ampSVG(){
 const MIX=[
   {k:'tmpl',n:()=>'Template '+K().tmpl,g:'template'},
   {k:'pf',n:()=>'Primer forward',g:'pf'},
-  {k:'dntp',n:()=>'dNTP',g:'dntp'},
   {k:'pr',n:()=>'Primer reverse',g:'pr'},
+  {k:'dntp',n:()=>'dNTP',g:'dntp'},
   {k:'taq',n:()=>'Taq polimerase',g:'taq'},
   {k:'buf',n:()=>'Buffer dan MgCl₂',g:'buffer'},
   {k:'air',n:()=>'Air bebas nuklease',g:'air'}
@@ -742,7 +741,7 @@ VIEWS.reaksi=()=>{
   stepCard(2,'Susun campuran reaksi','<p class="sub">Ketuk setiap bahan untuk memasukkannya ke tabung PCR.</p>'+
     '<div class="mixgrid">'+pcrTubeSVG(added/MIXOK.length)+'<div><div class="chips">'+MIX.map(m=>{const on=R.add[m.k];return '<button class="cbtn'+(on?' ok':'')+'" data-act="mix" data-k="'+m.k+'"'+(on?' disabled':'')+'>'+(on?'✓ ':'')+m.n()+'</button>';}).join('')+'</div>'+
     '<p class="small muted mt" style="margin-bottom:4px">Isi tabung ('+added+' dari '+MIXOK.length+'):</p><p class="small" style="margin:0">'+(added?MIX.filter(m=>R.add[m.k]).map(m=>T(m.g,m.n())).join(', '):'belum ada')+'</p></div></div>'+
-    note(R.msg)+(allMix?note({k:'ok',h:'Campuran reaksi lengkap.',t:'Selain 10 tabung sampel, disiapkan juga '+T('kpos','kontrol positif')+' dan '+T('ntc','NTC')+'. Pada umumnya, sebagian bahan sudah tercampur dalam '+T('mastermix','master mix')+'. Lihat juga '+T('volume','volume reaksi')+'.'}):''),
+    note(R.msg)+(allMix?note({k:'ok',h:'Campuran reaksi lengkap.',t:'Selain 10 tabung sampel, disiapkan juga '+T('kpos','kontrol positif')+' dan '+T('ntc','NTC')+'. Pada umumnya, sebagian bahan sudah tercampur dalam '+T('mastermix','master mix')+', dan '+T('volume','volume reaksi')+' per tabung sekitar 20 sampai 25 µL.'}):''),
     {locked:!pOk,complete:allMix})+
   quizHTML('reaksi');
 };
@@ -829,7 +828,7 @@ function mcCard(){
   return '<div class="card"><h2>Setelah beberapa siklus</h2><p class="sub">Satu molekul DNA menjadi 2 molekul DNA setelah siklus pertama selesai, lalu 4 molekul setelah siklus kedua selesai. Setiap untai, baik yang lama maupun yang baru, menjadi cetakan bagi siklus berikutnya, sehingga jumlahnya terus berlipat dua ('+T('eksponensial','eksponensial')+').</p>'+
     '<div class="stage">'+mcSVG()+'</div>'+
     '<div class="legend"><span><i style="background:var(--dna1)"></i><i style="background:var(--dna2)"></i>Untai asli</span><span><i style="background:var(--pR)"></i>Untai baru siklus 1</span><span><i style="background:var(--pF)"></i>Untai baru siklus 2</span></div>'+
-    '<p class="small muted mt" style="margin-bottom:0">Diagram disederhanakan dan tidak menggambarkan panjang untai. Lihat '+T('produkpendek','produk sepanjang target')+'.</p></div>';
+    '<p class="small muted mt" style="margin-bottom:0">Diagram disederhanakan dan tidak menggambarkan panjang untai, sehingga '+T('produkpendek','produk sepanjang target')+' belum tampak.</p></div>';
 }
 VIEWS.siklus=()=>{
   const C=S.cy;const aOk=asgOk();const ph=C.played?4:0;const cy=CYC[ph];
@@ -837,10 +836,10 @@ VIEWS.siklus=()=>{
   return head('Siklus suhu','Mesin '+T('thermal','thermal cycler')+' meningkatkan dan menurunkan suhu secara berulang-ulang selama 30–40 siklus. Setiap siklus menggandakan DNA target.')+
   stepCard(1,'Atur suhu tiap tahap','<p class="sub">Pilih suhu yang sesuai untuk tiap tahap dalam satu siklus.</p>'+
     STG.map((s,i)=>{const v=C.asg[s.k];return '<div class="srow"><b>'+(i+1)+'. '+T(s.g,s.n)+'</b><div class="seg">'+TEMPS.map(t=>'<button class="'+(v===t?'on':'')+'" data-act="asg" data-s="'+s.k+'" data-v="'+t+'">'+t+' °C</button>').join('')+'</div></div>'+(v?note(stgFb(s.k,v)):'');}).join('')+
-    (aOk?'<div class="stage mt">'+profileSVG()+'</div><p class="small mt" style="margin-bottom:0">Satu reaksi lengkap diawali denaturasi awal dan ditutup ekstensi akhir. Lihat '+T('program','program lengkap')+'.</p>':''),{complete:aOk})+
+    (aOk?'<div class="stage mt">'+profileSVG()+'</div><p class="small mt" style="margin-bottom:0">Satu reaksi lengkap berjalan menurut '+T('program','program lengkap')+' yang diawali denaturasi awal dan ditutup ekstensi akhir.</p>':''),{complete:aOk})+
   '<div class="split'+(aOk?'':' locked')+'" style="'+(aOk?'':'opacity:.45;pointer-events:none')+'"><div class="card"><h2><span class="step-no" style="'+(C.played?'background:var(--green);color:#fff':'')+'">'+(C.played?'✓':2)+'</span>Satu siklus di dalam tabung</h2><div class="stage" id="cycStage">'+cycSVG(ph)+'</div></div>'+
   '<div class="card"><div class="thermo"><b id="cycTemp">'+cy[0]+'</b><span id="cycName">'+cy[1]+'</span></div><p id="cycCap">'+cy[2]+'</p>'+
-  (C.played?'<p class="small muted">Untai baru di siklus pertama masih lebih panjang dari target. Lihat '+T('produkpendek','produk sepanjang target')+'.</p>':'')+
+  (C.played?'<p class="small muted">Untai baru di siklus pertama masih lebih panjang dari target. '+T('produkpendek','Produk sepanjang target')+' baru muncul pada siklus ketiga.</p>':'')+
   '<button class="btn" data-act="cyplay">'+(C.played?'Putar ulang':'Putar satu siklus')+'</button></div></div>'+
   (C.played?mcCard():'')+
   stepCard(3,'Berapa banyak salinannya?','<p class="sub">Dari 1 molekul DNA target, kira-kira berapa salinan yang terbentuk setelah 30 siklus?</p>'+
@@ -879,29 +878,27 @@ function gelSVG(){
 }
 VIEWS.gel=()=>{
   const G=S.gel,k=K(),D=data(),ph=G.ph;
-  const needDir=ph===1&&G.max<2;
-  const dirBox=needDir?'<div class="subchoice" style="margin:0 0 4px"><button class="btn tint sm" data-act="gdir" data-v="neg">Sumur di dekat kutub negatif (−)</button><button class="btn tint sm" data-act="gdir" data-v="pos">Sumur di dekat kutub positif (+)</button></div>':'';
   const brightBody='<p>Terang pita menggambarkan banyaknya DNA di pita itu. Sampel dengan target awal lebih banyak menghasilkan lebih banyak amplikon sehingga pitanya cenderung lebih terang.</p>'+
     '<p>Gel hanya memberi gambaran kasar jumlah target, sebab gel dibaca setelah reaksi selesai, saat reagen menipis dan produk mendekati '+T('plateau','plateau')+'. Untuk perkiraan jumlah, gunakan '+T('qpcr','qPCR')+'.</p>'+
     '<p style="margin:0">Terang pita juga dipengaruhi volume sampel yang dimuat, efisiensi tiap tabung, dan banyaknya pewarna.</p>';
   const caps=[
     {t:'Gel '+T('agarosa','agarosa')+' sudah dicetak dan direndam buffer di dalam tangki. Hasil '+k.pcr+' siap dimasukkan ke '+T('sumur','sumur')+'.'},
-    {t:'Sampel dicampur '+T('loading','loading dye')+', lalu dimasukkan secara berurutan: '+T('marker','marker')+' (M), '+T('kpos','kontrol positif')+' (K+), '+T('ntc','NTC')+' (K−), dan sampel 1 sampai 10.'+(G.max<2?' Berikutnya, di dekat kutub mana sumur diletakkan?':'')},
-    {k:'ok',h:'Tepat.',t:'DNA bermuatan negatif karena '+T('fosfat','gugus fosfat')+', sehingga bergerak dari '+T('katoda','katoda (−) menuju anoda (+)')+'.'},
+    {t:'Sampel dicampur '+T('loading','loading dye')+', lalu dimasukkan secara berurutan: '+T('marker','marker')+' (M), '+T('kpos','kontrol positif')+' (K+), '+T('ntc','NTC')+' (K−), dan sampel 1 sampai 10.'},
+    {t:'Sumur berada di sisi kutub negatif. DNA bermuatan negatif karena '+T('fosfat','gugus fosfat')+', sehingga bergerak dari '+T('katoda','katoda (−) menuju anoda (+)')+'.'},
     {t:'Pewarna loading sudah bergerak jauh dari sumur. Pita DNA belum terlihat karena DNA tidak berwarna. Gel diberi '+T('pewarna','pewarna DNA')+', lalu disinari UV.'},
     {k:'ok',h:'Pita DNA terlihat.',t:'Pita berpendar di atas '+T('uv','transiluminator UV')+'. Fragmen kecil bergerak lebih jauh dari sumur daripada fragmen besar.'}
   ];
-  const cap=G.dir==='pos'&&needDir?{k:'bad',h:'Belum tepat.',t:'Bila sumur di dekat kutub positif, DNA yang bermuatan negatif bergerak keluar dari gel ke buffer, sehingga tidak ada pita yang terbaca.'}:caps[ph];
+  const cap=caps[ph];
   const ok=G.chk===true;
   return head('Deteksi produk PCR dengan gel elektroforesis','Pada '+k.pcr+' konvensional, produk dilihat setelah reaksi selesai. '+T('elektroforesis','Elektroforesis')+' memisahkan DNA menurut ukurannya, lalu pita DNA dilihat di bawah sinar UV.')+
   '<div class="split"><div class="card"><h2>Gel</h2><div class="stage" id="gelStage">'+gelSVG()+'</div>'+
-  (ph>=4?'<p class="small muted mt" style="margin-bottom:0">Angka di kiri adalah ukuran pita marker dalam bp. M: marker, K+: kontrol positif, K−: '+T('ntc','NTC')+'.</p>':'')+'</div>'+
-  '<div class="card"><h2>Langkah</h2><p class="sub">'+(ph===0?'Keadaan awal':'Langkah '+ph+' dari 4')+'.</p>'+stepper('gel',GELS,ph,G.max)+stepNav('gel',ph,GELS,needDir)+note(cap)+dirBox+'</div></div>'+
+  (ph>=4?'<p class="small muted mt" style="margin-bottom:0">Angka di kiri adalah ukuran pita marker dalam bp. M: marker, K+: kontrol positif, K−: '+T('ntc','NTC')+'.</p><div class="mt">'+det('gelterang','Mengapa ada pita yang lebih terang daripada pita lain?',brightBody)+'</div>':'')+'</div>'+
+  '<div class="card"><h2>Langkah</h2><p class="sub">'+(ph===0?'Keadaan awal':'Langkah '+ph+' dari 4')+'.</p>'+stepper('gel',GELS,ph,G.max)+stepNav('gel',ph,GELS,false)+note(cap)+'</div></div>'+
   stepCard(null,'Baca hasil gel','<ol class="clean small"><li>Periksa kontrol. K+ berpita pada '+k.bp+' bp, yaitu di antara pita marker 200 dan 300 bp. K− tanpa pita. Kedua kontrol sesuai, jadi proses PCR-nya valid.</li>'+
-    '<li>Bandingkan setiap lajur sampel dengan K+. Sampel positif memiliki '+T('pita','pita')+' yang sejajar dengan K+.</li><li>Ketuk nomor lajur sampel yang positif, lalu periksa.</li></ol>'+det('gelterang','Mengapa ada pita yang lebih terang daripada pita lain?',brightBody)+
-    '<div class="chips mt">'+[0,1,2,3,4,5,6,7,8,9].map(i=>'<button class="cbtn lane'+(G.marks[i]?' on':'')+'" data-act="glane" data-i="'+i+'"'+(ok?' disabled':'')+' aria-pressed="'+(!!G.marks[i])+'">'+(i+1)+'</button>').join('')+'</div>'+
+    '<li>Bandingkan setiap lajur sampel dengan K+. Sampel positif memiliki '+T('pita','pita')+' yang sejajar dengan K+.</li><li>Ketuk nomor lajur sampel yang positif, lalu periksa.</li></ol>'+
+    '<h3>Tentukan sampel positif</h3><div class="chips">'+[0,1,2,3,4,5,6,7,8,9].map(i=>'<button class="cbtn lane'+(G.marks[i]?' on':'')+'" data-act="glane" data-i="'+i+'"'+(ok?' disabled':'')+' aria-pressed="'+(!!G.marks[i])+'">'+(i+1)+'</button>').join('')+'</div>'+
     '<div class="row mt"><button class="btn tint" data-act="gcheck"'+(ok?' disabled':'')+'>Periksa</button></div>'+
-    (G.chk===true?note({k:'ok',h:'Tepat.',t:'Sampel '+sampList(D.pos)+' positif. Perbedaan terang antarpita tidak mengubah hasil positif, lihat penjelasannya di atas. Pita dengan ukuran lain disebut '+T('nonspesifik','pita nonspesifik')+' atau '+T('primerdimer','primer-dimer')+' dan tidak dibaca positif.'}):
+    (G.chk===true?note({k:'ok',h:'Tepat.',t:'Sampel '+sampList(D.pos)+' positif. Perbedaan terang antarpita tidak mengubah hasil positif, lihat penjelasan di bawah gambar gel. Pita dengan ukuran lain disebut '+T('nonspesifik','pita nonspesifik')+' atau '+T('primerdimer','primer-dimer')+' dan tidak dibaca positif.'}):
      G.chk?note({k:'warn',h:'Belum tepat.',t:G.chk}):''),{locked:G.max<4,complete:ok})+
   quizHTML('gel');
 };
@@ -1087,13 +1084,11 @@ const A={
   snext:d=>{
     if(d.p!=='gel'){const I=S.iso;if(I.ph<4){I.ph++;I.max=Math.max(I.max,I.ph);render();}return;}
     const G=S.gel;
-    if(G.ph===1&&G.max<2)return;
     if(G.ph===2&&G.max<3){BUSY=true;lockUI();const dye=$('dye');
       if(dye&&!REDUCED){dye.style.transition='transform 2.4s ease-in-out';void dye.getBoundingClientRect();requestAnimationFrame(()=>{dye.style.transform='translateY(214px)';});}
       sleep(2500).then(()=>{G.ph=3;G.max=Math.max(G.max,3);BUSY=false;save();render();});return;}
     if(G.ph<4){G.ph++;G.max=Math.max(G.max,G.ph);render();}
   },
-  gdir:d=>{const G=S.gel;if(G.ph!==1||G.max>=2)return;G.dir=d.v;if(d.v==='neg'){G.ph=2;G.max=Math.max(G.max,2);}render();},
   glane:d=>{const G=S.gel;if(G.chk===true)return;const i=+d.i;G.marks[i]=!G.marks[i];G.chk=null;render();},
   gcheck:()=>{const G=S.gel,D=data();const picked=[0,1,2,3,4,5,6,7,8,9].filter(i=>G.marks[i]);
     const miss=D.pos.filter(p=>!G.marks[p]).length,extra=picked.filter(p=>!D.pos.includes(p)).length;
